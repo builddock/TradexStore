@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Control centre · Tradex ERP</title>
+  <link rel="stylesheet" href="assets/tradex.css">
+  <style>
+    .dash-grid { display: grid; grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr); gap: 16px; }
+    .appr { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; padding: 12px 20px; border-bottom: 1px solid var(--line-2); }
+    .appr:last-child { border-bottom: 0; }
+    .health { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--line-2); }
+    .health > div { background: #fff; padding: 14px 18px; }
+    .health .h-n { font-size: 20px; font-weight: 700; }
+    .health .h-l { font-size: 12px; color: var(--tx-3); }
+    .feed li { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line-2); font-size: 13px; }
+    .feed li:last-child { border-bottom: 0; }
+    .feed { list-style: none; margin: 0; padding: 0 20px; }
+  </style>
+</head>
+<body data-app="erp" data-page="dashboard">
+<main>
+  <div class="page-head">
+    <div>
+      <div class="crumbs"><span>Overview</span></div>
+      <h1>Good morning, Rajesh</h1>
+      <p class="sub">Saturday, 26 September 2026 · data fresh as of 10:42 · stock sync lag 14 s</p>
+    </div>
+    <div class="actions">
+      <span class="badge b-ok dot" data-anno="1A · R10 Delegation rules active">Delegation on · Anita R. ≤ ₹25k (sample limit)</span>
+      <button class="btn" data-open="m-digest"><i data-icon="mail"></i> Preview daily digest</button>
+      <button class="btn"><i data-icon="download"></i> Export</button>
+    </div>
+  </div>
+
+  <!-- One filter row scopes everything below -->
+  <div class="filterbar" data-anno="Filters scope every tile, chart and list on this page">
+    <div class="seg"><button>Today</button><button>7 days</button><button class="active">30 days</button><button>90 days</button></div>
+    <select class="select"><option>All locations</option><option>Central Warehouse</option><option>SP Road Branch</option><option>Koramangala Branch</option><option>Mysuru Branch</option></select>
+    <select class="select"><option>All channels</option><option>Website</option><option>Branch POS</option><option>WhatsApp</option><option>Assisted (staff)</option></select>
+    <select class="select"><option>All buyers</option><option>Consumers</option><option>Approved dealers</option></select>
+    <span class="muted small ml-auto">Compared with the previous 30 days · figures exclude GST unless stated</span>
+  </div>
+
+  <!-- KPI tiles -->
+  <section class="grid g-6" data-anno="1A · Success measures (blueprint §4)">
+    <div class="kpi"><div class="k-label"><i data-icon="rupee"></i> Net sales</div><div class="k-value">₹1.84 Cr</div><div class="k-foot"><span class="delta up-good"><i data-icon="trending-up"></i> +12.4%</span><span id="sp1"></span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="receipt"></i> Orders</div><div class="k-value">1,284</div><div class="k-foot"><span class="delta up-good"><i data-icon="trending-up"></i> +8.1%</span><span id="sp2"></span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="tag"></i> <span>Avg. order value</span></div><div class="k-value">₹14,330</div><div class="k-foot"><span class="delta up-good"><i data-icon="trending-up"></i> +4.0%</span><span id="sp3"></span></div></div>
+    <div class="kpi" data-anno="R06/R10 Owner touches"><div class="k-label"><i data-icon="user"></i> <span>Owner touches</span></div><div class="k-value">6.2%</div><div class="k-foot"><span class="delta down-good"><i data-icon="trending-down"></i> from 31%</span><span id="sp4"></span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="warehouse"></i> <span>Stock accuracy</span></div><div class="k-value">98.7%</div><div class="k-foot"><span class="delta up-good"><i data-icon="trending-up"></i> +0.9 pt</span><span id="sp5"></span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="truck"></i> <span>Paid → dispatched</span></div><div class="k-value">5.8 h</div><div class="k-foot"><span class="delta down-good"><i data-icon="trending-down"></i> −1.4 h</span><span id="sp6"></span></div></div>
+  </section>
+
+  <!-- Exceptions + approvals -->
+  <section class="dash-grid mt-16">
+    <div class="card" data-anno="1A · R06/R10 Exception dashboard: what, why, who, by when">
+      <div class="card-head">
+        <div><h3>Needs attention</h3><div class="sub">Only exceptions above delegated authority reach you · 6 open · 41 resolved by staff this week</div></div>
+        <div class="seg"><button class="active">Mine (6)</button><button>All teams (23)</button></div>
+      </div>
+      <div class="exc">
+        <span class="sev critical"><i data-icon="alert-octagon"></i> Critical</span>
+        <div>
+          <div class="e-title">Payment captured but order not confirmed — reservation expired</div>
+          <div class="e-meta"><span><i data-icon="receipt"></i> TXO-10477 · Apple MacBook Air M2 · ₹84,990</span><span><i data-icon="clock"></i> 38 min</span><span><i data-icon="user"></i> Finance · Deepa K.</span><span><i data-icon="flag"></i> Due 11:30</span></div>
+          <div class="small subtle mt-4">Evidence: Razorpay pay_Nx8Q… captured 10:04; reservation R-5521 expired 10:02; one alternate unit (U-000815) available at SP Road.</div>
+        </div>
+        <div class="e-act"><button class="btn btn-sm btn-primary" data-toast="Unit U-000815 reserved for TXO-10477 · customer notified">Reserve alternate</button><button class="btn btn-sm">Refund</button></div>
+      </div>
+      <div class="exc">
+        <span class="sev serious"><i data-icon="alert"></i> Serious</span>
+        <div>
+          <div class="e-title">Discount below margin floor needs owner approval</div>
+          <div class="e-meta"><span><i data-icon="receipt"></i> Assisted order TXO-10491 · 10 × Dell P2422H</span><span><i data-icon="clock"></i> 1 h 12 min</span><span><i data-icon="user"></i> Requested by Vikram S. (limit 8%)</span></div>
+          <div class="small subtle mt-4">Requested 14% off for a school tender. Margin after discount: 3.1% (floor 6%).</div>
+        </div>
+        <div class="e-act"><button class="btn btn-sm btn-ok" data-toast="Approved with reason recorded in audit log">Approve</button><button class="btn btn-sm">Counter 10%</button></div>
+      </div>
+      <div class="exc">
+        <span class="sev serious"><i data-icon="alert"></i> Serious</span>
+        <div>
+          <div class="e-title">Refund failed at payment provider (2 retries)</div>
+          <div class="e-meta"><span><i data-icon="undo"></i> RMA-0093 · Sony WH-1000XM4 · ₹19,990</span><span><i data-icon="clock"></i> 3 h</span><span><i data-icon="user"></i> Finance · Deepa K.</span><span><i data-icon="flag"></i> Customer SLA 6 h</span></div>
+        </div>
+        <div class="e-act"><a class="btn btn-sm" href="erp-finance.html#refunds">Open refund</a></div>
+      </div>
+      <div class="exc">
+        <span class="sev warning"><i data-icon="info"></i> Warning</span>
+        <div>
+          <div class="e-title">Stock write-off above manager threshold</div>
+          <div class="e-meta"><span><i data-icon="warehouse"></i> WH-BLR · 3 × LG 27UL550 · water damage</span><span><i data-icon="rupee"></i> ₹42,300</span><span><i data-icon="user"></i> Irfan M. → Anita R.</span></div>
+        </div>
+        <div class="e-act"><a class="btn btn-sm" href="erp-inventory.html#counts">Review evidence</a></div>
+      </div>
+      <div class="exc">
+        <span class="sev warning"><i data-icon="info"></i> Warning</span>
+        <div>
+          <div class="e-title">Supplier availability feed stale for 26 h</div>
+          <div class="e-meta"><span><i data-icon="building"></i> NetCore Solutions · 14 offers</span><span><i data-icon="zap"></i> Auto-rule switched offers to “confirm before promise”</span></div>
+        </div>
+        <div class="e-act"><a class="btn btn-sm" href="erp-vendors.html">Contact vendor</a></div>
+      </div>
+      <div class="exc">
+        <span class="sev warning"><i data-icon="info"></i> Warning</span>
+        <div>
+          <div class="e-title">Courier status sync failing — auto-retry paused after 3 attempts</div>
+          <div class="e-meta"><span><i data-icon="truck"></i> 17 shipments without update since 08:15</span><span><i data-icon="user"></i> Ops · Anita R.</span></div>
+        </div>
+        <div class="e-act"><a class="btn btn-sm" href="erp-automation.html">View job</a></div>
+      </div>
+      <div class="card-foot"><span class="small muted">Routine work stays in staff queues. Thresholds are set in <a href="erp-admin.html#thresholds">Settings → Approval thresholds</a>.</span><a class="small strong" href="erp-automation.html#exceptions">All exceptions →</a></div>
+    </div>
+
+    <div class="col gap-16">
+      <div class="card" data-anno="1A/1B · R05/R06 Approval queue with reasons & audit">
+        <div class="card-head"><div><h3>Approvals waiting on you</h3><div class="sub">5 items · oldest 1 day</div></div><a class="small strong" href="erp-automation.html#approvals">Open queue</a></div>
+        <div class="appr"><div class="avatar sm" style="background:#0e9f8a">DH</div><div><div class="strong">Marketplace seller application</div><div class="small muted">Digital Hub Traders · Phase 2 pilot · docs verified</div></div><a class="btn btn-sm" href="erp-vendors.html#applications">Review</a></div>
+        <div class="appr"><div class="avatar sm" style="background:#7c3aed">BP</div><div><div class="strong">Dealer application</div><div class="small muted">Byte Point Solutions, Hubballi · GSTIN valid</div></div><a class="btn btn-sm" href="erp-customers.html#applications">Review</a></div>
+        <div class="appr"><div class="avatar sm" style="background:#c2410c">PL</div><div><div class="strong">Price list change · Dealer Gold</div><div class="small muted">Q4 revision · 38 SKUs · avg −1.8%</div></div><a class="btn btn-sm" href="erp-pricing.html">Review</a></div>
+        <div class="appr"><div class="avatar sm" style="background:#be185d">VS</div><div><div class="strong">Vendor listing — sensitive edit</div><div class="small muted">RenewTech · warranty 6 → 3 months on 4 SKUs</div></div><a class="btn btn-sm" href="erp-vendors.html#submissions">Review</a></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><div><h3>Order pipeline</h3><div class="sub">Live · all locations</div></div><a class="small strong" href="erp-orders.html">Orders →</a></div>
+        <div class="health">
+          <div><div class="h-n">12</div><div class="h-l">Awaiting payment</div></div>
+          <div><div class="h-n">23</div><div class="h-l">Confirmed · to pick</div></div>
+          <div><div class="h-n">16</div><div class="h-l">Picking / packed</div></div>
+          <div><div class="h-n">41</div><div class="h-l">Dispatched today</div></div>
+          <div><div class="h-n text-warn">3</div><div class="h-l">Delivery exceptions</div></div>
+          <div><div class="h-n text-bad">2</div><div class="h-l">Overdue dispatch (&gt; 24 h)</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Charts -->
+  <section class="dash-grid mt-16">
+    <div class="card">
+      <div class="card-head"><div><h3>Net sales by channel</h3><div class="sub">Daily, last 30 days · ₹ excl. GST</div></div><button class="btn btn-sm btn-ghost" data-table-toggle="ch-sales"><i data-icon="list"></i> Table view</button></div>
+      <div class="card-body"><div id="ch-sales"></div></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><div><h3>Net sales by location</h3><div class="sub">Last 30 days · includes online orders fulfilled from each site</div></div><button class="btn btn-sm btn-ghost" data-table-toggle="ch-loc"><i data-icon="list"></i> Table</button></div>
+      <div class="card-body"><div id="ch-loc"></div>
+        <hr>
+        <div class="row-between mb-8"><h4>Sales mix by condition</h4><span class="small muted">share of net sales</span></div>
+        <div id="ch-mix"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Health, automation, top products, activity -->
+  <section class="grid g-3 mt-16">
+    <div class="card" data-anno="1A · R08/R14 Stock health across locations">
+      <div class="card-head"><h3>Stock health</h3><a class="small strong" href="erp-inventory.html">Inventory →</a></div>
+      <div class="list-row"><span class="li-icon warn"><i data-icon="alert"></i></span><div class="grow"><b>18 SKUs below reorder point</b><div class="small muted">12 draft POs suggested · buyer approval needed</div></div><a class="btn btn-xs" href="erp-purchasing.html#suggestions">Review</a></div>
+      <div class="list-row"><span class="li-icon bad"><i data-icon="lock"></i></span><div class="grow"><b>23 units in quarantine</b><div class="small muted">9 customer returns · 14 inbound QC</div></div><a class="btn btn-xs" href="erp-returns.html">Inspect</a></div>
+      <div class="list-row"><span class="li-icon brand"><i data-icon="transfer"></i></span><div class="grow"><b>3 transfers in transit</b><div class="small muted">1 partly received (−1 unit) · BR-MYS</div></div><a class="btn btn-xs" href="erp-inventory.html#transfers">Track</a></div>
+      <div class="list-row"><span class="li-icon"><i data-icon="history"></i></span><div class="grow"><b>₹6.2 L stock older than 90 days</b><div class="small muted">Mostly refurbished Grade B monitors</div></div><a class="btn btn-xs" href="erp-reports.html">Ageing</a></div>
+    </div>
+    <div class="card" data-anno="1A/1B · R09 Automation health & measured value">
+      <div class="card-head"><h3>Automation</h3><a class="small strong" href="erp-automation.html">Rules →</a></div>
+      <div class="health">
+        <div><div class="h-n">2,418</div><div class="h-l">Runs today</div></div>
+        <div><div class="h-n">99.2%</div><div class="h-l">Success rate</div></div>
+        <div><div class="h-n">41 h</div><div class="h-l">Staff time saved this week (est.)</div></div>
+        <div><div class="h-n text-bad">3</div><div class="h-l">Failing jobs</div></div>
+      </div>
+      <div class="list-row"><span class="li-icon ok"><i data-icon="check-circle"></i></span><div class="grow small"><b>Payment → reserve → pick task</b><div class="muted">412 runs · 0 failures</div></div></div>
+      <div class="list-row"><span class="li-icon bad"><i data-icon="x-circle"></i></span><div class="grow small"><b>Courier tracking sync</b><div class="muted">Paused · provider timeout</div></div></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>Recent activity</h3><a class="small strong" href="erp-admin.html#audit">Audit log →</a></div>
+      <ul class="feed">
+        <li><div class="avatar sm" style="background:#0b8ec9">MI</div><div><b>Irfan M.</b> received GRN-0441 · 24 units, 3 to QC<div class="small muted">10:31 · Central Warehouse</div></div></li>
+        <li><div class="avatar sm" style="background:#be185d">SP</div><div><b>Sneha P.</b> published 6 products after review<div class="small muted">10:12 · Catalog</div></div></li>
+        <li><div class="avatar sm" style="background:#4d7c0f">KR</div><div><b>Karthik R.</b> converted WhatsApp chat to order TXO-10486<div class="small muted">09:58 · Support</div></div></li>
+        <li><div class="avatar sm" style="background:#7c3aed">AR</div><div><b>Anita R.</b> approved transfer TR-0212 (WH → Mysuru)<div class="small muted">09:40 · delegated authority</div></div></li>
+        <li><div class="avatar sm" style="background:#2a3656">⚙</div><div><b>Automation</b> released 14 expired reservations<div class="small muted">09:30 · scheduled job</div></div></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="card mt-16">
+    <div class="card-head"><div><h3>Top products</h3><div class="sub">Last 30 days · net of returns</div></div><a class="small strong" href="erp-reports.html">Sales report →</a></div>
+    <div class="table-wrap"><table class="table">
+      <thead><tr><th>Product</th><th>Condition</th><th class="r">Units</th><th class="r">Net sales</th><th class="r">Gross margin</th><th class="r">Return rate</th><th class="r">Available</th></tr></thead>
+      <tbody id="top-products"></tbody>
+    </table></div>
+  </section>
+
+  <!-- Daily digest preview -->
+  <div class="modal" id="m-digest"><div class="modal-card lg">
+    <div class="modal-head"><div><h3>Owner daily digest · preview</h3><div class="small muted">Sent 8:00 AM by email & WhatsApp · only material items</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close><i data-icon="x"></i></button></div>
+    <div class="modal-body col gap-16">
+      <div class="grid g-3"><div class="kpi"><div class="k-label">Yesterday net sales</div><div class="k-value">₹6.9 L</div></div><div class="kpi"><div class="k-label">Orders</div><div class="k-value">47</div></div><div class="kpi"><div class="k-label">Exceptions for you</div><div class="k-value">2</div></div></div>
+      <div class="callout c-warn"><i data-icon="alert"></i><div><strong>Needs a decision:</strong> discount override TXO-10491 (14% vs 8% limit) · write-off ₹42,300 at WH-BLR.</div></div>
+      <div class="callout c-ok"><i data-icon="check-circle"></i><div><strong>Handled by staff:</strong> 38 dispatches, 6 returns inspected, 2 dealer orders repriced after quantity change, 14 reservations released.</div></div>
+      <div class="callout c-info"><i data-icon="info"></i><div><strong>Data freshness:</strong> stock sync 14 s · settlements imported 07:10 · courier status delayed (sync paused).</div></div>
+    </div>
+    <div class="modal-foot"><button class="btn" data-close>Close</button><button class="btn btn-primary" data-close data-toast="Digest settings saved">Edit digest settings</button></div>
+  </div></div>
+</main>
+<script src="assets/tradex.js"></script>
+<script>
+TX.ready(() => {
+  // Deterministic sample series (30 days)
+  const days = [...Array(30)].map((_, i) => { const d = new Date(2026, 7, 28 + i); return d.toLocaleDateString("en-IN", { day: "numeric", month: "short" }); });
+  const wave = (base, amp, seed) => days.map((_, i) => Math.round(base + amp * Math.sin((i + seed) / 3.1) + (i * base) / 160 + ((i * 7919 + seed * 104729) % 17) * base / 260 + (i % 7 === 5 ? base * 0.22 : 0)));
+  const web = wave(290000, 38000, 1), branch = wave(210000, 26000, 4), wa = wave(68000, 14000, 7);
+  const fmtL = (v) => "₹" + (v / 1e5).toFixed(2) + " L";
+  TX.charts.line(TX.$("#ch-sales"), {
+    title: "Net sales by channel, last 30 days", labels: days, height: 250,
+    series: [{ name: "Website", color: "var(--series-1)", values: web }, { name: "Branch POS", color: "var(--series-2)", values: branch }, { name: "WhatsApp", color: "var(--series-3)", values: wa }],
+    format: fmtL, axisFormat: (v) => "₹" + (v / 1e5).toFixed(1) + "L",
+  });
+  TX.charts.hbar(TX.$("#ch-loc"), {
+    title: "Net sales by location", seriesName: "Net sales", labelHeader: "Location", format: (v) => TX.fmtK(v), labelWidth: 140,
+    items: [{ label: "Central Warehouse", value: 7920000 }, { label: "SP Road Branch", value: 5410000 }, { label: "Koramangala Branch", value: 3380000 }, { label: "Mysuru Branch", value: 1690000 }],
+  });
+  TX.charts.stack(TX.$("#ch-mix"), { parts: [
+    { name: "New", value: 58, color: "var(--series-1)" }, { name: "Refurbished", value: 27, color: "var(--series-2)" },
+    { name: "Open box", value: 9, color: "var(--series-3)" }, { name: "Used", value: 6, color: "#eda100" } ] });
+  document.addEventListener("click", (e) => { const b = e.target.closest("[data-table-toggle]"); if (b) TX.charts.toggleTable(TX.$("#" + b.dataset.tableToggle)); });
+  [[1, [52, 55, 51, 58, 60, 57, 63, 61, 66, 64, 69, 71]], [2, [38, 40, 37, 42, 41, 44, 43, 47, 45, 48, 47, 50]], [3, [13, 13.2, 13.6, 13.1, 13.9, 14, 13.8, 14.1, 14.4, 14.2, 14.5, 14.3]],
+   [4, [31, 29, 26, 24, 21, 18, 15, 12, 10, 8.4, 7.1, 6.2]], [5, [96.1, 96.8, 97, 97.4, 97.2, 97.9, 98.1, 98, 98.4, 98.3, 98.6, 98.7]], [6, [8.9, 8.4, 8.1, 7.6, 7.4, 7, 6.8, 6.5, 6.3, 6.1, 6, 5.8]]]
+    .forEach(([i, v]) => TX.charts.spark(TX.$("#sp" + i), v));
+  const top = [["lap-01", 142, 0.18, 2.1], ["ssd-01", 386, 0.14, 0.8], ["lap-04", 61, 0.11, 1.6], ["mon-01", 88, 0.13, 2.3], ["cpu-01", 74, 0.09, 0.4], ["hp-01", 57, 0.21, 3.5]];
+  TX.$("#top-products").innerHTML = top.map(([id, u, gm, rr]) => { const p = TX.byId(id); return `<tr data-href="erp-catalog.html">
+    <td><div class="row">${TX.ph(p.img, "thumb")}<div><div class="cell-main">${p.title}</div><div class="cell-sub mono">${p.sku}</div></div></div></td>
+    <td>${TX.condBadge(p.cond)}</td><td class="r">${u}</td><td class="r">${TX.fmt(u * p.price / 1.18)}</td><td class="r">${(gm * 100).toFixed(1)}%</td>
+    <td class="r ${rr > 3 ? "text-warn" : ""}">${rr}%</td><td class="r">${p.qty}</td></tr>`; }).join("");
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,588 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dealer zone · Tradex</title>
+  <link rel="stylesheet" href="assets/tradex.css">
+  <style>
+    .d-hero { margin-top: 16px; min-height: 360px; }
+    .d-hero .h-copy { padding: 44px 48px; }
+    .hero-stats { display: flex; gap: 26px; margin-top: 26px; font-size: 12.5px; color: #c8d3f5; }
+    .hero-stats b { display: block; color: #fff; font-size: 18px; font-weight: 750; }
+    .benefit { background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); padding: 18px; display: flex; flex-direction: column; gap: 8px; }
+    .benefit .bi { width: 40px; height: 40px; border-radius: var(--r); display: grid; place-items: center; background: var(--vendor-50); color: #07695b; }
+    .benefit b { font-size: 14.5px; }
+    .benefit p { font-size: 13px; color: var(--tx-3); }
+    .flow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; }
+    .flow > div { padding: 20px; border-right: 1px solid var(--line-2); position: relative; }
+    .flow > div:last-child { border-right: 0; }
+    .flow .fn { width: 30px; height: 30px; border-radius: 50%; background: var(--ink-900); color: #fff; display: grid; place-items: center; font-weight: 700; font-size: 13px; margin-bottom: 10px; }
+    .flow > div:not(:last-child)::after { content: ""; position: absolute; right: -9px; top: 26px; width: 16px; height: 16px; background: #fff; border-top: 1px solid var(--line-2); border-right: 1px solid var(--line-2); transform: rotate(45deg); z-index: 1; }
+    .flow b { font-size: 14.5px; display: block; }
+    .flow p { font-size: 12.5px; color: var(--tx-3); margin-top: 4px; }
+    .flow .tag { margin-top: 10px; }
+    .state-panel { display: none; }
+    .state-panel.active { display: block; }
+    details.faq { background: #fff; border: 1px solid var(--line); border-radius: var(--r); padding: 0 16px; }
+    details.faq + details.faq { margin-top: 8px; }
+    details.faq summary { cursor: pointer; list-style: none; padding: 14px 0; font-weight: 600; display: flex; justify-content: space-between; gap: 12px; align-items: center; }
+    details.faq summary::-webkit-details-marker { display: none; }
+    details.faq summary::after { content: "+"; font-size: 18px; color: var(--tx-3); font-weight: 500; }
+    details.faq[open] summary::after { content: "–"; }
+    details.faq p { padding: 0 0 14px; color: var(--tx-2); font-size: 13.5px; }
+    /* Dealer view */
+    .biz-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 20px; align-items: center; margin-top: 14px; padding: 20px 24px; border-radius: var(--r-xl); background: linear-gradient(120deg, #0b1220 0%, #11324a 60%, #0e5a52 100%); color: #fff; }
+    .biz-head h1 { color: #fff; font-size: 24px; }
+    .biz-head .badge { height: 24px; }
+    .biz-head .muted { color: #9fb8c4; }
+    .biz-head .am { display: flex; gap: 12px; align-items: center; padding: 10px 14px; border-radius: var(--r); background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12); font-size: 12.5px; }
+    .biz-head .am small { color: #9fb8c4; display: block; }
+    .dtabs { margin-top: 20px; }
+    .dtabs > .tabs { background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); padding: 0 10px; }
+    .dtabs > .tabs .tab { padding: 14px 14px; }
+    .tabpad { padding-top: 16px; }
+    .qo-grid { display: grid; grid-template-columns: 320px minmax(0, 1fr); gap: 16px; align-items: start; }
+    .qo-ta { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px; min-height: 250px; line-height: 1.6; }
+    .qo-table td { vertical-align: top; }
+    .qo-table tr.err td { background: #fff8f7; }
+    .qo-table tr.warn td { background: #fffbf2; }
+    .qo-table .in-line { font-family: ui-monospace, monospace; font-size: 12px; color: var(--tx-3); }
+    .qo-foot { display: grid; grid-template-columns: 1fr auto; gap: 16px; padding: 14px 20px; border-top: 1px solid var(--line-2); align-items: center; }
+    .qo-tot { display: grid; grid-template-columns: auto auto; gap: 4px 24px; font-size: 13px; text-align: right; }
+    .qo-tot b { font-size: 16px; }
+    .pl-table td { white-space: nowrap; }
+    .pl-table .t-title { max-width: 290px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+    .pl-your { color: #07695b; font-weight: 750; }
+    .pl-qty button { width: 26px; } .pl-qty input { width: 30px; }
+    .mini-stat { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line-2); border-radius: var(--r-lg); overflow: hidden; border: 1px solid var(--line); }
+    .mini-stat > div { background: #fff; padding: 16px 18px; }
+    .mini-stat .n { font-size: 22px; font-weight: 750; letter-spacing: -0.02em; }
+    .mini-stat .l { font-size: 12.5px; color: var(--tx-3); }
+    .ex-table td, .ex-table th { font-size: 13px; }
+    .lockrow { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border: 1px dashed var(--brand-200); border-radius: var(--r); background: var(--brand-50); }
+  </style>
+</head>
+<body data-app="store" data-page="dealer">
+<main>
+  <div class="container">
+    <div class="crumbs mt-16"><a href="store-home.html">Home</a><i data-icon="chevron-right"></i><span>Dealer zone</span></div>
+
+    <!-- =============================================================== -->
+    <!-- GUEST / CONSUMER: learn & apply                                  -->
+    <!-- =============================================================== -->
+    <div class="hide-dealer">
+      <section class="hero photo d-hero" data-anno="1A · R03 Business buyer landing (public, no private prices)">
+        <div class="h-bg"><img src="assets/img/hero-desk.jpg" alt=""></div>
+        <div class="h-copy">
+          <span class="h-kicker"><i data-icon="briefcase" class="ic-sm"></i> Tradex for Business</span>
+          <h1>Dealer pricing for shops, integrators & companies</h1>
+          <p>Private price lists, quantity tiers from 5 units, GST invoices with your GSTIN and quick ordering by SKU — on the same live stock as our stores.</p>
+          <div class="row mt-24">
+            <a class="btn btn-accent btn-lg" href="store-login.html#dealer">Apply for dealer pricing</a>
+            <a class="btn btn-lg" style="--b-bg:rgba(255,255,255,.1);--b-fg:#fff;--b-bd:rgba(255,255,255,.25)" href="store-login.html#signin">Approved dealer? Sign in</a>
+          </div>
+          <div class="hero-stats">
+            <div><b>1–2 working days</b>typical approval</div>
+            <div><b>5+ · 10+</b>quantity tiers per SKU</div>
+            <div><b>GST invoices</b>with input tax credit</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" data-anno="1A · R03/R04 Dealer benefits">
+        <div class="section-head"><div><h2>What approved dealers get</h2><p>One account for your whole business — owners, buyers and accounts staff</p></div></div>
+        <div class="grid g-4">
+          <div class="benefit"><span class="bi"><i data-icon="lock"></i></span><b>Private price list</b><p>Prices set for your tier (Standard or Gold), visible only to signed-in members of your business.</p></div>
+          <div class="benefit"><span class="bi"><i data-icon="percent"></i></span><b>Quantity tiers</b><p>Lower unit price at 5+ and 10+ units of the same SKU, applied automatically in cart.</p></div>
+          <div class="benefit"><span class="bi"><i data-icon="zap"></i></span><b>Quick order by SKU</b><p>Paste “SKU, qty” lines or upload a CSV. See stock and your price before adding to cart.</p></div>
+          <div class="benefit"><span class="bi"><i data-icon="receipt"></i></span><b>GST invoices & statements</b><p>Your GSTIN on every invoice, e-invoice IRN, downloadable statements for reconciliation.</p></div>
+          <div class="benefit"><span class="bi"><i data-icon="users"></i></span><b>Team roles</b><p>Invite buyers with order limits and accounts staff who can only see invoices.</p></div>
+          <div class="benefit"><span class="bi"><i data-icon="clipboard"></i></span><b>Quotes for large orders</b><p>Need 50 laptops or a mixed lot? Request a quote with a locked price and validity date.</p></div>
+          <div class="benefit"><span class="bi"><i data-icon="refresh"></i></span><b>One-click reorders</b><p>Repeat previous orders at today's price and stock, with changes shown before you pay.</p></div>
+          <div class="benefit"><span class="bi"><i data-icon="headset"></i></span><b>Named account manager</b><p>A contact at your nearest branch for stock planning, RMA escalation and pickups.</p></div>
+        </div>
+      </section>
+
+      <section class="section" data-anno="1A · R03 §8.3 Application → verification → approval → price list">
+        <div class="section-head"><div><h2>How approval works</h2><p>A typed GSTIN is verified, not trusted — dealer prices unlock only after review</p></div><a class="strong" href="store-login.html#dealer">Start application →</a></div>
+        <div class="flow">
+          <div><span class="fn">1</span><b>Apply</b><p>Business name, GSTIN, PAN, trade type, address, monthly volume and a contact person. Upload your GST certificate and shop/trade licence.</p><span class="badge b-outline tag">About 3 minutes</span></div>
+          <div><span class="fn">2</span><b>Business verification</b><p>We check the GSTIN is active on the GST portal, the legal name and PAN match, and the documents are valid. We may call your contact person.</p><span class="badge b-outline tag">Automated + manual check</span></div>
+          <div><span class="fn">3</span><b>Approval decision</b><p>Our sales team approves your tier (Standard or Gold) or tells you exactly what's missing. Every decision is recorded with a reason.</p><span class="badge b-outline tag">1–2 working days</span></div>
+          <div><span class="fn">4</span><b>Private price list</b><p>Sign in to see your prices on every product, use quick order and invite your team. Orders are prepaid by default.</p><span class="badge b-ok tag">Active until review date</span></div>
+        </div>
+      </section>
+
+      <section class="section grid" style="grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 20px" data-anno="1A · R04 Quantity tiers (illustrative, all-units per SKU)">
+        <div class="card card-pad col gap-12">
+          <h2>How quantity tiers work</h2>
+          <p class="subtle">Tiers apply per SKU, per order line, to <b>all units</b> on that line. Order 10 of one SKU and every unit gets the 10+ price.</p>
+          <ul style="margin:0;padding-left:18px;font-size:13.5px;line-height:1.7">
+            <li>Dealer prices are shown <b>excluding GST</b>; GST is added at checkout on your invoice.</li>
+            <li>Change the quantity and the tier is recalculated before you pay.</li>
+            <li>If a return drops a line below its tier, we explain any adjustment before refunding.</li>
+            <li>Promotions and dealer prices don't stack unless the promotion says so.</li>
+            <li>Very large or mixed quantities? Request a quote for a locked price.</li>
+          </ul>
+          <div class="lockrow"><i data-icon="lock" class="text-brand"></i><div class="grow small"><b>Dealer prices are private.</b> Guests and consumers see public prices only; dealer prices are never shown in public pages, search results or shared caches.</div></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div><h3>Illustrative example</h3><div class="sub">A ₹2,500 accessory · numbers are examples, not an offer</div></div><span class="badge b-warn">Illustrative</span></div>
+          <div class="table-wrap"><table class="table ex-table">
+            <thead><tr><th>Buyer</th><th class="r">Quantity</th><th class="r">Unit price</th><th class="r">Line subtotal</th><th>Tier</th></tr></thead>
+            <tbody>
+              <tr><td><b>Consumer</b><div class="cell-sub">Public price, incl. GST</div></td><td class="r">1</td><td class="r">₹2,500</td><td class="r">₹2,500</td><td><span class="badge">Retail</span></td></tr>
+              <tr><td><b>Approved dealer</b><div class="cell-sub">Ex-GST</div></td><td class="r">1</td><td class="r">₹2,300</td><td class="r">₹2,300</td><td><span class="badge b-vendor">Dealer</span></td></tr>
+              <tr><td><b>Approved dealer</b></td><td class="r">5</td><td class="r">₹2,200</td><td class="r">₹11,000</td><td><span class="badge b-vendor">5+</span></td></tr>
+              <tr><td><b>Approved dealer</b></td><td class="r">10</td><td class="r">₹2,100</td><td class="r">₹21,000</td><td><span class="badge b-vendor">10+</span></td></tr>
+            </tbody>
+          </table></div>
+          <div class="card-foot"><span class="small muted">Subtotals before GST and shipping. Actual prices depend on your approved price list.</span></div>
+        </div>
+      </section>
+
+      <section class="section" data-anno="1A · §6.3 Dealer account states: pending / approved / rejected / suspended">
+        <div class="section-head"><div><h2>Track your application</h2><p>Already applied? Here's what each status means. Sign in to see yours.</p></div>
+          <div class="seg" id="app-seg"><button class="active" data-s="pending">Pending review</button><button data-s="approved">Approved</button><button data-s="rejected">Rejected</button><button data-s="suspended">Suspended</button></div></div>
+        <div class="card">
+          <div class="card-head"><div class="row gap-12"><div class="avatar sq" style="background:#7c3aed">BP</div><div><h3>Byte Point Solutions · Hubballi</h3><div class="sub">Application DA-0318 · submitted 25 Sep 2026, 14:10 · GSTIN 29AAJFB7781M1Z3</div></div></div><span id="app-badge" class="badge b-warn dot">Pending review</span></div>
+          <div class="card-body">
+            <div class="state-panel active" data-sp="pending">
+              <div class="stepper mb-16">
+                <div class="step done"><span class="dot"><i data-icon="check" class="ic-sm"></i></span> Submitted</div>
+                <div class="step done"><span class="dot"><i data-icon="check" class="ic-sm"></i></span> GSTIN verified</div>
+                <div class="step current"><span class="dot">3</span> Documents review</div>
+                <div class="step"><span class="dot">4</span> Decision</div>
+              </div>
+              <div class="grid g-2">
+                <div class="callout c-info"><i data-icon="clock"></i><div><strong>Pending review — 1–2 working days.</strong> GSTIN is active (Regular, Karnataka) and the legal name matches. Our team is checking your trade licence. Expected decision by Tue, 29 Sep.</div></div>
+                <div class="panel small">Until approval you can still buy at public prices. We'll email and WhatsApp you when a decision is made. <b>You don't need to re-apply.</b></div>
+              </div>
+            </div>
+            <div class="state-panel" data-sp="approved">
+              <div class="grid g-2">
+                <div class="callout c-ok"><i data-icon="check-circle"></i><div><strong>Approved on 28 Sep · Dealer Standard.</strong> Your private price list is active until 31 Mar 2027 (annual review). Sign in to see dealer prices on every product, use quick order and invite your team.</div></div>
+                <div class="row gap-8"><a class="btn btn-primary" href="store-login.html#signin">Sign in to see prices</a><button class="btn" data-toast="Invitation form opened">Invite a team member</button></div>
+              </div>
+            </div>
+            <div class="state-panel" data-sp="rejected">
+              <div class="grid g-2">
+                <div class="callout c-bad"><i data-icon="x-circle"></i><div><strong>Not approved — details didn't match.</strong> The legal name on the GST portal (“BYTE POINT SOLUTIONS”) doesn't match the trade licence (“Bytepoint Computers”). Reviewed by Tradex sales · 27 Sep.</div></div>
+                <div class="col gap-8"><div class="small subtle">Upload a trade licence in the registered name, or a letter explaining the trade name, and re-submit. Your data is kept for 90 days so you won't need to start over.</div><div class="row gap-8"><a class="btn btn-primary" href="store-login.html#dealer">Update & re-submit</a><button class="btn" data-wa>Talk to us</button></div></div>
+              </div>
+            </div>
+            <div class="state-panel" data-sp="suspended">
+              <div class="grid g-2">
+                <div class="callout c-warn"><i data-icon="alert"></i><div><strong>Dealer pricing suspended since 12 Sep.</strong> Your trade licence expired on 31 Aug. Dealer prices and quick order are paused; you can still buy at public prices. Past orders and invoices remain available.</div></div>
+                <div class="col gap-8"><div class="small subtle">Upload the renewed licence and we'll re-activate within 1 working day. Suspensions also apply if GST registration is cancelled or payments are disputed.</div><div class="row gap-8"><button class="btn btn-primary" data-toast="Upload renewed licence · reviewed within 1 working day">Upload renewed licence</button><a class="btn" href="store-help.html">Contact support</a></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section grid" style="grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 20px">
+        <div>
+          <div class="section-head"><h2>Frequently asked questions</h2></div>
+          <details class="faq" open><summary>Who can apply for dealer pricing?</summary><p>Retailers, resellers, system integrators, service centres and companies/institutions buying for their own use. You need an active GST registration in India. Individuals and unregistered businesses can buy at public prices and still get a GST invoice.</p></details>
+          <details class="faq"><summary>Why do you verify my GSTIN? I typed it correctly.</summary><p>A typed number could belong to someone else. We check it against the GST portal (active status, legal name, state) and match it with your PAN and documents. Dealer prices are only switched on after this check.</p></details>
+          <details class="faq"><summary>Is there a minimum order?</summary><p>No minimum order value. Tier prices start at 5 units of the same SKU. Some refurbished lots are sold only by quote.</p></details>
+          <details class="faq"><summary>Can I buy on credit?</summary><p>Dealer orders are prepaid by default (UPI, net banking, NEFT/RTGS, cards). Credit terms can be requested after 6 months of trading and need finance approval.</p></details>
+          <details class="faq"><summary>Can several people from my business use the account?</summary><p>Yes. The owner invites members as Buyers (can order, optional per-order limit) or Accounts (invoices and statements only). Each person signs in with their own phone or email.</p></details>
+          <details class="faq"><summary>Do returns and warranty work differently for dealers?</summary><p>The same return windows and warranty apply. Dealers get a bulk RMA option for multiple units and a named contact for escalations.</p></details>
+          <details class="faq"><summary>What happens when my approval expires?</summary><p>Price lists are reviewed yearly. We remind you 30 days before; if documents aren't renewed, dealer pricing pauses but your account and history stay.</p></details>
+        </div>
+        <div class="col gap-16">
+          <div class="band dealer" style="flex-direction:column;align-items:flex-start;padding:24px">
+            <i data-icon="briefcase" class="ic-xl"></i>
+            <h2 style="color:#fff">Ready to apply?</h2>
+            <p>Keep your GSTIN, PAN and trade licence handy. Most businesses finish in about 3 minutes.</p>
+            <a class="btn btn-accent btn-lg" href="store-login.html#dealer">Apply for dealer pricing</a>
+          </div>
+          <div class="card card-pad col gap-8">
+            <b>Prefer to talk first?</b>
+            <p class="small subtle">Business sales desk · Mon–Sat, 10 AM–7 PM</p>
+            <div class="row gap-8"><button class="btn btn-wa btn-sm" data-wa><i data-icon="whatsapp"></i> WhatsApp</button><a class="btn btn-sm" href="store-help.html"><i data-icon="phone"></i> 080 4000 1235</a></div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- =============================================================== -->
+    <!-- APPROVED DEALER: business dashboard                              -->
+    <!-- =============================================================== -->
+    <div class="only-dealer">
+      <section class="biz-head" data-anno="1A · R03 Approved dealer context (verified org membership)">
+        <div class="row gap-16">
+          <div class="avatar lg sq" style="background:#0e9f8a;width:56px;height:56px;font-size:18px">MC</div>
+          <div>
+            <h1>Metro Computers</h1>
+            <div class="row wrap gap-8 mt-8">
+              <span class="badge" style="background:#f5c542;color:#3d2800"><i data-icon="award"></i> Dealer Gold</span>
+              <span class="badge b-ok"><i data-icon="check-circle"></i> GSTIN 29ABCDE1234F1Z5 verified</span>
+              <span class="badge" style="background:rgba(255,255,255,.12);color:#fff"><i data-icon="wallet"></i> Prepaid · credit not enabled</span>
+              <span class="badge" style="background:rgba(255,255,255,.12);color:#fff">Price list valid to 31 Mar 2027</span>
+            </div>
+            <div class="small muted mt-8">Devaraja Mohalla, Mysuru 570001 · Signed in as Arun Kumar (Owner)</div>
+          </div>
+        </div>
+        <div class="col gap-8" style="align-items:flex-end">
+          <div class="am"><div class="avatar sm" style="background:#0e9f8a">VS</div><div><b>Vikram Shetty</b><small>Your account manager · SP Road · 98450 •••90</small></div></div>
+          <div class="row gap-8"><button class="btn btn-accent" data-dtab="bulk"><i data-icon="zap"></i> Quick order</button><button class="btn" style="--b-bg:transparent;--b-fg:#fff;--b-bd:rgba(255,255,255,.3)" data-dtab="quotes">Request a quote</button></div>
+        </div>
+      </section>
+
+      <div class="dtabs" data-tabset id="dtabs">
+        <div class="tabs">
+          <button class="tab active" data-tab="overview"><i data-icon="dashboard"></i> Overview</button>
+          <button class="tab" data-tab="pricelist"><i data-icon="tag"></i> Price list</button>
+          <button class="tab" data-tab="bulk"><i data-icon="zap"></i> Quick order</button>
+          <button class="tab" data-tab="quotes"><i data-icon="clipboard"></i> Quotes <span class="count">1</span></button>
+          <button class="tab" data-tab="reorder"><i data-icon="refresh"></i> Reorder history</button>
+          <button class="tab" data-tab="invoices"><i data-icon="receipt"></i> Invoices & GST</button>
+          <button class="tab" data-tab="team"><i data-icon="users"></i> Team & roles</button>
+        </div>
+
+        <!-- OVERVIEW -->
+        <div class="tab-panel active tabpad" data-panel="overview">
+          <div class="mini-stat">
+            <div><div class="l">Open orders</div><div class="n">2</div><div class="small text-brand">1 dispatched today</div></div>
+            <div><div class="l">Purchases · Sep (ex-GST)</div><div class="n">₹5.48 L</div><div class="small muted">9 order lines · 4 orders</div></div>
+            <div><div class="l">Saved vs retail · FY 26-27</div><div class="n">₹2.14 L</div><div class="small text-ok">Tier savings ₹31,600</div></div>
+            <div><div class="l">Quotes waiting on you</div><div class="n">1</div><div class="small text-warn">QT-0142 expires 30 Sep</div></div>
+          </div>
+          <div class="grid mt-16" style="grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr)">
+            <div class="card">
+              <div class="card-head"><div><h3>Open orders</h3><div class="sub">Order, payment and dispatch tracked separately</div></div><button class="btn btn-sm btn-ghost" data-dtab="reorder">All orders</button></div>
+              <div class="list-row"><span class="li-icon brand"><i data-icon="truck"></i></span><div class="grow"><b>TXO-10485 · 20 × Samsung T7 1 TB, 30 × Kingston FURY 16 GB</b><div class="small muted">Paid ₹2,08,900 + GST · <span class="status s-brand">Dispatched today</span> · VRL Logistics LR 55210873 → Mysuru</div></div><a class="btn btn-sm" href="store-order.html?id=TXO-10485">Track</a></div>
+              <div class="list-row"><span class="li-icon warn"><i data-icon="clock"></i></span><div class="grow"><b>TXO-10490 · 6 × Dell Latitude 5420 (Grade A)</b><div class="small muted"><span class="status s-warn">Awaiting payment</span> · NEFT ₹1,78,860 + GST (5+ tier) · units held until 28 Sep, 6 PM (R-5541)</div></div><button class="btn btn-sm btn-primary" data-toast="Bank details & reference TXO-10490 sent to accounts@metrocomputers">Pay now</button></div>
+              <div class="card-foot"><span class="small muted">Unpaid orders release their held stock automatically when the hold expires.</span></div>
+            </div>
+            <div class="card">
+              <div class="card-head"><h3>Updates for your business</h3></div>
+              <div class="list-row"><span class="li-icon vendor"><i data-icon="percent"></i></span><div class="grow"><b>Dealer Gold price revision · from 1 Oct</b><div class="small muted">38 SKUs change · average −1.8% · preview in price list</div></div></div>
+              <div class="list-row"><span class="li-icon brand"><i data-icon="package"></i></span><div class="grow"><b>New lot: 40 × Latitude 5420 Grade A</b><div class="small muted">Quote only · unit-level grade reports available</div></div><button class="btn btn-xs" data-dtab="quotes">Quote</button></div>
+              <div class="list-row"><span class="li-icon warn"><i data-icon="file"></i></span><div class="grow"><b>Trade licence renews 31 Dec 2026</b><div class="small muted">Upload the renewal before expiry to avoid a pause</div></div></div>
+            </div>
+          </div>
+          <div class="grid g-3 mt-16">
+            <div class="callout c-brand" data-anno="1A · §8.4 Private price responses never publicly cached"><i data-icon="lock"></i><div><strong>Your prices are private.</strong> Dealer prices are shown only to signed-in members of Metro Computers. They're never cached in public pages; signing out removes access immediately.</div></div>
+            <div class="callout"><i data-icon="wallet"></i><div><strong>Payment terms: prepaid.</strong> UPI, net banking, NEFT/RTGS or cards. Credit terms aren't enabled — ask Vikram to start a credit review (finance approval required).</div></div>
+            <div class="callout"><i data-icon="info"></i><div><strong>Stock is confirmed at checkout.</strong> Availability here is live but only reserved when you place the order (holds 30 min unpaid, or until the NEFT deadline).</div></div>
+          </div>
+        </div>
+
+        <!-- PRICE LIST -->
+        <div class="tab-panel tabpad" data-panel="pricelist">
+          <div class="card" data-anno="1A · R03/R04 Private price list: retail vs your price vs 5+/10+, ex-GST">
+            <div class="table-toolbar">
+              <div class="input-icon" style="width:300px"><i data-icon="search"></i><input class="input input-sm" id="pl-q" placeholder="Search SKU, brand or model" aria-label="Search price list"></div>
+              <select class="select input-sm" id="pl-cat" style="width:auto" aria-label="Category"><option value="">All categories</option></select>
+              <select class="select input-sm" id="pl-cond" style="width:auto" aria-label="Condition"><option value="">All conditions</option><option value="new">New</option><option value="openbox">Open box</option><option value="refurb">Refurbished</option><option value="used">Used</option></select>
+              <label class="check small"><input type="checkbox" id="pl-stock"> In stock only</label>
+              <span class="small muted ml-auto" id="pl-count"></span>
+              <button class="btn btn-sm" data-toast="Price list exported · watermarked with account MC-0112"><i data-icon="download"></i> XLSX</button>
+            </div>
+            <div class="table-wrap"><table class="table compact pl-table">
+              <thead><tr><th>Product · SKU</th><th>Condition</th><th>Stock</th><th class="r">Retail<br><span style="text-transform:none;font-weight:500">incl. GST</span></th><th class="r">Your price<br><span style="text-transform:none;font-weight:500">ex-GST</span></th><th class="r">5+ units</th><th class="r">10+ units</th><th class="c">Qty</th><th></th></tr></thead>
+              <tbody id="pl-rows"></tbody>
+            </table></div>
+            <div class="empty hidden" id="pl-empty"><i data-icon="search"></i><h4>No SKUs match</h4><p>Try a model number like “T7”, or clear the filters.</p></div>
+            <div class="pager"><span>Dealer Gold · prices excl. GST · updated 20 Sep 2026 · valid to 31 Mar 2027</span><span id="pl-pages"></span></div>
+          </div>
+        </div>
+
+        <!-- QUICK ORDER -->
+        <div class="tab-panel tabpad" data-panel="bulk">
+          <div class="qo-grid">
+            <div class="col gap-16">
+              <div class="card" data-anno="1A · R04 Quick order: paste SKU, qty lines">
+                <div class="card-head"><div><h3>Paste SKUs</h3><div class="sub">One line per item: <span class="mono">SKU, quantity</span></div></div></div>
+                <div class="card-body col gap-12">
+                  <textarea class="textarea qo-ta" id="qo-in" aria-label="SKU and quantity lines" spellcheck="false">SSD01-N, 20
+RAM01-N, 30
+MS03-N, 50
+LAP01-RA, 6
+GPU01-N, 10
+CPU02-N 4
+HUB02-N, 12
+XPS13-N, 2
+Samsung T7, 5</textarea>
+                  <div class="row gap-8"><button class="btn btn-primary grow" id="qo-go"><i data-icon="zap"></i> Check prices & stock</button><button class="btn" id="qo-clear">Clear</button></div>
+                  <p class="tiny muted">Separators: comma, tab or space. Up to 200 lines. Duplicate SKUs are merged.</p>
+                </div>
+              </div>
+              <div class="card card-pad col gap-12" data-anno="1B · Validated CSV/XLSX upload">
+                <b>Or upload a file</b>
+                <div class="dropzone" id="qo-drop" style="padding:20px;cursor:pointer"><i data-icon="upload"></i><div><b>Drop CSV / XLSX</b> or click to browse</div><div class="small">Columns: SKU, Qty · max 500 rows</div></div>
+                <button class="link-btn small" data-toast="Template downloaded: tradex-quick-order-template.csv">Download template</button>
+              </div>
+            </div>
+            <div class="card" data-anno="1A · Parsed lines: availability, tier applied, errors per row">
+              <div class="card-head"><div><h3>Order preview</h3><div class="sub" id="qo-sub">Prices ex-GST at your Dealer Gold tier · stock is live but reserved only at checkout</div></div><span class="badge" id="qo-stat"></span></div>
+              <div class="table-wrap"><table class="table compact qo-table">
+                <thead><tr><th>#</th><th>Product</th><th class="r">Qty</th><th>Availability</th><th>Tier</th><th class="r">Unit (ex-GST)</th><th class="r">Line total</th></tr></thead>
+                <tbody id="qo-rows"></tbody>
+              </table></div>
+              <div class="qo-foot">
+                <div class="small muted" id="qo-note"></div>
+                <div class="qo-tot"><span class="muted">Subtotal (ex-GST)</span><span id="qo-sub-t">—</span><span class="muted">GST 18% (est.)</span><span id="qo-gst">—</span><span class="strong">Estimated total</span><b id="qo-tot">—</b></div>
+              </div>
+              <div class="card-foot"><button class="btn" data-dtab="quotes"><i data-icon="clipboard"></i> Request quote for large quantities</button><div class="row gap-8"><button class="btn btn-ghost" data-toast="Error rows downloaded as CSV">Download errors</button><button class="btn btn-primary" id="qo-add"><i data-icon="cart"></i> Add valid lines to cart</button></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- QUOTES -->
+        <div class="tab-panel tabpad" data-panel="quotes">
+          <div class="grid" style="grid-template-columns: minmax(0, 1fr) 380px">
+            <div class="card" data-anno="1A · Quote with locked price & validity; accept → order at quoted price">
+              <div class="card-head"><div><h3>Your quotes</h3><div class="sub">A quote locks the price until its validity date. Stock is reserved when you accept.</div></div></div>
+              <div class="table-wrap"><table class="table">
+                <thead><tr><th>Quote</th><th style="min-width:230px">Items</th><th>Status</th><th class="r">Quoted</th><th></th></tr></thead>
+                <tbody>
+                  <tr><td><b class="mono">QT-0142</b><div class="cell-sub">Requested 22 Sep</div></td><td>50 × Samsung T7 Portable SSD 1 TB<div class="cell-sub">SSD01-N · deliver to Mysuru</div></td><td><span class="status s-warn">Quoted · expires 30 Sep, 6 PM</span></td><td class="r"><b>₹6,590</b>/unit<div class="cell-sub">₹3,29,500 ex-GST · vs 10+ tier ₹6,740</div></td><td class="r"><div class="row-actions"><button class="btn btn-sm btn-primary" data-toast="Quote accepted · order TXO-10493 created at quoted price">Accept</button><button class="btn btn-sm" data-toast="Quote declined">Decline</button></div></td></tr>
+                  <tr><td><b class="mono">QT-0139</b><div class="cell-sub">Requested 24 Sep</div></td><td>40 × Dell Latitude 5420 · Grade A<div class="cell-sub">Mixed lot · unit reports attached on reply</div></td><td><span class="status s-info">Under review · reply by 29 Sep</span></td><td class="r muted">—</td><td class="r"><button class="btn btn-sm btn-ghost" data-toast="Message sent to Vikram Shetty">Message</button></td></tr>
+                  <tr><td><b class="mono">QT-0131</b><div class="cell-sub">Requested 12 Sep</div></td><td>15 × ASUS TUF RTX 4070 Ti<div class="cell-sub">GPU01-N</div></td><td><span class="status s-muted">Expired 20 Sep</span></td><td class="r muted">₹58,400/unit</td><td class="r"><button class="btn btn-sm" data-toast="New quote request QT-0143 created from QT-0131">Request again</button></td></tr>
+                  <tr><td><b class="mono">QT-0127</b><div class="cell-sub">Requested 2 Sep</div></td><td>25 × HP LaserJet Pro M428fdw<div class="cell-sub">PRN02-RB</div></td><td><span class="status s-bad">Declined by Tradex</span><div class="cell-sub">Not enough graded units (need 25, have 6)</div></td><td class="r muted">—</td><td class="r"></td></tr>
+                </tbody>
+              </table></div>
+            </div>
+            <div class="card">
+              <div class="card-head"><h3>Request a quote</h3><span class="small muted">Typically answered in 1 working day</span></div>
+              <div class="card-body">
+                <div class="form-grid">
+                  <div class="field full"><label for="q-sku" class="req">Product or SKU</label><input class="input" id="q-sku" value="GPU01-N · ASUS TUF RTX 4070 Ti 12 GB"></div>
+                  <div class="field"><label for="q-qty" class="req">Quantity</label><input class="input" id="q-qty" value="10" inputmode="numeric"></div>
+                  <div class="field"><label for="q-date">Needed by</label><input class="input" id="q-date" type="date" value="2026-10-08"></div>
+                  <div class="field"><label for="q-target">Target price / unit (optional)</label><div class="input-group"><span class="addon">₹</span><input class="input" id="q-target" placeholder="ex-GST"></div></div>
+                  <div class="field"><label for="q-dest">Delivery</label><select class="select" id="q-dest"><option>Ship to Metro Computers, Mysuru</option><option>Collect from Mysuru branch</option><option>Collect from Central Warehouse</option></select></div>
+                  <div class="field full"><label for="q-note">Notes</label><textarea class="textarea" id="q-note" style="min-height:70px">School lab tender — need matching batch and GST invoice by 8 Oct.</textarea></div>
+                </div>
+              </div>
+              <div class="card-foot"><span class="small muted">Only 8 in stock today — we'll check partner stock.</span><button class="btn btn-primary" data-toast="Quote request QT-0143 sent · reply expected by 29 Sep">Send request</button></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- REORDER -->
+        <div class="tab-panel tabpad" data-panel="reorder">
+          <div class="card" data-anno="1A · R04 Reorder at today's price & stock (changes shown before payment)">
+            <div class="card-head"><div><h3>Order history & reorder</h3><div class="sub">Reorders use today's prices, tiers and stock. Any change is shown in the cart before you pay.</div></div>
+              <div class="row gap-8"><select class="select input-sm" style="width:auto" aria-label="Placed by"><option>All buyers</option><option>Arun Kumar</option><option>Meena Raghavan</option></select><select class="select input-sm" style="width:auto" aria-label="Period"><option>Last 90 days</option><option>FY 2026-27</option></select></div></div>
+            <div class="table-wrap"><table class="table">
+              <thead><tr><th>Order</th><th>Placed by</th><th>Items</th><th class="r">Paid (ex-GST)</th><th>Status</th><th class="r">Today's price</th><th></th></tr></thead>
+              <tbody id="ro-rows"></tbody>
+            </table></div>
+          </div>
+        </div>
+
+        <!-- INVOICES -->
+        <div class="tab-panel tabpad" data-panel="invoices">
+          <div class="card" data-anno="1A · Business GST invoices (buyer GSTIN, IRN) & exports">
+            <div class="card-head"><div><h3>Invoices, credit notes & statements</h3><div class="sub">Buyer GSTIN 29ABCDE1234F1Z5 · place of supply Karnataka (29) · CGST + SGST</div></div>
+              <div class="row gap-8"><button class="btn btn-sm" data-toast="Statement of account (Apr–Sep 2026) downloaded"><i data-icon="file"></i> Statement</button><button class="btn btn-sm" data-toast="GSTR-2B reconciliation CSV downloaded"><i data-icon="download"></i> Export for GSTR-2B</button></div></div>
+            <div class="table-wrap"><table class="table">
+              <thead><tr><th>Document</th><th>Order / RMA</th><th>Date</th><th class="r">Taxable value</th><th class="r">CGST 9%</th><th class="r">SGST 9%</th><th class="r">Total</th><th>e-Invoice</th><th></th></tr></thead>
+              <tbody id="bi-rows"></tbody>
+            </table></div>
+            <div class="card-foot"><span class="small muted">Accounts members can download invoices without seeing the price list. Invoices are never edited — corrections are made with a credit note.</span></div>
+          </div>
+        </div>
+
+        <!-- TEAM -->
+        <div class="tab-panel tabpad" data-panel="team">
+          <div class="grid" style="grid-template-columns: minmax(0, 1fr) 390px">
+            <div class="card" data-anno="1A · §8.3 Business account members & roles (owner invites)">
+              <div class="card-head"><div><h3>Members</h3><div class="sub">Everyone signs in with their own phone or email · only the owner can invite or remove</div></div><button class="btn btn-sm btn-primary" data-open="m-invite"><i data-icon="plus"></i> Invite member</button></div>
+              <div class="table-wrap"><table class="table">
+                <thead><tr><th>Member</th><th>Role</th><th style="min-width:150px">Limits</th><th>Status</th><th></th></tr></thead>
+                <tbody>
+                  <tr><td><div class="row"><div class="avatar sm" style="background:#0e9f8a">AK</div><div><div class="cell-main">Arun Kumar <span class="badge b-brand">You</span></div><div class="cell-sub">arun@metrocomputers.example</div></div></div></td><td><span class="badge b-dark">Owner</span></td><td class="small">No limit · approves large orders</td><td><span class="status s-ok">Active</span><div class="cell-sub">2-step on</div></td><td></td></tr>
+                  <tr><td><div class="row"><div class="avatar sm" style="background:#7c3aed">MR</div><div><div class="cell-main">Meena Raghavan</div><div class="cell-sub">meena@metrocomputers.example</div></div></div></td><td><span class="badge b-brand">Buyer</span></td><td class="small">Up to ₹2,00,000 per order<div class="cell-sub">Above → owner approval</div></td><td><span class="status s-ok">Active</span><div class="cell-sub">Last order 24 Sep</div></td><td class="r"><button class="btn btn-xs" data-toast="Role editor opened">Edit</button></td></tr>
+                  <tr><td><div class="row"><div class="avatar sm" style="background:#c2410c">SG</div><div><div class="cell-main">Suresh Gowda</div><div class="cell-sub">accounts@metrocomputers.example</div></div></div></td><td><span class="badge b-info">Accounts</span></td><td class="small">Invoices & statements only<div class="cell-sub">Can't order or see price list</div></td><td><span class="status s-ok">Active</span></td><td class="r"><button class="btn btn-xs" data-toast="Role editor opened">Edit</button></td></tr>
+                  <tr><td><div class="row"><div class="avatar sm" style="background:#98a2b3">?</div><div><div class="cell-main">ravi@metrocomputers.example</div><div class="cell-sub">Invited 24 Sep · expires 1 Oct</div></div></div></td><td><span class="badge b-brand">Buyer</span></td><td class="small">Up to ₹50,000 per order</td><td><span class="status s-warn">Invitation pending</span></td><td class="r"><div class="row-actions"><button class="btn btn-xs" data-toast="Invitation resent">Resend</button><button class="btn btn-xs btn-ghost" data-toast="Invitation cancelled">Cancel</button></div></td></tr>
+                  <tr><td><div class="row"><div class="avatar sm" style="background:#d0d5dd">KM</div><div><div class="cell-main muted">Kiran M</div><div class="cell-sub">Removed 3 Aug by Arun Kumar</div></div></div></td><td><span class="badge">Buyer</span></td><td class="small muted">Access revoked · orders kept</td><td><span class="status s-muted">Removed</span></td><td></td></tr>
+                </tbody>
+              </table></div>
+              <div class="card-body col gap-12" style="border-top:1px solid var(--line-2)">
+                <div class="callout c-info small"><i data-icon="shield"></i><div><strong>Removing a member revokes access immediately</strong> — their past orders and invoices stay with Metro Computers. Owners must use 2-step verification; buyers are prompted to enable it.</div></div>
+                <div class="callout small"><i data-icon="info"></i><div>Order approvals: when a buyer's cart exceeds their limit, you get an approval request by email and WhatsApp. Unapproved carts don't reserve stock.</div></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-head"><h3>What each role can do</h3></div>
+              <div class="table-wrap"><table class="table compact">
+                <thead><tr><th>Permission</th><th class="c">Owner</th><th class="c">Buyer</th><th class="c">Accounts</th></tr></thead>
+                <tbody>
+                  <tr><td>See dealer prices</td><td class="perm"><span class="yes"><i data-icon="check"></i></span></td><td class="perm"><span class="yes"><i data-icon="check"></i></span></td><td class="perm"><span class="no"><i data-icon="x"></i></span></td></tr>
+                  <tr><td>Place orders & quick order</td><td class="perm"><span class="yes"><i data-icon="check"></i></span></td><td class="perm"><span class="lim">Up to limit</span></td><td class="perm"><span class="no"><i data-icon="x"></i></span></td></tr>
+                  <tr><td>Request & accept quotes</td><td class="perm"><span class="yes"><i data-icon="check"></i></span></td><td class="perm"><span class="lim">Request only</span></td><td class="perm"><span class="no"><i data-icon="x"></i></span></td></tr>
+                  <tr><td>See all business orders</td><td class="perm"><span class="yes"><i data-icon="check"></i></span></td><td class="perm"><span class="lim">Own only</span></td><td class="perm"><span class="yes"><i data-icon="check"></i></span></td></tr>
+                  <tr><td>Invoices & statements</td><td class="perm"><span class="yes"><i data-icon="check"></i></span></td><td class="perm"><span class="lim">Own orders</span></td><td class="perm"><span class="yes"><i data-icon="check"></i></span></td></tr>
+                  <tr><td>Start returns / RMA</td><td class="perm"><span class="yes"><i data-icon="check"></i></span></td><td class="perm"><span class="yes"><i data-icon="check"></i></span></td><td class="perm"><span class="no"><i data-icon="x"></i></span></td></tr>
+                  <tr><td>Invite / remove members</td><td class="perm"><span class="yes"><i data-icon="check"></i></span></td><td class="perm"><span class="no"><i data-icon="x"></i></span></td><td class="perm"><span class="no"><i data-icon="x"></i></span></td></tr>
+                  <tr><td>Change GSTIN / address</td><td class="perm"><span class="lim">Re-verified</span></td><td class="perm"><span class="no"><i data-icon="x"></i></span></td><td class="perm"><span class="no"><i data-icon="x"></i></span></td></tr>
+                </tbody>
+              </table></div>
+              <div class="card-foot"><span class="small muted">Changing GSTIN or legal name pauses dealer pricing until Tradex re-verifies it.</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="m-invite"><div class="modal-card">
+    <div class="modal-head"><h3>Invite a team member</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-body col gap-16">
+      <div class="field"><label for="i-em" class="req">Work email or mobile</label><input class="input" id="i-em" placeholder="name@metrocomputers.example"></div>
+      <div class="field"><label>Role</label><div class="seg"><button class="active">Buyer</button><button>Accounts</button></div></div>
+      <div class="field"><label for="i-lim">Order limit per order</label><div class="input-group"><span class="addon">₹</span><input class="input" id="i-lim" value="50,000"></div><span class="hint">Orders above the limit wait for your approval.</span></div>
+      <div class="callout c-info small"><i data-icon="info"></i><div>The invitation expires in 7 days. The person creates their own login — never share yours.</div></div>
+    </div>
+    <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-primary" data-close data-toast="Invitation sent">Send invitation</button></div>
+  </div></div>
+</main>
+<script src="assets/tradex.js"></script>
+<script>
+TX.ready(() => {
+  const $ = TX.$, $$ = TX.$$, fmt = TX.fmt, ic = TX.icon;
+  const pv = TX.param("view"); if (["guest", "consumer", "dealer"].includes(pv)) TX.setView(pv);
+
+  /* ---------- Application status tracker (guest/consumer) ---------- */
+  const badgeFor = { pending: ["b-warn", "Pending review"], approved: ["b-ok", "Approved"], rejected: ["b-bad", "Rejected"], suspended: ["b-warn", "Suspended"] };
+  $$("#app-seg button").forEach((b) => b.addEventListener("click", () => {
+    const s = b.dataset.s; $$(".state-panel").forEach((p) => p.classList.toggle("active", p.dataset.sp === s));
+    const [c, t] = badgeFor[s]; const bd = $("#app-badge"); bd.className = `badge ${c} dot`; bd.textContent = t;
+  }));
+
+  /* ---------- Tabs: deep link + buttons that jump to a tab ---------- */
+  const goTab = (id) => { TX.activateTab(id); history.replaceState(null, "", "#" + id); const t = $("#dtabs"); if (t) window.scrollTo({ top: t.getBoundingClientRect().top + window.scrollY - 90, behavior: "smooth" }); };
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-dtab]"); if (b) { e.preventDefault(); goTab(b.dataset.dtab); }
+    const t = e.target.closest("#dtabs > .tabs .tab"); if (t) history.replaceState(null, "", "#" + t.dataset.tab);
+  });
+  window.addEventListener("hashchange", () => TX.activateTab(location.hash.slice(1)));
+
+  /* ---------- Price list ---------- */
+  const tierOf = (p, q) => (q >= 10 ? p.tiers[1].p : q >= 5 ? p.tiers[0].p : p.dealer);
+  const stockTxt = (p) => ({ in: `<span class="status s-ok">${p.qty} in stock</span>`, low: `<span class="status s-warn">${p.qty} left</span>`, supplier: `<span class="status s-info">Partner · 4–6 days</span>`, out: `<span class="status s-bad">Out of stock</span>` }[p.stock]);
+  TX.categories.forEach((c) => { const o = document.createElement("option"); o.value = c.id; o.textContent = c.name; $("#pl-cat").appendChild(o); });
+  const renderPL = () => {
+    const q = $("#pl-q").value.trim().toLowerCase(), cat = $("#pl-cat").value, cond = $("#pl-cond").value, inst = $("#pl-stock").checked;
+    const list = TX.products.filter((p) => (!q || (p.sku + " " + p.title + " " + p.brand).toLowerCase().includes(q)) && (!cat || p.cat === cat) && (!cond || TX.conditions[p.cond].cls === cond) && (!inst || ["in", "low"].includes(p.stock)));
+    const shown = list.slice(0, 14);
+    $("#pl-rows").innerHTML = shown.map((p) => `<tr>
+      <td><div class="row">${TX.ph(p.img, "thumb")}<div><div class="t-title">${TX.esc(p.title)}</div><div class="cell-sub"><span class="mono">${p.sku}</span> · ${p.warranty}</div></div></div></td>
+      <td>${TX.condBadge(p.cond)}</td><td>${stockTxt(p)}</td>
+      <td class="r muted">${fmt(p.price)}</td><td class="r pl-your">${fmt(p.dealer)}</td><td class="r">${fmt(p.tiers[0].p)}</td><td class="r">${fmt(p.tiers[1].p)}</td>
+      <td class="c"><div class="qty pl-qty" style="height:30px"><button data-step="-1" aria-label="Less">${ic("minus", "ic-sm")}</button><input value="${p.stock === "supplier" ? 1 : Math.min(5, p.qty)}" min="1" aria-label="Quantity"><button data-step="1" aria-label="More">${ic("plus", "ic-sm")}</button></div></td>
+      <td class="r"><button class="btn btn-xs btn-primary" data-pl-add="${p.id}">${ic("cart", "ic-sm")} Add</button></td></tr>`).join("");
+    $("#pl-empty").classList.toggle("hidden", list.length > 0);
+    $("#pl-count").textContent = `${list.length} SKUs`;
+    $("#pl-pages").textContent = list.length > shown.length ? `Showing 1–${shown.length} of ${list.length} · scroll or search to narrow` : `Showing ${list.length}`;
+  };
+  ["input", "change"].forEach((ev) => ["#pl-q", "#pl-cat", "#pl-cond", "#pl-stock"].forEach((s) => $(s).addEventListener(ev, renderPL)));
+  $("#pl-rows").addEventListener("click", (e) => { const b = e.target.closest("[data-pl-add]"); if (!b) return; const q = +$("input", b.closest("tr")).value || 1; const p = TX.byId(b.dataset.plAdd); TX.addToCart(p.id, q); TX.toast(`${q} × ${p.sku} added · ${fmt(tierOf(p, q))} ex-GST each (${q >= 10 ? "10+" : q >= 5 ? "5+" : "base"} tier)`); });
+  renderPL();
+
+  /* ---------- Quick order parser ---------- */
+  const index = {}; TX.products.forEach((p) => { index[p.sku.toUpperCase()] = p; index[p.id.toUpperCase()] = p; });
+  let parsed = [];
+  const parse = () => {
+    const lines = $("#qo-in").value.split(/\n/);
+    const merged = {}; const rows = [];
+    lines.forEach((raw, i) => {
+      const line = raw.trim(); if (!line) return;
+      const m = line.match(/^([A-Za-z0-9-]+)\s*[,;\t ]\s*(\d+)$/);
+      if (!m) {
+        const name = line.replace(/[,;\t]?\s*\d+$/, "").trim().toLowerCase();
+        const hit = TX.products.filter((p) => p.title.toLowerCase().includes(name.split(" ").slice(-1)[0]) && p.title.toLowerCase().includes(name.split(" ")[0]));
+        rows.push({ n: i + 1, raw: line, err: hit.length ? `Use the SKU code, not the product name — did you mean <b class="mono">${hit[0].sku}</b>?` : "Couldn't read this line — use: SKU, quantity" });
+        return;
+      }
+      const code = m[1].toUpperCase(), q = +m[2], p = index[code];
+      if (!p) { rows.push({ n: i + 1, raw: line, err: `SKU <b class="mono">${code}</b> isn't on your price list. Check the code or request a quote.` }); return; }
+      if (merged[p.id]) { merged[p.id].q += q; merged[p.id].note = `Merged with line ${i + 1}`; return; }
+      const r = { n: i + 1, raw: line, p, q }; merged[p.id] = r; rows.push(r);
+    });
+    parsed = rows;
+    let sub = 0, ok = 0, warn = 0, err = 0;
+    $("#qo-rows").innerHTML = rows.map((r) => {
+      if (r.err) { err++; return `<tr class="err"><td class="muted">${r.n}</td><td colspan="6"><div class="in-line">${TX.esc(r.raw)}</div><div class="small text-bad row gap-4 mt-4">${ic("x-circle", "ic-sm")} <span>${r.err}</span></div></td></tr>`; }
+      const p = r.p; const avail = p.stock === "supplier" ? 0 : p.qty;
+      let q = r.q, avHTML, cls = "", extra = "";
+      if (p.stock === "supplier") { avHTML = `<span class="status s-info">Partner stock</span><div class="cell-sub">Ships in 4–6 days · confirmed before dispatch</div>`; cls = "warn"; }
+      else if (q > avail) {
+        cls = "warn"; q = avail;
+        avHTML = `<span class="status s-warn">Only ${avail} available</span><div class="cell-sub"><select class="select input-sm mt-4" style="width:auto;height:26px;font-size:12px" aria-label="Shortage option"><option>Ship ${avail} now</option><option>Quote for all ${r.q}</option><option>Remove line</option></select></div>`;
+        extra = `<div class="cell-sub text-warn">${r.q} requested · only ${avail} can ship now</div>`;
+      } else avHTML = `<span class="status s-ok">In stock · ${avail}</span>${p.cond.startsWith("refurb") ? `<div class="cell-sub">Graded units · reports at checkout</div>` : ""}`;
+      const unit = tierOf(p, q), line = unit * q; sub += line;
+      const tier = q >= 10 ? `<span class="badge b-vendor">10+</span>` : q >= 5 ? `<span class="badge b-vendor">5+</span>` : `<span class="badge">Base</span>`;
+      let hint = "";
+      if (q < 5 && q >= 3) hint = `<div class="cell-sub text-ok">Add ${5 - q} more for 5+ price · save ${fmt((p.dealer - p.tiers[0].p) * 5)}</div>`;
+      if (r.q > avail && r.q >= 10 && q < 10 && q >= 5) hint = `<div class="cell-sub text-warn">10+ tier needs all 10 → 5+ applied</div>`;
+      if (cls === "warn") warn++; else ok++;
+      return `<tr class="${cls}"><td class="muted">${r.n}</td><td><div class="row">${TX.ph(p.img, "thumb")}<div style="min-width:0"><div class="cell-main truncate" style="max-width:230px">${TX.esc(p.title)}</div><div class="cell-sub mono">${p.sku}${r.note ? " · " + r.note : ""}</div>${extra}${hint}</div></div></td>
+        <td class="r strong">${q}</td><td>${avHTML}</td><td>${tier}</td><td class="r nowrap">${fmt(unit)}${unit < p.dealer ? `<div class="cell-sub"><s>${fmt(p.dealer)}</s></div>` : ""}</td><td class="r strong nowrap">${fmt(line)}</td></tr>`;
+    }).join("") || `<tr><td colspan="7"><div class="empty"><i data-icon="clipboard"></i><h4>Nothing to preview</h4><p>Paste lines like <span class="mono">SSD01-N, 20</span> and press “Check prices & stock”.</p></div></td></tr>`;
+    TX.hydrate($("#qo-rows"));
+    $("#qo-sub-t").textContent = sub ? fmt(sub) : "—"; $("#qo-gst").textContent = sub ? fmt(sub * 0.18) : "—"; $("#qo-tot").textContent = sub ? fmt(sub * 1.18) : "—";
+    $("#qo-stat").className = `badge ${err ? "b-bad" : warn ? "b-warn" : "b-ok"}`;
+    $("#qo-stat").textContent = `${ok} ready · ${warn} to check · ${err} error${err === 1 ? "" : "s"}`;
+    $("#qo-note").innerHTML = err || warn ? `Error lines won't be added. Lines marked amber use the option you pick. Final prices and stock are rechecked at checkout.` : "All lines ready. Final prices and stock are rechecked at checkout.";
+  };
+  $("#qo-go").addEventListener("click", () => { parse(); TX.toast("Checked against live stock & your Dealer Gold prices"); });
+  $("#qo-clear").addEventListener("click", () => { $("#qo-in").value = ""; parse(); });
+  $("#qo-drop").addEventListener("click", () => { $("#qo-in").value = "SSD03-N, 15\nHDD01-N, 24\nKB01-N, 10\nMON01-N, 4\nNET02-N, 20"; parse(); TX.toast("metro-order-oct.csv · 5 rows parsed"); });
+  $("#qo-add").addEventListener("click", () => { const c = TX.cart(); let n = 0; parsed.filter((r) => r.p).forEach((r) => { const avail = r.p.stock === "supplier" ? r.q : Math.min(r.q, r.p.qty); c[r.p.id] = (c[r.p.id] || 0) + avail; n++; }); TX.setCart(c); TX.toast(`${n} lines added to cart · error lines skipped`); });
+  parse();
+
+  /* ---------- Reorder history ---------- */
+  const val = (items) => items.reduce((a, [pid, q]) => a + tierOf(TX.byId(pid), q) * q, 0);
+  // [order, date, placed by, items, status, change in today's price vs paid]
+  const RO = [
+    ["TXO-10485", "25 Sep", "Arun Kumar", [["ssd-01", 20], ["ram-01", 30]], ["Dispatched", "s-brand"], 0],
+    ["TXO-10474", "24 Sep", "Meena Raghavan", [["ms-03", 50], ["hub-01", 10], ["usb-01", 100]], ["Delivered", "s-ok"], 0],
+    ["TXO-10452", "12 Sep", "Meena Raghavan", [["ssd-01", 20]], ["Delivered", "s-ok"], -2400],
+    ["TXO-10433", "3 Sep", "Arun Kumar", [["ram-01", 30], ["ram-02", 20]], ["Delivered", "s-ok"], 1500],
+    ["TXO-10409", "29 Aug", "Meena Raghavan", [["cpu-02", 10], ["mb-01", 5], ["cool-01", 10]], ["Partly returned · RMA-0088", "s-warn"], -3100],
+  ];
+  $("#ro-rows").innerHTML = RO.map(([id, d, by, items, [st, cls], delta]) => {
+    const paid = val(items), now = paid + delta;
+    const ch = delta === 0 ? `<div class="cell-sub">Same as then</div>` : delta < 0 ? `<div class="cell-sub text-ok">−${fmt(-delta)} vs then</div>` : `<div class="cell-sub text-warn">+${fmt(delta)} vs then</div>`;
+    return `<tr><td><b class="mono">${id}</b><div class="cell-sub">${d} 2026</div></td><td class="small">${by}</td>
+      <td><div class="row gap-4">${items.map(([pid]) => TX.ph(TX.byId(pid).img, "thumb")).join("")}</div><div class="cell-sub mt-4">${items.map(([pid, q]) => `${q} × ${TX.byId(pid).sku}`).join(" · ")}</div></td>
+      <td class="r">${fmt(paid)}</td><td><span class="status ${cls}">${st}</span></td><td class="r"><b>${fmt(now)}</b>${ch}</td>
+      <td class="r"><div class="row-actions"><button class="btn btn-xs btn-primary" data-reorder="${items.map(([p, q]) => p + ":" + q).join(",")}">Reorder</button><button class="btn btn-xs" data-toquick="${items.map(([p, q]) => TX.byId(p).sku + ", " + q).join("|")}">Edit in quick order</button></div></td></tr>`;
+  }).join("");
+  document.addEventListener("click", (e) => {
+    const r = e.target.closest("[data-reorder]"); if (r) { const c = TX.cart(); r.dataset.reorder.split(",").forEach((x) => { const [p, q] = x.split(":"); c[p] = (c[p] || 0) + +q; }); TX.setCart(c); TX.toast("Items added at today's Dealer Gold prices · review in cart"); }
+    const qk = e.target.closest("[data-toquick]"); if (qk) { $("#qo-in").value = qk.dataset.toquick.split("|").join("\n"); parse(); goTab("bulk"); }
+  });
+
+  /* ---------- Business invoices (values follow the orders above) ---------- */
+  const items = Object.fromEntries(RO.map((r) => [r[0], r[3]]));
+  const BI = [
+    ["INV/BLR/2627/004799", "TXO-10485", "25 Sep 2026", val(items["TXO-10485"]), true],
+    ["INV/BLR/2627/004731", "TXO-10474", "24 Sep 2026", val(items["TXO-10474"]), true],
+    ["CN/BLR/2627/000214", "RMA-0088 · 1 × MB01-N", "18 Sep 2026", -tierOf(TX.byId("mb-01"), 5), true],
+    ["INV/BLR/2627/004512", "TXO-10452", "13 Sep 2026", val(items["TXO-10452"]), true],
+    ["INV/MYS/2627/000903", "TXO-10433", "4 Sep 2026", val(items["TXO-10433"]), true],
+    ["INV/BLR/2627/004108", "TXO-10409", "30 Aug 2026", val(items["TXO-10409"]), false],
+  ];
+  const sf = (v) => (v < 0 ? "−" + fmt(-v) : fmt(v));
+  $("#bi-rows").innerHTML = BI.map(([no, ord, d, tx, irn]) => `<tr><td class="mono strong nowrap">${no}${no.startsWith("CN") ? ` <span class="badge b-warn">Credit note</span>` : ""}</td><td>${ord}</td><td class="nowrap">${d}</td>
+    <td class="r">${sf(tx)}</td><td class="r">${sf(tx * 0.09)}</td><td class="r">${sf(tx * 0.09)}</td><td class="r strong">${sf(tx * 1.18)}</td>
+    <td>${irn ? `<span class="status s-ok">IRN generated</span>` : `<span class="status s-warn">IRN retry pending</span><div class="cell-sub">Updated PDF will be emailed</div>`}</td>
+    <td class="r"><button class="btn btn-xs" data-toast="${no} downloaded (PDF)">${ic("download", "ic-sm")} PDF</button></td></tr>`).join("");
+
+  // Hash deep links for dealer tabs (e.g. #bulk from the home page)
+  const h = location.hash.slice(1); if (h) TX.activateTab(h);
+});
+</script>
+</body>
+</html>

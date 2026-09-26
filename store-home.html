@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tradex — Computers, parts, cameras & certified refurbished electronics</title>
+  <link rel="stylesheet" href="assets/tradex.css">
+  <style>
+    .home-top { display: grid; grid-template-columns: minmax(0, 2.15fr) minmax(0, 1fr); gap: 16px; margin-top: 20px; }
+    .hero-stats { display: flex; gap: 22px; margin-top: 26px; font-size: 12.5px; color: #c8d3f5; }
+    .hero-stats b { display: block; color: #fff; font-size: 18px; font-weight: 750; }
+    .grade-card { background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); padding: 22px; display: flex; flex-direction: column; gap: 14px; }
+    .grade-row { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid var(--line-2); }
+    .grade-row:last-child { border-bottom: 0; }
+    .comp-tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .comp-tile { position: relative; border-radius: var(--r-lg); overflow: hidden; min-height: 190px; color: #fff; display: flex; flex-direction: column; justify-content: flex-end; padding: 16px; text-decoration: none !important; }
+    .comp-tile .ph { position: absolute; inset: 0; border-radius: 0; aspect-ratio: auto; z-index: 0; }
+    .comp-tile::after { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(180deg, rgba(7,12,24,0) 30%, rgba(7,12,24,.85) 100%); }
+    .comp-tile > div:not(.ph) { position: relative; z-index: 2; }
+    .comp-tile b { font-size: 16px; }
+    .comp-tile span { font-size: 12.5px; color: #d5dcec; }
+    .comp-tile:hover .ph img { transform: scale(1.05); }
+    .wa-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .wa-step { background: rgba(255,255,255,.7); border-radius: var(--r); padding: 14px; font-size: 13px; }
+    .wa-step b { display: block; font-size: 13.5px; margin-bottom: 2px; }
+    .store-card { display: flex; gap: 14px; align-items: center; background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); padding: 14px; }
+    .store-card .ph { width: 88px; aspect-ratio: 1; flex: none; }
+    .reorder-row { display: grid; grid-template-columns: 56px 1fr auto auto; gap: 14px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line-2); }
+    .reorder-row:last-child { border-bottom: 0; }
+  </style>
+</head>
+<body data-app="store" data-page="home">
+<main>
+  <div class="container">
+
+    <!-- Hero + side promos -->
+    <section class="home-top">
+      <div class="hero photo" data-anno="1A · R01 Original visual identity · curated campaigns">
+        <div class="h-bg"><img src="assets/img/hero-laptop-glow.jpg" alt=""></div>
+        <div class="h-copy">
+          <span class="h-kicker"><svg class="ic ic-sm" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.48 12.89 17 22l-5-3-5 3 1.52-9.11"/></svg> Certified refurbished · up to 6-month warranty</span>
+          <h1>Business-grade laptops.<br>Honest grades. Real warranty.</h1>
+          <p>Every refurbished unit passes a 42-point inspection and ships with its own photos, grade and serial-level history.</p>
+          <div class="row mt-24">
+            <a class="btn btn-accent btn-lg" href="store-refurbished.html">Shop refurbished laptops</a>
+            <a class="btn btn-lg" style="--b-bg:rgba(255,255,255,.1);--b-fg:#fff;--b-bd:rgba(255,255,255,.25)" href="store-help.html#grades">How we grade</a>
+          </div>
+          <div class="hero-stats">
+            <div><b>From ₹24,990</b>ThinkPad, Latitude, MacBook</div>
+            <div><b>10-day</b>returns on refurbished</div>
+            <div><b>No-cost EMI</b>on cards & UPI</div>
+          </div>
+        </div>
+        <div class="h-dots"><span class="on"></span><span></span><span></span><span></span></div>
+      </div>
+      <div class="hero-side">
+        <a class="promo photo" href="store-listing.html?cat=components" data-anno="1A · Curated collection">
+          <div class="p-bg"><img src="assets/img/hero-setup-rog.jpg" alt=""></div>
+          <div><span class="badge b-accent">PC components</span><h3 class="mt-8" style="color:#fff">RTX 40-series in stock</h3><p>GPUs, CPUs & DDR5 — with compatibility help.</p></div>
+          <span class="btn btn-sm btn-accent" style="align-self:flex-start">Build your rig</span>
+        </a>
+        <a class="promo photo hide-dealer" href="store-dealer.html" data-anno="1A · R03/R04 Dealer pricing & quantity tiers">
+          <div class="p-bg"><img src="assets/img/hero-desk.jpg" alt=""></div>
+          <div><span class="badge" style="background:#0e9f8a;color:#fff">For businesses</span><h3 class="mt-8" style="color:#fff">Dealer pricing & bulk tiers</h3><p>Register your shop or company. GST invoices.</p></div>
+          <span class="btn btn-sm" style="align-self:flex-start">Apply in 3 minutes</span>
+        </a>
+        <a class="promo photo only-dealer" href="store-dealer.html#bulk" data-anno="1A · R03 Signed-in dealer home">
+          <div class="p-bg"><img src="assets/img/hero-desk.jpg" alt=""></div>
+          <div><span class="badge" style="background:#0e9f8a;color:#fff">Metro Computers · Dealer Gold</span><h3 class="mt-8" style="color:#fff">Quick order by SKU</h3><p>Paste SKUs & quantities. Tier prices apply automatically.</p></div>
+          <span class="btn btn-sm" style="align-self:flex-start">Open quick order</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- Trust strip -->
+    <section class="trust-strip mt-16" data-anno="1A · R19 Transparent purchase: condition, warranty, returns">
+      <div><span class="ti"><i data-icon="award"></i></span><div><b>Honest condition grades</b><span>42-point inspection report</span></div></div>
+      <div><span class="ti"><i data-icon="shield"></i></span><div><b>Warranty on everything</b><span>Brand or Tradex warranty</span></div></div>
+      <div><span class="ti"><i data-icon="undo"></i></span><div><b>Easy returns</b><span>7 days · 10 days refurbished</span></div></div>
+      <div><span class="ti"><i data-icon="lock"></i></span><div><b>Secure payments</b><span>UPI, cards, net banking, EMI</span></div></div>
+      <div><span class="ti"><i data-icon="truck"></i></span><div><b>Same-day dispatch</b><span>Order before 2 PM</span></div></div>
+    </section>
+
+    <!-- Dealer: quick reorder (only visible to approved dealers) -->
+    <section class="section only-dealer" data-anno="1A · R03/R04 Dealer repeat orders with tier pricing">
+      <div class="grid" style="grid-template-columns: 1.5fr 1fr">
+        <div class="card card-pad">
+          <div class="row-between mb-12"><div><h3>Reorder your usual items</h3><p class="muted small">Based on your last 90 days · prices shown are your Dealer Gold tier, excl. GST</p></div><a class="btn btn-sm" href="store-dealer.html#bulk">Quick order</a></div>
+          <div class="reorder-row"><div data-ph="ssd-blue" class="thumb-lg"></div><div><b>Samsung T7 Portable SSD 1 TB</b><div class="small muted">Last ordered 12 Sep · 20 units</div></div><div data-price="ssd-01"></div><button class="btn btn-primary btn-sm" data-add="ssd-01" data-qty="10">Add 10</button></div>
+          <div class="reorder-row"><div data-ph="ram-kits" class="thumb-lg"></div><div><b>Kingston FURY Beast 16 GB DDR4</b><div class="small muted">Last ordered 3 Sep · 30 units</div></div><div data-price="ram-01"></div><button class="btn btn-primary btn-sm" data-add="ram-01" data-qty="10">Add 10</button></div>
+          <div class="reorder-row"><div data-ph="mouse-logi" class="thumb-lg"></div><div><b>Logitech M190 Wireless Mouse</b><div class="small muted">Last ordered 29 Aug · 50 units</div></div><div data-price="ms-03"></div><button class="btn btn-primary btn-sm" data-add="ms-03" data-qty="10">Add 10</button></div>
+        </div>
+        <div class="card card-pad col">
+          <h3>Your business account</h3>
+          <dl class="kv"><dt>Price list</dt><dd>Dealer Gold (valid to 31 Mar 2027)</dd><dt>Payment terms</dt><dd>Prepaid · credit not enabled</dd><dt>GSTIN</dt><dd>29ABCDE1234F1Z5 ✓ verified</dd><dt>Open orders</dt><dd>2 · 1 dispatched today</dd></dl>
+          <div class="callout c-brand small"><i data-icon="info"></i><div>Dealer prices are private to your organisation and never shown to other buyers.</div></div>
+          <a class="btn btn-soft" href="store-dealer.html">Go to dealer zone</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Categories -->
+    <section class="section" data-anno="1A · R07 Configurable categories">
+      <div class="section-head"><div><h2>Shop by category</h2><p>New, open-box and certified refurbished across 12 departments</p></div><a href="store-listing.html" class="strong">View all categories →</a></div>
+      <div class="cat-tiles" id="cat-tiles"></div>
+    </section>
+
+    <!-- Deals -->
+    <section class="section" data-anno="1A · Promotions (honest discounts vs MRP)">
+      <div class="section-head">
+        <div class="row gap-12"><h2>Deals of the day</h2><span class="deal-timer"><i data-icon="clock"></i> Ends in <span class="t" id="deal-t">05:42:18</span></span></div>
+        <a href="store-listing.html?deals=1" class="strong">See all deals →</a>
+      </div>
+      <div class="pgrid cols-5" data-products="lap-04,mon-01,hp-01,ssd-03,cam-04"></div>
+    </section>
+
+    <!-- Refurbished -->
+    <section class="section" data-anno="1A · R19 Refurbished trust: grade rubric + unit-level evidence">
+      <div class="section-head"><div><h2>Certified refurbished</h2><p>Every unit is inspected, graded and photographed individually</p></div><a href="store-refurbished.html" class="strong">Explore refurbished →</a></div>
+      <div class="grid" style="grid-template-columns: 300px 1fr">
+        <div class="grade-card">
+          <div class="row gap-8"><i data-icon="award" class="ic-lg text-brand"></i><h3>What our grades mean</h3></div>
+          <div class="grade-row"><span class="cond openbox">Open box</span><span class="small subtle">Unused. Packaging opened, accessories complete.</span></div>
+          <div class="grade-row"><span class="cond refurb">Grade A</span><span class="small subtle">Minimal signs of use. Battery ≥ 85% health.</span></div>
+          <div class="grade-row"><span class="cond refurb">Grade B</span><span class="small subtle">Light visible wear. Fully functional. Battery ≥ 75%.</span></div>
+          <div class="grade-row"><span class="cond used">Used · Good</span><span class="small subtle">Pre-owned. Wear described & photographed.</span></div>
+          <a class="btn btn-soft btn-sm mt-8" href="store-help.html#grades">Full grading standard</a>
+        </div>
+        <div class="pgrid cols-4" data-products="lap-01,lap-02,lap-08,pc-04"></div>
+      </div>
+    </section>
+
+    <!-- Components -->
+    <section class="section" data-anno="1A · Category landing tiles">
+      <div class="section-head"><div><h2>Build or upgrade your PC</h2><p>Parts checked for compatibility by our build team</p></div><a href="store-listing.html?cat=components" class="strong">All components →</a></div>
+      <div class="comp-tiles">
+        <a class="comp-tile" href="store-listing.html?cat=components"><div data-ph="gpu-tuf"></div><div><b>Graphics cards</b><br><span>RTX 4070 Ti from ₹79,990</span></div></a>
+        <a class="comp-tile" href="store-listing.html?cat=components"><div data-ph="cpu-ryzen"></div><div><b>Processors</b><br><span>Ryzen 7000 & Intel 13th gen</span></div></a>
+        <a class="comp-tile" href="store-listing.html?cat=storage"><div data-ph="ram-kits"></div><div><b>Memory</b><br><span>DDR4 & DDR5 kits from ₹2,999</span></div></a>
+        <a class="comp-tile" href="store-listing.html?cat=storage"><div data-ph="ssd-t5top"></div><div><b>Storage</b><br><span>NVMe, SATA & portable SSDs</span></div></a>
+      </div>
+      <div class="pgrid cols-5 mt-16" data-products="gpu-01,cpu-01,mb-01,ram-01,cool-01"></div>
+    </section>
+
+    <!-- Business band (guest/consumer) -->
+    <section class="section hide-dealer">
+      <div class="band dealer" data-anno="1A · R03 Dealer application → approval → private price list">
+        <div class="row gap-20">
+          <span class="ti" style="width:56px;height:56px;border-radius:14px;background:rgba(255,255,255,.1);display:grid;place-items:center"><i data-icon="briefcase" class="ic-xl"></i></span>
+          <div><h2 style="color:#fff">Buying for a shop or company?</h2><p class="mt-4">Approved dealers get private price lists, quantity tiers (5+ and 10+ units), GST invoices and quick ordering by SKU.</p></div>
+        </div>
+        <div class="row"><a class="btn btn-lg btn-accent" href="store-login.html#dealer">Apply for dealer pricing</a><a class="btn btn-lg" style="--b-bg:transparent;--b-fg:#fff;--b-bd:rgba(255,255,255,.3)" href="store-dealer.html">Learn more</a></div>
+      </div>
+    </section>
+
+    <!-- Cameras -->
+    <section class="section">
+      <div class="section-head"><div><h2>Cameras & lenses</h2><p>Mirrorless, DSLR and pre-owned glass with shutter-count disclosed</p></div><a href="store-listing.html?cat=cameras" class="strong">Shop imaging →</a></div>
+      <div class="grid" style="grid-template-columns: 1fr 2.2fr">
+        <a class="promo photo" href="store-listing.html?cat=cameras" style="min-height:100%"><div class="p-bg"><img src="assets/img/banner-camera.jpg" alt=""></div><div><span class="badge b-accent">Full-frame</span><h3 class="mt-8" style="color:#fff">Sony Alpha a7 III kit</h3><p>With 28-70 mm lens. No-cost EMI from ₹13,583/mo.</p></div><span class="btn btn-sm btn-accent" style="align-self:flex-start">View offer</span></a>
+        <div class="pgrid cols-4" data-products="cam-05,cam-01,lens-01,lens-03"></div>
+      </div>
+    </section>
+
+    <!-- Recently viewed / for you -->
+    <section class="section only-signed">
+      <div class="section-head"><div><h2>Continue shopping</h2><p>Recently viewed and related to your searches</p></div></div>
+      <div class="pgrid cols-6" data-products="lap-03,mon-03,kb-01,hub-02,cam-web,net-01"></div>
+    </section>
+
+    <!-- WhatsApp ordering -->
+    <section class="section">
+      <div class="band whatsapp" data-anno="1A click-to-chat · 1B guided WhatsApp ordering (R11)">
+        <div style="max-width:420px">
+          <span class="badge b-ok">WhatsApp ordering</span>
+          <h2 class="mt-8">Prefer WhatsApp? Order in chat.</h2>
+          <p class="subtle mt-4">Send a product link or model number. We confirm the exact configuration, condition and live price, then send a secure checkout link. Same stock, same warranty.</p>
+          <button class="btn btn-wa mt-16" data-wa><i data-icon="whatsapp"></i> Chat on +91 80 4000 1234</button>
+        </div>
+        <div class="wa-steps grow">
+          <div class="wa-step"><b>1 · Share what you need</b>Product link, photo or model — e.g. “T14 Gen 2, 16 GB”.</div>
+          <div class="wa-step"><b>2 · We confirm live price</b>Condition, stock & delivery date from the same system as the website.</div>
+          <div class="wa-step"><b>3 · Pay securely</b>Open the checkout link. Order tracking continues in chat.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Brands -->
+    <section class="section">
+      <div class="section-head"><h2>Top brands</h2></div>
+      <div class="brand-row">
+        <a class="brand-chip" href="store-listing.html?brand=dell">DELL</a><a class="brand-chip" href="store-listing.html?brand=lenovo">Lenovo</a><a class="brand-chip" href="store-listing.html?brand=hp">HP</a><a class="brand-chip" href="store-listing.html?brand=apple">Apple</a><a class="brand-chip" href="store-listing.html?brand=asus">ASUS</a>
+        <a class="brand-chip" href="store-listing.html?brand=samsung">SAMSUNG</a><a class="brand-chip" href="store-listing.html?brand=canon">Canon</a><a class="brand-chip" href="store-listing.html?brand=sony">SONY</a><a class="brand-chip" href="store-listing.html?brand=logitech">logitech</a><a class="brand-chip" href="store-listing.html?brand=amd">AMD</a>
+      </div>
+    </section>
+
+    <!-- Stores -->
+    <section class="section" data-anno="1A · R14 Branches share one stock authority · in-store availability">
+      <div class="section-head"><div><h2>Visit a Tradex store</h2><p>Check live availability before you visit · pick up in store (where enabled)</p></div></div>
+      <div class="grid g-3">
+        <div class="store-card"><div data-ph="pc-setup-white"></div><div><b>SP Road, Bengaluru</b><div class="small muted">Mon–Sat · 10 AM–8:30 PM</div><div class="small mt-4"><span class="status s-ok">Open now</span> · 1.2k products in stock</div></div></div>
+        <div class="store-card"><div data-ph="banner-workspace"></div><div><b>Koramangala, Bengaluru</b><div class="small muted">Mon–Sun · 11 AM–9 PM</div><div class="small mt-4"><span class="status s-ok">Open now</span> · Demo & trial zone</div></div></div>
+        <div class="store-card"><div data-ph="mon-setup"></div><div><b>Mysuru</b><div class="small muted">Mon–Sat · 10 AM–8 PM</div><div class="small mt-4"><span class="status s-warn">Closes in 45 min</span> · Service desk</div></div></div>
+      </div>
+    </section>
+  </div>
+</main>
+<script src="assets/tradex.js"></script>
+<script>
+TX.ready(() => {
+  // Category tiles from shared catalogue
+  TX.$("#cat-tiles").innerHTML = TX.categories.slice(0, 8).map(c =>
+    `<a class="cat-tile" href="store-listing.html?cat=${c.id}">${TX.ph(c.img, "", c.name)}<div>${c.name}<small>${c.count} products</small></div></a>`).join("");
+  // Deal countdown
+  let s = 5 * 3600 + 42 * 60 + 18;
+  setInterval(() => { s = Math.max(0, s - 1); const h = String(Math.floor(s / 3600)).padStart(2, "0"), m = String(Math.floor(s % 3600 / 60)).padStart(2, "0"), x = String(s % 60).padStart(2, "0"); TX.$("#deal-t").textContent = `${h}:${m}:${x}`; }, 1000);
+});
+</script>
+</body>
+</html>

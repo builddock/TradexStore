@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Order confirmation & tracking · Tradex</title>
+  <link rel="stylesheet" href="assets/tradex.css">
+  <style>
+    .o-bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 16px; }
+    .hero-ok { display: grid; grid-template-columns: auto 1fr auto; gap: 20px; align-items: center; padding: 24px 28px; border-radius: var(--r-xl); background: linear-gradient(110deg, #effaf3 0%, #f6fcf8 60%, #fff 100%); border: 1px solid #bde8cc; margin-top: 14px; }
+    .hero-ok .big-i { width: 60px; height: 60px; border-radius: 50%; display: grid; place-items: center; background: var(--ok); color: #fff; }
+    .hero-ok .big-i .ic { width: 30px; height: 30px; stroke-width: 2.6; }
+    .hero-ok.pending { background: linear-gradient(110deg, #fff8eb 0%, #fffbf3 60%, #fff 100%); border-color: #f8dca6; }
+    .hero-ok.pending .big-i { background: var(--warn); }
+    .hero-ok h1 { font-size: 24px; }
+    .next { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); margin-top: 14px; }
+    .next > div { padding: 14px 18px; border-right: 1px solid var(--line-2); font-size: 12.5px; color: var(--tx-2); }
+    .next > div:last-child { border-right: 0; }
+    .next b { display: block; color: var(--tx-1); font-size: 13.5px; margin-bottom: 2px; }
+    .next .k { font-size: 11px; font-weight: 700; color: var(--brand); letter-spacing: .05em; text-transform: uppercase; }
+    .lookup { display: grid; grid-template-columns: 1.3fr 1fr; gap: 0; background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); margin-top: 14px; overflow: hidden; }
+    .lookup > div { padding: 22px 24px; }
+    .lookup > div + div { background: #fafbfc; border-left: 1px solid var(--line-2); }
+    .o-grid { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 24px; align-items: start; margin-top: 16px; }
+    .o-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-top: 28px; }
+    .machines { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .mach { background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; }
+    .mach .m-l { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--tx-3); display: flex; align-items: center; gap: 6px; }
+    .mach .m-l .ic { width: 14px; height: 14px; }
+    .mach .m-s { font-size: 12px; color: var(--tx-3); }
+    .shp { background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); margin-top: 14px; }
+    .shp-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 20px; border-bottom: 1px solid var(--line-2); flex-wrap: wrap; }
+    .track { display: grid; grid-template-columns: repeat(6, 1fr); padding: 18px 20px 6px; }
+    .track .tk { position: relative; text-align: center; font-size: 12px; color: var(--tx-3); padding: 0 4px; }
+    .track .tk::before { content: ""; position: absolute; top: 13px; left: -50%; width: 100%; height: 3px; background: var(--line); z-index: 0; }
+    .track .tk:first-child::before { display: none; }
+    .track .tk.done::before, .track .tk.cur::before { background: var(--ok); }
+    .track .tk .d { position: relative; z-index: 1; width: 28px; height: 28px; margin: 0 auto 8px; border-radius: 50%; display: grid; place-items: center; background: #fff; border: 2px solid var(--line); color: var(--tx-4); }
+    .track .tk .d .ic { width: 14px; height: 14px; stroke-width: 2.6; }
+    .track .tk.done .d { background: var(--ok); border-color: var(--ok); color: #fff; }
+    .track .tk.cur .d { background: var(--brand); border-color: var(--brand); color: #fff; box-shadow: var(--ring); }
+    .track .tk.hold .d { background: var(--warn); border-color: var(--warn); color: #fff; }
+    .track .tk b { display: block; color: var(--tx-1); font-size: 12.5px; font-weight: 650; }
+    .track .tk.todo b { color: var(--tx-3); font-weight: 600; }
+    .oline { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; gap: 14px; padding: 14px 20px; border-top: 1px solid var(--line-2); align-items: start; }
+    .oline .ph { width: 64px; aspect-ratio: 1; }
+    .oline .ser { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12px; color: var(--tx-2); margin-top: 6px; }
+    .oline .ser span { display: inline-flex; align-items: center; gap: 5px; }
+    .oline .ser .ic { width: 13px; height: 13px; color: var(--tx-3); }
+    .oline .acts { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; min-width: 170px; }
+    .shp-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 20px; border-top: 1px solid var(--line-2); background: #fafbfc; border-radius: 0 0 var(--r-lg) var(--r-lg); font-size: 12.5px; flex-wrap: wrap; }
+    .side { display: flex; flex-direction: column; gap: 14px; position: sticky; top: 84px; }
+    .sum-rows { display: flex; flex-direction: column; gap: 7px; font-size: 13px; }
+    .sum-rows .r { display: flex; justify-content: space-between; gap: 12px; }
+    .sum-rows .r span:first-child { color: var(--tx-2); }
+    .sum-rows .total { border-top: 1px dashed var(--line); padding-top: 9px; font-weight: 750; font-size: 15.5px; }
+    .sum-rows .total span:first-child { color: var(--tx-1); }
+    .cancelled { opacity: .75; }
+    .cancelled .strong { text-decoration: line-through; }
+  </style>
+</head>
+<body data-app="store" data-page="order">
+<main>
+  <div class="container">
+    <div class="o-bar">
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="store-home.html">Home</a><i data-icon="chevron-right"></i><a href="store-account.html#orders">Orders</a><i data-icon="chevron-right"></i><span id="crumb-last">Track order</span></nav>
+      <div class="row gap-8" data-anno="Prototype: order page states (§6.3)">
+        <span class="small muted">State</span>
+        <div class="seg" id="state-seg"></div>
+        <a class="btn btn-sm" id="mode-link"></a>
+      </div>
+    </div>
+
+    <div id="top"></div>
+    <div id="order"></div>
+  </div>
+</main>
+
+<!-- Cancel item -->
+<div class="modal" id="m-cancel"><div class="modal-card">
+  <div class="modal-head"><h3>Cancel this item?</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+  <div class="modal-body col gap-16" id="m-cancel-body"></div>
+  <div class="modal-foot"><button class="btn" data-close>Keep item</button><button class="btn btn-danger" id="do-cancel">Request cancellation</button></div>
+</div></div>
+
+<!-- WhatsApp help -->
+<div class="modal" id="m-wa"><div class="modal-card">
+  <div class="modal-head"><h3 class="row gap-8"><i data-icon="whatsapp" class="text-ok"></i> Get help on WhatsApp</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+  <div class="modal-body col gap-12">
+    <p class="small subtle">We'll open WhatsApp with your order reference so the team can find it straight away. For your security we'll verify your phone number before sharing address, invoice or serial details.</p>
+    <div style="background:#efe7de;border-radius:var(--r);padding:16px"><div id="wa-text" style="background:#dcf8c6;border-radius:10px 10px 2px 10px;padding:10px 12px;font-size:13px;margin-left:40px"></div></div>
+    <div class="small muted">Support hours 9 AM–9 PM · outside hours you'll get an auto-reply and a callback next morning.</div>
+  </div>
+  <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-wa" data-wa data-close><i data-icon="whatsapp"></i> Open WhatsApp</button></div>
+</div></div>
+
+<script src="assets/tradex.js"></script>
+<script>
+TX.ready(() => {
+  const $ = TX.$, $$ = TX.$$, ic = TX.icon, fmt = TX.fmt, esc = TX.esc;
+  const as = TX.param("as"); if (["guest", "consumer", "dealer"].includes(as)) TX.setView(as);
+  const dealer = () => TX.view === "dealer";
+  const placed = TX.param("placed") === "1";
+  let state = placed ? (TX.param("pay") === "pending" ? "pending" : "verified") : (TX.param("ship") === "delivered" ? "delivered" : "ofd");
+  const cancelled = new Set();
+  let cancelId = null;
+
+  /* ---------------- Order data ---------------- */
+  const SEED = { "lap-01": 1, "ssd-01": 2, "ms-02": 1, "mon-02": 3, "prn-02": 1 };
+  function orderLines() {
+    let src = placed ? TX.store.get("cart", null) : null;
+    if (!src || !Object.keys(src).length) src = placed ? SEED : { "lap-01": 1, "ssd-01": 2, "ms-02": 1, "prn-02": 1 };
+    return Object.keys(src).filter((id) => TX.products.some((p) => p.id === id)).map((id) => {
+      const p = TX.byId(id); const q = Math.min(src[id], p.stock === "supplier" ? 10 : p.qty);
+      const unit = dealer() ? (q >= 10 ? p.tiers[1].p : q >= 5 ? p.tiers[0].p : p.dealer) : p.price;
+      return { p, q, unit, partner: p.stock === "supplier", idx: TX.products.indexOf(p) };
+    });
+  }
+  const O = () => placed
+    ? { no: "TXO-10492", date: "Sat, 26 Sep 2026, 10:47", pay: "pay_OaL2x9QmT4", inv: "INV/26-27/004871" }
+    : { no: "TXO-10486", date: "Thu, 24 Sep 2026, 10:47", pay: "pay_OZ7kH2aP1c", inv: "INV/26-27/004812" };
+  const who = () => dealer()
+    ? { name: "Arun Kumar", org: "Metro Computers", l: "No. 42, Sayyaji Rao Road, Devaraja Mohalla", c: "Mysuru, Karnataka 570001", ph: "+91 98860 •••21", email: "arun@metrocomputers.example" }
+    : { name: "Priya Nair", org: null, l: "Flat 3B, Sai Enclave, 5th Block, 3rd Cross, Koramangala", c: "Bengaluru, Karnataka 560034", ph: "+91 98450 •••45", email: "priya.nair@example.com" };
+  function totals(L) {
+    const act = L.filter((l) => !cancelled.has(l.p.id));
+    if (dealer()) { const sub = act.reduce((n, l) => n + l.unit * l.q, 0); const gst = Math.round(sub * 0.18); return { sub, gst, total: sub + gst, refund: L.filter((l) => cancelled.has(l.p.id)).reduce((n, l) => n + l.unit * l.q * 1.18, 0) }; }
+    const sell = L.reduce((n, l) => n + l.unit * l.q, 0);
+    const cp = sell >= 20000 ? 500 : 0, upi = 250;
+    const paid = sell - cp - upi;
+    const refund = L.filter((l) => cancelled.has(l.p.id)).reduce((n, l) => n + l.unit * l.q, 0);
+    return { mrp: L.reduce((n, l) => n + l.p.mrp * l.q, 0), sell, cp, upi, total: paid, gst: Math.round((paid * 18) / 118), refund };
+  }
+
+  /* ---------------- Prototype state switcher ---------------- */
+  function renderSeg() {
+    const opts = placed ? [["verified", "Payment verified"], ["pending", "Verification pending"]] : [["ofd", "Out for delivery"], ["delivered", "Delivered"]];
+    $("#state-seg").innerHTML = opts.map(([k, l]) => `<button data-state="${k}" class="${k === state ? "active" : ""}">${l}</button>`).join("");
+    $("#mode-link").href = placed ? "store-order.html" : "store-order.html?placed=1";
+    $("#mode-link").innerHTML = placed ? `${ic("search", "ic-sm")} Track-order view` : `${ic("check-circle", "ic-sm")} Confirmation view`;
+    $("#crumb-last").textContent = placed ? "Order confirmation" : "Track order";
+    document.title = (placed ? "Order confirmed" : "Track your order") + " · Tradex";
+  }
+
+  /* ---------------- Top block ---------------- */
+  function renderTop(L, T) {
+    const o = O(), w = who();
+    if (placed && state === "verified") {
+      $("#top").innerHTML = `<section class="hero-ok" data-anno="1A · Confirmation only after provider-verified payment (§10.2)">
+        <span class="big-i">${ic("check")}</span>
+        <div><h1>Thank you, ${w.name.split(" ")[0]}! Your order is confirmed.</h1>
+          <p class="subtle mt-4">Order <b class="mono" style="color:var(--tx-1)">${o.no}</b> · placed ${o.date} · payment of <b style="color:var(--tx-1)">${fmt(T.total)}</b> verified by Razorpay (<span class="mono">${o.pay}</span>, signed webhook at 10:47:32).</p>
+          <p class="small muted mt-4">Confirmation sent to ${w.email} and on WhatsApp to ${w.ph}. Keep your phone handy — high-value deliveries need an OTP.</p></div>
+        <div class="col gap-8"><a class="btn btn-primary" href="#order">${ic("truck", "ic-sm")} Track this order</a><a class="btn" href="store-listing.html">Continue shopping</a></div>
+      </section>
+      <section class="next" data-anno="What happens next — per-shipment promises">
+        <div><span class="k">Now</span><b>Picking & final check</b>Unit U-000812 was reserved for you at checkout; the team re-verifies it before packing.</div>
+        <div><span class="k">By 2:47 PM today</span><b>Partner confirms printer</b>Prime IT Distributors confirms the HP LaserJet — or it's cancelled & refunded automatically.</div>
+        <div><span class="k">By 6 PM today</span><b>Dispatch from Bengaluru</b>You'll get the courier AWB and GST invoice by email & WhatsApp.</div>
+        <div><span class="k">Wed, 30 Sep</span><b>Delivery · shipment 1</b>Printer (shipment 2) est. Mon, 5 Oct.</div>
+      </section>
+      ${TX.view === "guest" ? `<div class="callout c-brand mt-12"><i data-icon="user"></i><div class="grow"><b>Checked out as a guest?</b> Track anytime with the secure link we sent by SMS, or create a password now to see all your orders in one place (optional).</div><a class="btn btn-sm btn-primary" href="store-login.html">Create account</a></div>` : ""}`;
+    } else if (placed) {
+      $("#top").innerHTML = `<section class="hero-ok pending" data-anno="§6.3 Payment verification pending — avoid false success">
+        <span class="big-i">${ic("clock")}</span>
+        <div><h1>We've received your order — payment verification in progress</h1>
+          <p class="subtle mt-4">Order <b class="mono" style="color:var(--tx-1)">${o.no}</b> is <b>not confirmed yet</b>. Razorpay reports your UPI payment of ${fmt(T.total)} as <b>pending</b> (attempt <span class="mono">${o.pay}</span>). Most payments confirm within 2 minutes — we check automatically, no need to stay on this page.</p>
+          <div class="row gap-16 mt-8 small"><span class="row gap-6 text-warn strong">${ic("refresh", "ic-sm")} Next automatic check in <span id="poll">0:24</span></span><span class="muted">Items stay reserved until 11:17 (R-5534)</span></div></div>
+        <div class="col gap-8"><button class="btn btn-primary" id="refresh-pay">${ic("refresh", "ic-sm")} Check status now</button><button class="btn" data-open="m-wa">${ic("whatsapp", "ic-sm")} Get help</button></div>
+      </section>
+      <div class="grid g-3 mt-12">
+        <div class="callout c-bad small"><i data-icon="alert-octagon"></i><div><b>Please don't pay again.</b> A second payment for the same order is blocked while this one is pending.</div></div>
+        <div class="callout small"><i data-icon="wallet"></i><div><b>Money debited?</b> If the provider confirms it, your order confirms automatically. If it isn't confirmed within 30 minutes, the amount is refunded in 5–7 working days.</div></div>
+        <div class="callout small"><i data-icon="bell"></i><div>We'll message you on WhatsApp and email the moment the status changes — confirmed, or failed with next steps.</div></div>
+      </div>`;
+    } else {
+      $("#top").innerHTML = `<h1 class="mt-12">Track your order</h1>
+      <section class="lookup" data-anno="1A · R11 Verified order access: order no. + phone + OTP (§13.4)">
+        <div>
+          <p class="subtle small">No account needed. For your security we send a one-time code to the phone number used at checkout before showing address, invoice or serial details.</p>
+          <div class="form-grid mt-16" style="grid-template-columns:1fr 1fr auto;align-items:end">
+            <div class="field"><label for="lk-no">Order number</label><input class="input mono" id="lk-no" value="TXO-10486" placeholder="TXO-10xxx"></div>
+            <div class="field"><label for="lk-ph">Mobile number</label><div class="input-group"><span class="addon">+91</span><input class="input" id="lk-ph" value="98450 12345"></div></div>
+            <button class="btn btn-primary" id="lk-send">Send OTP</button>
+          </div>
+          <div class="row gap-8 mt-12" id="lk-otp-row"><label class="sr-only" for="lk-otp">One-time code</label><input class="input" id="lk-otp" style="width:150px;letter-spacing:.3em" value="482190" maxlength="6"><button class="btn btn-ok" id="lk-verify">${ic("check", "ic-sm")} Verify & show order</button><span class="small text-ok row gap-6" id="lk-msg">${ic("check-circle", "ic-sm")} Verified · showing order TXO-10486 below</span></div>
+        </div>
+        <div class="col gap-8 small">
+          <b style="font-size:13.5px">Other ways to track</b>
+          <a href="store-account.html#orders" class="row gap-8">${ic("user", "ic-sm")} Signed in? See all orders in My account</a>
+          <a href="#" data-open="m-wa" class="row gap-8">${ic("whatsapp", "ic-sm")} Ask on WhatsApp with your order number</a>
+          <a href="#" class="row gap-8" data-toast="Tracking link re-sent by SMS">${ic("mail", "ic-sm")} Re-send my secure tracking link</a>
+          <span class="muted mt-8">After 5 wrong codes, lookup is paused for 30 minutes to protect your data.</span>
+        </div>
+      </section>`;
+    }
+    TX.hydrate($("#top"));
+  }
+
+  /* ---------------- Order detail ---------------- */
+  function trackHTML(steps) {
+    return `<div class="track">${steps.map(([t, time, cls]) => `<div class="tk ${cls}"><span class="d">${cls === "done" ? ic("check") : cls === "cur" ? ic("truck") : cls === "hold" ? ic("clock") : ""}</span><b>${t}</b><span>${time}</span></div>`).join("")}</div>`;
+  }
+  function lineHTML(l, ctx) {
+    const p = l.p, unit = /refurb|used/.test(p.cond) ? `U-000${812 + l.idx}` : null;
+    const isCancelled = cancelled.has(p.id);
+    const serials = p.id === "ssd-01" ? ["S6XN••••421K", "S6XN••••433P"].slice(0, l.q) : p.id === "mon-02" ? ["0T4Y••••1102", "0T4Y••••1187"].slice(0, l.q) : p.id === "ms-02" ? ["2233LZ••••8F"] : [];
+    const retWindow = /refurb|used/.test(p.cond) ? 10 : 7;
+    const canCancel = !isCancelled && (ctx.notDispatched) && !(placed && state === "pending");
+    const canReturn = !isCancelled && ctx.delivered;
+    return `<div class="oline ${isCancelled ? "cancelled" : ""}">
+      ${TX.ph(p.img)}
+      <div>
+        <a class="strong" href="store-product.html?id=${p.id}" style="color:var(--tx-1)">${esc(p.title)}</a>
+        <div class="row gap-8 mt-4 small">${TX.condBadge(p.cond)}<span class="muted">${l.q} × ${fmt(l.unit)}${dealer() ? " + GST" : ""} · SKU ${p.sku}</span></div>
+        <div class="ser">
+          ${unit ? `<span>${ic("clipboard")} Unit <b class="mono">${unit}</b>${p.id === "lap-01" ? " · S/N ••••7Q3" : ""} · <a href="store-product.html?id=${p.id}#inspection">inspection report</a></span>` : ""}
+          ${serials.length && !ctx.preDispatch ? `<span>${ic("scan")} Serial${serials.length > 1 ? "s" : ""} <span class="mono">${serials.join(", ")}</span></span>` : !unit ? `<span>${ic("scan")} ${l.partner ? "Serial allocated at partner dispatch" : "Serial allocated & scanned at packing"}</span>` : ""}
+          <span>${ic("shield")} ${p.warranty} · ${/Tradex/.test(p.warranty) ? "Tradex" : p.brand}</span>
+          ${ctx.delivered && !isCancelled ? `<span>${ic("undo")} Return window until ${retWindow === 10 ? "Tue, 6 Oct" : "Sat, 3 Oct"}</span>` : ""}
+        </div>
+        ${isCancelled ? `<div class="callout c-warn small mt-8" style="padding:8px 10px"><i data-icon="undo"></i><div><b>Cancellation requested</b> 26 Sep, 11:05 · Refund of ${fmt(dealer() ? l.unit * l.q * 1.18 : l.unit * l.q)} pending to original payment method (RFD-2291) · usually 5–7 working days</div></div>` : ""}
+      </div>
+      <div class="acts">
+        <b>${fmt(l.unit * l.q)}</b>
+        ${canCancel ? `<button class="btn btn-sm btn-danger" data-cancel="${p.id}">Cancel item</button>` : ""}
+        ${canReturn ? `<a class="btn btn-sm" href="store-returns.html?order=${O().no}&item=${p.id}">${ic("undo", "ic-sm")} Return / replace</a>` : ""}
+        ${!canCancel && !canReturn && !isCancelled ? `<span class="tiny muted" style="text-align:right">${placed && state === "pending" ? "Actions available once payment is verified" : "Dispatched — return after delivery"}</span>` : ""}
+        ${ctx.delivered && !isCancelled ? `<button class="link-btn tiny" data-toast="Opening warranty claim for ${unit || p.sku}">Warranty claim</button>` : ""}
+      </div>
+    </div>`;
+  }
+
+  function renderOrder() {
+    const L = orderLines(), T = totals(L), o = O(), w = who();
+    renderTop(L, T);
+    const wh = L.filter((l) => !l.partner), pt = L.filter((l) => l.partner);
+    const pend = placed && state === "pending";
+    const delivered = !placed && state === "delivered";
+    // Status per separate state machine (§10.1)
+    const allPartnerCancelled = pt.length && pt.every((l) => cancelled.has(l.p.id));
+    const ordStatus = pend ? ["Awaiting payment", "s-warn", "Held with reservation R-5534"] : placed ? ["Confirmed", "s-ok", "26 Sep, 10:47 · 2 shipments"] : delivered ? (allPartnerCancelled ? ["Fulfilled", "s-ok", "Partner line cancelled"] : ["Partially fulfilled", "s-info", "1 of 2 shipments delivered"]) : ["Partially fulfilled", "s-info", "Shipment 1 out for delivery"];
+    const payStatus = pend ? ["Pending at provider", "s-warn", `UPI · attempt ${o.pay}`] : ["Captured · verified", "s-ok", `${dealer() ? "Net banking · HDFC" : "UPI · priya@okhdfcbank"} · ${fmt(T.total)}`];
+    const fulStatus = pend ? ["Not started", "s-muted", "Starts after payment is verified"] : placed ? ["Picking", "s-brand", "Shipment 1 · started 10:52"] : delivered ? ["Delivered · 1 pending", "s-ok", "Shipment 2 awaiting partner dispatch"] : ["Out for delivery", "s-brand", "Shipment 1 · Delhivery"];
+    const retStatus = cancelled.size ? ["Refund pending", "s-warn", `RFD-2291 · ${fmt(T.refund)} · requested 11:05`] : ["None", "s-muted", delivered ? "Return window open" : "Nothing requested"];
+
+    const ctx1 = { notDispatched: placed, preDispatch: placed, delivered };
+    const ctx2 = { notDispatched: true, preDispatch: true, delivered: false };
+    const s1 = pend
+      ? [["Confirmed", "waits for payment", "hold"], ["Picking", "—", "todo"], ["Packed", "—", "todo"], ["Dispatched", "—", "todo"], ["Out for delivery", "—", "todo"], ["Delivered", "est. Wed, 30 Sep", "todo"]]
+      : placed
+      ? [["Confirmed", "26 Sep, 10:47", "done"], ["Picking", "started 10:52", "cur"], ["Packed", "—", "todo"], ["Dispatched", "by 6 PM today", "todo"], ["Out for delivery", "—", "todo"], ["Delivered", "by Wed, 30 Sep", "todo"]]
+      : [["Confirmed", "24 Sep, 10:47", "done"], ["Picking", "24 Sep, 11:20", "done"], ["Packed", "24 Sep, 13:05", "done"], ["Dispatched", "24 Sep, 16:10", "done"], ["Out for delivery", "26 Sep, 09:12", delivered ? "done" : "cur"], ["Delivered", delivered ? "26 Sep, 12:40" : "expected by 7 PM", delivered ? "done" : "todo"]];
+    const s2 = allPartnerCancelled
+      ? [["Cancelled", "26 Sep, 11:05", "hold"], ["Picking", "—", "todo"], ["Packed", "—", "todo"], ["Dispatched", "—", "todo"], ["Out for delivery", "—", "todo"], ["Delivered", "—", "todo"]]
+      : pend || placed
+      ? [["Partner confirmation", pend ? "after payment" : "due by 14:47", pend ? "todo" : "cur"], ["Picking", "—", "todo"], ["Packed", "—", "todo"], ["Dispatched", "est. 2 Oct", "todo"], ["Out for delivery", "—", "todo"], ["Delivered", "est. Mon, 5 Oct", "todo"]]
+      : [["Partner confirmed", "24 Sep, 12:31", "done"], ["Picking", "at partner · 26 Sep", "cur"], ["Packed", "—", "todo"], ["Dispatched", "exp. 28 Sep", "todo"], ["Out for delivery", "—", "todo"], ["Delivered", "est. Mon, 5 Oct", "todo"]];
+
+    $("#order").innerHTML = `
+      <div class="o-head">
+        <div><h2>Order ${o.no}</h2><p class="muted mt-4">Placed ${o.date} · Website · ${L.reduce((n, l) => n + l.q, 0)} items · ${w.name}${w.org ? " · " + w.org : ""}</p></div>
+        <div class="row gap-8">
+          <button class="btn btn-sm" ${placed ? `data-toast="The GST invoice is issued at dispatch · proforma sent by email"` : `data-toast="Downloading ${o.inv}.pdf"`}>${ic("download", "ic-sm")} ${placed ? "Proforma invoice" : "GST invoice"}</button>
+          <button class="btn btn-sm btn-wa" data-open="m-wa" data-anno="1A · R11 WhatsApp help carries order reference">${ic("whatsapp", "ic-sm")} WhatsApp help · ${o.no}</button>
+        </div>
+      </div>
+
+      <div class="machines mt-16" data-anno="§10.1 Order, payment, fulfilment and return are separate state machines">
+        ${[["Order", "receipt", ordStatus], ["Payment", "wallet", payStatus], ["Fulfilment", "truck", fulStatus], ["Returns & refunds", "undo", retStatus]].map(([l, i, s]) => `<div class="mach"><span class="m-l">${ic(i)} ${l}</span><span class="status ${s[1]}" style="font-size:14px">${s[0]}</span><span class="m-s">${s[2]}</span></div>`).join("")}
+      </div>
+
+      <div class="o-grid">
+        <div>
+          <section class="shp" data-anno="1A · Shipment from warehouse: courier AWB + timestamps">
+            <div class="shp-head">
+              <div><b>Shipment 1 of ${pt.length ? 2 : 1} · Tradex Central Warehouse, Bengaluru</b><div class="small muted">${wh.reduce((n, l) => n + l.q, 0)} items · ${placed ? "standard delivery" : "Delhivery Surface · AWB <span class='mono'>1490 2231 7785</span>"}</div></div>
+              <div class="row gap-8">${placed ? `<span class="badge b-brand">${pend ? "Waiting for payment" : "Being picked"}</span>` : delivered ? `<span class="badge b-ok">${ic("check")} Delivered 26 Sep, 12:40</span>` : `<span class="badge b-brand">${ic("truck")} Out for delivery</span><a class="btn btn-xs" href="#" data-toast="Opens Delhivery tracking for AWB 1490 2231 7785">${ic("external", "ic-sm")} Courier tracking</a>`}</div>
+            </div>
+            ${trackHTML(s1)}
+            ${!placed ? `<div class="small muted" style="padding:4px 20px 14px">${delivered ? `${ic("shield", "ic-sm").replace('class="ic', 'style="display:inline;vertical-align:-2px" class="ic')} Handed over against delivery OTP · received by Priya N. · proof-of-delivery photo on file` : `Latest courier event: “Out for delivery — Koramangala hub, rider Manjunath (+91 •••••• 4410)” at 09:12 · you'll need the delivery OTP sent at 09:12`}</div>` : ""}
+            ${wh.map((l) => lineHTML(l, ctx1)).join("")}
+            <div class="shp-foot"><span>${placed ? `${ic("receipt", "ic-sm").replace('class="ic', 'style="display:inline;vertical-align:-2px" class="ic')} GST invoice is issued at dispatch` : `GST invoice <span class="mono">${o.inv}</span> · includes serial numbers`}</span>${placed ? "" : `<button class="btn btn-xs" data-toast="Downloading ${o.inv}.pdf">${ic("download", "ic-sm")} Download invoice</button>`}</div>
+          </section>
+
+          ${pt.length ? `<section class="shp" data-anno="§9.7 Partner shipment pending · cancellable line">
+            <div class="shp-head">
+              <div><b>Shipment 2 of 2 · Partner warehouse (Prime IT Distributors)</b><div class="small muted">${pt.reduce((n, l) => n + l.q, 0)} item · courier assigned at partner dispatch</div></div>
+              <span class="badge ${allPartnerCancelled ? "b-warn" : "b-outline"}">${allPartnerCancelled ? "Cancellation requested" : pend ? "Not started" : placed ? "Awaiting partner confirmation" : "Awaiting partner dispatch"}</span>
+            </div>
+            ${trackHTML(s2)}
+            <div class="small muted" style="padding:4px 20px 14px">${placed ? "If Prime IT can't confirm within 4 hours of payment, this line is cancelled and refunded automatically — your other items are unaffected." : "Partner stock confirmed at 12:31 on 24 Sep. Tradex tracks the partner's dispatch SLA and will message you if it slips."}</div>
+            ${pt.map((l) => lineHTML(l, ctx2)).join("")}
+            <div class="shp-foot"><span>Invoice for this shipment is issued when it dispatches</span></div>
+          </section>` : ""}
+
+          <div class="card card-pad mt-16 row-between" data-anno="Returns start from delivered lines (RMA)">
+            <div class="row gap-12"><span class="li-icon" style="width:40px;height:40px;border-radius:10px;display:grid;place-items:center;background:var(--brand-50);color:var(--brand)">${ic("undo")}</span><div><b>Return, replace or claim warranty</b><div class="small muted">Returns open on delivery: 10 days for refurbished & used, 7 days for others. We check the returned serial against this order.</div></div></div>
+            <a class="btn ${delivered ? "btn-primary" : ""}" href="store-returns.html?order=${o.no}">${delivered ? "Request a return" : "Returns & warranty"}</a>
+          </div>
+        </div>
+
+        <aside class="side">
+          <div class="card card-pad col gap-12" data-anno="Address & payment summary (phone masked)">
+            <div><span class="label">Delivery address</span><div class="small mt-4"><b>${w.name}${w.org ? " · " + w.org : ""}</b><br>${w.l}<br>${w.c}<br>${w.ph}</div></div>
+            <div><span class="label">Billing</span><div class="small mt-4">${dealer() ? "GST invoice · Metro Computers · GSTIN <span class='mono'>29ABCDE1234F1Z5</span>" : "Consumer invoice · same as delivery address"}</div></div>
+            <hr style="margin:0">
+            <div><span class="label">Payment</span><div class="small mt-4 row gap-8">${ic("zap", "ic-sm")} ${dealer() ? "Net banking · HDFC Bank" : "UPI · priya@okhdfcbank"}</div><div class="tiny muted mt-4">Razorpay ref <span class="mono">${o.pay}</span> · ${pend ? "pending" : "captured " + (placed ? "26 Sep 10:47" : "24 Sep 10:47")}</div></div>
+            <div class="sum-rows">
+              ${dealer() ? `<div class="r"><span>Subtotal (excl. GST)</span><span>${fmt(T.sub)}</span></div><div class="r"><span>CGST 9%</span><span>${fmt(T.gst / 2)}</span></div><div class="r"><span>SGST 9%</span><span>${fmt(T.gst / 2)}</span></div><div class="r total"><span>${pend ? "Amount due" : "Paid"}</span><span>${fmt(T.total)}</span></div>`
+              : `<div class="r"><span>Items (MRP ${fmt(T.mrp)})</span><span>${fmt(T.sell)}</span></div><div class="r"><span>Coupon TRADEX500</span><span class="text-ok">−${fmt(T.cp)}</span></div><div class="r"><span>UPI offer</span><span class="text-ok">−${fmt(T.upi)}</span></div><div class="r"><span>Delivery</span><span class="text-ok">Free</span></div>
+                 <div class="r total"><span>${pend ? "Amount pending" : "Paid"}</span><span>${fmt(T.total)}</span></div><div class="r tiny muted"><span>Includes GST ${fmt(T.gst)} (CGST + SGST)</span><span></span></div>`}
+              ${cancelled.size ? `<div class="r"><span>Refund pending (RFD-2291)</span><span class="text-warn">${fmt(T.refund)}</span></div>` : ""}
+            </div>
+          </div>
+          <div class="card card-pad col gap-8">
+            <b>Need help with this order?</b>
+            <button class="btn btn-wa btn-sm" data-open="m-wa">${ic("whatsapp", "ic-sm")} WhatsApp · ref ${o.no}</button>
+            <button class="btn btn-sm" data-toast="Calling Tradex Care · 080 4000 1234">${ic("phone", "ic-sm")} Call 080 4000 1234</button>
+            <button class="btn btn-sm" data-toast="Issue logged as SUP-7745 · we'll reply within 2 working hours">${ic("flag", "ic-sm")} Report a problem</button>
+            <span class="tiny muted">Support 9 AM–9 PM · average reply 5 min</span>
+          </div>
+        </aside>
+      </div>`;
+    TX.hydrate($("#order"));
+    $("#wa-text").innerHTML = `Hi Tradex, I need help with my order <b>${o.no}</b> (placed ${o.date.split(",").slice(0, 2).join(",")}).<br>Phone on order: ${w.ph}<br><br>My question: `;
+  }
+
+  /* ---------------- Events ---------------- */
+  document.addEventListener("click", (e) => {
+    const t = e.target; let el;
+    if ((el = t.closest("#state-seg [data-state]"))) { state = el.dataset.state; renderSeg(); renderOrder(); }
+    if ((el = t.closest("[data-cancel]"))) {
+      cancelId = el.dataset.cancel; const p = TX.byId(cancelId); const l = orderLines().find((x) => x.p.id === cancelId);
+      $("#m-cancel-body").innerHTML = `<div class="row gap-12 panel">${TX.ph(p.img, "thumb-lg")}<div><b>${esc(p.title)}</b><div class="small muted">${l.q} × ${fmt(l.unit)} · not yet dispatched</div></div></div>
+        <div class="field"><label for="c-reason">Reason</label><select class="select" id="c-reason"><option>Ordered by mistake</option><option>Found a better price</option><option>Delivery date too late</option><option>Need a different configuration</option><option>Other</option></select></div>
+        <div class="callout c-info small"><i data-icon="info"></i><div>Only this line is cancelled — its stock reservation is released and <b>${fmt(dealer() ? l.unit * l.q * 1.18 : l.unit * l.q)}</b> is refunded once to your original payment method (5–7 working days). Other items are unaffected.${l.partner ? " The partner is notified before they dispatch." : ""}</div></div>`;
+      TX.hydrate($("#m-cancel-body")); TX.open("m-cancel");
+    }
+    if (t.closest("#do-cancel") && cancelId) { cancelled.add(cancelId); TX.close(t); renderOrder(); TX.toast("Cancellation requested · refund RFD-2291 pending", "undo"); }
+    if (t.closest("#lk-send")) {
+      const no = $("#lk-no").value.trim().toUpperCase(), ph = $("#lk-ph").value.replace(/\D/g, "");
+      if (!/^TXO-\d{5}$/.test(no)) { TX.toast("Order numbers look like TXO-10486", "alert"); return; }
+      if (ph.length !== 10) { TX.toast("Enter the 10-digit mobile number used at checkout", "alert"); return; }
+      $("#lk-msg").innerHTML = `${ic("check-circle", "ic-sm")} OTP sent to +91 ${ph.slice(0, 2)}•••••${ph.slice(-3)} · valid 10 min`; TX.toast("OTP sent", "phone");
+    }
+    if (t.closest("#lk-verify")) { if (!/^\d{6}$/.test($("#lk-otp").value)) { $("#lk-msg").className = "small text-bad row gap-6"; $("#lk-msg").innerHTML = `${ic("x-circle", "ic-sm")} Enter the 6-digit code · 4 attempts left`; return; } $("#lk-msg").className = "small text-ok row gap-6"; $("#lk-msg").innerHTML = `${ic("check-circle", "ic-sm")} Verified · showing order TXO-10486 below`; $("#order").scrollIntoView({ behavior: "smooth" }); }
+    if (t.closest("#refresh-pay")) { state = "verified"; renderSeg(); renderOrder(); TX.toast("Razorpay confirmed the payment · order TXO-10492 is confirmed", "check-circle"); }
+  });
+  let poll = 24;
+  setInterval(() => { const el = $("#poll"); if (!el) return; poll = poll <= 0 ? 30 : poll - 1; el.textContent = `0:${String(poll).padStart(2, "0")}`; }, 1000);
+  document.addEventListener("tx:view", renderOrder);
+  renderSeg(); renderOrder();
+  if (location.hash === "#order") setTimeout(() => $("#order").scrollIntoView(), 50);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,902 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Catalog & imports · Tradex ERP</title>
+  <link rel="stylesheet" href="assets/tradex.css">
+  <style>
+    .page-tabs > .tabs { margin-bottom: 20px; }
+    .ed-grid { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 16px; align-items: start; }
+    .rail { position: sticky; top: 76px; display: flex; flex-direction: column; gap: 16px; }
+    .sec-num { width: 22px; height: 22px; border-radius: 6px; background: var(--brand-50); color: var(--brand-700); display: inline-grid; place-items: center; font-size: 11.5px; font-weight: 700; margin-right: 8px; }
+    .ttag { display: inline-flex; align-items: center; height: 18px; padding: 0 6px; border-radius: 4px; background: var(--bg-2); color: var(--tx-3); font-size: 10.5px; font-weight: 700; letter-spacing: .03em; text-transform: uppercase; }
+    .ttag.num { background: #eef4ff; color: #1b3bbe; } .ttag.enum { background: #f3eeff; color: #5b3cc4; } .ttag.bool { background: #e8f7ee; color: #067647; } .ttag.multi { background: #fff3ea; color: #b24a00; } .ttag.text { background: #eef1f5; color: #475467; }
+    .attr-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px 16px; }
+    .attr-grid .field > label { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+    .bool-box { height: 38px; display: flex; align-items: center; padding: 0 12px; border: 1px solid var(--line); border-radius: var(--r-sm); background: #fff; }
+    .chips-in { display: flex; flex-wrap: wrap; gap: 6px; }
+    .chips-in .chip { height: 26px; font-size: 12px; padding: 0 10px; }
+    .media-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+    .media { border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; background: #fff; }
+    .media .ph { border-radius: 0; aspect-ratio: 4 / 3; }
+    .media .m-foot { padding: 7px 9px; font-size: 11px; white-space: nowrap; min-width: 0; color: var(--tx-3); display: flex; justify-content: space-between; align-items: center; gap: 6px; }
+    .media.main { border-color: var(--brand); box-shadow: var(--ring); }
+    .media .m-flag { position: absolute; top: 6px; left: 6px; z-index: 2; }
+    .media .m-wrap { position: relative; }
+    .media.add { display: grid; place-items: center; text-align: center; color: var(--tx-3); border-style: dashed; background: var(--bg); font-size: 12px; padding: 10px; }
+    .chk-list { list-style: none; margin: 0; padding: 0; }
+    .chk-list li { display: flex; gap: 10px; align-items: flex-start; padding: 9px 16px; border-bottom: 1px solid var(--line-2); font-size: 13px; }
+    .chk-list li:last-child { border-bottom: 0; }
+    .chk-list .ic { width: 16px; height: 16px; margin-top: 2px; }
+    .chk-list .t { font-weight: 600; }
+    .chk-list .d { font-size: 12px; color: var(--tx-3); }
+    .grp-label { padding: 8px 16px; background: #fafbfc; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--tx-3); border-bottom: 1px solid var(--line-2); display: flex; justify-content: space-between; }
+    .chan { display: inline-flex; align-items: center; height: 20px; padding: 0 6px; border-radius: 4px; font-size: 10.5px; font-weight: 700; background: var(--brand-50); color: var(--brand-700); margin-right: 3px; }
+    .chan.off { background: transparent; color: var(--tx-4); border: 1px dashed var(--line); }
+    .chans { display: inline-flex; gap: 4px; }
+    .ch-i { width: 24px; height: 24px; border-radius: 6px; display: inline-grid; place-items: center; color: var(--tx-4); border: 1px dashed var(--line); }
+    .ch-i .ic { width: 13px; height: 13px; }
+    .ch-i.on { background: var(--brand-50); color: var(--brand-700); border: 1px solid var(--brand-100); }
+    #prod-table td { padding-top: 9px; padding-bottom: 9px; }
+    #prod-table td, #prod-table th { padding-left: 10px; padding-right: 10px; }
+    .q-cell { display: flex; align-items: center; gap: 8px; }
+    .q-cell .meter { width: 58px; }
+    .serp { border: 1px solid var(--line); border-radius: var(--r); padding: 14px 16px; background: #fff; font-family: Arial, sans-serif; }
+    .serp .u { color: #1a7f37; font-size: 12.5px; }
+    .serp .h { color: #1a0dab; font-size: 17px; margin: 2px 0; }
+    .serp .s { color: #4d5156; font-size: 13px; }
+    .tpl-list a { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--line-2); color: var(--tx-1); text-decoration: none; font-size: 13px; }
+    .tpl-list a:hover { background: var(--bg); }
+    .tpl-list a.active { background: var(--brand-50); box-shadow: inset 3px 0 0 var(--brand); }
+    .tpl-list a small { display: block; color: var(--tx-3); font-size: 11.5px; }
+    .tpl-table td { padding: 6px 10px; }
+    .tpl-table th { padding: 8px 10px; }
+    .tpl-table .input, .tpl-table .select { height: 30px; font-size: 12.5px; padding: 0 8px; }
+    .tpl-table .select { padding-right: 26px; background-position: right 6px center; }
+    .tpl-table tr.changed td { background: #fffbeb; }
+    .tpl-table tr.changed td:first-child { box-shadow: inset 3px 0 0 var(--warn); }
+    .drag { color: var(--tx-4); cursor: grab; }
+    .vals { display: flex; flex-wrap: wrap; gap: 4px; max-width: 190px; }
+    .vals span { font-size: 11px; background: var(--bg-2); padding: 1px 6px; border-radius: 4px; color: var(--tx-2); white-space: nowrap; }
+    .facet { border: 1px solid var(--line); border-radius: var(--r); background: #fff; padding: 12px 14px; font-size: 12.5px; }
+    .facet h5 { font-size: 12px; margin: 0 0 6px; }
+    .facet label { display: flex; align-items: center; gap: 6px; padding: 2px 0; color: var(--tx-2); }
+    .stat-tile { border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; background: #fff; }
+    .stat-tile .n { font-size: 22px; font-weight: 700; }
+    .stat-tile .l { font-size: 12px; color: var(--tx-3); display: flex; align-items: center; gap: 6px; }
+    .q-item { display: grid; grid-template-columns: auto 1fr; gap: 10px; padding: 12px 14px; border-bottom: 1px solid var(--line-2); cursor: pointer; }
+    .q-item:hover { background: var(--bg); }
+    .q-item.active { background: var(--brand-50); box-shadow: inset 3px 0 0 var(--brand); }
+    .q-item .qt { font-weight: 600; font-size: 13px; line-height: 1.35; }
+    .q-item .qm { font-size: 11.5px; color: var(--tx-3); margin-top: 3px; display: flex; gap: 10px; flex-wrap: wrap; }
+    .q-item .qm span, .ico-line { display: inline-flex; align-items: center; gap: 4px; }
+    .review-grid { display: grid; grid-template-columns: 340px minmax(0, 1fr); gap: 16px; align-items: start; }
+    .diff { grid-template-columns: 170px 1fr 1fr; }
+    .diff > div.flag { background: #fffbeb; }
+    .ver li .t-title { font-size: 13px; }
+    .lc-steps { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; font-size: 11.5px; }
+    .lc-steps span { padding: 3px 7px; border-radius: 4px; background: var(--bg-2); color: var(--tx-3); font-weight: 600; }
+    .lc-steps span.on { background: var(--brand); color: #fff; }
+    .lc-steps span.done { background: var(--ok-50); color: var(--ok-tx); }
+    .lc-steps .ic { width: 12px; height: 12px; color: var(--tx-4); }
+    .map-conf { font-size: 11px; font-weight: 700; }
+    .imp-row-err td { background: #fffafa; }
+    .rubric td, .rubric th { font-size: 12.5px; }
+    .text-right { text-align: right; }
+    svg.ic.ii, .ii svg.ic { display: inline-block; vertical-align: -2px; }
+  </style>
+</head>
+<body data-app="erp" data-page="catalog">
+<main>
+  <div class="page-head">
+    <div>
+      <div class="crumbs"><span>Catalog</span><i data-icon="chevron-right"></i><span>Products</span></div>
+      <h1>Products & catalog</h1>
+      <p class="sub">2,610 SKUs across 12 categories · 23 awaiting review · last import IMP-0092 today 09:12 · stock shown from the inventory authority</p>
+    </div>
+    <div class="actions">
+      <button class="btn" data-toast="Export queued · catalog-2026-09-26.xlsx will appear in Downloads"><i data-icon="download"></i> Export</button>
+      <a class="btn" href="#templates"><i data-icon="layers"></i> Attribute templates</a>
+      <a class="btn" href="#import"><i data-icon="upload"></i> Bulk import</a>
+      <a class="btn btn-primary" href="#editor"><i data-icon="plus"></i> New product draft</a>
+    </div>
+  </div>
+
+  <section class="grid g-6 mb-24">
+    <div class="kpi"><div class="k-label"><i data-icon="check-circle"></i> Published SKUs</div><div class="k-value">2,184</div><div class="k-foot"><span>on web & dealer channels</span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="edit"></i> Drafts</div><div class="k-value">146</div><div class="k-foot"><span>38 from today's import</span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="inbox"></i> <span>Awaiting review</span></div><div class="k-value">23</div><div class="k-foot"><span>9 vendor · oldest 1 d</span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="alert"></i> <span>Needs changes</span></div><div class="k-value">11</div><div class="k-foot"><span>Back with submitter</span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="award"></i> <span>Avg data quality</span></div><div class="k-value">86%</div><div class="k-foot"><span class="delta up-good"><i data-icon="trending-up"></i> +3 pt</span><span>30 d</span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="alert-octagon"></i> <span>Suspended</span></div><div class="k-value">4</div><div class="k-foot"><span>Quality / safety holds</span></div></div>
+  </section>
+
+  <div data-tabset class="page-tabs">
+    <div class="tabs">
+      <button class="tab active" data-tab="products"><i data-icon="tag"></i> Products <span class="count">2,610</span></button>
+      <button class="tab" data-tab="editor"><i data-icon="edit"></i> Product editor</button>
+      <button class="tab" data-tab="templates"><i data-icon="layers"></i> Attribute templates</button>
+      <button class="tab" data-tab="import"><i data-icon="upload"></i> Bulk import <span class="count">11 errors</span></button>
+      <button class="tab" data-tab="review"><i data-icon="inbox"></i> Review queue <span class="count">23</span></button>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- PRODUCTS                                                             -->
+    <!-- ================================================================== -->
+    <div class="tab-panel active" data-panel="products">
+      <div class="filterbar">
+        <div class="input-icon" style="width:300px"><i data-icon="search"></i><input class="input" id="f-q" placeholder="Search title, SKU, brand, barcode…" aria-label="Search products" style="height:34px;width:100%"></div>
+        <select class="select" id="f-cat" aria-label="Category"><option value="">All categories</option></select>
+        <select class="select" id="f-cond" aria-label="Condition"><option value="">All conditions</option></select>
+        <select class="select" id="f-q70" aria-label="Data quality"><option value="">Any data quality</option><option value="low">Quality below 70</option><option value="high">Quality 90+</option></select>
+        <span class="muted small ml-auto" id="f-count"></span>
+      </div>
+      <div class="row wrap gap-6 mb-16" id="f-status" data-anno="1A · §7.3 Product lifecycle states"></div>
+
+      <div class="card">
+        <div class="bulkbar">
+          <b><span class="bulk-count">0</span> selected</b>
+          <span style="opacity:.6">·</span>
+          <button class="btn btn-sm" data-toast="Submitted for review · each item keeps its own decision history">Submit for review</button>
+          <button class="btn btn-sm" data-toast="Publish checks ran · 3 published, 1 blocked (image rights not confirmed)">Publish</button>
+          <button class="btn btn-sm" data-toast="Channel change saved as draft versions">Channels…</button>
+          <button class="btn btn-sm" data-toast="Suspension needs a reason · opened reason dialog" data-toast-icon="alert">Suspend</button>
+          <button class="btn btn-sm" data-toast="Archived · URLs will redirect to the category page">Archive</button>
+          <span class="ml-auto small" style="opacity:.7">Publishing never changes stock — availability comes from inventory</span>
+        </div>
+        <div class="table-wrap">
+          <table class="table compact" id="prod-table">
+            <thead><tr>
+              <th class="check-col"><input type="checkbox" data-check-all aria-label="Select all"></th>
+              <th>Product</th><th>Condition</th><th>Lifecycle</th>
+              <th>Channels</th><th>Quality</th><th class="r" data-tip="Available to promise, from inventory">ATP</th><th class="r" data-tip="Consumer incl. GST · dealer ex-GST">Price</th><th></th>
+            </tr></thead>
+            <tbody id="prod-body"></tbody>
+          </table>
+        </div>
+        <div class="empty hidden" id="prod-empty"><i data-icon="search"></i><h4>No products match these filters</h4><p>Try clearing the status or quality filter. Drafts from imports appear under “Draft”.</p><button class="btn btn-sm mt-12" id="f-clear">Clear filters</button></div>
+        <div class="pager"><span id="pg-info"></span><div class="pages" id="pg-btns"></div></div>
+      </div>
+      <div class="callout c-info mt-16"><i data-icon="info"></i><div><strong>Listing approval is not stock.</strong> A published product is purchasable only when the inventory authority reports available-to-promise stock (or an approved, fresh supplier offer). Pending versions of a live product are reviewed separately — the approved version stays live until the new one is approved.</div></div>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- EDITOR                                                               -->
+    <!-- ================================================================== -->
+    <div class="tab-panel" data-panel="editor">
+      <div class="card card-pad mb-16" data-anno="1A · §7.3 Draft v7 never overwrites live v6">
+        <div class="row-between">
+          <div class="row" style="min-width:0">
+            <div data-ph="lap-dell" class="thumb-lg"></div>
+            <div>
+              <div class="row gap-8"><h2 style="font-size:19px">Dell Latitude 5420 14" FHD Business Laptop</h2><span class="cond refurb">Refurbished · Grade A</span></div>
+              <div class="small muted mt-4"><span class="mono">PRD-000184</span> · display SKU <span class="mono">LAP01-RA</span> · Laptops · editing <b>draft v7</b> (autosaved 10:41) · live <b>v6</b> published 22 Sep by Anita R.</div>
+              <div class="lc-steps mt-8"><span class="done">Draft</span><i data-icon="chevron-right"></i><span class="done">Submitted</span><i data-icon="chevron-right"></i><span class="done">Approved</span><i data-icon="chevron-right"></i><span class="done">Published v6</span><span style="background:none;padding:0 4px">·</span><span class="on">v7 Draft (pending changes)</span></div>
+            </div>
+          </div>
+          <div class="row gap-8">
+            <a class="btn" href="store-product.html?id=lap-01"><i data-icon="eye"></i> Preview</a>
+            <button class="btn" data-toast="Draft v7 saved">Save draft</button>
+            <button class="btn btn-primary" data-toast="Blocked: resolve 3 blocking checks before submitting" data-toast-icon="alert">Submit for review</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="ed-grid">
+        <div class="col gap-16">
+          <!-- Core -->
+          <div class="card">
+            <div class="card-head"><h3><span class="sec-num">1</span>Core details</h3><span class="small muted">Stable core fields shared by every category</span></div>
+            <div class="card-body">
+              <div class="form-grid" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+                <div class="field full"><label class="req" for="e-title">Title</label><input class="input" id="e-title" value="Dell Latitude 5420 14&quot; FHD Business Laptop"><span class="hint">48 / 120 characters · no condition words in title (condition is its own field)</span></div>
+                <div class="field"><label class="req" for="e-brand">Brand</label><select class="select" id="e-brand"><option>Dell</option><option>HP</option><option>Lenovo</option><option>Apple</option><option>ASUS</option></select></div>
+                <div class="field"><label class="req" for="e-model">Model</label><input class="input" id="e-model" value="Latitude 5420"></div>
+                <div class="field"><label class="req" for="e-cat">Category</label><select class="select" id="e-cat"><option>Laptops › Business laptops</option><option>Laptops › Gaming</option><option>Desktops</option></select></div>
+                <div class="field"><label for="e-id">Internal ID</label><div class="input-group"><span class="addon"><i data-icon="lock" class="ic-sm"></i></span><input class="input" id="e-id" value="PRD-000184" readonly></div><span class="hint">Immutable · never reused</span></div>
+                <div class="field"><label class="req" for="e-sku">Display SKU</label><input class="input mono" id="e-sku" value="LAP01-RA"></div>
+                <div class="field"><label for="e-ean">Barcode (EAN / UPC)</label><input class="input mono" id="e-ean" value="5397184468712"><span class="hint">Checked for duplicates across SKUs</span></div>
+                <div class="field"><label for="e-uom">Unit of measure</label><select class="select" id="e-uom"><option>Each (unit)</option><option>Box of 10</option></select></div>
+                <div class="field"><label for="e-dim">Dimensions (L × W × H)</label><div class="input-group"><input class="input" id="e-dim" value="32.2 × 21.2 × 1.9"><span class="addon">cm</span></div></div>
+                <div class="field"><label for="e-wt">Shipping weight</label><div class="input-group"><input class="input" id="e-wt" value="2.1"><span class="addon">kg</span></div></div>
+                <div class="field full"><label for="e-desc">Description</label><textarea class="textarea" id="e-desc">Business-grade 14" laptop with 11th-gen Intel Core i5, 16 GB RAM and a fast 512 GB NVMe SSD. Certified refurbished by Tradex after a 42-point inspection, with data erasure certificate and 6-month Tradex warranty.</textarea></div>
+                <div class="field full"><label>Publication channels</label>
+                  <div class="row wrap gap-16">
+                    <label class="check"><input type="checkbox" checked> Website (B2C)</label>
+                    <label class="check"><input type="checkbox" checked> Dealer zone (B2B)</label>
+                    <label class="check"><input type="checkbox" checked> Branch POS</label>
+                    <label class="check"><input type="checkbox" checked> WhatsApp guided ordering <span class="badge b-outline">1B</span></label>
+                    <label class="check"><input type="checkbox" disabled> Marketplace feed <span class="badge b-outline">Phase 2</span></label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Attributes -->
+          <div class="card" data-anno="1A · R07 Typed attributes from category template">
+            <div class="card-head"><div><h3><span class="sec-num">2</span>Category attributes</h3><div class="sub">From template <b>Laptops v4</b> · 15 attributes · types & units validated on save and import</div></div>
+              <a class="btn btn-sm" href="#templates"><i data-icon="layers"></i> Edit template</a>
+            </div>
+            <div class="card-body"><div class="row gap-6 small mb-16"><span class="muted">Field types:</span><span class="ttag num">Numeric + unit</span><span class="ttag enum">Enum</span><span class="ttag bool">Boolean</span><span class="ttag multi">Multi-select</span><span class="ttag text">Text</span><span class="muted" style="margin-left:auto">* required for publishing</span></div><div class="attr-grid" id="attr-grid"></div></div>
+          </div>
+
+          <!-- Variants -->
+          <div class="card">
+            <div class="card-head"><div><h3><span class="sec-num">3</span>Variants & SKUs</h3><div class="sub">Purchasable specification combinations · axes: RAM × Storage × Condition grade</div></div><button class="btn btn-sm" data-toast="New variant row added as draft"><i data-icon="plus"></i> Add variant</button></div>
+            <div class="table-wrap"><table class="table compact">
+              <thead><tr><th>SKU</th><th>RAM · Storage</th><th>Condition</th><th class="r" data-tip="Consumer price incl. GST">Price</th><th class="r" data-tip="Dealer price ex-GST">Dealer</th><th class="r">ATP</th><th>Status</th><th></th></tr></thead>
+              <tbody id="var-body"></tbody>
+            </table></div>
+            <div class="card-foot"><span class="small muted">Price incl. GST · dealer ex-GST. Prices are resolved by the pricing engine — edit them in <a href="erp-pricing.html">Pricing & tiers</a>. ATP comes from <a href="erp-inventory.html#stock">Inventory</a>.</span></div>
+          </div>
+
+          <!-- Media -->
+          <div class="card">
+            <div class="card-head"><div><h3><span class="sec-num">4</span>Media</h3><div class="sub">Drag to reorder · first image is the main image · alt text required</div></div><div class="row gap-8"><button class="btn btn-sm" data-open="m-url"><i data-icon="link"></i> Import from URL</button><button class="btn btn-sm"><i data-icon="upload"></i> Upload</button></div></div>
+            <div class="card-body">
+              <div class="media-grid">
+                <div class="media main"><div class="m-wrap"><span class="badge b-brand m-flag">Main</span><div data-ph="lap-dell"></div></div><div class="m-foot"><span class="truncate">Front · 2400×1800</span><span class="text-ok"><i data-icon="check-circle" class="ic-sm"></i></span></div></div>
+                <div class="media"><div class="m-wrap"><div data-ph="lap-side"></div></div><div class="m-foot"><span class="truncate">Side · 2000×1500</span><span class="text-ok"><i data-icon="check-circle" class="ic-sm"></i></span></div></div>
+                <div class="media"><div class="m-wrap"><span class="badge b-warn m-flag">Low-res</span><div data-ph="lap-grey"></div></div><div class="m-foot"><span class="truncate">Lid · 640×480</span><span class="text-warn" data-tip="Below 1200 px recommended"><i data-icon="alert" class="ic-sm"></i></span></div></div>
+                <div class="media"><div class="m-wrap"><span class="badge b-accent m-flag">New in v7</span><div data-ph="lap-open"></div></div><div class="m-foot"><span class="truncate">Keyboard · 1800×1350</span><span class="text-bad" data-tip="Rights not confirmed"><i data-icon="x-circle" class="ic-sm"></i></span></div></div>
+                <div class="media add"><div><i data-icon="image"></i><div class="mt-4">Drop images<br>JPG · PNG · WebP ≤ 8 MB</div></div></div>
+              </div>
+              <div class="grid g-2 mt-16">
+                <div class="field"><label for="e-src">Image source</label><select class="select" id="e-src"><option>Own photography (Tradex studio)</option><option>Supplier-licensed (Prime IT agreement 2026)</option><option>Manufacturer press kit</option></select></div>
+                <div class="field"><label for="e-alt">Alt text (main)</label><input class="input" id="e-alt" value="Dell Latitude 5420 laptop, front view, lid open"></div>
+              </div>
+              <div class="callout c-warn mt-12"><i data-icon="alert"></i><div><label class="check"><input type="checkbox" id="rights-ok"> <span><strong>I confirm Tradex has the right to use these images</strong> for web, dealer and WhatsApp channels.</span></label><div class="small mt-4">Required before publishing (blocking). Recorded with your name, time and the image hashes. Refurbished units additionally show their <b>actual unit photos</b> captured at inspection.</div></div></div>
+            </div>
+          </div>
+
+          <!-- Refurb / serial -->
+          <div class="card" data-anno="1A · R19 Grade rubric, inspection & serials">
+            <div class="card-head"><div><h3><span class="sec-num">5</span>Refurbished & serial tracking</h3><div class="sub">Each unit keeps its own serial, grade, inspection record and photos</div></div><label class="switch"><input type="checkbox" checked> Serialised</label></div>
+            <div class="card-body">
+              <div class="grid g-3">
+                <div class="field"><label class="req" for="e-grade">Condition grade</label><select class="select" id="e-grade"><option>Refurbished · Grade A</option><option>Refurbished · Grade B</option><option>Open box</option><option>Used · Good</option><option>New</option></select></div>
+                <div class="field"><label class="req" for="e-chk">Inspection checklist</label><select class="select" id="e-chk"><option>Laptop 42-point checklist v3</option><option>Laptop 30-point (open box) v2</option></select><a class="small" href="erp-inventory.html#serials">View an inspection record (U-000812) →</a></div>
+                <div class="field"><label for="e-src2">Purchase source</label><select class="select" id="e-src2"><option>RenewTech Refurbishers (V-022)</option><option>Corporate buy-back lot</option><option>Customer trade-in</option></select></div>
+                <div class="field"><label>Data erasure evidence</label><label class="switch"><input type="checkbox" checked> Required per unit (NIST 800-88 certificate)</label></div>
+                <div class="field"><label for="e-acc">Included accessories</label><input class="input" id="e-acc" value="65 W USB-C charger, power cord"></div>
+                <div class="field"><label for="e-mfr">Manufacturer serial</label><select class="select" id="e-mfr"><option>Capture at GRN · store masked</option><option>Not applicable</option></select></div>
+                <div class="field" style="grid-column:1/-1"><label for="e-def">Defects & cosmetic disclosure (shown on product page)</label><textarea class="textarea" id="e-def" style="min-height:64px">Grade A: up to 2 light surface marks on lid, not visible from 50 cm. Battery health ≥ 80% at inspection. Keyboard and screen free of defects.</textarea></div>
+              </div>
+              <div class="row-between mt-16 mb-8"><h4>Grade rubric (Laptops)</h4><span class="small muted">Rubric v3 · approved by Operations 01 Aug 2026</span></div>
+              <table class="table compact rubric">
+                <thead><tr><th>Grade</th><th>Cosmetic</th><th>Battery</th><th>Screen</th><th>Function</th><th>Default warranty</th></tr></thead>
+                <tbody>
+                  <tr class="selected"><td><span class="cond refurb">Grade A</span></td><td>≤ 2 light marks, none on screen</td><td>≥ 80%</td><td>No dead pixels, no marks</td><td>42/42 pass</td><td>6 months · Tradex</td></tr>
+                  <tr><td><span class="cond refurb">Grade B</span></td><td>Visible wear, small dents allowed</td><td>≥ 70%</td><td>≤ 1 light mark</td><td>42/42 pass</td><td>6 months · Tradex</td></tr>
+                  <tr><td><span class="cond used">Used · Good</span></td><td>Described wear with photos</td><td>≥ 60%</td><td>Minor marks disclosed</td><td>Core functions pass</td><td>3 months · Tradex</td></tr>
+                </tbody>
+              </table>
+              <div class="panel small mt-12 row-between"><span><i data-icon="scan" class="ic-sm ii"></i> <b>16 serialised units</b> linked to this SKU (12 available · 2 reserved · 1 quarantine · 1 in transit)</span><a href="erp-inventory.html#serials" class="strong">Open units →</a></div>
+            </div>
+          </div>
+
+          <!-- Warranty + tax -->
+          <div class="grid g-2">
+            <div class="card">
+              <div class="card-head"><h3><span class="sec-num">6</span>Warranty & returns</h3></div>
+              <div class="card-body col gap-12">
+                <div class="field"><label class="req" for="e-wp">Warranty policy</label><select class="select" id="e-wp"><option>Tradex refurbished laptops · 6 months · v3</option><option>Manufacturer warranty (pass-through)</option><option>Supplier warranty · RenewTech 12 months</option></select></div>
+                <div class="grid g-2">
+                  <div class="field"><label class="req" for="e-prov">Warranty provider</label><select class="select" id="e-prov"><option>Tradex</option><option>Manufacturer (Dell India)</option><option>Supplier</option></select></div>
+                  <div class="field"><label for="e-dur">Duration</label><div class="input-group"><input class="input" id="e-dur" value="6"><span class="addon">months</span></div></div>
+                  <div class="field"><label for="e-rw">Return window</label><div class="input-group"><input class="input" id="e-rw" value="10"><span class="addon">days</span></div></div>
+                  <div class="field"><label for="e-start">Warranty starts</label><select class="select" id="e-start"><option>On delivery</option><option>On invoice date</option></select></div>
+                </div>
+                <div class="small muted">Warranty duration and return window are separate policy fields. The policy version is snapshotted on every order line (T33).</div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-head"><h3><span class="sec-num">7</span>Tax classification</h3><span class="badge b-warn">Tax review needed</span></div>
+              <div class="card-body col gap-12">
+                <div class="grid g-2">
+                  <div class="field"><label class="req" for="e-hsn">HSN code</label><input class="input mono is-error" id="e-hsn" value="84713090"><span class="err">Changed from 84713010 in v7 · finance review required</span></div>
+                  <div class="field"><label class="req" for="e-gst">GST rate</label><select class="select" id="e-gst"><option>18%</option><option>12%</option><option>28%</option><option>5%</option></select></div>
+                </div>
+                <div class="field"><label for="e-tc">Tax class reference</label><select class="select" id="e-tc"><option>Portable ADP machines ≤ 10 kg (laptops)</option><option>Refurbished goods — margin scheme (finance to confirm)</option></select></div>
+                <div class="field"><label>Price entry</label><div class="seg"><button class="active">Consumer prices incl. GST</button><button>Dealer prices ex-GST</button></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SEO -->
+          <div class="card">
+            <div class="card-head"><h3><span class="sec-num">8</span>SEO & URL</h3><span class="small muted">Old URLs redirect when slugs change (T32)</span></div>
+            <div class="card-body grid g-2">
+              <div class="col gap-12">
+                <div class="field"><label for="e-slug">URL slug</label><div class="input-group"><span class="addon">tradex.in/p/</span><input class="input" id="e-slug" value="dell-latitude-5420-i5-16gb-512gb-refurbished-a"></div></div>
+                <div class="field"><label for="e-mt">Meta title</label><input class="input" id="e-mt" value="Dell Latitude 5420 i5 16GB 512GB · Refurbished Grade A | Tradex"><span class="hint">62 / 60 characters — slightly long</span></div>
+                <div class="field"><label for="e-md">Meta description</label><textarea class="textarea" id="e-md" style="min-height:64px">Certified refurbished Dell Latitude 5420 with Core i5, 16 GB RAM, 512 GB SSD. 42-point inspected, 6-month Tradex warranty, 10-day returns. Free delivery in Bengaluru.</textarea><span class="hint text-warn">171 / 160 characters (warning)</span></div>
+              </div>
+              <div><div class="label mb-8">Search result preview</div>
+                <div class="serp"><div class="u">tradex.in › laptops › dell-latitude-5420…</div><div class="h">Dell Latitude 5420 i5 16GB 512GB · Refurbished Grade A | Tradex</div><div class="s">Certified refurbished Dell Latitude 5420 with Core i5, 16 GB RAM, 512 GB SSD. 42-point inspected, 6-month Tradex warranty, 10-day returns. Free…</div></div>
+                <div class="panel small mt-12"><b>Redirects:</b> <span class="mono">/p/dell-latitude-5420-refurb</span> → current slug (301, created 22 Sep)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right rail -->
+        <aside class="rail">
+          <div class="card" data-anno="1A · Publish checks: blocking vs warning">
+            <div class="card-head"><div><h3>Publish readiness</h3><div class="sub">Checks run on save · v7</div></div><span class="badge b-bad">3 blocking</span></div>
+            <div style="padding:12px 16px 4px"><div class="row-between small mb-8"><span class="muted">Data quality score</span><b>78 / 100</b></div><div class="meter m-warn"><span style="width:78%"></span></div></div>
+            <div class="grp-label mt-8"><span>Blocking</span><span>must fix</span></div>
+            <ul class="chk-list">
+              <li><span class="text-bad"><i data-icon="x-circle"></i></span><div><div class="t">Image rights not confirmed</div><div class="d">1 new image (keyboard) · section 4</div></div></li>
+              <li><span class="text-bad"><i data-icon="x-circle"></i></span><div><div class="t">Required attribute missing: Graphics</div><div class="d">Added as required in Laptops v4</div></div></li>
+              <li><span class="text-bad"><i data-icon="x-circle"></i></span><div><div class="t">HSN change needs tax review</div><div class="d">84713010 → 84713090 · routed to Finance</div></div></li>
+            </ul>
+            <div class="grp-label"><span>Warnings</span><span>can publish</span></div>
+            <ul class="chk-list">
+              <li><span class="text-warn"><i data-icon="alert"></i></span><div><div class="t">1 low-resolution image</div><div class="d">640×480 · recommended ≥ 1200 px</div></div></li>
+              <li><span class="text-warn"><i data-icon="alert"></i></span><div><div class="t">Meta description over 160 chars</div></div></li>
+              <li><span class="text-warn"><i data-icon="alert"></i></span><div><div class="t">No compatible accessories linked</div><div class="d">Chargers & RAM compatibility table</div></div></li>
+            </ul>
+            <div class="grp-label"><span>Passed</span><span>9</span></div>
+            <ul class="chk-list">
+              <li><span class="text-ok"><i data-icon="check-circle"></i></span><div class="d" style="color:var(--tx-2)">Title, brand, model, category · Condition + rubric · Warranty provider & return window · Price list resolves (public + dealer) · Barcode unique · Stock authority linked · Serial capture configured</div></li>
+            </ul>
+            <div class="card-foot"><span class="small muted">Reviewer: Catalog lead</span><button class="btn btn-sm btn-primary" disabled>Publish</button></div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h3>Version history</h3><button class="btn btn-xs" data-open="m-vdiff"><i data-icon="compare" class="ic-sm"></i> Compare v6 ↔ v7</button></div>
+            <div class="card-body" style="padding-bottom:4px">
+              <ul class="timeline ver">
+                <li class="current"><span class="t-dot"><i data-icon="edit"></i></span><div class="t-title">v7 · Draft (pending)</div><div class="t-meta">Sneha P. · today 10:05 · HSN, image, Graphics</div></li>
+                <li class="done"><span class="t-dot"><i data-icon="check"></i></span><div class="t-title">v6 · Published (live)</div><div class="t-meta">Approved by Anita R. · 22 Sep 16:40 · price list Q3</div></li>
+                <li class="done"><span class="t-dot"><i data-icon="check"></i></span><div class="t-title">v5 · Published</div><div class="t-meta">Sneha P. → Anita R. · 02 Sep · added 8 GB variant</div></li>
+                <li class="warn"><span class="t-dot"><i data-icon="alert"></i></span><div class="t-title">v4 · Needs changes</div><div class="t-meta">Reviewer: missing battery health · 28 Aug</div></li>
+                <li class="done"><span class="t-dot"><i data-icon="upload"></i></span><div class="t-title">v1 · Created from import</div><div class="t-meta">IMP-0071 · RenewTech feed · 14 Aug</div></li>
+              </ul>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- TEMPLATES                                                            -->
+    <!-- ================================================================== -->
+    <div class="tab-panel" data-panel="templates">
+      <div class="grid" style="grid-template-columns:232px minmax(0,1fr);align-items:start">
+        <div class="col gap-16">
+        <div class="card" style="overflow:hidden">
+          <div class="card-head"><h3>Categories</h3><button class="btn btn-xs" data-open="m-newcat"><i data-icon="plus" class="ic-sm"></i> New</button></div>
+          <div class="tpl-list" id="tpl-list"></div>
+        </div>
+        <div class="card card-pad small col gap-8">
+          <h4>Template governance</h4>
+          <div class="subtle">Edit: Catalog lead · Publish: Operations admin</div>
+          <div class="subtle">Every change is a new version with an impact check (products failing, filters affected).</div>
+          <div class="subtle">Removing an attribute hides it from filters first; data is kept for old order snapshots.</div>
+          <a href="erp-admin.html#audit" class="strong">Template audit log →</a>
+        </div>
+        </div>
+        <div class="col gap-16">
+          <div class="card">
+            <div class="card-head">
+              <div><h3>Laptops · attribute template</h3><div class="sub">Live <b>v4</b> (412 products) · editing <b>v5 draft</b> · 2 changes · products are re-validated against v5 before it goes live</div></div>
+              <div class="row gap-8"><button class="btn btn-sm" data-toast="Filter preview opened for Laptops listing"><i data-icon="eye"></i> Preview filters</button><button class="btn btn-sm" data-toast="Attribute row added"><i data-icon="plus"></i> Add attribute</button><button class="btn btn-sm btn-primary" data-toast="v5 submitted · impact check: 0 products blocked (new field optional)">Publish v5</button></div>
+            </div>
+            <div class="table-wrap">
+              <table class="table tpl-table">
+                <thead><tr><th style="width:24px"></th><th style="width:28px">#</th><th>Label & key</th><th>Type</th><th>Unit</th><th>Allowed values / range</th><th class="c">Req.</th><th class="c">Filter</th><th class="c">Search</th><th>Applies to</th></tr></thead>
+                <tbody id="tpl-body"></tbody>
+              </table>
+            </div>
+            <div class="card-foot"><span class="small muted"><span class="badge b-warn sq">Changed in v5</span> rows are highlighted. Changing a type on a live attribute creates a migration preview — nothing is rewritten silently.</span><span class="small muted">Last published v4 · 20 Sep · Anita R.</span></div>
+          </div>
+
+          <div class="card" data-anno="1A · R07/T36 New category by configuration only">
+            <div class="card-head">
+              <div><h3>New category by configuration: <span class="text-brand">Printers</span></h3><div class="sub">58 printers move off the generic “Other electronics” template · no code change, no new product table, checkout unchanged — acceptance test T36</div></div>
+              <span class="badge b-info dot">Step 3 of 4 · Filters & listing</span>
+            </div>
+            <div class="card-body">
+              <div class="stepper mb-24">
+                <div class="step done"><span class="dot"><i data-icon="check" class="ic-sm"></i></span> Details</div>
+                <div class="step done"><span class="dot"><i data-icon="check" class="ic-sm"></i></span> Attributes</div>
+                <div class="step current"><span class="dot">3</span> Filters & listing</div>
+                <div class="step"><span class="dot">4</span> Review & publish</div>
+              </div>
+              <div class="grid" style="grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);align-items:start">
+                <div>
+                  <div class="grid g-3 mb-16">
+                    <div class="field"><label>Parent</label><select class="select" aria-label="Parent category"><option>Root › Printers</option></select></div>
+                    <div class="field"><label>Default HSN · GST</label><input class="input mono" value="84433100 · 18%" aria-label="Default HSN and GST"></div>
+                    <div class="field"><label>Default warranty</label><select class="select" aria-label="Default warranty"><option>Manufacturer (pass-through)</option></select></div>
+                  </div>
+                  <table class="table compact">
+                    <thead><tr><th>Attribute</th><th>Type</th><th>Unit / values</th><th class="c">Req.</th><th class="c">Filter</th></tr></thead>
+                    <tbody id="prn-body"></tbody>
+                  </table>
+                </div>
+                <div class="col gap-12">
+                  <div class="label">Storefront filter preview (Printers listing)</div>
+                  <div class="grid g-2" style="gap:10px">
+                    <div class="facet"><h5>Print technology</h5><label><input type="checkbox" checked> Laser (18)</label><label><input type="checkbox"> Ink tank (26)</label><label><input type="checkbox"> Inkjet (14)</label></div>
+                    <div class="facet"><h5>Functions</h5><label><input type="checkbox"> Print (58)</label><label><input type="checkbox" checked> Scan (41)</label><label><input type="checkbox"> Copy (41)</label><label><input type="checkbox"> Fax (6)</label></div>
+                    <div class="facet"><h5>Print speed</h5><label><input type="checkbox"> Under 20 ppm</label><label><input type="checkbox"> 20–35 ppm</label><label><input type="checkbox"> 35 ppm+</label></div>
+                    <div class="facet"><h5>Duplex</h5><label><input type="checkbox"> Yes (22)</label><label><input type="checkbox"> No (36)</label></div>
+                  </div>
+                  <div class="panel">
+                    <div class="strong small mb-8">T36 acceptance checklist</div>
+                    <ul class="chk-list" style="margin:0 -16px">
+                      <li><span class="text-ok"><i data-icon="check-circle"></i></span><div>Category & typed attributes created from configuration</div></li>
+                      <li><span class="text-ok"><i data-icon="check-circle"></i></span><div>Draft “HP Smart Tank 790” validates against Printers v1</div></li>
+                      <li><span class="text-ok"><i data-icon="check-circle"></i></span><div>Filters render on listing preview</div></li>
+                      <li><span class="muted"><i data-icon="clock"></i></span><div>Staging purchase: add to cart → checkout → invoice with HSN 8443</div></li>
+                      <li><span class="muted"><i data-icon="clock"></i></span><div>Search finds “duplex laser” in Printers</div></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card-foot"><button class="btn btn-sm">Back</button><div class="row gap-8"><span class="small muted">Saved as draft category — not visible on the storefront until published</span><button class="btn btn-sm btn-primary" data-toast="Moved to Review & publish · category reviewer notified">Continue to review</button></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- IMPORT                                                               -->
+    <!-- ================================================================== -->
+    <div class="tab-panel" data-panel="import">
+      <div class="card mb-16">
+        <div class="card-head">
+          <div class="row"><span class="li-icon brand" style="width:40px;height:40px;border-radius:10px;display:grid;place-items:center;background:var(--brand-50);color:var(--brand)"><i data-icon="file"></i></span>
+            <div><h3>IMP-0092 · prime-it-pricelist-2026-09-26.xlsx</h3><div class="sub">Template v3 · Prime IT Distributors (V-014) · 248 rows · uploaded by Sneha P. at 09:12 · file hash <span class="mono">sha256:9f3c…e41a</span></div></div></div>
+          <div class="row gap-8"><button class="btn btn-sm" data-toast="Template v3 downloaded (XLSX + CSV)"><i data-icon="download"></i> Template v3</button><button class="btn btn-sm" data-toast="Error report downloaded · 11 rows"><i data-icon="download"></i> Error report</button><button class="btn btn-sm btn-primary" data-open="m-import-new"><i data-icon="upload"></i> New import</button></div>
+        </div>
+        <div class="card-body" data-anno="1B · R20/A01 Staged import pipeline">
+          <div class="stepper">
+            <div class="step done"><span class="dot"><i data-icon="check" class="ic-sm"></i></span> Upload</div>
+            <div class="step done"><span class="dot"><i data-icon="check" class="ic-sm"></i></span> Validate</div>
+            <div class="step current"><span class="dot">3</span> Map supplier codes</div>
+            <div class="step"><span class="dot">4</span> Preview diff</div>
+            <div class="step"><span class="dot">5</span> Publish</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid g-5 mb-16">
+        <div class="stat-tile"><div class="l"><span class="status s-ok">Valid</span></div><div class="n">212</div><div class="small muted">ready after mapping</div></div>
+        <div class="stat-tile"><div class="l"><span class="status s-warn">Warnings</span></div><div class="n">17</div><div class="small muted">can proceed, review advised</div></div>
+        <div class="stat-tile"><div class="l"><span class="status s-bad">Errors</span></div><div class="n">11</div><div class="small muted">held in staging · fix & retry</div></div>
+        <div class="stat-tile"><div class="l"><span class="status s-info">Duplicates</span></div><div class="n">8</div><div class="small muted">already imported · skipped</div></div>
+        <div class="stat-tile"><div class="l"><span class="status s-muted">Unchanged</span></div><div class="n">186</div><div class="small muted">same as IMP-0088 · no-op</div></div>
+      </div>
+
+      <div class="grid g-2 mb-16">
+        <div class="callout c-ok" data-anno="1B · T26 Re-import never duplicates"><i data-icon="refresh"></i><div><strong>Safe to re-run.</strong> Rows are keyed by <b>supplier + supplier code</b> and the job by file hash. Re-importing the same file, or retrying failed rows, never creates duplicate products, SKUs or images — only changed fields produce new draft versions.</div></div>
+        <div class="callout c-brand" data-anno="1B · A02 Allow-listed image fetch + rights"><i data-icon="shield"></i><div><strong>Image URLs are fetched only from allow-listed domains</strong> (<span class="mono">cdn.primeit.example</span>, <span class="mono">images.renewtech.example</span>, <span class="mono">media.dell.example</span>). Private IPs, localhost and cloud metadata addresses are blocked; JPG/PNG/WebP ≤ 8 MB only. Supplier image rights are confirmed per agreement before use. No scraping of marketplace listings.</div></div>
+      </div>
+
+      <div class="grid" style="grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start">
+        <div class="card">
+          <div class="card-head"><div><h3>Column mapping</h3><div class="sub">Saved as profile “Prime IT pricelist v3”</div></div><span class="badge b-ok">14 / 14 mapped</span></div>
+          <table class="table compact">
+            <thead><tr><th>File column</th><th>Tradex field</th><th>Transform</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">Item Code</td><td>Supplier code</td><td class="small muted">trim</td></tr>
+              <tr><td class="mono">Description</td><td>Title (draft only)</td><td class="small muted">—</td></tr>
+              <tr><td class="mono">MPN</td><td>Model / MPN</td><td class="small muted">uppercase</td></tr>
+              <tr><td class="mono">EAN</td><td>Barcode</td><td class="small muted">checksum</td></tr>
+              <tr><td class="mono">Dealer Price</td><td>Cost (ex-GST)</td><td class="small muted">₹ → paise</td></tr>
+              <tr><td class="mono">HSN / GST%</td><td>Tax classification</td><td class="small muted">lookup</td></tr>
+              <tr><td class="mono">RAM</td><td>Laptops › RAM</td><td class="small muted">“16GB DDR4” → 16 GB</td></tr>
+              <tr><td class="mono">Image1…Image4</td><td>Image URLs</td><td class="small muted">allow-list check</td></tr>
+              <tr><td class="mono">Stock</td><td>Supplier availability</td><td class="small muted">not company stock</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="card-head"><div><h3>Map supplier codes</h3><div class="sub">Rule-based matching: barcode → MPN → saved mapping (no AI)</div></div><span class="badge b-warn">4 need a decision</span></div>
+          <table class="table compact">
+            <thead><tr><th>Supplier code</th><th>Match</th><th>Tradex SKU</th><th>Action</th></tr></thead>
+            <tbody>
+              <tr><td><div class="mono">PIT-LAT5420-165</div><div class="cell-sub">Latitude 5420 i5/16/512</div></td><td><span class="map-conf text-ok">Barcode</span></td><td class="mono">LAP01-RA</td><td><span class="badge b-ok">Mapped</span></td></tr>
+              <tr><td><div class="mono">PIT-T7-1TB-BLU</div><div class="cell-sub">Samsung T7 1TB Indigo</div></td><td><span class="map-conf text-ok">Saved</span></td><td class="mono">SSD01-N</td><td><span class="badge b-ok">Mapped</span></td></tr>
+              <tr><td><div class="mono">PIT-U2723QE</div><div class="cell-sub">Dell U2723QE 27" 4K</div></td><td><span class="map-conf text-ok">MPN</span></td><td class="mono">MON03-N</td><td><span class="badge b-ok">Mapped</span></td></tr>
+              <tr><td><div class="mono">PIT-LAT7420-B</div><div class="cell-sub">Latitude 7420 Grade B</div></td><td><span class="map-conf text-warn">None</span></td><td class="muted">—</td><td><select class="select input-sm" aria-label="Action for PIT-LAT7420-B"><option>Create new draft</option><option>Map to existing…</option><option>Ignore</option></select></td></tr>
+              <tr><td><div class="mono">PIT-K2-BRN</div><div class="cell-sub">Keychron K2 Brown</div></td><td><span class="map-conf text-warn">2 candidates</span></td><td class="muted">KB01-N?</td><td><select class="select input-sm" aria-label="Action for PIT-K2-BRN"><option>Map to KB01-N</option><option>Create new draft</option></select></td></tr>
+              <tr><td><div class="mono">PIT-G305-WHT</div><div class="cell-sub">Logitech G305 White</div></td><td><span class="map-conf text-ok">Barcode</span></td><td class="mono">MS02-N</td><td><span class="badge b-ok">Mapped</span></td></tr>
+            </tbody>
+          </table>
+          <div class="card-foot"><span class="small muted">Mappings are saved per supplier and reused next time</span><button class="btn btn-sm btn-primary" data-toast="Mapping saved · moving to Preview diff">Save & preview diff</button></div>
+        </div>
+      </div>
+
+      <div class="card mt-16">
+        <div class="card-head">
+          <div><h3>Row-level results</h3><div class="sub">Fix inline, then retry only the failed rows — successful rows are not reprocessed</div></div>
+          <div class="row gap-8">
+            <div class="seg" id="imp-seg"><button class="active" data-f="all">All</button><button data-f="error">Errors (11)</button><button data-f="warning">Warnings (17)</button><button data-f="duplicate">Duplicates (8)</button><button data-f="valid">Valid</button></div>
+            <button class="btn btn-sm" data-toast="Retrying 11 failed rows · job IMP-0092 attempt 2 (idempotent)"><i data-icon="refresh"></i> Retry failed rows</button>
+          </div>
+        </div>
+        <div class="table-wrap"><table class="table compact">
+          <thead><tr><th class="r">Row</th><th>Supplier code</th><th>Product</th><th>Result</th><th>Message</th><th>Field</th><th class="r">Action</th></tr></thead>
+          <tbody id="imp-body"></tbody>
+        </table></div>
+      </div>
+
+      <div class="card mt-16">
+        <div class="card-head"><div><h3>Preview diff · changes to existing products</h3><div class="sub">Step 4 preview · 174 products change · showing 1 of 174</div></div><div class="row gap-8"><button class="btn btn-sm btn-icon" aria-label="Previous"><i data-icon="chevron-left"></i></button><button class="btn btn-sm btn-icon" aria-label="Next"><i data-icon="chevron-right"></i></button></div></div>
+        <div class="card-body">
+          <div class="row mb-12"><div data-ph="lap-dell" class="thumb"></div><div><b>Dell Latitude 5420 14" FHD Business Laptop</b><div class="small muted mono">LAP01-RA · supplier code PIT-LAT5420-165</div></div></div>
+          <div class="diff">
+            <div class="dh">Field</div><div class="dh">Current</div><div class="dh">After import</div>
+            <div class="same">Supplier cost (ex-GST)</div><div class="old">₹31,200</div><div class="new">₹30,450</div>
+            <div class="same">Supplier availability</div><div class="old">14 units · 23 Sep</div><div class="new">22 units · 26 Sep 09:10</div>
+            <div class="same">Images</div><div class="same">3 images</div><div class="new">+1 image (media.dell.example · allow-listed)</div>
+            <div class="same">Title</div><div class="same">Dell Latitude 5420 14" FHD Business Laptop</div><div class="same">No change (supplier titles don't overwrite curated titles)</div>
+            <div class="same">Retail price</div><div class="same">₹38,990</div><div class="same">Unchanged — cost changes never auto-reprice (pricing approval)</div>
+          </div>
+          <div class="callout c-info mt-12"><i data-icon="info"></i><div>Publishing step 5 will: create <b>38 new drafts</b> (need review before going live), update <b>174 supplier offers & costs</b>, leave <b>11 error rows</b> in staging. Supplier quantities update supplier availability only — never company stock.</div></div>
+        </div>
+      </div>
+
+      <div class="card mt-16">
+        <div class="card-head"><h3>Import history & feeds</h3><span class="small muted">Jobs are monitored · repeated failures raise one incident (A38)</span></div>
+        <table class="table compact">
+          <thead><tr><th>Job</th><th>Source</th><th>Rows</th><th>Result</th><th>By</th><th>When</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">IMP-0092</td><td>prime-it-pricelist-2026-09-26.xlsx</td><td>248</td><td><span class="status s-warn">In progress · 11 errors</span></td><td>Sneha P.</td><td>Today 09:12</td></tr>
+            <tr><td class="mono">FEED-RT</td><td>RenewTech API feed · every 30 min</td><td>96</td><td><span class="status s-ok">OK · 3 changes</span></td><td>Automation</td><td>Today 10:30</td></tr>
+            <tr><td class="mono">IMP-0091</td><td>camworld-sept-arrivals.csv</td><td>42</td><td><span class="status s-ok">Published 40 · 2 rejected</span></td><td>Sneha P.</td><td>25 Sep</td></tr>
+            <tr><td class="mono">IMP-0090</td><td>netcore-stock.csv</td><td>—</td><td><span class="status s-bad">Failed · template v2 is retired</span></td><td>NetCore (vendor)</td><td>24 Sep</td></tr>
+            <tr><td class="mono">IMP-0088</td><td>prime-it-pricelist-2026-09-19.xlsx</td><td>231</td><td><span class="status s-ok">Published</span></td><td>Sneha P.</td><td>19 Sep</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- REVIEW                                                               -->
+    <!-- ================================================================== -->
+    <div class="tab-panel" data-panel="review">
+      <div class="filterbar">
+        <div class="seg" id="rv-seg"><button class="active" data-f="all">All (23)</button><button data-f="vendor">Vendor (9)</button><button data-f="staff">Staff (14)</button><button data-f="sensitive">Sensitive edits (4)</button><button data-f="auto">Auto-accepted today (31)</button></div>
+        <select class="select" aria-label="Reviewer"><option>Assigned to: Catalog reviewers</option><option>Assigned to me</option></select>
+        <span class="small muted ml-auto">Review SLA 24 h · you cannot approve your own submission</span>
+      </div>
+      <div class="review-grid">
+        <div class="card" style="overflow:hidden" data-anno="1B · R05 Submissions reviewed before publishing">
+          <div class="card-head"><h3>Queue</h3><span class="small muted">oldest first</span></div>
+          <div id="rv-list"></div>
+          <div class="card-foot"><span class="small muted">Routine stock refreshes from trusted vendors auto-accept within bounds</span></div>
+        </div>
+        <div class="card" id="rv-detail"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Product quick view drawer -->
+  <div class="drawer" id="d-prod"><div class="drawer-card" id="d-prod-card"></div></div>
+
+  <!-- Version diff modal -->
+  <div class="modal" id="m-vdiff"><div class="modal-card lg">
+    <div class="modal-head"><div><h3>Compare versions · LAP01-RA</h3><div class="small muted">v6 (live, published 22 Sep) ↔ v7 (draft, Sneha P.)</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-body">
+      <div class="diff">
+        <div class="dh">Field</div><div class="dh">v6 · live</div><div class="dh">v7 · draft</div>
+        <div class="same">HSN code</div><div class="old">84713010</div><div class="new">84713090</div>
+        <div class="same">Graphics</div><div class="old">(not set)</div><div class="new">(still missing — blocking)</div>
+        <div class="same">Images</div><div class="same">3</div><div class="new">4 (+ keyboard close-up)</div>
+        <div class="same">Meta description</div><div class="old">Refurbished Dell Latitude 5420…</div><div class="new">Certified refurbished Dell Latitude 5420 with Core i5…</div>
+        <div class="same">Warranty policy</div><div class="same">Tradex refurbished · 6 months · v3</div><div class="same">unchanged</div>
+      </div>
+    </div>
+    <div class="modal-foot"><button class="btn" data-close>Close</button><button class="btn btn-danger" data-close data-toast="Draft v7 discarded · v6 stays live">Discard v7</button></div>
+  </div></div>
+
+  <!-- Import from URL modal -->
+  <div class="modal" id="m-url"><div class="modal-card">
+    <div class="modal-head"><h3>Import image from URL</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-body col gap-12">
+      <div class="field"><label for="u-url">Image URL</label><input class="input mono is-error" id="u-url" value="http://192.168.1.20/images/lat5420.jpg"><span class="err">Blocked: private network address. Only allow-listed HTTPS domains can be fetched.</span></div>
+      <div class="panel small"><b>Allow-listed domains:</b> cdn.primeit.example · images.renewtech.example · media.dell.example · assets.camworld.example<br><span class="muted">Managed in Settings → Integrations. Redirects to non-allow-listed hosts are refused.</span></div>
+      <label class="check"><input type="checkbox"> I confirm Tradex has permission to use this image</label>
+    </div>
+    <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-primary" disabled>Fetch image</button></div>
+  </div></div>
+
+  <!-- New import modal -->
+  <div class="modal" id="m-import-new"><div class="modal-card">
+    <div class="modal-head"><h3>New bulk import</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-body col gap-12">
+      <div class="field"><label for="ni-sup">Supplier / source</label><select class="select" id="ni-sup"><option>Prime IT Distributors (V-014)</option><option>RenewTech Refurbishers (V-022)</option><option>CamWorld Imports (V-031)</option><option>Internal catalog team</option></select></div>
+      <div class="field"><label for="ni-prof">Mapping profile</label><select class="select" id="ni-prof"><option>Prime IT pricelist v3</option><option>New profile…</option></select></div>
+      <div class="dropzone"><i data-icon="upload"></i><b>Drop CSV or XLSX</b><div class="small">Template v3 · max 5,000 rows · staged, nothing goes live on upload</div></div>
+    </div>
+    <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-primary" data-close data-toast="Uploaded to staging · validation started">Upload & validate</button></div>
+  </div></div>
+
+  <!-- New category modal -->
+  <div class="modal" id="m-newcat"><div class="modal-card">
+    <div class="modal-head"><h3>New category</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-body col gap-12">
+      <div class="field"><label for="nc-name" class="req">Name</label><input class="input" id="nc-name" placeholder="e.g. Projectors"></div>
+      <div class="field"><label for="nc-start">Start from</label><select class="select" id="nc-start"><option>Empty template</option><option>Copy attributes from Monitors</option><option>Copy attributes from Printers</option></select></div>
+      <div class="callout c-info"><i data-icon="info"></i><div>Ordinary categories are configuration only. New business behaviour (rentals, installation bookings, regulated goods) needs a development change request.</div></div>
+    </div>
+    <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-primary" data-close data-toast="Draft category created">Create draft</button></div>
+  </div></div>
+
+  <!-- Request changes modal -->
+  <div class="modal" id="m-changes"><div class="modal-card">
+    <div class="modal-head"><h3>Request changes</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-body col gap-12">
+      <div class="field"><label>Fields needing changes</label>
+        <div class="col gap-6"><label class="check"><input type="checkbox" checked> Warranty duration — justify reduction or keep 6 months</label><label class="check"><input type="checkbox"> Images</label><label class="check"><input type="checkbox"> Attributes</label></div></div>
+      <div class="field"><label for="rc-reason" class="req">Reason (sent to submitter, kept in audit)</label><textarea class="textarea" id="rc-reason">Warranty reduction from 6 to 3 months affects 4 live SKUs with open orders. Please confirm the change applies only to new stock and attach the updated supplier warranty terms.</textarea></div>
+    </div>
+    <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-primary" data-close data-toast="Sent back to RenewTech · live version unchanged">Send request</button></div>
+  </div></div>
+</main>
+<script src="assets/tradex.js"></script>
+<script>
+TX.ready(() => {
+  const $ = TX.$, $$ = TX.$$, ic = TX.icon, esc = TX.esc;
+
+  /* ---------- Tab hash sync (deep links + in-page links) ---------- */
+  const syncHash = () => { const h = location.hash.slice(1); if (!h) return; if ($(`.tab[data-tab="${h}"]`)) { TX.activateTab(h); window.scrollTo(0, 0); } else { const m = document.getElementById(h); if (m && m.matches(".modal,.drawer")) TX.open(h); } };
+  window.addEventListener("hashchange", syncHash);
+  document.addEventListener("click", (e) => {
+    const t = e.target.closest(".page-tabs > .tabs > .tab"); if (t) history.replaceState(null, "", "#" + t.dataset.tab);
+    const a = e.target.closest('a[href^="#"]'); if (a && a.getAttribute("href") === location.hash) setTimeout(syncHash);
+  });
+
+  /* ---------- Product list ---------- */
+  const ST = {
+    draft: ["Draft", "s-muted"], submitted: ["Submitted", "s-info"], changes: ["Needs changes", "s-warn"], approved: ["Approved", "s-brand"],
+    published: ["Published", "s-ok"], suspended: ["Suspended", "s-bad"], archived: ["Archived", "s-muted"],
+  };
+  const catName = (id) => (TX.categories.find((c) => c.id === id) || { name: id }).name;
+  // Catalog-only records (not yet live, so not in the storefront data set)
+  const extra = [
+    { id: "x1", title: "HP Smart Tank 790 All-in-One Ink Tank Printer", brand: "HP", cat: "printers", cond: "new", img: "printer-mfp", price: 23999, sku: "PRN03-N", st: "draft", q: 52, ch: [], upd: ["Sneha P.", "10:22"], note: "Printers template v1 (new category)" },
+    { id: "x2", title: "Lenovo ThinkPad T14 Gen 2 — i5 / 16 GB / 512 GB", brand: "Lenovo", cat: "laptops", cond: "refurb-a", img: "lap-thinkpad2", price: 36490, sku: "LAP09-RA", st: "submitted", q: 88, ch: [], upd: ["RenewTech (vendor)", "09:48"], note: "VS-0231 · vendor submission" },
+    { id: "x3", title: "Dell Latitude 7420 14\" Business Laptop", brand: "Dell", cat: "laptops", cond: "refurb-b", img: "lap-grey", price: 41990, sku: "LAP10-RB", st: "changes", q: 61, ch: [], upd: ["Anita R.", "09:30"], note: "Missing battery health & 2 photos" },
+    { id: "x4", title: "Canon EOS R6 Mark II Mirrorless (Body)", brand: "Canon", cat: "cameras", cond: "new", img: "cam-sony", price: 215990, sku: "CAM07-N", st: "submitted", q: 83, ch: [], upd: ["CamWorld (vendor)", "08:55"], note: "VS-0226" },
+    { id: "x5", title: "ASUS ROG Strix G16 (2025) Gaming Laptop", brand: "ASUS", cat: "laptops", cond: "new", img: "lap-tuf", price: 134990, sku: "LAP11-N", st: "approved", q: 94, ch: ["Web", "B2B"], upd: ["Anita R.", "Yesterday"], note: "Publishes with launch on 1 Oct" },
+    { id: "x6", title: "Seagate BarraCuda 1 TB 3.5\" HDD (discontinued)", brand: "Seagate", cat: "storage", cond: "new", img: "hdd-open", price: 3799, sku: "HDD00-N", st: "archived", q: 90, ch: [], upd: ["Sneha P.", "12 Sep"], note: "URL redirects to 2 TB model" },
+  ];
+  const stOverride = { "gpu-03": ["suspended", "Fan noise · 2 returns in 14 d"], "lap-01": ["published", "v7 draft pending"], "mon-04": ["published", "v3 in review"], "prn-02": ["published", "Supplier offer only"], "pc-03": ["published", "Supplier offer only"] };
+  const updBy = ["Sneha P.", "Anita R.", "Automation (feed)", "Sneha P.", "RenewTech (vendor)"];
+  const rows = extra.map((x) => ({ ...x, atp: null, dealer: Math.round(x.price * 0.93 / 1.18 / 10) * 10 })).concat(TX.products.map((p, i) => {
+    const o = stOverride[p.id];
+    const q = Math.min(99, 72 + ((i * 37) % 27));
+    return { ...p, st: o ? o[0] : "published", note: o ? o[1] : "", q, ch: ["Web", "POS", i % 3 ? "WA" : null, "B2B"].filter(Boolean), atp: p.qty, upd: [updBy[i % 5], i < 6 ? `${9 + (i % 3)}:${10 + i * 7}` : `${20 + (i % 6)} Sep`] };
+  }));
+  const counts = {}; rows.forEach((r) => (counts[r.st] = (counts[r.st] || 0) + 1));
+  const fakeTotals = { all: 2610, draft: 146, submitted: 23, changes: 11, approved: 9, published: 2184, suspended: 4, archived: 233 };
+  $("#f-status").innerHTML = `<button class="chip active" data-st="">All <span class="muted">${TX.num(fakeTotals.all)}</span></button>` + Object.entries(ST).map(([k, v]) => `<button class="chip" data-st="${k}"><span class="status ${v[1]}" style="font-size:12px">${v[0]}</span> <span class="muted">${TX.num(fakeTotals[k])}</span></button>`).join("");
+  $("#f-cat").innerHTML += TX.categories.map((c) => `<option value="${c.id}">${c.name}</option>`).join("");
+  $("#f-cond").innerHTML += Object.entries(TX.conditions).map(([k, c]) => `<option value="${k}">${c.label}</option>`).join("");
+
+  const chans = ["Web", "POS", "WA", "B2B"];
+  const CHI = { Web: ["globe", "Website"], POS: ["store", "Branch POS"], WA: ["whatsapp", "WhatsApp"], B2B: ["briefcase", "Dealer zone"] };
+  const chanHTML = (on) => `<span class="chans">${chans.map((c) => `<span class="ch-i ${on.includes(c) ? "on" : ""}" data-tip="${CHI[c][1]}${on.includes(c) ? "" : " · off"}" aria-label="${CHI[c][1]} ${on.includes(c) ? "on" : "off"}">${ic(CHI[c][0])}</span>`).join("")}</span>`;
+  const rowHTML = (r) => {
+    const s = ST[r.st];
+    const qCls = r.q >= 85 ? "m-ok" : r.q >= 70 ? "m-warn" : "m-bad";
+    const atp = r.atp === null ? `<span class="muted">—</span>` : r.stock === "supplier" ? `<b>0</b><div class="cell-sub text-brand" data-tip="Supplier availability, not company stock">+ partner</div>` : `<b class="${r.stock === "low" ? "text-warn" : ""}">${r.atp}</b>`;
+    return `<tr data-id="${r.id}" style="cursor:pointer">
+      <td class="check-col"><input type="checkbox" aria-label="Select ${esc(r.title)}"></td>
+      <td><div class="row" style="gap:10px">${TX.ph(r.img, "thumb")}<div style="min-width:0;max-width:220px"><div class="cell-main truncate">${esc(r.title)}</div><div class="cell-sub truncate"><span class="mono">${r.sku}</span> · ${r.brand} · ${catName(r.cat)}</div></div></div></td>
+      <td>${TX.condBadge(r.cond)}</td>
+      <td><span class="status ${s[1]}">${s[0]}</span><div class="cell-sub truncate" style="max-width:150px">${r.note ? esc(r.note) : `${r.upd[0]} · ${r.upd[1]}`}</div></td>
+      <td class="nowrap">${chanHTML(r.ch)}</td>
+      <td><div class="q-cell"><div class="meter thin ${qCls}"><span style="width:${r.q}%"></span></div><span class="small strong">${r.q}</span></div></td>
+      <td class="r">${atp}</td>
+      <td class="r nowrap"><div class="strong">${TX.fmt(r.price)}</div><div class="cell-sub">B2B ${TX.fmt(r.dealer)}</div></td>
+      <td class="r"><div class="dd"><button class="btn btn-ghost btn-icon btn-sm" data-dd-toggle aria-label="Row actions">${ic("more-v")}</button><div class="dd-menu">
+        <a href="#editor">${ic("edit", "ic-sm")} Open in editor</a><a href="store-product.html?id=${r.id}">${ic("eye", "ic-sm")} View on store</a><a href="erp-inventory.html#stock">${ic("warehouse", "ic-sm")} Stock by location</a><a href="erp-pricing.html">${ic("percent", "ic-sm")} Prices & tiers</a><hr>
+        <button class="dd-item" data-toast="Duplicated as new draft">${ic("copy", "ic-sm")} Duplicate as draft</button><button class="dd-item" data-toast="Suspension requires a reason" data-toast-icon="alert">${ic("pause", "ic-sm")} Suspend…</button></div></div></td>
+    </tr>`;
+  };
+  let page = 1; const PER = 12; let filtered = rows;
+  const render = () => {
+    const q = $("#f-q").value.trim().toLowerCase(), cat = $("#f-cat").value, cond = $("#f-cond").value, qual = $("#f-q70").value;
+    const st = ($(".chip.active[data-st]") || {}).dataset?.st || "";
+    filtered = rows.filter((r) => (!q || (r.title + r.sku + r.brand).toLowerCase().includes(q)) && (!cat || r.cat === cat) && (!cond || r.cond === cond) && (!st || r.st === st) && (!qual || (qual === "low" ? r.q < 70 : r.q >= 90)));
+    const pages = Math.max(1, Math.ceil(filtered.length / PER)); page = Math.min(page, pages);
+    const slice = filtered.slice((page - 1) * PER, page * PER);
+    $("#prod-body").innerHTML = slice.map(rowHTML).join("");
+    $("#prod-empty").classList.toggle("hidden", filtered.length > 0);
+    $("#prod-table").classList.toggle("hidden", filtered.length === 0);
+    $("#pg-info").textContent = filtered.length ? `Showing ${(page - 1) * PER + 1}–${Math.min(page * PER, filtered.length)} of ${filtered.length} in this sample · 2,610 SKUs total` : "No results";
+    $("#pg-btns").innerHTML = `<button aria-label="Previous page" data-pg="${page - 1}" ${page === 1 ? "disabled" : ""}>‹</button>` + [...Array(pages)].map((_, i) => `<button class="${i + 1 === page ? "active" : ""}" data-pg="${i + 1}">${i + 1}</button>`).join("") + `<button aria-label="Next page" data-pg="${page + 1}" ${page === pages ? "disabled" : ""}>›</button>`;
+    $("#f-count").textContent = `${filtered.length} shown`;
+    const bar = $("#prod-table").closest(".card").querySelector(".bulkbar"); bar.classList.remove("show");
+    const ca = $("#prod-table [data-check-all]"); if (ca) ca.checked = false;
+  };
+  ["#f-q", "#f-cat", "#f-cond", "#f-q70"].forEach((s) => $(s).addEventListener(s === "#f-q" ? "input" : "change", () => { page = 1; render(); }));
+  $("#f-status").addEventListener("click", (e) => { const c = e.target.closest(".chip"); if (!c) return; $$(".chip", $("#f-status")).forEach((x) => x.classList.toggle("active", x === c)); page = 1; render(); });
+  $("#pg-btns").addEventListener("click", (e) => { const b = e.target.closest("[data-pg]"); if (!b || b.disabled) return; page = +b.dataset.pg; render(); });
+  $("#f-clear").addEventListener("click", () => { $("#f-q").value = ""; ["#f-cat", "#f-cond", "#f-q70"].forEach((s) => ($(s).value = "")); $$(".chip", $("#f-status")).forEach((x, i) => x.classList.toggle("active", i === 0)); render(); });
+  render();
+
+  // Quick view drawer
+  $("#prod-body").addEventListener("click", (e) => {
+    if (e.target.closest("a,button,input,label,.dd")) return;
+    const tr = e.target.closest("tr[data-id]"); if (!tr) return;
+    const r = rows.find((x) => x.id === tr.dataset.id); const s = ST[r.st];
+    const order = ["draft", "submitted", "approved", "published"]; const idx = order.indexOf(r.st);
+    const steps = order.map((k, i) => `<span class="${k === r.st ? "on" : idx > i || (r.st === "suspended" || r.st === "archived") ? "done" : ""}">${ST[k][0]}</span>`).join(ic("chevron-right"));
+    const locs = TX.locations.map((l, i) => { const n = r.atp ? Math.max(0, Math.round(r.atp * [0.55, 0.2, 0.15, 0.1][i])) : 0; return `<tr><td>${l.name}<div class="cell-sub">${l.code}</div></td><td class="r">${n}</td></tr>`; }).join("");
+    $("#d-prod-card").innerHTML = `
+      <div class="drawer-head"><div class="row">${TX.ph(r.img, "thumb-lg")}<div><div class="small muted mono">${r.sku}</div><h3 style="max-width:420px">${esc(r.title)}</h3><div class="row gap-8 mt-4">${TX.condBadge(r.cond)}<span class="status ${s[1]}">${s[0]}</span></div></div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close">${ic("x")}</button></div>
+      <div class="drawer-body col gap-16">
+        <div><div class="label mb-8">Lifecycle</div><div class="lc-steps">${steps}${r.st === "suspended" ? `<span style="background:var(--bad-50);color:var(--bad-tx)">Suspended</span>` : ""}${r.st === "archived" ? `<span>Archived</span>` : ""}${r.st === "changes" ? `<span style="background:var(--warn-50);color:var(--warn-tx)">Needs changes</span>` : ""}</div>${r.note ? `<div class="small muted mt-8">${esc(r.note)}</div>` : ""}</div>
+        <div class="grid g-3">
+          <div class="stat-tile"><div class="l">Data quality</div><div class="n">${r.q}</div></div>
+          <div class="stat-tile"><div class="l">Price (incl. GST)</div><div class="n" style="font-size:18px">${TX.fmt(r.price)}</div></div>
+          <div class="stat-tile"><div class="l">Available to promise</div><div class="n">${r.atp === null ? "—" : r.atp}</div></div>
+        </div>
+        <div><div class="label mb-8">Channels</div>${chans.map((c) => `<span class="chan ${r.ch.includes(c) ? "" : "off"}">${CHI[c][1]}</span>`).join("")}</div>
+        <div><div class="label mb-8">Stock by location (from inventory authority)</div><table class="table compact"><thead><tr><th>Location</th><th class="r">ATP</th></tr></thead><tbody>${locs}</tbody></table></div>
+        <div class="callout c-info">${ic("info")}<div>Edits create a new draft version; the live version stays published until the change is approved.</div></div>
+      </div>
+      <div class="drawer-foot"><a class="btn" href="erp-inventory.html#stock">${ic("warehouse", "ic-sm")} Inventory</a><a class="btn btn-primary" href="#editor" data-close>${ic("edit", "ic-sm")} Open editor</a></div>`;
+    TX.open("d-prod");
+  });
+
+  /* ---------- Attribute schema (shared by editor + template editor) ---------- */
+  const LAPTOP = [
+    { key: "processor", label: "Processor family", type: "enum", values: ["Intel Core i3", "Intel Core i5", "Intel Core i7", "Intel Core i9", "AMD Ryzen 5", "AMD Ryzen 7", "Apple M1", "Apple M2"], req: 1, filt: 1, search: 1, val: "Intel Core i5" },
+    { key: "cpu_model", label: "Processor model", type: "text", req: 1, filt: 0, search: 1, val: "Core i5-1145G7", range: "Free text · 40 chars" },
+    { key: "ram", label: "RAM", type: "num", unit: "GB", range: "4 – 128", req: 1, filt: 1, search: 0, val: 16 },
+    { key: "storage_capacity", label: "Storage capacity", type: "num", unit: "GB", range: "64 – 4096", req: 1, filt: 1, search: 0, val: 512 },
+    { key: "storage_type", label: "Storage type", type: "enum", values: ["NVMe SSD", "SATA SSD", "HDD", "eMMC"], req: 1, filt: 1, search: 0, val: "NVMe SSD" },
+    { key: "screen_size", label: "Screen size", type: "num", unit: "inch", range: "10 – 18", req: 1, filt: 1, search: 0, val: 14 },
+    { key: "resolution", label: "Display resolution", type: "enum", values: ["HD", "FHD", "QHD", "4K", "Retina"], req: 1, filt: 1, search: 0, val: "FHD" },
+    { key: "graphics", label: "Graphics", type: "enum", values: ["Integrated", "RTX 3050", "RTX 4060", "RTX 4070", "Radeon"], req: 1, filt: 1, search: 1, val: "", err: "Required since template v4" },
+    { key: "os", label: "Operating system", type: "enum", values: ["Windows 11 Home", "Windows 11 Pro", "macOS", "No OS"], req: 1, filt: 1, search: 0, val: "Windows 11 Pro" },
+    { key: "weight", label: "Weight", type: "num", unit: "kg", range: "0.8 – 4.0", req: 0, filt: 1, search: 0, val: 1.36, changed: "Filterable in v5" },
+    { key: "battery_health", label: "Battery health", type: "num", unit: "%", range: "0 – 100", req: 1, filt: 0, search: 0, val: 87, applies: "Refurbished & used" },
+    { key: "battery_cycles", label: "Battery cycles", type: "num", unit: "cycles", range: "0 – 2000", req: 0, filt: 0, search: 0, val: 214, applies: "Refurbished & used", changed: "New in v5" },
+    { key: "touch", label: "Touchscreen", type: "bool", req: 0, filt: 1, search: 0, val: false },
+    { key: "backlit", label: "Backlit keyboard", type: "bool", req: 0, filt: 0, search: 0, val: true },
+    { key: "ports", label: "Ports", type: "multi", values: ["USB-C", "Thunderbolt 4", "HDMI", "USB-A", "RJ45", "microSD"], req: 0, filt: 1, search: 0, val: ["USB-C", "Thunderbolt 4", "HDMI", "USB-A", "RJ45"] },
+  ];
+  const TT = { num: "Numeric", enum: "Enum", bool: "Boolean", multi: "Multi", text: "Text" };
+  $("#attr-grid").innerHTML = LAPTOP.map((a) => {
+    const id = "at-" + a.key;
+    let ctl;
+    if (a.type === "num") ctl = `<div class="input-group"><input class="input" id="${id}" value="${a.val}" inputmode="decimal"><span class="addon">${a.unit}</span></div>`;
+    else if (a.type === "enum") ctl = `<select class="select ${a.err ? "is-error" : ""}" id="${id}" ${a.err ? 'style="border-color:var(--bad)"' : ""}>${a.val ? "" : "<option>Select…</option>"}${a.values.map((v) => `<option ${v === a.val ? "selected" : ""}>${v}</option>`).join("")}</select>`;
+    else if (a.type === "bool") ctl = `<div class="bool-box"><label class="switch"><input type="checkbox" id="${id}" ${a.val ? "checked" : ""}> ${a.val ? "Yes" : "No"}</label></div>`;
+    else if (a.type === "multi") ctl = `<div class="chips-in" id="${id}">${a.values.map((v) => `<button type="button" class="chip ${a.val.includes(v) ? "active" : ""}" data-toggle>${v}</button>`).join("")}</div>`;
+    else ctl = `<input class="input" id="${id}" value="${a.val}">`;
+    return `<div class="field ${a.type === "multi" ? "full" : ""}" style="${a.type === "multi" ? "grid-column:1/-1" : ""}"><label for="${id}"><span class="${a.req ? "req" : ""}">${a.label}</span><span class="ttag ${a.type}">${TT[a.type]}${a.unit && a.unit.length < 5 ? " · " + a.unit : ""}</span></label>${ctl}${a.err ? `<span class="err">${a.err}</span>` : a.applies ? `<span class="hint">${a.applies} only</span>` : ""}</div>`;
+  }).join("");
+  $("#attr-grid").addEventListener("change", (e) => { const s = e.target.closest(".switch"); if (s) s.lastChild.textContent = e.target.checked ? " Yes" : " No"; });
+
+  $("#tpl-body").innerHTML = LAPTOP.map((a, i) => `<tr class="${a.changed ? "changed" : ""}">
+    <td><span class="drag" aria-hidden="true">${ic("menu", "ic-sm")}</span></td>
+    <td class="muted">${i + 1}</td>
+    <td><input class="input" value="${a.label}" aria-label="Label for ${a.key}" style="width:140px"><div class="cell-sub mono mt-4">${a.key}${a.changed ? ` · <span class="text-warn" style="font-family:var(--font)">${a.changed}</span>` : ""}</div></td>
+    <td><select class="select" aria-label="Type for ${a.key}" style="width:98px">${Object.entries(TT).map(([k, v]) => `<option ${k === a.type ? "selected" : ""}>${v}</option>`).join("")}</select></td>
+    <td>${a.unit ? `<input class="input" value="${a.unit}" aria-label="Unit for ${a.key}" style="width:58px">` : `<span class="muted">—</span>`}</td>
+    <td>${a.values ? `<div class="vals">${a.values.map((v) => `<span>${v}</span>`).join("")}</div>` : `<span class="small subtle">${a.range || (a.type === "bool" ? "Yes / No" : "—")}</span>`}</td>
+    <td class="c"><input type="checkbox" ${a.req ? "checked" : ""} aria-label="Required" style="accent-color:var(--brand)"></td>
+    <td class="c"><input type="checkbox" ${a.filt ? "checked" : ""} aria-label="Filterable" style="accent-color:var(--brand)"></td>
+    <td class="c"><input type="checkbox" ${a.search ? "checked" : ""} aria-label="Searchable" style="accent-color:var(--brand)"></td>
+    <td class="small" style="max-width:110px">${a.applies || "All laptops"}</td></tr>`).join("");
+
+  const tplCats = TX.categories.map((c, i) => ({ ...c, v: [4, 3, 3, 6, 5, 3, 2, 4, 3, 2, 1, 2][i], n: [15, 12, 11, 19, 14, 16, 12, 9, 10, 11, 10, 13][i] }));
+  $("#tpl-list").innerHTML = tplCats.map((c) => `<a href="#templates" class="${c.id === "laptops" ? "active" : ""}">${ic(c.icon, "ic-sm")}<span class="grow">${c.name}<small>${c.id === "printers" ? `v1 draft · ${c.n} attributes · ${c.count} to map` : `v${c.v} · ${c.n} attributes · ${c.count} products`}</small></span>${c.id === "printers" ? '<span class="badge b-info">Draft</span>' : ""}</a>`).join("");
+
+  const PRN = [["Print technology", "enum", "Laser · Inkjet · Ink tank", 1, 1], ["Colour output", "enum", "Mono · Colour", 1, 1], ["Functions", "multi", "Print · Scan · Copy · Fax", 1, 1], ["Print speed", "num", "ppm · 5–80", 1, 1], ["Max resolution", "num", "dpi · 600–4800", 0, 0], ["Duplex printing", "bool", "Yes / No", 1, 1], ["Connectivity", "multi", "USB · Wi-Fi · Ethernet · Wi-Fi Direct", 0, 1], ["Monthly duty cycle", "num", "pages · 1k–100k", 0, 0], ["Max paper size", "enum", "A4 · A3 · Legal", 1, 1], ["Cost per page", "num", "₹ · optional", 0, 0]];
+  $("#prn-body").innerHTML = PRN.map(([l, t, v, r, f]) => `<tr><td class="strong">${l}</td><td><span class="ttag ${t}">${TT[t]}</span></td><td class="small subtle">${v}</td><td class="c">${r ? ic("check", "ic-sm text-ok") : '<span class="muted">—</span>'}</td><td class="c">${f ? ic("check", "ic-sm text-ok") : '<span class="muted">—</span>'}</td></tr>`).join("");
+
+  /* ---------- Variants ---------- */
+  const base = TX.byId("lap-01");
+  const V = [["LAP01-RA", 16, 512, "refurb-a", "5397184468712", base.price, base.dealer, base.qty, ["Published", "s-ok"]], ["LAP01-RB", 16, 512, "refurb-b", "5397184468729", 34490, 27180, 4, ["Published", "s-ok"]], ["LAP01-8RA", 8, 256, "refurb-a", "5397184468736", 31990, 25210, 3, ["Published", "s-ok"]], ["LAP01-1TRA", 16, 1024, "refurb-a", "—", 42990, 33880, null, ["Draft", "s-muted"]]];
+  $("#var-body").innerHTML = V.map(([s, r, st, c, b, p, d, q, stt]) => `<tr><td class="mono strong nowrap">${s}<div class="cell-sub" style="font-family:var(--font)">EAN ${b}</div></td><td class="nowrap">${r} GB · ${st >= 1024 ? st / 1024 + " TB" : st + " GB"}</td><td>${TX.condBadge(c)}</td><td class="r">${TX.fmt(p)}</td><td class="r">${TX.fmt(d)}</td><td class="r">${q === null ? '<span class="muted">—</span>' : q}</td><td><span class="status ${stt[1]}">${stt[0]}</span></td><td class="r"><button class="btn btn-ghost btn-icon btn-sm" aria-label="Edit variant ${s}">${ic("edit", "ic-sm")}</button></td></tr>`).join("");
+
+  /* ---------- Import results ---------- */
+  const IMP = [
+    [14, "PIT-LAT5420-165", "Dell Latitude 5420 i5/16/512", "valid", "Cost & availability update", "—"],
+    [22, "PIT-VIVO-X1502", "ASUS Vivobook 15 X1502", "error", "GST rate missing — HSN 84713010 found but rate empty", "GST %"],
+    [31, "PIT-LAT7420-B", "Latitude 7420 Grade B", "error", "Condition “Refurb A+” is not an allowed value (Grade A, Grade B, Used)", "Condition"],
+    [37, "PIT-HP-M428", "HP LaserJet Pro M428fdw", "error", "Image URL blocked: http://192.168.1.20/img/m428.jpg (private network, not allow-listed)", "Image1"],
+    [44, "PIT-T7-1TB-BLU", "Samsung T7 1TB Indigo", "duplicate", "Same supplier code & values as IMP-0088 row 19 — skipped, no new record", "—"],
+    [52, "PIT-EAN-DUP", "USB-C Hub 7-in-1", "error", "Barcode 8901234567890 already used by HUB02-N", "EAN"],
+    [58, "PIT-RAM-16D4", "Kingston FURY 16GB DDR4", "warning", "RAM “16GB DDR4” parsed as 16 GB (unit normalised)", "RAM"],
+    [63, "PIT-DELL-BRAND", "Dell Inc. P2422H 24\"", "warning", "Brand “Dell Inc.” mapped to approved brand “Dell”", "Brand"],
+    [71, "PIT-U2723QE", "Dell U2723QE 27\" 4K", "warning", "Cost ₹41,900 is 6.8% above last cost — pricing review suggested", "Cost"],
+    [88, "PIT-MON-DIM", "Generic 24\" monitor", "error", "Impossible dimensions: 2400 × 540 × 20 cm (likely mm)", "Dimensions"],
+    [96, "PIT-G305-WHT", "Logitech G305 White", "valid", "Availability update only", "—"],
+    [104, "PIT-BRAND-X", "Zebronics Zeb-Transformer", "error", "Brand not approved for catalog — request brand approval", "Brand"],
+  ];
+  const IMPB = { valid: ["Valid", "b-ok"], error: ["Error", "b-bad"], warning: ["Warning", "b-warn"], duplicate: ["Duplicate", "b-info"] };
+  const renderImp = (f) => {
+    $("#imp-body").innerHTML = IMP.filter((r) => f === "all" || r[3] === f).map(([n, code, name, res, msg, field]) => `<tr class="${res === "error" ? "imp-row-err" : ""}">
+      <td class="r muted">${n}</td><td class="mono nowrap">${code}</td><td>${name}</td>
+      <td><span class="badge ${IMPB[res][1]}">${res === "error" ? ic("x-circle") : res === "warning" ? ic("alert") : res === "duplicate" ? ic("copy") : ic("check-circle")} ${IMPB[res][0]}</span></td>
+      <td class="small" style="max-width:420px">${msg}</td><td class="small muted">${field}</td>
+      <td class="r nowrap">${res === "error" ? `<button class="btn btn-xs" data-toast="Row ${n} opened for inline fix">${ic("edit", "ic-sm")} Fix</button> <button class="btn btn-xs" data-toast="Row ${n} re-validated · still staged until publish">${ic("refresh", "ic-sm")} Retry</button>` : res === "warning" ? `<button class="btn btn-xs" data-toast="Warning acknowledged for row ${n}">Accept</button>` : '<span class="muted small">—</span>'}</td></tr>`).join("");
+  };
+  renderImp("all");
+  $("#imp-seg").addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) renderImp(b.dataset.f); });
+
+  /* ---------- Review queue ---------- */
+  const RV = [
+    { id: "VS-0229", who: "RenewTech Refurbishers", av: ["RT", "#0e9f8a"], vendor: true, type: "Sensitive edit", t: "Warranty 6 → 3 months on 4 SKUs", age: "1 d 2 h", sla: "Overdue 2 h", slaBad: true, flags: ["Sensitive", "Open orders on 2 SKUs"], img: "lap-thinkpad",
+      title: "Lenovo ThinkPad T14 Gen 2 (and 3 more SKUs)", live: "v5", prop: "v6",
+      diff: [["Warranty duration", "6 months", "3 months", 1], ["Warranty provider", "Tradex", "Supplier (RenewTech)", 1], ["Return window", "10 days", "10 days", 0], ["Battery health", "≥ 80%", "≥ 80%", 0], ["Price", "₹32,490", "₹32,490", 0]],
+      checks: [["ok", "Schema & required fields"], ["bad", "Sensitive field change → human review"], ["warn", "2 SKUs have open orders — snapshot keeps old terms"]] },
+    { id: "VS-0231", who: "RenewTech Refurbishers", av: ["RT", "#0e9f8a"], vendor: true, type: "New listing", t: "Lenovo ThinkPad T14 Gen 2 — i5/16/512 Grade A", age: "2 h", sla: "22 h left", flags: ["New product"], img: "lap-thinkpad2",
+      title: "Lenovo ThinkPad T14 Gen 2 — i5 / 16 GB / 512 GB", live: "Not live", prop: "v1",
+      diff: [["Title", "—", "Lenovo ThinkPad T14 Gen 2 14\" Laptop", 1], ["Condition", "—", "Refurbished · Grade A", 1], ["RAM / Storage", "—", "16 GB / 512 GB NVMe SSD", 1], ["Warranty", "—", "6 months · Tradex", 1], ["HSN · GST", "—", "84713010 · 18%", 1], ["Images", "—", "5 (rights confirmed by vendor)", 1]],
+      checks: [["ok", "Schema & required fields (Laptops v4)"], ["ok", "Barcode unique"], ["warn", "Title duplicates existing LAP02-RB — confirm it's a new variant"]] },
+    { id: "VS-0226", who: "CamWorld Imports", av: ["CW", "#c2410c"], vendor: true, type: "New listing", t: "Canon EOS R6 Mark II (Body)", age: "5 h", sla: "19 h left", flags: ["New product", "High value"], img: "cam-sony",
+      title: "Canon EOS R6 Mark II Mirrorless (Body)", live: "Not live", prop: "v1",
+      diff: [["Title", "—", "Canon EOS R6 Mark II Mirrorless (Body)", 1], ["Condition", "—", "New", 1], ["Warranty", "—", "Canon India 2 years", 1], ["Price (incl. GST)", "—", "₹2,15,990", 1]],
+      checks: [["ok", "Schema & required fields (Cameras v3)"], ["warn", "Only 2 images (recommended 5)"]] },
+    { id: "STF-0412", who: "Sneha Pillai (staff)", av: ["SP", "#be185d"], vendor: false, type: "Update", t: "HP Pavilion 15 — specs & images", age: "40 min", sla: "23 h left", flags: [], img: "lap-stack",
+      title: "HP Pavilion 15 Thin & Light Laptop", live: "v3", prop: "v4",
+      diff: [["Processor model", "Core i5-1235U", "Core i5-1335U", 1], ["Images", "2", "4", 1], ["Weight", "1.75 kg", "1.74 kg", 1], ["Price", "₹58,990", "₹58,990", 0]],
+      checks: [["ok", "Schema & required fields"], ["ok", "Image rights confirmed"]] },
+    { id: "VS-0218", who: "RenewTech Refurbishers", av: ["RT", "#0e9f8a"], vendor: true, type: "Needs changes", t: "Apple MacBook Pro 14\" M1 Pro — warranty provider missing", age: "2 d", sla: "With vendor", flags: ["Sent back"], img: "lap-side",
+      title: "Apple MacBook Pro 14\" M1 Pro", live: "v2", prop: "v3 (returned)",
+      diff: [["Warranty provider", "Tradex", "(empty)", 1], ["Battery health", "91%", "91%", 0]],
+      checks: [["bad", "Warranty provider required"]] },
+    { id: "VS-0224", who: "Prime IT Distributors", av: ["PI", "#2e5bff"], vendor: true, auto: true, type: "Auto-accepted", t: "Availability refresh · 214 offers (38 changed)", age: "10:30", sla: "No review needed", flags: ["Within bounds", "Trusted API feed"], img: "lap-duo",
+      title: "Prime IT availability refresh (38 of 214 offers changed)", live: "feed 10:00", prop: "feed 10:30",
+      diff: [["ASUS Zenbook Pro 14 Duo · supplier qty", "3", "4", 1], ["Samsung T7 1 TB · supplier qty", "120", "96", 1], ["Lead time", "3–4 days", "3–4 days", 0], ["Prices", "unchanged", "unchanged", 0]],
+      checks: [["ok", "Quantity change ≤ 50% and ≥ 0"], ["ok", "No price, warranty, brand or condition change"], ["ok", "Supplier stock only — never company stock"]] },
+    { id: "VS-0223", who: "RenewTech Refurbishers", av: ["RT", "#0e9f8a"], vendor: true, auto: true, type: "Auto-accepted", t: "Availability refresh · 6 refurbished SKUs", age: "10:00", sla: "No review needed", flags: ["Within bounds"], img: "lap-thinkpad",
+      title: "RenewTech availability refresh (6 SKUs)", live: "feed 09:30", prop: "feed 10:00",
+      diff: [["ThinkPad T14 Gen 2 · supplier qty", "5", "7", 1]],
+      checks: [["ok", "Within auto-accept bounds"]] },
+  ];
+  const rvFilter = { all: (r) => !r.auto, vendor: (r) => r.vendor && !r.auto, staff: (r) => !r.vendor, sensitive: (r) => r.type === "Sensitive edit", auto: (r) => r.auto };
+  const renderRvList = (f) => {
+  const list = RV.map((r, i) => [r, i]).filter(([r]) => rvFilter[f](r));
+  $("#rv-list").innerHTML = list.length ? list.map(([r, i], k) => `<div class="q-item ${k === 0 ? "active" : ""}" data-rv="${i}">
+    <div class="avatar sm sq" style="background:${r.av[1]}">${r.av[0]}</div>
+    <div><div class="row-between gap-8"><span class="mono small muted">${r.id}</span><span class="badge ${r.type === "Sensitive edit" ? "b-accent" : r.type === "New listing" ? "b-brand" : r.type === "Needs changes" ? "b-warn" : r.auto ? "b-ok" : ""}">${r.type}</span></div>
+    <div class="qt mt-4">${esc(r.t)}</div>
+    <div class="qm"><span>${r.who}</span><span>${ic("clock", "ic-sm")} ${r.age}</span><span class="${r.slaBad ? "text-bad strong" : ""}">${r.sla}</span></div></div></div>`).join("") : `<div class="empty"><i data-icon="inbox"></i><h4>Queue is clear</h4><p>No submissions in this view.</p></div>`;
+  TX.hydrate($("#rv-list"));
+  if (list.length) renderRv(list[0][1]);
+  };
+  const renderRv = (i) => {
+    const r = RV[i];
+    $("#rv-detail").innerHTML = `
+      <div class="card-head"><div class="row">${TX.ph(r.img, "thumb-lg")}<div><div class="small muted"><span class="mono">${r.id}</span> · ${r.type} · submitted by <b>${r.who}</b> ${r.vendor ? '<span class="badge b-vendor">Vendor</span>' : '<span class="badge">Staff</span>'}</div><h3 class="mt-4">${esc(r.title)}</h3><div class="row gap-6 mt-4">${r.flags.map((f) => `<span class="badge b-outline">${f}</span>`).join("")}</div></div></div>
+        <div class="text-right small nowrap"><div class="ico-line ${r.slaBad ? "text-bad strong" : "muted"}">${ic("clock", "ic-sm")} ${r.sla}</div><div class="muted">Age ${r.age}</div></div></div>
+      <div class="card-body col gap-16">
+        ${r.auto ? `<div class="callout c-ok">${ic("zap")}<div><strong>Applied automatically at ${r.age}</strong> — the change stayed within the auto-accept bounds for this trusted feed. Supplier quantities never become company stock. Revert restores the previous values.</div></div>` : `<div class="callout c-brand">${ic("layers")}<div><strong>${r.live === "Not live" ? "Nothing is live yet." : `Live version ${r.live} stays published`}</strong> ${r.live === "Not live" ? "The submission is stored separately and is not purchasable until approved and publication checks pass." : "until this change is approved. Orders already placed keep their original warranty & price snapshot."}</div></div>`}
+        <div class="diff">
+          <div class="dh">Field</div><div class="dh">${r.live === "Not live" ? "Live · not live" : "Live · " + r.live}</div><div class="dh">Proposed · ${r.prop}</div>
+          ${r.diff.map(([f, a, b, ch]) => `<div class="same">${f}</div>${ch ? `<div class="${a === "—" ? "same" : "old"}">${esc(a)}</div><div class="new">${esc(b)}</div>` : `<div class="same">${esc(a)}</div><div class="same">${esc(b)} <span class="muted small">(no change)</span></div>`}`).join("")}
+        </div>
+        <div><div class="label mb-8">Automated checks</div><ul class="chk-list" style="border:1px solid var(--line-2);border-radius:10px">${r.checks.map(([k, t]) => `<li><span class="${k === "ok" ? "text-ok" : k === "bad" ? "text-bad" : "text-warn"}">${ic(k === "ok" ? "check-circle" : k === "bad" ? "x-circle" : "alert")}</span><div>${t}</div></li>`).join("")}</ul></div>
+        ${r.auto ? "" : `<div class="field"><label for="rv-note">Decision note (required for sensitive edits · kept in audit log)</label><textarea class="textarea" id="rv-note" style="min-height:64px" placeholder="Why approved / what to change…"></textarea></div>`}
+      </div>
+      <div class="card-foot"><span class="small muted">Reviewer: Anita R. (Catalog reviewer) · separation of duties enforced</span>
+        ${r.auto ? `<div class="row gap-8"><button class="btn btn-sm" data-toast="Auto-accept rule opened in Automation">View rule</button><button class="btn btn-danger btn-sm" data-toast="Refresh reverted · previous supplier quantities restored" data-toast-icon="undo">Revert refresh</button></div>` : `<div class="row gap-8"><button class="btn btn-danger btn-sm" data-toast="Rejected · submitter notified with reason" data-toast-icon="x-circle">Reject</button><button class="btn btn-sm" data-open="m-changes">Request changes</button><button class="btn btn-sm" data-toast="Approved · will publish when publication checks pass">Approve</button><button class="btn btn-sm btn-ok" data-toast="Approved & published · new version live · audit entry recorded">Approve & publish</button></div>`}</div>`;
+  };
+  renderRvList("all");
+  $("#rv-seg").addEventListener("click", (e) => { const b = e.target.closest("button[data-f]"); if (b) renderRvList(b.dataset.f); });
+  $("#rv-list").addEventListener("click", (e) => { const q = e.target.closest("[data-rv]"); if (!q) return; $$(".q-item", $("#rv-list")).forEach((x) => x.classList.toggle("active", x === q)); renderRv(+q.dataset.rv); });
+
+  TX.hydrate($("main"));
+});
+</script>
+</body>
+</html>

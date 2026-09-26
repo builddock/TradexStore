@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cart · Tradex</title>
+  <link rel="stylesheet" href="assets/tradex.css">
+  <style>
+    .cart-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-top: 14px; }
+    .cart-grid { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 24px; align-items: start; margin-top: 16px; }
+    .line { display: grid; grid-template-columns: 120px minmax(0, 1fr) 210px; gap: 18px; padding: 18px 20px; border-bottom: 1px solid var(--line-2); }
+    .line:last-child { border-bottom: 0; }
+    .line .ph { width: 120px; aspect-ratio: 1; }
+    .line .l-title { font-weight: 650; font-size: 14.5px; color: var(--tx-1); line-height: 1.35; }
+    .line .l-meta { display: flex; flex-direction: column; gap: 4px; font-size: 12.5px; color: var(--tx-2); margin-top: 8px; }
+    .line .l-meta > span { display: inline-flex; align-items: center; gap: 6px; }
+    .line .l-meta .ic { width: 14px; height: 14px; color: var(--tx-3); }
+    .line .l-acts { display: flex; align-items: center; gap: 14px; margin-top: 12px; flex-wrap: wrap; }
+    .line .l-acts .link-btn { font-size: 12.5px; font-weight: 600; }
+    .line .l-acts .sep { width: 1px; height: 16px; background: var(--line); }
+    .line .l-price { text-align: right; display: flex; flex-direction: column; gap: 3px; align-items: flex-end; }
+    .line .l-price .tot { font-size: 18px; font-weight: 750; }
+    .line .l-price .mrp { font-size: 12px; color: var(--tx-4); text-decoration: line-through; }
+    .line .note { grid-column: 2 / -1; font-size: 12.5px; padding: 9px 12px; border-radius: var(--r-sm); display: flex; gap: 8px; align-items: flex-start; }
+    .line .note .ic { width: 15px; height: 15px; flex: none; margin-top: 1px; }
+    .note.n-ok { background: var(--ok-50); color: #05603a; }
+    .note.n-warn { background: var(--warn-50); color: #7a4a04; }
+    .note.n-brand { background: var(--brand-50); color: var(--brand-800); }
+    .note.n-vendor { background: var(--vendor-50); color: #07695b; }
+    .sum { position: sticky; top: 84px; display: flex; flex-direction: column; gap: 14px; }
+    .sum-rows { display: flex; flex-direction: column; gap: 9px; font-size: 13.5px; }
+    .sum-rows .r { display: flex; justify-content: space-between; gap: 12px; }
+    .sum-rows .r span:first-child { color: var(--tx-2); }
+    .sum-rows .r.sub { font-size: 12px; color: var(--tx-3); padding-left: 12px; }
+    .sum-rows .r.sub span:first-child { color: var(--tx-3); }
+    .sum-rows .total { border-top: 1px dashed var(--line); padding-top: 12px; margin-top: 4px; font-size: 17px; font-weight: 750; }
+    .sum-rows .total span:first-child { color: var(--tx-1); }
+    .save-line { background: var(--ok-50); color: var(--ok-tx); font-weight: 650; font-size: 13px; padding: 8px 12px; border-radius: var(--r-sm); }
+    .coupon-chip { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border: 1.5px dashed #9fd9b4; background: #f3fbf6; border-radius: var(--r); font-size: 12.5px; }
+    .coupon-chip b { font-family: ui-monospace, monospace; letter-spacing: .04em; }
+    .ship { display: grid; grid-template-columns: auto 1fr; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line-2); font-size: 12.5px; }
+    .ship:last-child { border-bottom: 0; padding-bottom: 0; }
+    .ship .n { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 11.5px; background: var(--brand-50); color: var(--brand-700); }
+    .ship .n.p { background: var(--warn-50); color: var(--warn-tx); }
+    .saved-row { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto auto; gap: 14px; align-items: center; padding: 12px 20px; border-bottom: 1px solid var(--line-2); }
+    .saved-row:last-child { border-bottom: 0; }
+    .saved-row .ph { width: 64px; aspect-ratio: 1; }
+    .bb span { display: inline-flex; align-items: center; gap: 5px; }
+    .bb .ic { width: 14px; height: 14px; }
+    .changes { display: flex; gap: 12px; align-items: flex-start; padding: 12px 20px; background: #fffaf0; border-bottom: 1px solid #f8dca6; font-size: 13px; color: #7a4a04; }
+    .changes ul { margin: 4px 0 0; padding-left: 18px; }
+  </style>
+</head>
+<body data-app="store" data-page="cart">
+<main>
+  <div class="container">
+    <nav class="crumbs mt-16" aria-label="Breadcrumb"><a href="store-home.html">Home</a><i data-icon="chevron-right"></i><span>Cart</span></nav>
+    <div class="cart-head">
+      <div><h1 id="cart-title">Shopping cart</h1><p class="muted mt-4" id="cart-sub">Prices and stock re-checked against live inventory at 10:42</p></div>
+      <div class="row gap-8" data-anno="Prototype: cart states (§6.3)">
+        <span class="small muted">View</span>
+        <div class="seg" id="view-seg"><button data-v="cart" class="active">Your cart</button><button data-v="empty">Empty cart</button></div>
+      </div>
+    </div>
+
+    <div id="cart-body"></div>
+
+    <section class="section" id="recent-sec">
+      <div class="section-head"><div><h2>Recently viewed</h2><p>Stored on this device</p></div></div>
+      <div class="pgrid cols-5" id="recent"></div>
+    </section>
+  </div>
+</main>
+<script src="assets/tradex.js"></script>
+<script>
+TX.ready(() => {
+  const $ = TX.$, $$ = TX.$$, ic = TX.icon, fmt = TX.fmt, esc = TX.esc;
+  const as = TX.param("as"); if (["guest", "consumer", "dealer"].includes(as)) TX.setView(as);
+
+  /* Sample cart for the prototype: seeded once so the cart shows every notice type */
+  const SEED = { "lap-01": 1, "ssd-01": 2, "ms-02": 1, "mon-02": 3, "prn-02": 1 };
+  if (TX.store.get("cart", null) === null) TX.setCart(SEED);
+  let saved = TX.store.get("saved", null) || ["kb-02", "cam-web"];
+  let coupon = TX.store.get("coupon", "TRADEX500");
+  let couponMsg = null;
+  let view = TX.param("empty") === "1" ? "empty" : "cart";
+  let pin = "560034";
+  const ADDED_PRICE = { "lap-01": 1000 }; // price dropped by ₹1,000 since it was added (demo)
+  const COUPONS = { TRADEX500: { off: 500, min: 20000, label: "₹500 off orders above ₹20,000" } };
+
+  const dealer = () => TX.view === "dealer";
+  const avail = (p) => (p.stock === "supplier" ? 10 : p.qty);
+  const unitPrice = (p, q) => (dealer() ? (q >= 10 ? p.tiers[1].p : q >= 5 ? p.tiers[0].p : p.dealer) : p.price);
+  const DATES = ["Mon, 28 Sep", "Tue, 29 Sep", "Wed, 30 Sep", "Thu, 1 Oct", "Fri, 2 Oct", "Sat, 3 Oct", "Mon, 5 Oct"];
+
+  // Stock revalidation: quantities above available stock are reduced and persisted; the notice is kept until the buyer acts on that line
+  function lines() {
+    const c = TX.cart(); const adj = TX.store.get("cartAdj", {}); let changed = false;
+    const L = Object.keys(c).filter((id) => TX.products.some((p) => p.id === id) && c[id] > 0).map((id) => {
+      const p = TX.byId(id);
+      if (c[id] > avail(p)) { adj[id] = { from: c[id], to: avail(p) }; c[id] = avail(p); changed = true; }
+      const q = c[id];
+      return { p, want: adj[id] ? adj[id].from : q, q, reduced: !!adj[id], unit: unitPrice(p, q) };
+    });
+    if (changed) { TX.setCart(c); TX.store.set("cartAdj", adj); }
+    return L;
+  }
+  const clearAdj = (id) => { const adj = TX.store.get("cartAdj", {}); delete adj[id]; TX.store.set("cartAdj", adj); };
+  function totals(L) {
+    const d = dealer();
+    const items = L.reduce((n, l) => n + l.q, 0);
+    if (d) {
+      const sub = L.reduce((n, l) => n + l.unit * l.q, 0);
+      const tierSave = L.reduce((n, l) => n + (l.p.dealer - l.unit) * l.q, 0);
+      const gst = Math.round(sub * 0.18);
+      return { items, sub, tierSave, gst, total: sub + gst, delivery: 0 };
+    }
+    const mrp = L.reduce((n, l) => n + l.p.mrp * l.q, 0);
+    const sell = L.reduce((n, l) => n + l.p.price * l.q, 0);
+    const cp = coupon && COUPONS[coupon] && sell >= COUPONS[coupon].min ? COUPONS[coupon].off : 0;
+    const delivery = sell >= 999 ? 0 : 49;
+    const total = sell - cp + delivery;
+    const gst = Math.round((total * 18) / 118);
+    return { items, mrp, sell, disc: mrp - sell, cp, delivery, total, gst, save: mrp - sell + cp };
+  }
+
+  function lineHTML(l) {
+    const { p, q, want, reduced, unit } = l;
+    const isUnit = /refurb|used/.test(p.cond);
+    const partner = p.stock === "supplier";
+    const idx = TX.products.indexOf(p);
+    const notes = [];
+    if (ADDED_PRICE[p.id]) notes.push(`<div class="note n-ok" data-anno="§8.1 Price change since added is disclosed">${ic("trending-down")}<span><b>Price dropped since you added this on 24 Sep</b> — was ${fmt((dealer() ? p.dealer + 850 : p.price + ADDED_PRICE[p.id]))}${dealer() ? " + GST" : ""}, now ${fmt(dealer() ? p.dealer : p.price)}. You pay the new price.</span></div>`);
+    if (reduced) notes.push(`<div class="note n-warn" data-anno="1A · R08 Stock shortage: quantity reduced with reason">${ic("alert")}<span><b>Only ${q} available</b> — we reduced the quantity from ${want} to ${q}. <button class="link-btn" data-notify="${p.id}">Notify me</button> if more units are inspected and listed.</span></div>`);
+    if (partner) notes.push(`<div class="note n-brand" data-anno="§9.7 Partner stock ships separately · confirmed within 4 h">${ic("truck")}<span><b>Ships separately from our partner warehouse</b> (est. ${p.delivery}). Tradex confirms availability within 4 h of payment — if it can't be confirmed, this line is cancelled and refunded automatically.</span></div>`);
+    if (dealer()) {
+      const next = q < 5 ? [5, p.tiers[0].p] : q < 10 ? [10, p.tiers[1].p] : null;
+      notes.push(`<div class="note n-vendor" data-anno="1A · R04 Tier explanation per line">${ic("briefcase")}<span>${q >= 10 ? `<b>10+ tier applied</b> — best Dealer Gold price (${fmt(unit)} × ${q}, saving ${fmt((p.dealer - unit) * q)}).` : q >= 5 ? `<b>5+ tier applied</b> at ${fmt(unit)}/unit.` : `<b>Base dealer price</b> ${fmt(unit)}/unit.`} ${next ? `Add <b>${next[0] - q} more</b> to reach the ${next[0]}+ tier at <b>${fmt(next[1])}</b>/unit${next[0] - q <= avail(p) - q ? "" : " (not enough stock)"}.` : ""}</span></div>`);
+    }
+    return `<div class="line" data-id="${p.id}">
+      <a href="store-product.html?id=${p.id}">${TX.ph(p.img)}</a>
+      <div>
+        <div class="small muted" style="font-weight:700;letter-spacing:.05em;text-transform:uppercase;font-size:11px">${p.brand}</div>
+        <a class="l-title" href="store-product.html?id=${p.id}">${esc(p.title)}</a>
+        <div class="row gap-8 mt-8">${TX.condBadge(p.cond)}<span class="small subtle">${p.specs}</span></div>
+        <div class="l-meta">
+          ${isUnit ? `<span>${ic("clipboard")} Unit <b class="mono">U-000${812 + idx}</b> reserved at checkout · <a href="store-product.html?id=${p.id}#inspection">inspection report</a></span>` : ""}
+          <span>${ic("store")} ${partner ? "Sold by Tradex · ships from partner warehouse (Prime IT Distributors)" : "Sold & shipped by Tradex · Central Warehouse, Bengaluru"}</span>
+          <span>${ic("shield")} ${p.warranty} · provided by <b>${/Tradex/.test(p.warranty) ? "Tradex" : p.brand}</b></span>
+          <span class="bb">${TX.stockHTML(p)}<span class="muted">· delivery ${partner ? "est. " : "by "}${p.delivery}</span></span>
+        </div>
+        <div class="l-acts">
+          <div class="qty"><button data-step="-1" aria-label="Decrease quantity"><i data-icon="minus"></i></button><input value="${q}" min="1" data-line="${p.id}" aria-label="Quantity for ${esc(p.title)}"><button data-step="1" aria-label="Increase quantity"><i data-icon="plus"></i></button></div>
+          <span class="sep"></span><button class="link-btn" data-remove="${p.id}">Remove</button>
+          <span class="sep"></span><button class="link-btn" data-save="${p.id}">Save for later</button>
+          <span class="sep"></span><a class="small strong" href="store-compare.html">Compare</a>
+        </div>
+      </div>
+      <div class="l-price">
+        <span class="tot">${fmt(unit * q)}</span>
+        ${dealer() ? `<span class="small muted">${fmt(unit)} × ${q} · excl. GST</span><span class="tiny muted">+ GST 18% ${fmt(unit * q * 0.18)}</span>` : `<span class="small muted">${fmt(p.price)} each · incl. GST</span><span class="mrp">${fmt(p.mrp * q)}</span><span class="small text-ok strong">${Math.round((1 - p.price / p.mrp) * 100)}% off MRP</span>`}
+      </div>
+      ${notes.join("")}
+    </div>`;
+  }
+
+  function summaryHTML(L) {
+    const T = totals(L);
+    const d = dealer();
+    const shipWH = L.filter((l) => l.p.stock !== "supplier");
+    const shipP = L.filter((l) => l.p.stock === "supplier");
+    const lastWH = shipWH.reduce((m, l) => Math.max(m, DATES.indexOf(l.p.delivery)), 0);
+    const pre = pin.slice(0, 2), extra = pre === "56" ? 0 : pre === "57" ? 1 : 3;
+    const cpInfo = COUPONS[coupon];
+    const minDealer = 10000;
+    return `<div class="sum">
+      <div class="card">
+        <div class="card-head"><h3>Order summary</h3><span class="small muted">${T.items} item${T.items > 1 ? "s" : ""}</span></div>
+        <div class="card-body col gap-16">
+          ${d ? `<div class="sum-rows" data-anno="1A · R03 Dealer: ex-GST + GST breakdown, business invoice">
+              <div class="r"><span>Subtotal (excl. GST)</span><b>${fmt(T.sub + T.tierSave)}</b></div>
+              <div class="r"><span>Quantity-tier savings</span>${T.tierSave ? `<b class="text-ok">−${fmt(T.tierSave)}</b>` : `<span class="small muted">No 5+/10+ tier reached yet</span>`}</div>
+              <div class="r"><span>Taxable value</span><b>${fmt(T.sub)}</b></div>
+              <div class="r"><span>Delivery</span><b class="text-ok">Free</b></div>
+              <div class="r"><span>GST 18%</span><b>${fmt(T.gst)}</b></div>
+              <div class="r sub"><span>CGST 9% · Karnataka</span><span>${fmt(T.gst / 2)}</span></div>
+              <div class="r sub"><span>SGST 9% · Karnataka</span><span>${fmt(T.gst / 2)}</span></div>
+              <div class="r total"><span>Total payable</span><span>${fmt(T.total)}</span></div>
+            </div>
+            <div class="panel small col gap-6"><b class="row gap-6">${ic("building", "ic-sm")} Business invoice</b><span>Metro Computers · GSTIN <span class="mono">29ABCDE1234F1Z5</span> <span class="badge b-ok" style="height:18px">✓ verified</span></span><span class="muted">Input tax credit eligible · invoice emailed to arun@metrocomputers.example</span></div>
+            ${T.sub >= minDealer ? `<div class="small text-ok row gap-6">${ic("check-circle", "ic-sm")} Dealer minimum order (${fmt(minDealer)} excl. GST) met</div>` : `<div class="callout c-warn small">${ic("alert")}<div>Dealer orders need at least ${fmt(minDealer)} excl. GST — add ${fmt(minDealer - T.sub)} more.</div></div>`}`
+          : `<div class="sum-rows" data-anno="1A · Totals: MRP discount, coupon, delivery, GST included">
+              <div class="r"><span>Price (${T.items} items, MRP)</span><b>${fmt(T.mrp)}</b></div>
+              <div class="r"><span>Discount on MRP</span><b class="text-ok">−${fmt(T.disc)}</b></div>
+              ${T.cp ? `<div class="r"><span>Coupon ${coupon}</span><b class="text-ok">−${fmt(T.cp)}</b></div>` : ""}
+              <div class="r"><span>Delivery</span><b class="${T.delivery ? "" : "text-ok"}">${T.delivery ? fmt(T.delivery) : "Free"}</b></div>
+              <div class="r total"><span>Total amount</span><span>${fmt(T.total)}</span></div>
+              <div class="r sub" style="padding-left:0"><span>Includes GST ${fmt(T.gst)}</span><span>CGST ${fmt(T.gst / 2)} + SGST ${fmt(T.gst / 2)}</span></div>
+            </div>
+            <div class="save-line">You save ${fmt(T.save)} on this order</div>`}
+
+          <div data-anno="1A · Coupons with explicit stacking rules">
+            <label class="label" for="coupon-in">Coupon code</label>
+            ${d ? `<div class="panel small mt-8 row-top gap-8">${ic("info", "ic-sm")}<span>Consumer coupons can't be combined with dealer prices (pricing policy v1.2).</span></div>`
+              : coupon && cpInfo ? `<div class="coupon-chip mt-8">${ic("tag", "ic-sm")}<div class="grow"><b>${coupon}</b> applied${T.cp ? ` · you save ${fmt(T.cp)}` : ` · add ${fmt(cpInfo.min - T.sell)} more to use it`}<div class="tiny muted">${cpInfo.label} · one per order</div></div><button class="btn btn-ghost btn-icon btn-sm" id="cp-remove" aria-label="Remove coupon">${ic("x", "ic-sm")}</button></div>`
+              : `<div class="row gap-8 mt-8"><input class="input ${couponMsg && couponMsg.bad ? "is-error" : ""}" id="coupon-in" placeholder="Enter code, e.g. TRADEX500" value="${couponMsg ? esc(couponMsg.code) : ""}" style="text-transform:uppercase"><button class="btn" id="cp-apply">Apply</button></div>
+                 ${couponMsg ? `<div class="small mt-4 ${couponMsg.bad ? "text-bad" : "muted"}">${couponMsg.text}</div>` : `<div class="tiny muted mt-4">Try FEST10 to see an expired code</div>`}`}
+          </div>
+
+          <div>
+            <div class="row-between"><span class="label">Delivery estimate</span><form class="row gap-6" id="pin-form"><label class="sr-only" for="pin-in">PIN code</label><input class="input input-sm" id="pin-in" value="${pin}" style="width:90px"><button class="btn btn-sm">Check</button></form></div>
+            <div class="mt-8" data-anno="Split shipment disclosed before checkout">
+              ${shipWH.length ? `<div class="ship"><span class="n">1</span><div><b>${shipP.length ? "Shipment 1 · " : ""}Central Warehouse, Bengaluru</b><div class="muted">${shipWH.reduce((n, l) => n + l.q, 0)} items · by <b style="color:var(--tx-1)">${DATES[Math.min(DATES.length - 1, lastWH + extra)]}</b> to ${pin}</div></div></div>` : ""}
+              ${shipP.length ? `<div class="ship"><span class="n p">2</span><div><b>Shipment 2 · Partner warehouse</b><div class="muted">${shipP.reduce((n, l) => n + l.q, 0)} item · est. <b style="color:var(--tx-1)">${shipP[0].p.delivery}</b> · confirmed within 4 h of payment</div></div></div>` : ""}
+            </div>
+          </div>
+
+          <a class="btn btn-accent btn-lg btn-block" href="store-checkout.html" data-anno="1A · R08 Checkout revalidates & reserves stock">${ic("lock")} Proceed to secure checkout</a>
+          <div class="only-guest"><div class="col gap-8"><div class="small subtle" style="text-align:center">No account needed — <b>checkout as a guest</b> with phone OTP.</div><a class="btn btn-block btn-sm" href="store-login.html">Sign in for saved addresses</a></div></div>
+          <div class="hide-guest"><div class="small muted" style="text-align:center">Signed in as ${d ? "Arun Kumar · Metro Computers (Dealer Gold) · prepaid terms" : "Priya Nair · guest checkout also available"}</div></div>
+          <div class="callout small" style="padding:10px 12px">${ic("clock")}<div>Items in your cart aren't held. Stock is <b>reserved for 15 minutes</b> when you start checkout, then re-checked before payment.</div></div>
+        </div>
+      </div>
+      <div class="card card-pad col gap-8 small">
+        <div class="row gap-8">${ic("lock", "ic-sm")} Payments via Razorpay · card details never touch Tradex</div>
+        <div class="row gap-8">${ic("undo", "ic-sm")} 7-day returns · 10 days on refurbished</div>
+        <div class="row gap-8">${ic("receipt", "ic-sm")} GST invoice with serial numbers</div>
+        <button class="btn btn-sm btn-wa mt-4" data-wa>${ic("whatsapp", "ic-sm")} Questions? Chat with cart reference</button>
+      </div>
+    </div>`;
+  }
+
+  function savedHTML() {
+    const S = saved.filter((id) => TX.products.some((p) => p.id === id));
+    return `<div class="card mt-16">
+      <div class="card-head"><div><h3>Saved for later (${S.length})</h3><div class="sub">Not reserved · we'll alert you if the price drops or stock runs low</div></div></div>
+      ${S.length ? S.map((id) => { const p = TX.byId(id); return `<div class="saved-row">${TX.ph(p.img)}<div class="grow"><a href="store-product.html?id=${p.id}" class="strong" style="color:var(--tx-1)">${esc(p.title)}</a><div class="row gap-8 mt-4 small">${TX.condBadge(p.cond)}<span class="bb">${TX.stockHTML(p)}</span></div></div><div data-price="${p.id}"></div><div class="col gap-6"><button class="btn btn-sm btn-soft" data-move="${p.id}">Move to cart</button><button class="link-btn small" style="color:var(--tx-3)" data-unsave="${p.id}">Remove</button></div></div>`; }).join("") : `<div class="empty" style="padding:24px">Nothing saved. Use “Save for later” on a cart item to keep it here.</div>`}
+    </div>`;
+  }
+
+  function recoHTML(L) {
+    const inCart = L.map((l) => l.p.id);
+    const R = ["hub-02", "chg-01", "ram-02", "kb-01", "ssd-03", "ms-03"].filter((x) => !inCart.includes(x)).slice(0, 4);
+    return `<section class="mt-24">
+      <div class="section-head"><div><h2>Complete your setup</h2><p>Accessories verified compatible with items in your cart</p></div></div>
+      <div class="pgrid cols-4">${R.map((id) => TX.cardHTML(TX.byId(id))).join("")}</div></section>`;
+  }
+
+  function render() {
+    const L = lines();
+    const empty = view === "empty" || !L.length;
+    $$("#view-seg button").forEach((b) => b.classList.toggle("active", b.dataset.v === (empty ? "empty" : "cart")));
+    const n = L.reduce((a, l) => a + l.q, 0);
+    $("#cart-title").textContent = empty ? "Shopping cart" : `Shopping cart (${n} item${n > 1 ? "s" : ""})`;
+    $("#cart-sub").innerHTML = empty ? "Your cart is saved on this device" : `Prices and stock re-checked against live inventory at 10:42 · ${dealer() ? "Dealer Gold prices excl. GST" : "Prices include GST"}`;
+    if (empty) {
+      $("#cart-body").innerHTML = `<div class="cart-grid"><div>
+        <div class="card" data-anno="§6.3 Empty cart state"><div class="empty" style="padding:56px 24px"><i data-icon="cart"></i><h4 style="font-size:18px">Your cart is empty</h4><p>Items you add stay in your cart on this device for 30 days.${TX.view === "guest" ? " Sign in to see items added on another device." : ""}</p>
+          <div class="row mt-16" style="justify-content:center"><a class="btn btn-primary" href="store-listing.html">Continue shopping</a><a class="btn" href="store-listing.html?deals=1">Today's deals</a>${TX.view === "guest" ? `<a class="btn" href="store-login.html">Sign in</a>` : ""}</div>
+          ${view === "empty" && L.length ? `<button class="link-btn small mt-16" id="back-cart">Back to your cart (${L.length} lines)</button>` : !L.length ? `<button class="link-btn small mt-16" id="restore">Restore sample cart (prototype)</button>` : ""}</div></div>
+        ${savedHTML()}
+      </div>
+      <div class="card card-pad col gap-12"><h3>Popular right now</h3>${["lap-01", "ssd-01", "ms-02"].map((id) => { const p = TX.byId(id); return `<div class="row gap-12">${TX.ph(p.img, "thumb-lg")}<div class="grow"><a class="small strong" href="store-product.html?id=${p.id}" style="color:var(--tx-1)">${esc(p.title)}</a><div data-price="${p.id}"></div></div></div>`; }).join("")}</div></div>`;
+      TX.hydrate($("#cart-body"));
+      return;
+    }
+    const changed = L.filter((l) => l.reduced || ADDED_PRICE[l.p.id]);
+    $("#cart-body").innerHTML = `<div class="cart-grid">
+      <div>
+        <div class="card">
+          ${changed.length ? `<div class="changes">${ic("alert")}<div><b>${changed.length} item${changed.length > 1 ? "s" : ""} changed since you last visited</b><ul>${changed.map((l) => `<li>${esc(l.p.title.slice(0, 48))}… — ${l.reduced ? `quantity reduced to ${l.q} (stock)` : "price dropped"}</li>`).join("")}</ul></div></div>` : ""}
+          <div class="row-between" style="padding:12px 20px;border-bottom:1px solid var(--line-2)"><span class="small muted">${L.length} line${L.length > 1 ? "s" : ""} · ${L.some((l) => l.p.stock === "supplier") ? "2 shipments" : "1 shipment"}</span><span class="small muted">${dealer() ? "Price (excl. GST)" : "Price"}</span></div>
+          ${L.map(lineHTML).join("")}
+          <div class="row-between" style="padding:14px 20px;background:#fafbfc;border-top:1px solid var(--line-2);border-radius:0 0 var(--r-lg) var(--r-lg)"><button class="link-btn small" id="empty-cart" style="color:var(--bad-tx)">Empty cart</button><span>Subtotal (${n} items): <b style="font-size:16px">${fmt(dealer() ? totals(L).sub : totals(L).sell)}</b>${dealer() ? " + GST" : ""}</span></div>
+        </div>
+        ${savedHTML()}
+        ${recoHTML(L)}
+      </div>
+      ${summaryHTML(L)}
+    </div>`;
+    TX.hydrate($("#cart-body"));
+  }
+
+  function renderRecent() {
+    const ids = TX.store.get("recent", ["lap-03", "mon-03", "kb-01", "hub-02", "cam-web"]).filter((id) => TX.products.some((p) => p.id === id)).slice(0, 5);
+    $("#recent").innerHTML = ids.map((id) => TX.cardHTML(TX.byId(id))).join("");
+    $("#recent-sec").classList.toggle("hidden", !ids.length);
+  }
+
+  const setQty = (id, q) => { const c = TX.cart(); c[id] = q; TX.setCart(c); };
+  document.addEventListener("change", (e) => {
+    const t = e.target;
+    if (t.matches("[data-line]")) {
+      const p = TX.byId(t.dataset.line); let q = Math.max(1, parseInt(t.value) || 1);
+      if (q > avail(p)) { q = avail(p); TX.toast(`Only ${q} available — quantity capped`, "info"); }
+      clearAdj(p.id); setQty(p.id, q); render();
+    }
+  });
+  document.addEventListener("click", (e) => {
+    const t = e.target; let el;
+    if ((el = t.closest("[data-add]"))) setTimeout(render, 0);
+    if ((el = t.closest("[data-remove]"))) { clearAdj(el.dataset.remove); const c = TX.cart(); delete c[el.dataset.remove]; TX.setCart(c); render(); TX.toast("Removed from cart", "trash"); }
+    if ((el = t.closest("[data-save]"))) { const c = TX.cart(); delete c[el.dataset.save]; TX.setCart(c); saved = [el.dataset.save, ...saved.filter((x) => x !== el.dataset.save)]; TX.store.set("saved", saved); render(); TX.toast("Saved for later · not reserved", "heart"); }
+    if ((el = t.closest("[data-move]"))) { const c = TX.cart(); c[el.dataset.move] = (c[el.dataset.move] || 0) + 1; TX.setCart(c); saved = saved.filter((x) => x !== el.dataset.move); TX.store.set("saved", saved); view = "cart"; render(); TX.toast("Moved to cart", "cart"); }
+    if ((el = t.closest("[data-unsave]"))) { saved = saved.filter((x) => x !== el.dataset.unsave); TX.store.set("saved", saved); render(); }
+    if ((el = t.closest("[data-notify]"))) TX.toast("We'll notify you on WhatsApp when more units are available", "bell");
+    if ((el = t.closest("#view-seg [data-v]"))) { view = el.dataset.v; render(); }
+    if (t.closest("#back-cart")) { view = "cart"; render(); }
+    if (t.closest("#restore")) { TX.store.set("cartAdj", {}); TX.setCart(Object.assign({}, SEED)); view = "cart"; render(); }
+    if (t.closest("#empty-cart")) { TX.setCart({}); render(); TX.toast("Cart emptied", "trash"); }
+    if (t.closest("#cp-remove")) { coupon = null; couponMsg = null; TX.store.set("coupon", null); render(); }
+    if (t.closest("#cp-apply")) {
+      const code = ($("#coupon-in").value || "").trim().toUpperCase();
+      if (!code) couponMsg = { bad: true, code, text: "Enter a coupon code" };
+      else if (COUPONS[code]) { coupon = code; couponMsg = null; TX.store.set("coupon", code); TX.toast(`${code} applied`, "tag"); }
+      else if (code === "FEST10") couponMsg = { bad: true, code, text: "FEST10 expired on 20 Sep 2026. Coupons can't be reactivated." };
+      else if (code === "TRADEXUPI") couponMsg = { bad: false, code, text: "TRADEXUPI is applied automatically at payment when you pay by UPI." };
+      else couponMsg = { bad: true, code, text: `“${esc(code)}” isn't a valid code. Check the spelling — codes are not case-sensitive.` };
+      render();
+    }
+  });
+  document.addEventListener("submit", (e) => { if (e.target.id === "pin-form") { e.preventDefault(); const v = $("#pin-in").value.trim(); if (!/^[1-9]\d{5}$/.test(v)) { TX.toast("Enter a valid 6-digit PIN code", "alert"); return; } pin = v; render(); TX.toast(`Delivery estimate updated for ${v}`, "truck"); } });
+  document.addEventListener("tx:view", render);
+  render(); renderRecent();
+});
+</script>
+</body>
+</html>

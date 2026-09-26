@@ -1,0 +1,744 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pricing & dealer tiers · Tradex ERP</title>
+  <link rel="stylesheet" href="assets/tradex.css">
+  <style>
+    /* Rule-precedence pipeline */
+    .flow-wrap { padding: 16px 20px 20px; }
+    .flow-groups { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 10px; margin-bottom: 8px; }
+    .flow-groups > div { font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 4px 8px; border-radius: 4px; }
+    .fg-resolve { grid-column: span 3; background: var(--brand-50); color: var(--brand-700); }
+    .fg-adjust { grid-column: span 2; background: var(--accent-50); color: #b24a00; }
+    .fg-tax { background: var(--info-50); color: var(--info-tx); }
+    .fg-guard { grid-column: span 2; background: var(--ok-50); color: var(--ok-tx); }
+    .flow { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 10px; }
+    .fs { position: relative; background: #fff; border: 1px solid var(--line); border-radius: var(--r); padding: 10px 10px 12px; min-width: 0; }
+    .fs:not(:last-child)::after { content: ""; position: absolute; right: -9px; top: 22px; width: 7px; height: 7px; border-top: 2px solid var(--tx-4); border-right: 2px solid var(--tx-4); transform: rotate(45deg); }
+    .fs .n { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-size: 11.5px; font-weight: 700; background: var(--bg-2); color: var(--tx-2); }
+    .fs.g1 .n { background: var(--brand); color: #fff; } .fs.g2 .n { background: var(--accent); color: #fff; } .fs.g3 .n { background: var(--info); color: #fff; } .fs.g4 .n { background: var(--ok); color: #fff; }
+    .fs b { display: block; font-size: 12.5px; margin-top: 7px; line-height: 1.3; }
+    .fs .d { display: block; font-size: 11.5px; color: var(--tx-3); line-height: 1.4; margin-top: 3px; }
+    /* Simulator */
+    .sim { display: grid; grid-template-columns: 360px minmax(0, 1fr); gap: 16px; align-items: start; }
+    .calc { list-style: none; margin: 0; padding: 0; }
+    .calc li { display: grid; grid-template-columns: 30px minmax(0, 1fr) 150px; gap: 12px; padding: 11px 20px; border-bottom: 1px solid var(--line-2); align-items: start; }
+    .calc li:last-child { border-bottom: 0; }
+    .calc .cn { min-width: 24px; height: 24px; padding: 0 5px; border-radius: 12px; justify-self: start; display: grid; place-items: center; font-size: 11.5px; font-weight: 700; background: var(--brand); color: #fff; }
+    .calc li.skip .cn { background: var(--bg-2); color: var(--tx-3); }
+    .calc li.warn .cn { background: var(--warn); }
+    .calc li.bad .cn { background: var(--bad); }
+    .calc .ct { font-weight: 650; font-size: 13.5px; }
+    .calc .cd { font-size: 12.5px; color: var(--tx-2); margin-top: 2px; }
+    .calc .cd .mono { font-size: 11.5px; }
+    .calc .cv { text-align: right; font-weight: 650; font-variant-numeric: tabular-nums; font-size: 13.5px; }
+    .calc .cv small { display: block; font-weight: 500; color: var(--tx-3); font-size: 11.5px; }
+    .calc li.skip .ct { color: var(--tx-3); }
+    .final { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: var(--line-2); border-top: 1px solid var(--line-2); }
+    .final > div { background: #fafbfc; padding: 14px 18px; }
+    .final .fl { font-size: 12px; color: var(--tx-3); }
+    .final .fv { font-size: 20px; font-weight: 750; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+    .final .fv.big { color: var(--brand-700); }
+    /* Tier editor */
+    .tier-cmp { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .tier-cmp .panel b.v { font-size: 20px; display: block; margin-top: 2px; font-variant-numeric: tabular-nums; }
+    .bands { display: flex; height: 26px; border-radius: 6px; overflow: hidden; gap: 2px; margin-top: 10px; }
+    .bands > div { display: grid; place-items: center; font-size: 11px; font-weight: 650; color: #fff; min-width: 0; white-space: nowrap; overflow: hidden; }
+    .tbl-input { width: 92px; height: 30px; font-size: 12.5px; text-align: right; }
+    .old-v { color: var(--bad-tx); text-decoration: line-through; text-decoration-color: rgba(145,32,24,.45); }
+    .new-v { color: var(--ok-tx); font-weight: 650; }
+    .auth-cell { font-size: 12px; font-weight: 650; }
+    #tabs-main > .tabs .tab { padding: 10px 11px; font-size: 13px; }
+    #tier-body td { white-space: nowrap; }
+  </style>
+</head>
+<body data-app="erp" data-page="pricing">
+<main>
+  <div class="page-head">
+    <div>
+      <div class="crumbs"><a href="erp-catalog.html">Catalog</a><i data-icon="chevron-right"></i><span>Pricing & tiers</span></div>
+      <h1>Pricing & dealer tiers</h1>
+      <p class="sub">One server-side price engine for website, staff orders, WhatsApp checkout links and the future app · rule set <b class="mono">v2026.09.3</b> active since 21 Sep</p>
+    </div>
+    <div class="actions">
+      <button class="btn" data-sim-jump><i data-icon="sliders"></i> Simulate a price</button>
+      <div class="dd"><button class="btn" data-dd-toggle><i data-icon="download"></i> Export <i data-icon="chevron-down" class="ic-sm"></i></button>
+        <div class="dd-menu"><a href="#" data-toast="Price lists exported (CSV · formula-safe) · link expires in 24 h">Price lists (CSV)</a><a href="#" data-toast="Tier sheet exported">Quantity tiers (CSV)</a><a href="#" data-toast="Audit export queued · you'll be notified">Price change audit</a></div></div>
+      <button class="btn btn-primary" data-open="m-newlist"><i data-icon="plus"></i> New price list</button>
+    </div>
+  </div>
+
+  <div class="callout c-warn mb-16" data-anno="1A · R06 Price-list changes need approval with reason">
+    <i data-icon="alert"></i>
+    <div class="grow"><strong>Dealer Gold v7 expires on 30 Sep (in 4 days).</strong> Its successor, Dealer Gold v8 (Q4 revision · 38 SKUs · avg −1.8%), is waiting for your approval. If v8 isn't approved in time, Gold accounts fall back to <b>Dealer Standard v6</b> — never to ₹0 or an arbitrary price.</div>
+    <button class="btn btn-sm" data-goto="approvals">Review change</button>
+  </div>
+
+  <section class="grid g-6">
+    <div class="kpi"><div class="k-label"><i data-icon="layers"></i> <span>Active price lists</span></div><div class="k-value">5</div><div class="k-foot"><span>1 pending · 1 expired</span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="briefcase"></i> <span>Dealer accounts</span></div><div class="k-value">43</div><div class="k-foot"><span>28 Standard · 14 Gold · 1 contract</span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="gift"></i> <span>Live promotions</span></div><div class="k-value">4</div><div class="k-foot"><span>2 scheduled · 1 paused</span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="alert"></i> <span>Below-floor asks</span></div><div class="k-value">7</div><div class="k-foot"><span class="delta down-good"><i data-icon="trending-down"></i> from 15</span><span>30 d · 5 approved</span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="lock"></i> <span>Locked quotes</span></div><div class="k-value">18</div><div class="k-foot"><span>web 30 min · assisted 24 h</span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="clock"></i> <span>Pending changes</span></div><div class="k-value text-warn">2</div><div class="k-foot"><span>oldest 20 h · due 29 Sep</span></div></div>
+  </section>
+
+  <!-- Rule precedence pipeline -->
+  <section class="card mt-16" data-anno="1A · R03/R04 Proposed rule precedence (blueprint §8.1) — to confirm with client">
+    <div class="card-head">
+      <div><h3>How every price is calculated</h3><div class="sub">Same sequence for every channel · final price and rule version are stored on each order line · the engine never silently picks “the biggest discount”</div></div>
+      <span class="badge b-warn dot">Proposed precedence · client sign-off pending</span>
+    </div>
+    <div class="flow-wrap">
+      <div class="flow-groups"><div class="fg-resolve">Resolve base price</div><div class="fg-adjust">Adjust</div><div class="fg-tax">Deliver & tax</div><div class="fg-guard">Guard & commit</div></div>
+      <div class="flow">
+        <div class="fs g1"><span class="n">1</span><b>Customer contract</b><span class="d">Approved account-specific price, if a contract line exists</span></div>
+        <div class="fs g1"><span class="n">2</span><b>Dealer price list</b><span class="d">Gold / Standard list assigned to the business account</span></div>
+        <div class="fs g1"><span class="n">3</span><b>Public list</b><span class="d">Retail list, or a location list for its location only</span></div>
+        <div class="fs g2"><span class="n">4</span><b>Quantity tier</b><span class="d">All-units tier per SKU & unit of measure (5+, 10+)</span></div>
+        <div class="fs g2"><span class="n">5</span><b>Eligible promotions</b><span class="d">Only per explicit stacking policy · max 1 coupon</span></div>
+        <div class="fs g3"><span class="n">6</span><b>Shipping & GST</b><span class="d">Serviceability, place of supply, CGST+SGST or IGST</span></div>
+        <div class="fs g4"><span class="n">7</span><b>Margin & authority</b><span class="d">Below floor or above role limit → approval with reason</span></div>
+        <div class="fs g4"><span class="n">8</span><b>Quote lock</b><span class="d">Time-limited quote; revalidated at stock reservation</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tabs -->
+  <section class="card mt-16" data-tabset id="tabs-main">
+    <div class="tabs" style="padding:0 12px">
+      <button class="tab active" data-tab="lists">Price lists <span class="count">7</span></button>
+      <button class="tab" data-tab="tiers">Quantity tiers</button>
+      <button class="tab" data-tab="simulator">Price simulator</button>
+      <button class="tab" data-tab="promotions">Promotions <span class="count">8</span></button>
+      <button class="tab" data-tab="controls">Margin & authority</button>
+      <button class="tab" data-tab="rules">Edge cases</button>
+      <button class="tab" data-tab="approvals">Pending changes <span class="count">2</span></button>
+      <button class="tab" data-tab="audit">Change audit</button>
+    </div>
+
+    <!-- PRICE LISTS -->
+    <div class="tab-panel active" data-panel="lists">
+      <div class="table-toolbar">
+        <div class="input-icon" style="width:260px"><i data-icon="search"></i><input class="input input-sm" placeholder="Filter lists, accounts…" id="list-filter" aria-label="Filter price lists"></div>
+        <div class="seg" id="list-type"><button class="active" data-t="all">All</button><button data-t="Public">Public</button><button data-t="Dealer">Dealer</button><button data-t="Location">Location</button><button data-t="Contract">Contract</button></div>
+        <span class="small muted ml-auto">Consumers see GST-inclusive prices · dealers see ex-GST + tiers · guests see public only</span>
+      </div>
+      <div class="table-wrap"><table class="table">
+        <thead><tr><th>Price list</th><th>Type</th><th>Basis & display</th><th>Validity</th><th>Assigned to</th><th class="r">SKUs</th><th>Version</th><th>Status</th><th></th></tr></thead>
+        <tbody id="lists-body"></tbody>
+      </table></div>
+      <div class="card-foot"><span class="small muted row gap-6"><i data-icon="info" class="ic-sm"></i> Every list has a defined fallback on expiry. Expired or missing lists block checkout for that buyer rather than pricing at ₹0.</span><span class="small muted">Click a row for lines, accounts and history</span></div>
+    </div>
+
+    <!-- QUANTITY TIERS -->
+    <div class="tab-panel" data-panel="tiers">
+      <div class="card-body">
+        <div class="grid" style="grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:20px">
+          <div data-anno="1A · R04 Quantity tier editor (per SKU, per list)">
+            <div class="row wrap gap-8 mb-12">
+              <div class="field" style="min-width:320px;flex:1"><label for="tier-sku">SKU</label><select class="select" id="tier-sku"></select></div>
+              <div class="field"><label>Price list</label><div class="seg" id="tier-list"><button class="active" data-l="gold">Dealer Gold</button><button data-l="std">Dealer Standard</button></div></div>
+            </div>
+            <div class="panel row gap-16 mb-12 small" id="tier-ctx"></div>
+            <div class="table-wrap" style="border:1px solid var(--line);border-radius:var(--r)"><table class="table compact">
+              <thead><tr><th>Tier</th><th class="r">Min qty</th><th class="r">Unit ex-GST</th><th class="r">vs list</th><th class="r">Margin</th><th>Floor</th><th></th></tr></thead>
+              <tbody id="tier-body"></tbody>
+            </table></div>
+            <div class="row mt-12 gap-8">
+              <button class="btn btn-sm" id="tier-add"><i data-icon="plus" class="ic-sm"></i> Add tier</button>
+              <label class="check small"><input type="checkbox" checked> Scope: per SKU (not mixed basket)</label>
+              <span class="ml-auto"></span>
+              <button class="btn btn-sm" data-toast="Changes discarded">Discard</button>
+              <button class="btn btn-sm btn-primary" data-toast="Saved as draft change PCR-0415 · sent to Anita R. for approval">Save as draft change</button>
+            </div>
+            <div class="callout c-info mt-12 small"><i data-icon="info"></i><div>Tier edits never go live directly — they are bundled into a price-list change with an effective date and reviewed like any other change. Changing quantity after a quote recalculates the tier and asks the buyer to confirm.</div></div>
+          </div>
+
+          <div data-anno="Decision Q33: all-units vs graduated (client to confirm)">
+            <div class="row-between mb-8"><h4>All-units vs graduated — worked example</h4>
+              <div class="row gap-6"><label class="small muted" for="tier-qty">Quantity</label><div class="qty"><button data-step="-1" aria-label="Decrease"><i data-icon="minus"></i></button><input id="tier-qty" value="12" min="1" aria-label="Quantity"><button data-step="1" aria-label="Increase"><i data-icon="plus"></i></button></div></div>
+            </div>
+            <div class="tier-cmp">
+              <div class="panel" style="border-color:var(--brand-200);background:var(--brand-50)"><div class="row-between"><b>All-units</b><span class="badge b-brand">Proposed default</span></div><span class="small muted">Every unit gets the tier the quantity reaches</span><b class="v" id="cmp-all"></b><span class="small" id="cmp-all-u"></span><div class="bands" id="bands-all"></div></div>
+              <div class="panel"><div class="row-between"><b>Graduated</b><span class="badge">Alternative</span></div><span class="small muted">Only units inside each band get that band's price</span><b class="v" id="cmp-grad"></b><span class="small" id="cmp-grad-u"></span><div class="bands" id="bands-grad"></div></div>
+            </div>
+            <div class="small subtle mt-8" id="cmp-diff"></div>
+            <hr>
+            <h4 class="mb-8">Blueprint illustration (§8.2 · all-units)</h4>
+            <table class="table compact" style="border:1px solid var(--line);border-radius:var(--r)">
+              <thead><tr><th>Buyer</th><th class="r">Qty</th><th class="r">Unit price</th><th class="r">Line subtotal</th></tr></thead>
+              <tbody>
+                <tr><td>Consumer</td><td class="r">1</td><td class="r">₹2,500</td><td class="r">₹2,500</td></tr>
+                <tr><td>Approved dealer</td><td class="r">1</td><td class="r">₹2,300</td><td class="r">₹2,300</td></tr>
+                <tr><td>Approved dealer</td><td class="r">5</td><td class="r">₹2,200</td><td class="r">₹11,000</td></tr>
+                <tr><td>Approved dealer</td><td class="r">10</td><td class="r">₹2,100</td><td class="r">₹21,000</td></tr>
+              </tbody>
+            </table>
+            <div class="callout c-warn mt-12 small"><i data-icon="alert"></i><div><strong>Open policy:</strong> if a dealer returns or cancels part of a tiered order (e.g. 10 → 7 units), does the original tier price stand or is an adjustment due? No retroactive repricing until the client agrees a policy and customer disclosure.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIMULATOR -->
+    <div class="tab-panel" data-panel="simulator">
+      <div class="card-body">
+        <div class="sim">
+          <div class="col gap-12" data-anno="1A · R03/R04 Price simulator uses the live engine (read-only)">
+            <div class="field"><label for="s-prod">Product</label><select class="select" id="s-prod"></select></div>
+            <div class="row gap-12" id="s-prod-card"></div>
+            <div class="field"><label for="s-buyer">Buyer context</label>
+              <select class="select" id="s-buyer">
+                <option value="guest">Guest (not signed in)</option>
+                <option value="consumer">Consumer · Priya Nair</option>
+                <option value="dstd">Dealer Standard · Sai Systems & Services</option>
+                <option value="dgold" selected>Dealer Gold · Metro Computers</option>
+                <option value="contract">Contract · Coastal Infotech (CT-0007)</option>
+              </select></div>
+            <div class="form-grid">
+              <div class="field"><label for="s-qty">Quantity</label><div class="qty"><button data-step="-1" aria-label="Decrease"><i data-icon="minus"></i></button><input id="s-qty" value="10" min="1" aria-label="Quantity"><button data-step="1" aria-label="Increase"><i data-icon="plus"></i></button></div></div>
+              <div class="field"><label for="s-ch">Channel</label><select class="select" id="s-ch"><option value="web">Website</option><option value="wa">WhatsApp checkout link</option><option value="assisted">Assisted (staff)</option><option value="pos">Branch POS</option></select></div>
+            </div>
+            <div class="field"><label for="s-loc">Delivery / location</label>
+              <select class="select" id="s-loc">
+                <option value="blr">Deliver to Bengaluru 560034 · Karnataka</option>
+                <option value="mys">Deliver to Mysuru 570017 · Mysuru location list</option>
+                <option value="kochi">Deliver to Kochi 682016 · Kerala (inter-state)</option>
+                <option value="pickup">Pickup · SP Road Branch</option>
+              </select></div>
+            <div class="form-grid">
+              <div class="field"><label for="s-coupon">Coupon code</label><input class="input" id="s-coupon" placeholder="e.g. FESTIVE5"></div>
+              <div class="field"><label for="s-disc">Manual discount %</label><input class="input" id="s-disc" type="number" min="0" max="40" value="0"></div>
+            </div>
+            <div class="field"><label for="s-role">Requested by (role)</label>
+              <select class="select" id="s-role"><option value="staff">Sales / support staff (limit 3%)</option><option value="manager" selected>Branch manager (limit 8%)</option><option value="ops">Operations admin (limit 10%)</option><option value="owner">Owner (no limit · reason logged)</option></select></div>
+            <label class="check small"><input type="checkbox" id="s-after"> Simulate on 1 Oct 2026 (Dealer Gold v7 expired, v8 not approved)</label>
+            <div class="row wrap gap-6"><span class="small muted">Try:</span>
+              <button class="chip" data-preset="consumer-hub">Consumer + FESTIVE5</button>
+              <button class="chip" data-preset="grade-b">Grade B clearance + coupon</button>
+              <button class="chip" data-preset="floor">14% off · below floor</button>
+              <button class="chip" data-preset="expired">Expired Gold list</button>
+            </div>
+          </div>
+          <div class="card" style="overflow:hidden">
+            <div class="card-head"><div><h3>Calculation</h3><div class="sub" id="s-sub"></div></div><span class="badge b-outline mono">rule set v2026.09.3</span></div>
+            <ol class="calc" id="s-steps"></ol>
+            <div class="final" id="s-final"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROMOTIONS -->
+    <div class="tab-panel" data-panel="promotions">
+      <div class="table-toolbar">
+        <div class="seg"><button class="active">All (8)</button><button>Live (4)</button><button>Scheduled (2)</button><button>Paused / ended (2)</button></div>
+        <span class="ml-auto"></span>
+        <button class="btn btn-sm" data-toast="Coupon codes generated: 500 single-use codes (batch CB-0092)"><i data-icon="copy" class="ic-sm"></i> Generate single-use codes</button>
+        <button class="btn btn-sm btn-primary" data-toast="Promotion draft created · needs approval before going live"><i data-icon="plus" class="ic-sm"></i> New promotion</button>
+      </div>
+      <div class="table-wrap"><table class="table">
+        <thead><tr><th>Promotion / code</th><th>Type</th><th>Eligibility</th><th>Benefit</th><th>Stacking</th><th>Validity</th><th class="r">Usage / budget</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td><div class="cell-main mono">FESTIVE5</div><div class="cell-sub">Navratri accessories & audio</div></td><td><span class="badge b-brand">Coupon</span></td><td class="small">Guests & consumers · Accessories, Audio · min ₹1,500</td><td class="small">5% off, max ₹1,000 / order</td><td class="small">Exclusive with automatic clearance · not with dealer lists</td><td class="small">20 Sep – 5 Oct</td><td class="r"><div class="small strong">412 / 2,000</div><div class="meter thin mt-4"><span style="width:21%"></span></div></td><td><span class="status s-ok">Live</span></td></tr>
+          <tr><td><div class="cell-main mono">AUTO-CLEAR-B10</div><div class="cell-sub">Grade B monitors & printers</div></td><td><span class="badge b-accent">Automatic</span></td><td class="small">Consumers · Refurbished Grade B · Monitors, Printers</td><td class="small">10% off list</td><td class="small">No coupons on top (exclusive)</td><td class="small">1 Sep – 31 Oct</td><td class="r"><div class="small strong">64 orders</div><div class="cell-sub">₹61,200 given</div></td><td><span class="status s-ok">Live</span></td></tr>
+          <tr><td><div class="cell-main mono">HDFC-2000</div><div class="cell-sub">Bank instant discount</div></td><td><span class="badge b-info">Payment offer</span></td><td class="small">HDFC credit cards · Laptops ≥ ₹50,000</td><td class="small">₹2,000 instant (bank-funded)</td><td class="small">Applied by payment provider · shown separately, not in list price</td><td class="small">15 Sep – 15 Oct</td><td class="r"><div class="small strong">38 orders</div><div class="cell-sub">funded by bank</div></td><td><span class="status s-ok">Live</span></td></tr>
+          <tr><td><div class="cell-main mono">WELCOME300</div><div class="cell-sub">First order</div></td><td><span class="badge b-brand">Coupon</span></td><td class="small">New consumer accounts · first order ≥ ₹5,000</td><td class="small">₹300 off</td><td class="small">Combines with automatic promotions</td><td class="small">Always on</td><td class="r"><div class="small strong text-warn">₹1.62 L / ₹2 L</div><div class="meter thin m-warn mt-4"><span style="width:81%"></span></div></td><td><span class="status s-warn">Live · 81% budget</span></td></tr>
+          <tr><td><div class="cell-main mono">BUNDLE-KB-MS</div><div class="cell-sub">Keychron K2 + Logitech G305</div></td><td><span class="badge">Bundle</span></td><td class="small">All buyers incl. dealers</td><td class="small">₹500 off the pair</td><td class="small">Dealer-eligible (flagged) · after tier</td><td class="small">1 Oct – 31 Oct</td><td class="r"><span class="small muted">—</span></td><td><span class="status s-info">Scheduled</span></td></tr>
+          <tr><td><div class="cell-main mono">DIWALI26</div><div class="cell-sub">Festive sitewide</div></td><td><span class="badge b-brand">Coupon</span></td><td class="small">Consumers · excludes Apple & GPUs</td><td class="small">7% off, max ₹3,000</td><td class="small">Exclusive</td><td class="small">17 Oct – 3 Nov</td><td class="r"><span class="small muted">Budget ₹5 L</span></td><td><span class="status s-warn">Awaiting approval</span></td></tr>
+          <tr><td><div class="cell-main mono">DEALERDAY</div><div class="cell-sub">Bulk SSD push</div></td><td><span class="badge b-vendor">Dealer promotion</span></td><td class="small">Dealer Gold · Storage · 20+ units</td><td class="small">Extra 1% after tier</td><td class="small">Explicitly stacks with tier</td><td class="small">Paused 24 Sep</td><td class="r"><span class="small muted">9 orders</span></td><td><span class="status s-muted">Paused · stock low</span></td></tr>
+          <tr><td><div class="cell-main mono">MONSOON10</div><div class="cell-sub">Monsoon sale</div></td><td><span class="badge b-brand">Coupon</span></td><td class="small">Consumers · sitewide</td><td class="small">10% off, max ₹1,500</td><td class="small">Exclusive</td><td class="small">1 – 31 Aug</td><td class="r"><span class="small muted">1,902 used</span></td><td><span class="status s-muted">Ended</span></td></tr>
+        </tbody>
+      </table></div>
+      <div class="grid g-3 card-body" style="border-top:1px solid var(--line-2)">
+        <div data-anno="1A · Stacking policy is explicit, not 'best discount wins'">
+          <h4 class="mb-8">Stacking policy (rule set v2026.09.3)</h4>
+          <ul class="small subtle" style="margin:0;padding-left:18px;line-height:1.8">
+            <li>Max <b>one coupon</b> per order.</li>
+            <li>Automatic promotions + coupon only if both are marked combinable.</li>
+            <li>Consumer promotions never apply on top of dealer lists or contracts.</li>
+            <li>Dealer promotions apply <b>after</b> the quantity tier, only when flagged.</li>
+            <li>Bank / payment offers are applied by the provider and itemised separately.</li>
+            <li>If two exclusive promotions qualify, the <b>higher-priority rule</b> wins — not automatically the larger discount.</li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="mb-8">Coupon validation failures · 24 h</h4>
+          <div class="list-row" style="padding:8px 0"><span class="li-icon"><i data-icon="clock"></i></span><div class="grow small"><b>Expired code</b> <span class="muted">· MONSOON10</span></div><b>41</b></div>
+          <div class="list-row" style="padding:8px 0"><span class="li-icon"><i data-icon="briefcase"></i></span><div class="grow small"><b>Not valid on dealer pricing</b></div><b>6</b></div>
+          <div class="list-row" style="padding:8px 0"><span class="li-icon"><i data-icon="rupee"></i></span><div class="grow small"><b>Minimum basket not met</b></div><b>18</b></div>
+          <div class="list-row" style="padding:8px 0"><span class="li-icon warn"><i data-icon="alert"></i></span><div class="grow small"><b>Rate-limited guesses</b> <span class="muted">· 1 IP blocked 30 min</span></div><b>3</b></div>
+        </div>
+        <div>
+          <h4 class="mb-8">Budget & abuse controls</h4>
+          <dl class="kv"><dt>Per-customer limit</dt><dd>1 use / code (verified phone)</dd><dt>Budget stop</dt><dd>Auto-pause at 100% of budget</dd><dt>Refund handling</dt><dd>Original line discount used for refund</dd><dt>Approval</dt><dd>New promotions > ₹1 L budget → Owner</dd></dl>
+        </div>
+      </div>
+    </div>
+
+    <!-- MARGIN & AUTHORITY -->
+    <div class="tab-panel" data-panel="controls">
+      <div class="card-body">
+        <div class="callout c-warn mb-16" data-anno="§18.1 Thresholds are placeholders until the client supplies them">
+          <i data-icon="alert"></i><div><strong>Placeholder thresholds.</strong> The margin floors and % limits below are proposed values for the prototype. Exact limits must be supplied and signed off by the client (discovery question 36) before they are enforced as policy.</div>
+        </div>
+        <div class="grid" style="grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);gap:20px">
+          <div>
+            <div class="row-between mb-8"><h4>Margin floors</h4><button class="btn btn-xs" data-toast="Floor change drafted · needs Owner approval"><i data-icon="edit" class="ic-sm"></i> Edit</button></div>
+            <table class="table compact" style="border:1px solid var(--line);border-radius:var(--r)">
+              <thead><tr><th>Scope</th><th class="r">Floor</th><th class="r">30 d</th><th>On breach</th></tr></thead>
+              <tbody>
+                <tr><td>New · all categories</td><td class="r strong">5%</td><td class="r">4</td><td class="small">Approval with reason</td></tr>
+                <tr><td>Open box</td><td class="r strong">6%</td><td class="r">1</td><td class="small">Approval with reason</td></tr>
+                <tr><td>Refurbished (A & B)</td><td class="r strong">8%</td><td class="r">2</td><td class="small">Approval with reason</td></tr>
+                <tr><td>Used</td><td class="r strong">10%</td><td class="r">0</td><td class="small">Approval with reason</td></tr>
+                <tr><td>Customer contracts</td><td class="r strong">3%</td><td class="r">0</td><td class="small">Block · Owner only</td></tr>
+              </tbody>
+            </table>
+            <p class="small muted mt-8">Margin = (net unit price ex-GST − known landed cost) ÷ net price. Cost & margin are visible only to Finance, Operations admin and Owner roles.</p>
+          </div>
+          <div data-anno="§18.1 Authority matrix by role">
+            <div class="row-between mb-8"><h4>Discount & pricing authority by role</h4><a class="small strong" href="erp-admin.html#thresholds">Approval thresholds →</a></div>
+            <table class="table compact" style="border:1px solid var(--line);border-radius:var(--r)">
+              <thead><tr><th>Action</th><th class="c">Sales / support</th><th class="c">Branch mgr</th><th class="c">Ops admin</th><th class="c">Finance</th><th class="c">Owner</th></tr></thead>
+              <tbody id="auth-body"></tbody>
+            </table>
+            <div class="row gap-16 mt-8 small muted"><span class="row gap-4"><i data-icon="check" class="ic-sm text-ok"></i> Allowed</span><span class="row gap-4"><i data-icon="minus" class="ic-sm"></i> Not allowed</span><span>“Request” = creates an approval item</span><span>Nobody approves their own request</span></div>
+          </div>
+        </div>
+        <hr>
+        <div class="row-between mb-8"><h4>Open override requests</h4><a class="small strong" href="erp-automation.html#approvals">Approval queue →</a></div>
+        <div class="exc" style="padding:12px 0">
+          <span class="sev serious"><i data-icon="alert"></i> Serious</span>
+          <div><div class="e-title">14% discount on assisted order TXO-10491 · 10 × Dell monitors · school tender</div>
+            <div class="e-meta"><span><i data-icon="user"></i> Vikram Shetty (limit 8%)</span><span><i data-icon="percent"></i> Margin after discount 3.1% · floor 5%</span><span><i data-icon="clock"></i> 1 h 12 min · due 13:00</span><span><i data-icon="flag"></i> Approver: Owner</span></div></div>
+          <div class="e-act"><button class="btn btn-sm btn-ok" data-open="m-decide">Decide</button></div>
+        </div>
+        <div class="exc" style="padding:12px 0">
+          <span class="sev good"><i data-icon="check-circle"></i> Resolved</span>
+          <div><div class="e-title">6% extra on 25 × Kingston FURY 16 GB for Sai Systems (quote Q-88102)</div>
+            <div class="e-meta"><span><i data-icon="user"></i> Karthik R. (limit 3%) → Anita Rao (delegated ≤ 10%)</span><span><i data-icon="percent"></i> Margin 7.9%</span><span><i data-icon="check"></i> Approved 25 Sep 16:40 · reason “matching distributor quote”</span></div></div>
+          <div class="e-act"><button class="btn btn-sm" data-goto="audit">Audit</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EDGE CASE RULES -->
+    <div class="tab-panel" data-panel="rules">
+      <div class="table-wrap"><table class="table">
+        <thead><tr><th style="width:24%">Case</th><th>Engine behaviour</th><th>Status</th><th>Acceptance test</th></tr></thead>
+        <tbody>
+          <tr><td class="strong">Dealer signs out</td><td class="small">Private price and cached responses are no longer accessible; pages re-render with public prices.</td><td><span class="status s-ok">Configured</span></td><td class="mono small">AT-PR-01 ✓</td></tr>
+          <tr><td class="strong">Guest sends <span class="mono">customer_type=dealer</span></td><td class="small">Server ignores untrusted classification and derives context from the session. Event logged (3 in 24 h).</td><td><span class="status s-ok">Configured</span></td><td class="mono small">AT-PR-02 ✓</td></tr>
+          <tr><td class="strong">Promotion + dealer discount</td><td class="small">Stacking policy applied; the explanation is shown to staff and the buyer.</td><td><span class="status s-ok">Configured</span></td><td class="mono small">AT-PR-03 ✓</td></tr>
+          <tr><td class="strong">Expired price list</td><td class="small">Falls back to the list's defined fallback (Gold → Standard → block checkout). Never ₹0.</td><td><span class="status s-ok">Configured</span></td><td class="mono small">AT-PR-04 ✓</td></tr>
+          <tr><td class="strong">Below minimum margin</td><td class="small">Line held; approval request routed to authorised role with reason and deadline.</td><td><span class="status s-ok">Configured</span></td><td class="mono small">AT-PR-05 ✓</td></tr>
+          <tr><td class="strong">Quantity changes after quote</td><td class="small">Tier recalculated; buyer must confirm the new total before reservation.</td><td><span class="status s-ok">Configured</span></td><td class="mono small">AT-PR-06 ✓</td></tr>
+          <tr><td class="strong">Location changes</td><td class="small">Re-evaluate serviceability, place of supply (CGST+SGST ↔ IGST) and any location price list.</td><td><span class="status s-ok">Configured</span></td><td class="mono small">AT-PR-07 ✓</td></tr>
+          <tr><td class="strong">Refund on discounted order</td><td class="small">Uses the original allocated line discount and tax records from the order line.</td><td><span class="status s-ok">Configured</span></td><td class="mono small">AT-PR-08 ✓</td></tr>
+          <tr><td class="strong">Supplier changes cost</td><td class="small">Live retail/dealer prices do <b>not</b> change automatically. A suggestion is drafted for review.</td><td><span class="status s-ok">Configured</span></td><td class="mono small">AT-PR-09 ✓</td></tr>
+          <tr><td class="strong">Shared page cache</td><td class="small">Public prices may be cached at the edge; private price responses are per-account and never cached publicly.</td><td><span class="status s-ok">Configured</span></td><td class="mono small">AT-PR-10 ✓</td></tr>
+          <tr><td class="strong">Partial return of tiered order</td><td class="small">Awaiting client policy (keep original tier vs adjustment).</td><td><span class="status s-warn">Decision pending</span></td><td class="mono small">AT-PR-11 —</td></tr>
+          <tr><td class="strong">Tier scope: per SKU or basket</td><td class="small">Prototype uses per SKU; basket-level mixing is discovery question 33.</td><td><span class="status s-warn">Decision pending</span></td><td class="mono small">AT-PR-12 —</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <!-- PENDING CHANGES -->
+    <div class="tab-panel" data-panel="approvals">
+      <div class="card-body col gap-16">
+        <div class="card" style="overflow:hidden" data-anno="1A · R06 Pending change shown as a diff; live list unchanged until approved">
+          <div class="card-head">
+            <div><div class="row gap-8"><h3>Dealer Gold · Q4 2026 revision</h3><span class="badge b-warn">Awaiting approval</span><span class="badge b-outline mono">v7 → v8</span></div>
+              <div class="sub">PCR-0412 · requested by Anita Rao (Operations admin) 26 Sep 10:05 · effective 1 Oct 2026 00:00 · approver: Owner · due 29 Sep</div></div>
+            <div class="row gap-8"><button class="btn btn-sm btn-danger" data-open="m-decide" data-decision="reject">Reject</button><button class="btn btn-sm" data-open="m-decide" data-decision="changes">Request changes</button><button class="btn btn-sm btn-ok" data-open="m-decide" data-decision="approve"><i data-icon="check" class="ic-sm"></i> Approve</button></div>
+          </div>
+          <div class="card-body">
+            <div class="grid g-4 mb-16">
+              <div class="panel"><div class="small muted">SKUs changed</div><div class="strong" style="font-size:18px">38 <span class="small muted">of 1,904</span></div></div>
+              <div class="panel"><div class="small muted">Average change</div><div class="strong" style="font-size:18px">−1.8%</div></div>
+              <div class="panel"><div class="small muted">Est. margin impact / month</div><div class="strong text-warn" style="font-size:18px">−₹1.21 L</div></div>
+              <div class="panel"><div class="small muted">Below margin floor</div><div class="strong text-bad" style="font-size:18px" id="floor-count">3 SKUs</div></div>
+            </div>
+            <div class="callout c-brand small mb-16"><i data-icon="info"></i><div><b>Reason given:</b> “Prime IT Distributors cut Q4 costs on Samsung/SanDisk SSDs and Kingston RAM by 4–6%. Matching the Mysuru market rate for Dealer Gold before Diwali stocking.” · Evidence: PO-2026-0187 cost sheet, 3 competitor quotes (attached).</div></div>
+            <h4 class="mb-8">List header</h4>
+            <div class="diff mb-16">
+              <div class="dh">Field</div><div class="dh">Live · v7</div><div class="dh">Proposed · v8</div>
+              <div class="same">Validity</div><div class="old">1 Jul 2026 – 30 Sep 2026</div><div class="new">1 Oct 2026 – 31 Dec 2026</div>
+              <div class="same">Fallback on expiry</div><div class="same">Dealer Standard</div><div class="same">Dealer Standard</div>
+              <div class="same">Assigned accounts</div><div class="same">14 accounts</div><div class="same">14 accounts (unchanged)</div>
+              <div class="same">Tier mode</div><div class="same">All-units · 5+ / 10+</div><div class="new">All-units · 5+ / 10+ / 25+ (storage only)</div>
+              <div class="same">Rounding</div><div class="old">Nearest ₹10</div><div class="new">Nearest ₹10 · ends in 0</div>
+            </div>
+            <div class="row-between mb-8"><h4>Line changes <span class="muted small">(showing 10 of 38)</span></h4><div class="seg"><button class="active">All</button><button>Decreases</button><button>Increases</button><button>Floor breaches</button></div></div>
+            <div class="table-wrap" style="border:1px solid var(--line);border-radius:var(--r)"><table class="table compact">
+              <thead><tr><th>Product</th><th class="r">List ex-GST</th><th class="r">5+ tier</th><th class="r">10+ tier</th><th class="r">Price Δ</th><th class="r">Cost Δ</th><th class="r">Margin at 10+</th><th>Check</th></tr></thead>
+              <tbody id="diff-body"></tbody>
+            </table></div>
+          </div>
+          <div class="card-foot"><span class="small muted row gap-6"><i data-icon="lock" class="ic-sm"></i> Anita Rao requested this change and cannot approve it (separation of duties). Quotes locked before 1 Oct keep their locked price.</span><span class="small muted">Live list v7 stays in effect until approval.</span></div>
+        </div>
+
+        <div class="card" data-anno="§8.4 Supplier cost changes never auto-change live prices">
+          <div class="card-head"><div><h3>Supplier cost changes detected</h3><div class="sub">From supplier price files & POs · live prices are NOT changed automatically — each signal needs a decision</div></div><span class="badge b-info">6 signals</span></div>
+          <div class="table-wrap"><table class="table compact">
+            <thead><tr><th>Product</th><th>Source</th><th class="r">Cost change</th><th class="r">Margin at current price</th><th>Suggested</th><th class="r">Action</th></tr></thead>
+            <tbody id="cost-body"></tbody>
+          </table></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AUDIT -->
+    <div class="tab-panel" data-panel="audit">
+      <div class="table-toolbar">
+        <div class="input-icon" style="width:260px"><i data-icon="search"></i><input class="input input-sm" placeholder="Search actor, SKU, list…" aria-label="Search audit"></div>
+        <select class="select input-sm" style="width:auto" aria-label="Object type"><option>All objects</option><option>Price lists</option><option>Tiers</option><option>Promotions</option><option>Overrides</option><option>Security events</option></select>
+        <span class="ml-auto small muted">Immutable · before/after · reason · approval reference</span>
+        <button class="btn btn-sm" data-toast="Audit export queued (CSV, formula-safe)"><i data-icon="download" class="ic-sm"></i> Export</button>
+      </div>
+      <div class="table-wrap"><table class="table">
+        <thead><tr><th>When</th><th>Actor</th><th>Object</th><th>Change</th><th>Reason</th><th>Approval</th></tr></thead>
+        <tbody>
+          <tr><td class="small nowrap">26 Sep 10:05</td><td><div class="row gap-8"><span class="avatar sm" style="background:#7c3aed">AR</span>Anita Rao</div></td><td class="small">Dealer Gold v8</td><td class="small">Draft submitted · 38 SKU lines</td><td class="small">Distributor Q4 cost drop</td><td><span class="status s-warn">PCR-0412 pending</span></td></tr>
+          <tr><td class="small nowrap">25 Sep 18:20</td><td><div class="row gap-8"><span class="avatar sm" style="background:#2a3656">⚙</span>Price engine</div></td><td class="small">Supplier cost file · Prime IT</td><td class="small">6 cost signals created · <b>no live price changed</b></td><td class="small">Rule: cost changes → suggestion only</td><td><span class="status s-muted">n/a</span></td></tr>
+          <tr><td class="small nowrap">25 Sep 16:40</td><td><div class="row gap-8"><span class="avatar sm" style="background:#7c3aed">AR</span>Anita Rao</div></td><td class="small mono">Q-88102</td><td class="small">Extra discount 0% → 6% · 25 × ram-01</td><td class="small">Matching distributor quote</td><td><span class="status s-ok">APR-0398 · delegated</span></td></tr>
+          <tr><td class="small nowrap">25 Sep 16:02</td><td><div class="row gap-8"><span class="avatar sm" style="background:#2e5bff">RM</span>Rajesh Menon</div></td><td class="small mono">FESTIVE5</td><td class="small">Budget ₹1 L → ₹2 L</td><td class="small">Strong conversion first 5 days</td><td><span class="status s-ok">Owner</span></td></tr>
+          <tr><td class="small nowrap">24 Sep 11:10</td><td><div class="row gap-8"><span class="avatar sm" style="background:#b42318">!</span>Security</div></td><td class="small">Storefront price API</td><td class="small">3 guest requests with <span class="mono">customer_type=dealer</span> ignored</td><td class="small">Server-derived context</td><td><span class="status s-info">Logged</span></td></tr>
+          <tr><td class="small nowrap">24 Sep 09:30</td><td><div class="row gap-8"><span class="avatar sm" style="background:#0e9f8a">VS</span>Vikram Shetty</div></td><td class="small mono">DEALERDAY</td><td class="small">Live → Paused</td><td class="small">Samsung T7 stock below 20</td><td><span class="status s-ok">Within role</span></td></tr>
+          <tr><td class="small nowrap">23 Sep 15:31</td><td><div class="row gap-8"><span class="avatar sm" style="background:#7c3aed">AR</span>Anita Rao</div></td><td class="small">Coastal Infotech</td><td class="small">Price list Dealer Standard → Dealer Gold</td><td class="small">₹12 L annual volume reached</td><td><span class="status s-ok">APR-0381 · Owner</span></td></tr>
+          <tr><td class="small nowrap">21 Sep 09:00</td><td><div class="row gap-8"><span class="avatar sm" style="background:#2a3656">⚙</span>Release</div></td><td class="small">Rule set</td><td class="small">v2026.09.2 → v2026.09.3 (stacking: coupon exclusive with clearance)</td><td class="small">Change request CR-118</td><td><span class="status s-ok">Owner + Finance</span></td></tr>
+          <tr><td class="small nowrap">20 Sep 17:12</td><td><div class="row gap-8"><span class="avatar sm" style="background:#c2410c">DK</span>Deepa Krishnan</div></td><td class="small">Margin floor · Open box</td><td class="small">5% → 6%</td><td class="small">Higher return rate on open-box items</td><td><span class="status s-ok">APR-0366 · Owner</span></td></tr>
+          <tr><td class="small nowrap">18 Sep 12:02</td><td><div class="row gap-8"><span class="avatar sm" style="background:#2a3656">⚙</span>Price engine</div></td><td class="small mono">Q-87990</td><td class="small">Honoured locked price after list change (lock valid to 18 Sep 13:40)</td><td class="small">Quote lock policy</td><td><span class="status s-muted">n/a</span></td></tr>
+        </tbody>
+      </table></div>
+      <div class="pager"><span>Showing 10 of 1,284 events</span><div class="pages"><button class="active">1</button><button>2</button><button>3</button><button>…</button><button>129</button></div></div>
+    </div>
+  </section>
+
+  <!-- Price list drawer -->
+  <div class="drawer" id="d-list"><div class="drawer-card wide">
+    <div class="drawer-head"><div id="dl-head"></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="drawer-body" id="dl-body"></div>
+    <div class="drawer-foot"><button class="btn" data-close>Close</button><button class="btn" data-toast="Copied as draft · edit lines and submit for approval"><i data-icon="copy" class="ic-sm"></i> Duplicate as draft</button><button class="btn btn-primary" data-toast="Draft change opened · live list unchanged until approved"><i data-icon="edit" class="ic-sm"></i> Propose change</button></div>
+  </div></div>
+
+  <!-- New price list modal -->
+  <div class="modal" id="m-newlist"><div class="modal-card lg">
+    <div class="modal-head"><div><h3>New price list</h3><div class="small muted">Created as a draft · goes live only after approval</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="field"><label class="req" for="nl-name">Name</label><input class="input" id="nl-name" placeholder="e.g. Dealer Platinum"></div>
+        <div class="field"><label for="nl-type">Type</label><select class="select" id="nl-type"><option>Dealer</option><option>Location</option><option>Customer contract</option><option>Public</option></select></div>
+        <div class="field"><label>Price display</label><div class="seg"><button class="active">Ex-GST (B2B)</button><button>GST-inclusive (B2C)</button></div></div>
+        <div class="field"><label for="nl-basis">Basis</label><select class="select" id="nl-basis"><option>Derived: Public list −7% ex-GST</option><option>Copy of Dealer Gold v7</option><option>Explicit per-SKU prices (import)</option></select></div>
+        <div class="field"><label class="req" for="nl-from">Valid from</label><input class="input" id="nl-from" type="date" value="2026-10-01"></div>
+        <div class="field"><label class="req" for="nl-to">Valid to</label><input class="input" id="nl-to" type="date" value="2026-12-31"></div>
+        <div class="field"><label class="req" for="nl-fb">Fallback on expiry</label><select class="select" id="nl-fb"><option>Dealer Standard</option><option>Public list</option><option>Block checkout (quote only)</option></select><span class="hint">Required — a list can never fall back to ₹0.</span></div>
+        <div class="field"><label for="nl-round">Rounding</label><select class="select" id="nl-round"><option>Nearest ₹10</option><option>Ends in 9 (B2C)</option><option>None (paise)</option></select></div>
+        <div class="field full"><label for="nl-reason" class="req">Reason for change</label><textarea class="textarea" id="nl-reason" placeholder="Why is this list needed? Visible to the approver and kept in the audit log."></textarea></div>
+      </div>
+    </div>
+    <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-primary" data-close data-toast="Draft PL-DRAFT-0019 created · submit for approval when lines are ready">Create draft</button></div>
+  </div></div>
+
+  <!-- Decision modal -->
+  <div class="modal" id="m-decide"><div class="modal-card">
+    <div class="modal-head"><h3 id="dec-title">Decide on change</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-body col gap-12">
+      <div class="seg" id="dec-seg"><button data-d="approve" class="active">Approve</button><button data-d="changes">Request changes</button><button data-d="reject">Reject</button></div>
+      <div class="field"><label class="req" for="dec-reason">Reason (recorded in audit log)</label><textarea class="textarea" id="dec-reason" placeholder="e.g. Approved except the 3 floor-breach SKUs — keep v7 prices for those."></textarea><span class="err hidden" id="dec-err">A reason is required for every decision.</span></div>
+      <label class="check small"><input type="checkbox" checked> Notify requester and affected account managers</label>
+      <div class="callout c-info small"><i data-icon="info"></i><div>Approving publishes v8 on its effective date. Locked quotes keep their price until the lock expires.</div></div>
+    </div>
+    <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-primary" id="dec-submit">Submit decision</button></div>
+  </div></div>
+</main>
+<script src="assets/tradex.js"></script>
+<script>
+TX.ready(() => {
+  const $ = TX.$, $$ = TX.$$, ic = TX.icon, fmt = TX.fmt;
+  const fmt2 = (n) => "₹" + n.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const r10 = (n) => Math.round(n / 10) * 10;
+  const GST = 0.18;
+  const COSTF = { new: 0.90, openbox: 0.86, "refurb-a": 0.80, "refurb-b": 0.80, used: 0.75 };
+  const FLOOR = { new: 5, openbox: 6, "refurb-a": 8, "refurb-b": 8, used: 10 };
+  const cost = (p) => p.dealer * COSTF[p.cond];
+  const floorOf = (p) => FLOOR[p.cond];
+  const std = (p) => r10(p.dealer * 1.03);
+  const stdTiers = (p) => [{ min: 5, p: r10(std(p) * 0.97) }, { min: 10, p: r10(std(p) * 0.95) }];
+  const margin = (price, p) => ((price - cost(p)) / price) * 100;
+
+  /* ---------- Tab helpers ---------- */
+  const go = (id) => { TX.activateTab(id); $("#tabs-main").scrollIntoView({ behavior: "smooth", block: "start" }); };
+  document.addEventListener("click", (e) => {
+    const g = e.target.closest("[data-goto]"); if (g) go(g.dataset.goto);
+    if (e.target.closest("[data-sim-jump]")) go("simulator");
+  });
+
+  /* ---------- Price lists ---------- */
+  const LISTS = [
+    { id: "retail", name: "Retail · Public", code: "PL-RETAIL", type: "Public", basis: "Base list · GST-inclusive display", from: "1 Apr 2026", to: "Open-ended", assigned: "Guests, consumers & anyone without a private list", skus: 2318, ver: "v14", status: ["s-ok", "Active"], fallback: "— (base list)" },
+    { id: "std", name: "Dealer Standard", code: "PL-DLR-STD", type: "Dealer", basis: "Public −4% · ex-GST display · tiers 5+/10+", from: "1 Jul 2026", to: "31 Dec 2026", assigned: "28 business accounts", skus: 1904, ver: "v6", status: ["s-ok", "Active"], fallback: "Public list (shown ex-GST)" },
+    { id: "gold", name: "Dealer Gold", code: "PL-DLR-GOLD", type: "Dealer", basis: "Public −7% · ex-GST display · tiers 5+/10+", from: "1 Jul 2026", to: "30 Sep 2026", assigned: "14 business accounts", skus: 1904, ver: "v7", status: ["s-warn", "Expires in 4 days"], fallback: "Dealer Standard" },
+    { id: "gold8", name: "Dealer Gold · Q4 revision", code: "PL-DLR-GOLD", type: "Dealer", basis: "38 SKU changes vs v7", from: "1 Oct 2026", to: "31 Dec 2026", assigned: "Same 14 accounts on approval", skus: 1904, ver: "v8", status: ["s-warn", "Awaiting approval"], fallback: "Dealer Standard" },
+    { id: "mys", name: "Location · Mysuru", code: "PL-LOC-MYS", type: "Location", basis: "Public −2% on monitors, storage, accessories · GST-incl.", from: "15 Aug 2026", to: "31 Oct 2026", assigned: "Mysuru branch POS + PIN 570001–570030", skus: 64, ver: "v2", status: ["s-ok", "Active"], fallback: "Retail · Public" },
+    { id: "ct7", name: "Contract · Coastal Infotech AMC", code: "CT-0007", type: "Contract", basis: "Fixed per-SKU prices · laptops, storage, networking", from: "1 Apr 2026", to: "31 Mar 2027", assigned: "Coastal Infotech (1 account)", skus: 12, ver: "v3", status: ["s-ok", "Active"], fallback: "Dealer Gold" },
+    { id: "silver", name: "Dealer Silver (retired)", code: "PL-DLR-SLV", type: "Dealer", basis: "Public −5% · merged into Standard", from: "1 Jan 2026", to: "30 Jun 2026", assigned: "0 accounts (moved to Standard)", skus: 1720, ver: "v4", status: ["s-muted", "Expired"], fallback: "Dealer Standard" },
+  ];
+  const typeBadge = { Public: "b-brand", Dealer: "b-vendor", Location: "b-info", Contract: "b-accent" };
+  const renderLists = () => {
+    const q = ($("#list-filter").value || "").toLowerCase(); const t = ($("#list-type .active") || {}).dataset?.t || "all";
+    $("#lists-body").innerHTML = LISTS.filter((l) => (t === "all" || l.type === t) && (l.name + l.assigned + l.code).toLowerCase().includes(q)).map((l) => `
+      <tr data-list="${l.id}" style="cursor:pointer">
+        <td><div class="cell-main">${l.name}</div><div class="cell-sub mono">${l.code}</div></td>
+        <td><span class="badge ${typeBadge[l.type]}">${l.type}</span></td>
+        <td class="small">${l.basis}</td>
+        <td class="small nowrap">${l.from} →<br>${l.to}</td>
+        <td class="small">${l.assigned}</td>
+        <td class="r">${TX.num(l.skus)}</td>
+        <td class="mono small">${l.ver}</td>
+        <td><span class="status ${l.status[0]}">${l.status[1]}</span></td>
+        <td class="r"><button class="btn btn-ghost btn-icon btn-sm" aria-label="Open ${l.name}" data-list-open="${l.id}">${ic("chevron-right")}</button></td>
+      </tr>`).join("") || `<tr><td colspan="9"><div class="empty">${ic("search")}<h4>No price lists match</h4><p>Try another filter.</p></div></td></tr>`;
+  };
+  renderLists();
+  $("#list-filter").addEventListener("input", renderLists);
+  $("#list-type").addEventListener("click", (e) => { if (e.target.closest("button")) setTimeout(renderLists); });
+
+  const SAMPLE = ["lap-01", "lap-04", "mon-01", "gpu-01", "ssd-01", "ram-01", "net-02", "ms-02"];
+  const openList = (id) => {
+    const l = LISTS.find((x) => x.id === id);
+    $("#dl-head").innerHTML = `<div class="row gap-8"><h3>${l.name}</h3><span class="badge ${typeBadge[l.type]}">${l.type}</span><span class="status ${l.status[0]}">${l.status[1]}</span></div><div class="small muted mt-4 mono">${l.code} · ${l.ver} · ${l.from} → ${l.to}</div>`;
+    const priceFor = (p) => l.id === "retail" ? p.price / 1.18 : l.id === "std" ? std(p) : l.id === "mys" ? (Math.round(p.price * 0.98 / 10) * 10 - 1) / 1.18 : l.id === "ct7" ? r10(p.dealer * 0.96) : p.dealer;
+    const dealers = TX.dealers.filter((d) => (l.id === "gold" || l.id === "gold8") ? d.list === "Dealer Gold" : l.id === "std" ? d.list === "Dealer Standard" : l.id === "ct7" ? d.name === "Coastal Infotech" : false);
+    const acctRows = dealers.length ? dealers.map((d) => `<tr><td><div class="cell-main">${d.name}</div><div class="cell-sub">${d.contact} · ${d.city}</div></td><td><span class="status s-ok">${d.status}</span></td><td class="small">Prepaid</td><td class="r"><a class="small strong" href="erp-customers.html#business">Open</a></td></tr>`).join("") + (l.id === "std" ? `<tr><td colspan="4" class="small muted">+ 27 more accounts</td></tr>` : (l.id === "gold" || l.id === "gold8") ? `<tr><td colspan="4" class="small muted">+ 12 more accounts</td></tr>` : "")
+      : `<tr><td colspan="4" class="small muted">${l.assigned}</td></tr>`;
+    $("#dl-body").innerHTML = `
+      ${l.id === "gold" ? `<div class="callout c-warn mb-16 small">${ic("alert")}<div><b>Expires 30 Sep 23:59.</b> Successor v8 awaits approval. On expiry without a successor, 14 accounts are priced from <b>Dealer Standard</b> (defined fallback).</div></div>` : ""}
+      ${l.id === "silver" ? `<div class="callout c-info mb-16 small">${ic("info")}<div>Expired list kept read-only for audit and for orders placed while it was valid. It can't be assigned to new accounts.</div></div>` : ""}
+      <div class="grid g-2 mb-16">
+        <dl class="kv"><dt>Basis</dt><dd>${l.basis}</dd><dt>Tax display</dt><dd>${l.type === "Public" || l.type === "Location" ? "GST-inclusive (B2C)" : "Ex-GST + GST shown at checkout"}</dd><dt>Tier mode</dt><dd>${l.type === "Dealer" ? "All-units · per SKU · 5+ / 10+" : l.type === "Contract" ? "Fixed — no tiers" : "None"}</dd></dl>
+        <dl class="kv"><dt>Fallback on expiry</dt><dd>${l.fallback}</dd><dt>Rounding</dt><dd>${l.type === "Public" || l.type === "Location" ? "Ends in 9" : "Nearest ₹10"}</dd><dt>Owner</dt><dd>Anita Rao · approver Owner</dd></dl>
+      </div>
+      <h4 class="mb-8">Assigned accounts</h4>
+      <table class="table compact mb-16" style="border:1px solid var(--line);border-radius:var(--r)"><thead><tr><th>Account</th><th>Status</th><th>Payment terms</th><th></th></tr></thead><tbody>${acctRows}</tbody></table>
+      <div class="row-between mb-8"><h4>Sample lines</h4><span class="small muted">${TX.num(l.skus)} SKUs · margin visible to Finance/Owner only</span></div>
+      <table class="table compact mb-16" style="border:1px solid var(--line);border-radius:var(--r)"><thead><tr><th>Product</th><th class="r">Public incl. GST</th><th class="r">This list ${l.type === "Public" || l.type === "Location" ? "(ex-GST)" : "ex-GST"}</th><th class="r">5+</th><th class="r">10+</th><th class="r">Margin</th></tr></thead><tbody>
+      ${SAMPLE.map((id) => { const p = TX.byId(id); const lp = priceFor(p); const t = l.id === "std" ? stdTiers(p) : l.type === "Dealer" ? p.tiers : null; const m = margin(lp, p);
+        return `<tr><td><div class="row">${TX.ph(p.img, "thumb")}<div><div class="cell-main truncate" style="max-width:260px">${p.title}</div><div class="cell-sub mono">${p.sku}</div></div></div></td><td class="r">${fmt(p.price)}</td><td class="r strong">${fmt2(lp)}</td><td class="r">${t ? fmt(t[0].p) : "—"}</td><td class="r">${t ? fmt(t[1].p) : "—"}</td><td class="r ${m < floorOf(p) ? "text-bad" : ""}">${m.toFixed(1)}%</td></tr>`; }).join("")}
+      </tbody></table>
+      <h4 class="mb-8">Version history</h4>
+      <ul class="timeline">
+        <li class="${l.id === "gold8" ? "current" : "done"}"><span class="t-dot">${ic("check")}</span><div class="t-title">${l.ver} ${l.id === "gold8" ? "submitted for approval" : "published"}</div><div class="t-meta">${l.id === "gold8" ? "25 Sep 14:20 · Anita Rao · PCR-0412" : l.from + " · approved by Rajesh Menon"}</div></li>
+        <li class="done"><span class="t-dot">${ic("check")}</span><div class="t-title">Previous version archived</div><div class="t-meta">Orders keep the version they were priced with</div></li>
+        <li><span class="t-dot">${ic("plus")}</span><div class="t-title">List created</div><div class="t-meta">Jan 2026 · migration from legacy price sheet</div></li>
+      </ul>`;
+    TX.open("d-list");
+  };
+  document.addEventListener("click", (e) => { const r = e.target.closest("tr[data-list]"); if (r) openList(r.dataset.list); });
+
+  /* ---------- Quantity tiers ---------- */
+  const tierSku = $("#tier-sku");
+  tierSku.innerHTML = TX.products.map((p) => `<option value="${p.id}" ${p.id === "ssd-01" ? "selected" : ""}>${p.title} · ${p.sku}</option>`).join("");
+  let tierRows = null;
+  const tierList = () => ($("#tier-list .active") || {}).dataset?.l || "gold";
+  const loadTiers = () => {
+    const p = TX.byId(tierSku.value); const base = tierList() === "gold" ? p.dealer : std(p); const t = tierList() === "gold" ? p.tiers : stdTiers(p);
+    tierRows = [{ min: 1, p: base, base: true }, ...t.map((x) => ({ ...x }))];
+    renderTiers();
+  };
+  const renderTiers = () => {
+    const p = TX.byId(tierSku.value); const base = tierRows[0].p;
+    $("#tier-ctx").innerHTML = `${TX.ph(p.img, "thumb")}<div class="grow"><div class="strong">${p.title}</div><div class="muted">${TX.condBadge(p.cond)} &nbsp;Public ${fmt(p.price)} incl. GST · <span class="mono">${p.sku}</span></div></div><div class="r"><div class="muted">Est. landed cost</div><div class="strong">${fmt2(cost(p))}</div></div><div class="r"><div class="muted">Floor</div><div class="strong">${floorOf(p)}%</div></div>`;
+    $("#tier-body").innerHTML = tierRows.map((t, i) => { const m = margin(t.p, p); const ok = m >= floorOf(p);
+      return `<tr><td class="strong">${t.base ? "List" : "Tier " + i}</td>
+        <td class="r">${t.base ? "1" : `<input class="input tbl-input" style="width:64px" data-ti="${i}" data-f="min" value="${t.min}" aria-label="Minimum quantity">`}</td>
+        <td class="r"><input class="input tbl-input" data-ti="${i}" data-f="p" value="${t.p}" aria-label="Unit price"></td>
+        <td class="r small">${t.base ? "—" : ((t.p / base - 1) * 100).toFixed(1) + "%"}</td>
+        <td class="r small ${ok ? "" : "text-bad strong"}">${m.toFixed(1)}%</td>
+        <td>${ok ? `<span class="status s-ok">OK</span>` : `<span class="status s-bad" title="Needs approval">Below ${floorOf(p)}%</span>`}</td>
+        <td class="r">${t.base ? "" : `<button class="btn btn-ghost btn-icon btn-sm" data-tdel="${i}" aria-label="Remove tier">${ic("trash", "ic-sm")}</button>`}</td></tr>`; }).join("");
+    renderCompare();
+  };
+  const renderCompare = () => {
+    const q = Math.max(1, +$("#tier-qty").value || 1); const rows = [...tierRows].sort((a, b) => a.min - b.min);
+    const reached = [...rows].reverse().find((t) => q >= t.min);
+    const all = reached.p * q;
+    let grad = 0; const bandsG = [];
+    rows.forEach((t, i) => { const hi = i + 1 < rows.length ? rows[i + 1].min - 1 : Infinity; const n = Math.max(0, Math.min(q, hi) - t.min + 1); if (n > 0) { grad += n * t.p; bandsG.push([n, t]); } });
+    const colors = ["#2a78d6", "#eb6834", "#1baf7a", "#7c3aed"];
+    $("#cmp-all").textContent = fmt(all); $("#cmp-all-u").textContent = `${q} × ${fmt(reached.p)} ex-GST`;
+    $("#cmp-grad").textContent = fmt(grad); $("#cmp-grad-u").textContent = `avg ${fmt2(grad / q)} per unit`;
+    $("#bands-all").innerHTML = `<div style="flex:1;background:${colors[rows.indexOf(reached)]}">${q} @ ${fmt(reached.p)}</div>`;
+    $("#bands-grad").innerHTML = bandsG.map(([n, t]) => `<div style="flex:${n};background:${colors[rows.indexOf(t)]}" title="${n} @ ${fmt(t.p)}">${n / q < 0.3 ? n + "×" : n + " × " + TX.fmtK(t.p)}</div>`).join("");
+    $("#cmp-diff").innerHTML = all === grad ? "Both methods give the same total at this quantity." : `At ${q} units the dealer pays <b>${fmt(Math.abs(grad - all))}</b> ${grad > all ? "more" : "less"} under graduated pricing. Crossing a tier threshold under all-units lowers the price of <b>every</b> unit. ${rows.find((t) => t.min > q) ? `The storefront nudges: “Add ${rows.find((t) => t.min > q).min - q} more for ${fmt(rows.find((t) => t.min > q).p)} each”.` : ""}`;
+  };
+  tierSku.addEventListener("change", loadTiers);
+  $("#tier-list").addEventListener("click", (e) => { if (e.target.closest("button")) setTimeout(loadTiers); });
+  $("#tier-qty").addEventListener("change", renderCompare); $("#tier-qty").addEventListener("input", renderCompare);
+  $("#tier-body").addEventListener("change", (e) => { const inp = e.target.closest("[data-ti]"); if (!inp) return; tierRows[+inp.dataset.ti][inp.dataset.f] = Math.max(1, +inp.value || 1); renderTiers(); });
+  $("#tier-body").addEventListener("click", (e) => { const d = e.target.closest("[data-tdel]"); if (d) { tierRows.splice(+d.dataset.tdel, 1); renderTiers(); } });
+  $("#tier-add").addEventListener("click", () => { const last = tierRows[tierRows.length - 1]; tierRows.push({ min: last.min >= 10 ? last.min * 2 + 5 : 25, p: r10(last.p * 0.98) }); renderTiers(); TX.toast("Tier added · unsaved draft", "info"); });
+  loadTiers();
+
+  /* ---------- Authority matrix ---------- */
+  const Y = `<span class="perm"><span class="yes">${ic("check")}</span></span>`, N = `<span class="perm"><span class="no">${ic("minus")}</span></span>`, L = (t) => `<span class="perm"><span class="lim">${t}</span></span>`;
+  const AUTH = [
+    ["Manual line discount", L("≤ 3%"), L("≤ 8%"), L("≤ 10%"), N, L("Any · reason")],
+    ["Sell below margin floor", L("Request"), L("Request"), L("Request"), L("Review"), Y],
+    ["Assign / change dealer tier", L("Request"), L("Within policy"), Y, L("Review"), Y],
+    ["Create or edit promotion", N, L("Branch only"), L("≤ ₹1 L budget"), L("Review"), Y],
+    ["Publish price-list change", N, N, L("Request"), L("Review"), Y],
+    ["Override expired list / quote lock", N, N, L("Request"), N, Y],
+    ["View cost & margin", N, L("Own branch"), Y, Y, Y],
+  ];
+  $("#auth-body").innerHTML = AUTH.map((r) => `<tr><td class="small strong">${r[0]}</td>${r.slice(1).map((c) => `<td class="c auth-cell">${c}</td>`).join("")}</tr>`).join("");
+
+  /* ---------- Pending change diff ---------- */
+  // [id, list price factor, new supplier cost factor]
+  const DIFF = [["ssd-01", 0.95, 0.94], ["ssd-02", 0.94, 0.95], ["ssd-03", 0.95, 0.94], ["ram-01", 0.94, 0.94], ["ram-02", 0.96, 0.95], ["hdd-01", 0.97, 0.98], ["cpu-02", 0.98, 0.98], ["cool-01", 0.97, 0.99], ["net-02", 0.94, 0.94], ["usb-01", 0.97, 0.97]];
+  let breaches = 0;
+  $("#diff-body").innerHTML = DIFF.map(([id, f, cf]) => {
+    const p = TX.byId(id); const n = r10(p.dealer * f), n5 = r10(n * 0.97), n10 = r10(n * 0.95); const nc = cost(p) * cf; const m = ((n10 - nc) / n10) * 100; const bad = m < floorOf(p); if (bad) breaches++;
+    const ch = ((f - 1) * 100).toFixed(1);
+    return `<tr><td><div class="row">${TX.ph(p.img, "thumb")}<div><div class="cell-main truncate" style="max-width:300px">${p.title}</div><div class="cell-sub mono">${p.sku}</div></div></div></td>
+      <td class="r"><div class="old-v small">${fmt(p.dealer)}</div><div class="new-v">${fmt(n)}</div></td>
+      <td class="r"><div class="old-v small">${fmt(p.tiers[0].p)}</div><div class="new-v">${fmt(n5)}</div></td>
+      <td class="r"><div class="old-v small">${fmt(p.tiers[1].p)}</div><div class="new-v">${fmt(n10)}</div></td>
+      <td class="r small">${f < 1 ? "" : "+"}${ch}%</td><td class="r small">${cf < 1 ? "" : "+"}${((cf - 1) * 100).toFixed(1)}%</td>
+      <td class="r ${bad ? "text-bad strong" : ""}">${m.toFixed(1)}%</td>
+      <td>${bad ? `<span class="sev serious">${ic("alert")} Below ${floorOf(p)}% floor</span>` : `<span class="status s-ok">OK</span>`}</td></tr>`;
+  }).join("");
+  $("#floor-count").textContent = breaches + " SKUs";
+
+  const COST = [["gpu-01", "Prime IT price file · 25 Sep", 4.2], ["mb-01", "Prime IT price file · 25 Sep", 3.1], ["cpu-01", "PO-2026-0187 · invoice cost", -2.4], ["cam-04", "CamWorld Imports · feed", 6.8], ["lap-02", "RenewTech batch cost · GRN-0441", -5.0], ["mon-03", "Prime IT price file · 25 Sep", 1.2]];
+  $("#cost-body").innerHTML = COST.map(([id, src, pct]) => { const p = TX.byId(id); const nc = cost(p) * (1 + pct / 100); const m = ((p.price / 1.18 - nc) / (p.price / 1.18)) * 100; const md = ((p.dealer - nc) / p.dealer) * 100; const low = md < floorOf(p);
+    return `<tr><td><div class="cell-main truncate" style="max-width:320px">${p.title}</div><div class="cell-sub mono">${p.sku}</div></td><td class="small">${src}</td>
+      <td class="r"><span class="delta ${pct > 0 ? "up-bad" : "down-good"}">${pct > 0 ? "+" : ""}${pct}%</span></td>
+      <td class="r small">Public ${m.toFixed(1)}% · Gold <span class="${low ? "text-bad strong" : ""}">${md.toFixed(1)}%</span></td>
+      <td class="small">${low ? "Raise Gold list +" + Math.ceil(floorOf(p) - md + 1) + "%" : pct < 0 ? "Hold price (margin gain)" : "No change needed"}</td>
+      <td class="r"><div class="row-actions"><button class="btn btn-xs" data-toast="Draft change created from cost signal · live price unchanged">Draft change</button><button class="btn btn-xs btn-ghost" data-toast="Signal dismissed · reason required in audit">Dismiss</button></div></td></tr>`; }).join("");
+
+  /* ---------- Decision modal ---------- */
+  document.addEventListener("click", (e) => { const b = e.target.closest("[data-decision]"); if (b) { $$("#dec-seg button").forEach((x) => x.classList.toggle("active", x.dataset.d === b.dataset.decision)); } });
+  $("#dec-submit").addEventListener("click", () => {
+    const r = $("#dec-reason"); const d = ($("#dec-seg .active") || {}).dataset?.d || "approve";
+    if (!r.value.trim()) { r.classList.add("is-error"); $("#dec-err").classList.remove("hidden"); r.focus(); return; }
+    r.classList.remove("is-error"); $("#dec-err").classList.add("hidden"); TX.close(r); r.value = "";
+    TX.toast({ approve: "Approved · v8 goes live 1 Oct 00:00 · requester notified", changes: "Changes requested · returned to Anita R. with your comments", reject: "Rejected · v7 stays live until 30 Sep, then fallback applies" }[d]);
+  });
+
+  /* ---------- Simulator ---------- */
+  const sp = $("#s-prod");
+  sp.innerHTML = TX.categories.map((c) => { const items = TX.byCat(c.id); return items.length ? `<optgroup label="${c.name}">${items.map((p) => `<option value="${p.id}">${p.title} (${TX.conditions[p.cond].label})</option>`).join("")}</optgroup>` : ""; }).join("");
+  sp.value = "ssd-01";
+  const PROMOS = {
+    FESTIVE5: { state: "live", cats: ["accessories", "audio"], min: 1500, pct: 5, cap: 1000, combinable: false, dealer: false, label: "FESTIVE5 · 5% up to ₹1,000" },
+    WELCOME300: { state: "live", min: 5000, flat: 300, combinable: true, dealer: false, label: "WELCOME300 · ₹300 off first order" },
+    DEALERDAY: { state: "paused", label: "DEALERDAY" }, MONSOON10: { state: "ended on 31 Aug", label: "MONSOON10" }, DIWALI26: { state: "not live yet (starts 17 Oct, awaiting approval)", label: "DIWALI26" },
+  };
+  const LIMIT = { staff: 3, manager: 8, ops: 10, owner: 100 };
+  const ROLE = { staff: "Sales / support staff", manager: "Branch manager", ops: "Operations admin", owner: "Owner" };
+  const CONTRACT_CATS = ["laptops", "storage", "networking"], MYS_CATS = ["monitors", "storage", "accessories"];
+  const BUYER = { guest: "Guest", consumer: "Consumer · Priya Nair", dstd: "Dealer Standard · Sai Systems & Services", dgold: "Dealer Gold · Metro Computers", contract: "Contract · Coastal Infotech" };
+  const CH = { web: "Website", wa: "WhatsApp checkout link", assisted: "Assisted order (staff)", pos: "Branch POS" };
+
+  const simulate = () => {
+    const s = { id: sp.value, buyer: $("#s-buyer").value, qty: Math.max(1, +$("#s-qty").value || 1), ch: $("#s-ch").value, loc: $("#s-loc").value, coupon: $("#s-coupon").value.trim().toUpperCase(), disc: Math.max(0, +$("#s-disc").value || 0), role: $("#s-role").value, after: $("#s-after").checked };
+    const p = TX.byId(s.id), q = s.qty, dealer = ["dstd", "dgold", "contract"].includes(s.buyer);
+    $("#s-prod-card").innerHTML = `${TX.ph(p.img, "thumb-lg")}<div class="grow small"><div class="strong clamp-2">${p.title}</div><div class="mt-4">${TX.condBadge(p.cond)} <span class="muted mono">${p.sku}</span></div><div class="muted mt-4">Public ${fmt(p.price)} incl. GST · ${p.qty} available</div></div>`;
+    const steps = [];
+    // 1 context
+    steps.push({ st: "ok", t: "Context", d: `Tradex Electronics Pvt Ltd · INR · ${CH[s.ch]} · ${BUYER[s.buyer]}<br><span class="muted">${s.buyer === "guest" ? "Guest session — any client-sent customer type is ignored; public prices only" : "Buyer context derived server-side from the signed-in account"}</span>`, v: "" });
+    // 2 base
+    let base, list = "public", st2 = "ok", d2;
+    const goldValid = !s.after;
+    if (s.buyer === "contract" && CONTRACT_CATS.includes(p.cat)) { base = r10(p.dealer * 0.96); list = "contract"; d2 = `Customer contract <b>CT-0007</b> line found (valid to 31 Mar 2027) — dealer & public lists not consulted`; }
+    else if (s.buyer === "dgold" || s.buyer === "contract") {
+      if (goldValid) { base = p.dealer; list = "gold"; d2 = `${s.buyer === "contract" ? "No contract line for this SKU → " : "No customer contract → "}<b>Dealer Gold v7</b> (1 Jul – 30 Sep 2026)`; }
+      else { base = std(p); list = "std"; st2 = "warn"; d2 = `Dealer Gold v7 <b>expired 30 Sep</b>; v8 not approved → defined fallback <b>Dealer Standard v6</b> (never ₹0). Account manager alerted.`; }
+    } else if (s.buyer === "dstd") { base = std(p); list = "std"; d2 = `No customer contract → <b>Dealer Standard v6</b> (1 Jul – 31 Dec 2026)`; }
+    else if (s.loc === "mys" && MYS_CATS.includes(p.cat)) { const li = Math.round(p.price * 0.98 / 10) * 10 - 1; base = li / 1.18; list = "mys"; d2 = `Location list <b>Mysuru</b> overrides public for this PIN: ${fmt(li)} incl. GST`; }
+    else { base = p.price / 1.18; d2 = `No contract or dealer list → <b>Retail · Public v14</b>: ${fmt(p.price)} incl. GST${s.loc === "mys" ? " · Mysuru list doesn't cover this category" : ""}`; }
+    steps.push({ st: st2, t: "Resolve base price", d: d2, v: fmt2(base), vs: "per unit ex-GST" });
+    // 3 tier
+    let unit = base, st3 = "skip", d3;
+    if (list === "contract") d3 = "Contract price is fixed — quantity tiers not applied";
+    else if (list === "gold" || list === "std") { const tiers = list === "gold" ? p.tiers : stdTiers(p); const t = [...tiers].reverse().find((x) => q >= x.min); if (t) { unit = t.p; st3 = "ok"; d3 = `${q} units ≥ ${t.min} → all-units tier <b>${fmt(t.p)}</b> for every unit (${list === "gold" ? "Gold" : "Standard"})`; } else d3 = `${q} unit${q > 1 ? "s" : ""} — below first tier (5+). Add ${5 - q} more for ${fmt(tiers[0].p)}`; }
+    else d3 = "No consumer quantity tier on this SKU";
+    steps.push({ st: st3, t: "Quantity tier", d: d3, v: st3 === "ok" ? fmt2(unit) : "—", vs: st3 === "ok" ? "per unit ex-GST" : "" });
+    // 4 promotions
+    let lineEx = unit * q; const pr = []; let st4 = "skip";
+    const auto = !dealer && ["mon-04", "prn-02"].includes(p.id);
+    if (auto) { lineEx *= 0.9; pr.push(`Automatic <b>AUTO-CLEAR-B10</b> −10%`); st4 = "ok"; }
+    if (s.coupon) {
+      const c = PROMOS[s.coupon];
+      if (!c) { pr.push(`<span class="text-bad">Code “${TX.esc(s.coupon)}” not recognised</span>`); st4 = st4 === "ok" ? "warn" : "warn"; }
+      else if (c.state !== "live") { pr.push(`<span class="text-bad">${c.label} is ${c.state}</span>`); st4 = "warn"; }
+      else if (dealer) { pr.push(`<span class="text-warn">${c.label} is a consumer coupon — not combinable with dealer lists (stacking policy)</span>`); st4 = "warn"; }
+      else if (auto && !c.combinable) { pr.push(`<span class="text-warn">${c.label} is exclusive — not combined with AUTO-CLEAR-B10 (higher-priority rule kept; the larger discount is not auto-picked)</span>`); st4 = "warn"; }
+      else if (c.cats && !c.cats.includes(p.cat)) { pr.push(`<span class="text-warn">${c.label} not valid for ${TX.categories.find((x) => x.id === p.cat).name}</span>`); st4 = "warn"; }
+      else if (c.min && lineEx * 1.18 < c.min) { pr.push(`<span class="text-warn">${c.label} needs a basket of ${fmt(c.min)}</span>`); st4 = "warn"; }
+      else { const off = c.pct ? Math.min((lineEx * 1.18 * c.pct) / 100, c.cap) : c.flat; lineEx -= off / 1.18; pr.push(`Coupon <b>${c.label}</b> −${fmt(off)} incl. GST`); if (st4 !== "warn") st4 = "ok"; }
+    }
+    if (s.disc > 0) { if (s.ch === "web") { pr.push(`<span class="text-warn">Manual discount ignored — only on assisted, WhatsApp or POS orders</span>`); st4 = "warn"; } else { lineEx *= 1 - s.disc / 100; pr.push(`Manual discount <b>${s.disc}%</b> requested by ${ROLE[s.role]}`); if (st4 !== "warn") st4 = "ok"; } }
+    if (!pr.length) pr.push(dealer ? "No dealer-eligible promotion for this SKU (DEALERDAY paused)" : "No eligible promotion");
+    const unitNet = lineEx / q;
+    steps.push({ st: st4, t: "Eligible promotions", d: pr.join("<br>"), v: st4 === "skip" ? "—" : fmt2(unitNet), vs: st4 === "skip" ? "" : "net per unit ex-GST" });
+    // 5 shipping & tax
+    const inter = s.loc === "kochi";
+    const gst = lineEx * GST; const lineIncl = lineEx + gst;
+    let shipEx = 0, shipNote;
+    if (s.loc === "pickup" || s.ch === "pos") shipNote = "Pickup / counter sale — no shipping";
+    else if (dealer) { shipEx = lineEx >= 25000 ? 0 : 250; shipNote = shipEx ? "Dealer shipping ₹250 + GST (free from ₹25,000 ex-GST)" : "Free dealer shipping (≥ ₹25,000 ex-GST)"; }
+    else { shipEx = lineIncl >= 999 ? 0 : 79 / 1.18; shipNote = shipEx ? "Shipping ₹79 incl. GST (free above ₹999)" : "Free delivery (order above ₹999)"; }
+    const d5 = `${shipNote}<br>Place of supply ${inter ? "Kerala (32) → <b>IGST 18%</b>" : "Karnataka (29) → <b>CGST 9% + SGST 9%</b>"} · HSN ${p.cat === "laptops" ? "8471 30" : p.cat === "cameras" ? "8525 89" : p.cat === "storage" ? "8523 51" : "8473 30"}${s.loc === "kochi" && p.stock === "supplier" ? "" : ""}`;
+    steps.push({ st: "ok", t: "Shipping & tax", d: d5, v: fmt2(gst / q), vs: "GST per unit" });
+    // 6 margin & authority
+    const m = margin(unitNet, p), fl = floorOf(p); const issues = [];
+    let st6 = "ok";
+    if (m < fl) { issues.push(`<span class="text-bad">Margin <b>${m.toFixed(1)}%</b> is below the ${fl}% floor → approval by Owner with reason</span>`); st6 = "bad"; }
+    if (s.disc > 0 && s.ch !== "web" && s.disc > LIMIT[s.role]) { issues.push(`<span class="text-warn">Manual ${s.disc}% exceeds ${ROLE[s.role]} limit (${LIMIT[s.role]}%) → routed to ${s.role === "staff" ? "Branch manager" : s.role === "manager" ? "Operations admin / Owner" : "Owner"}</span>`); if (st6 === "ok") st6 = "warn"; }
+    if (!issues.length) issues.push(`Margin <b>${m.toFixed(1)}%</b> ≥ ${fl}% floor · ${s.disc > 0 && s.ch !== "web" ? `${s.disc}% within ${ROLE[s.role]} limit` : "no override needed"} · serviceable ${s.loc === "kochi" ? "(courier, 4–6 days)" : ""}`);
+    issues.push(`<span class="muted small">Est. landed cost ${fmt2(cost(p))} · visible to Finance/Owner only</span>`);
+    steps.push({ st: st6, t: "Margin & discount authority", d: issues.join("<br>"), v: m.toFixed(1) + "%", vs: "margin" });
+    // 7 final & 8 lock
+    const held = st6 !== "ok";
+    const lockMin = s.ch === "assisted" || s.ch === "wa" ? (dealer ? "24 h" : "2 h") : s.ch === "pos" ? "until payment at counter" : "30 min";
+    steps.push({ st: held ? "warn" : "ok", t: "Quote lock", d: held ? `Quote <b>held</b> — approval request APR-0417 created; the buyer sees “price under review”, nothing is reserved yet` : `Quote <b class="mono">Q-88231</b> locked ${lockMin} · rule set v2026.09.3 · price & tier revalidated when stock is reserved`, v: held ? "Held" : "Locked", vs: held ? "needs approval" : lockMin });
+    $("#s-steps").innerHTML = steps.map((x, i) => `<li class="${x.st === "skip" ? "skip" : x.st === "warn" ? "warn" : x.st === "bad" ? "bad" : ""}"><span class="cn"></span><div><div class="ct">${x.t}</div><div class="cd">${x.d}</div></div><div class="cv">${x.v}${x.vs ? `<small>${x.vs}</small>` : ""}</div></li>`).join("");
+    // Fix step numbers to match the 8-step pipeline
+    const nums = ["0", "1–3", "4", "5", "6", "7", "8"]; $$("#s-steps .cn").forEach((n, i) => (n.textContent = nums[i]));
+    const shipIncl = shipEx * 1.18, total = lineIncl + shipIncl;
+    $("#s-sub").textContent = `${q} × ${p.title.slice(0, 48)}${p.title.length > 48 ? "…" : ""} · ${BUYER[s.buyer]}`;
+    $("#s-final").innerHTML = dealer ? `
+      <div><div class="fl">Unit price ex-GST</div><div class="fv big">${fmt2(unitNet)}</div><div class="small muted">+ GST ${fmt2(unitNet * GST)}</div></div>
+      <div><div class="fl">Unit incl. GST</div><div class="fv">${fmt2(unitNet * (1 + GST))}</div><div class="small muted">${inter ? "IGST 18%" : "CGST 9% + SGST 9%"}</div></div>
+      <div><div class="fl">Line ex-GST</div><div class="fv">${fmt2(lineEx)}</div><div class="small muted">GST ${fmt2(gst)}</div></div>
+      <div><div class="fl">Order total</div><div class="fv">${fmt2(total)}</div><div class="small muted">${shipIncl ? "incl. shipping " + fmt2(shipIncl) : "free shipping"}${held ? " · <b class='text-warn'>held</b>" : ""}</div></div>`
+      : `
+      <div><div class="fl">Unit price incl. GST</div><div class="fv big">${fmt2(unitNet * (1 + GST))}</div><div class="small muted">shown to buyer</div></div>
+      <div><div class="fl">Unit ex-GST</div><div class="fv">${fmt2(unitNet)}</div><div class="small muted">${inter ? "IGST 18%" : "CGST 9% + SGST 9%"}</div></div>
+      <div><div class="fl">Line incl. GST</div><div class="fv">${fmt2(lineIncl)}</div><div class="small muted">GST ${fmt2(gst)}</div></div>
+      <div><div class="fl">Order total</div><div class="fv">${fmt2(total)}</div><div class="small muted">${shipIncl ? "incl. shipping " + fmt2(shipIncl) : "free delivery"}${held ? " · <b class='text-warn'>held</b>" : ""}</div></div>`;
+  };
+  ["#s-prod", "#s-buyer", "#s-ch", "#s-loc", "#s-role", "#s-after", "#s-qty"].forEach((sel) => $(sel).addEventListener("change", simulate));
+  ["#s-coupon", "#s-disc", "#s-qty"].forEach((sel) => $(sel).addEventListener("input", simulate));
+  const PRESETS = {
+    "consumer-hub": { id: "hub-02", buyer: "consumer", qty: 1, ch: "web", loc: "blr", coupon: "FESTIVE5", disc: 0, role: "staff", after: false },
+    "grade-b": { id: "mon-04", buyer: "consumer", qty: 1, ch: "web", loc: "mys", coupon: "FESTIVE5", disc: 0, role: "staff", after: false },
+    floor: { id: "mon-03", buyer: "dgold", qty: 10, ch: "assisted", loc: "blr", coupon: "", disc: 14, role: "manager", after: false },
+    expired: { id: "ssd-01", buyer: "dgold", qty: 12, ch: "web", loc: "blr", coupon: "", disc: 0, role: "manager", after: true },
+  };
+  document.addEventListener("click", (e) => { const b = e.target.closest("[data-preset]"); if (!b) return; const s = PRESETS[b.dataset.preset];
+    sp.value = s.id; $("#s-buyer").value = s.buyer; $("#s-qty").value = s.qty; $("#s-ch").value = s.ch; $("#s-loc").value = s.loc; $("#s-coupon").value = s.coupon; $("#s-disc").value = s.disc; $("#s-role").value = s.role; $("#s-after").checked = s.after; simulate(); });
+  simulate();
+  if (location.hash === "#d-list") openList("gold");
+});
+</script>
+</body>
+</html>

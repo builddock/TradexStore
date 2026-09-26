@@ -1,0 +1,684 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Inventory & serials · Tradex ERP</title>
+  <link rel="stylesheet" href="assets/tradex.css">
+  <style>
+    .page-tabs > .tabs { margin-bottom: 20px; }
+    svg.ic.ii, .ii svg.ic { display: inline-block; vertical-align: -2px; }
+    .ico-line { display: inline-flex; align-items: center; gap: 5px; }
+    .formula { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 15px; font-weight: 650; }
+    .formula .term { display: inline-flex; flex-direction: column; align-items: center; padding: 8px 14px; border-radius: var(--r); background: var(--bg); border: 1px solid var(--line); min-width: 92px; }
+    .formula .term b { font-size: 22px; font-weight: 750; line-height: 1.1; }
+    .formula .term span { font-size: 11px; font-weight: 600; color: var(--tx-3); text-transform: uppercase; letter-spacing: .04em; }
+    .formula .term.atp { background: var(--brand-50); border-color: var(--brand-200); color: var(--brand-800); }
+    .formula .term.aside { background: #fff; border-style: dashed; color: var(--tx-3); }
+    .formula .op { color: var(--tx-3); font-size: 20px; }
+    .stock-t td, .stock-t th { padding-left: 10px; padding-right: 10px; }
+    .stock-t td.atp, .stock-t th.atp { background: #f5f7ff; }
+    .stock-t tbody tr.sku-row { cursor: pointer; }
+    .stock-t tbody tr.sku-row.open td { background: var(--brand-50); }
+    .stock-t .tog { width: 22px; height: 22px; border-radius: 5px; display: grid; place-items: center; color: var(--tx-3); border: 1px solid var(--line); background: #fff; }
+    .stock-t tr.open .tog { transform: rotate(90deg); color: var(--brand); border-color: var(--brand-200); }
+    .stock-t tr.exp-row > td { background: #fafbff; padding: 0 12px 14px 44px; }
+    .stock-t tr.exp-row:hover td { background: #fafbff; }
+    .loc-t { background: #fff; border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; }
+    .loc-t th { background: #f6f7fa; }
+    .dim { color: var(--tx-4); }
+    .unit-photos { display: flex; flex-direction: column; gap: 8px; }
+    .unit-photos .thumbs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+    .unit-photos .thumbs .ph { aspect-ratio: 4 / 3; border-radius: var(--r-sm); }
+    .unit-photos .thumbs .ph:first-child { box-shadow: 0 0 0 2px var(--brand); }
+    .unit-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+    .masked { font-family: ui-monospace, monospace; letter-spacing: .06em; }
+    .tl-ref { font-family: ui-monospace, monospace; font-size: 11.5px; background: var(--bg-2); padding: 1px 6px; border-radius: 4px; color: var(--tx-2); }
+    .timeline li.pending .t-dot { background: #fff; box-shadow: 0 0 0 1px var(--line); color: var(--tx-4); }
+    .timeline li.bad .t-dot { background: var(--bad); color: #fff; box-shadow: none; }
+    .mv-type { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 700; padding: 2px 8px; border-radius: 4px; white-space: nowrap; }
+    .qty-pos { color: var(--ok-tx); font-weight: 700; } .qty-neg { color: var(--bad-tx); font-weight: 700; } .qty-0 { color: var(--tx-3); font-weight: 600; }
+    .thr { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .thr > div { border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; background: #fff; }
+    .thr b { display: block; font-size: 13.5px; }
+    .thr .v { font-size: 20px; font-weight: 750; margin: 4px 0; }
+    .count-in { width: 64px; height: 30px; text-align: right; }
+    .countdown { font-variant-numeric: tabular-nums; font-weight: 700; }
+    .fresh-bar { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0; border-radius: var(--r); overflow: hidden; border: 1px solid var(--line); }
+    .fresh-bar > div { padding: 12px 14px; font-size: 12.5px; }
+    .fresh-bar > div + div { border-left: 1px solid var(--line); }
+    .fresh-bar b { display: block; font-size: 13px; margin-bottom: 2px; }
+    .tr-route { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; white-space: nowrap; }
+    .tr-route .ic { width: 14px; height: 14px; color: var(--tx-4); }
+    .stat-tile { border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; background: #fff; }
+    .stat-tile .n { font-size: 22px; font-weight: 700; }
+    .stat-tile .l { font-size: 12px; color: var(--tx-3); }
+    .sec-row { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 16px; align-items: start; }
+  </style>
+</head>
+<body data-app="erp" data-page="inventory">
+<main>
+  <div class="page-head">
+    <div>
+      <div class="crumbs"><span>Stock</span><i data-icon="chevron-right"></i><span>Inventory & serials</span></div>
+      <h1>Inventory & serials</h1>
+      <p class="sub">One stock authority for web, branches & WhatsApp · website availability is a projection of this ledger · last movement 10:41 · sync lag 14 s</p>
+    </div>
+    <div class="actions">
+      <select class="select" style="width:auto;height:38px" aria-label="Location scope"><option>All locations</option><option>WH-BLR · Central Warehouse</option><option>BR-SPR · SP Road</option><option>BR-KRM · Koramangala</option><option>BR-MYS · Mysuru</option></select>
+      <button class="btn" data-toast="Stock snapshot export queued · includes movement totals for reconciliation"><i data-icon="download"></i> Export</button>
+      <a class="btn" href="#counts"><i data-icon="clipboard"></i> Start count</a>
+      <button class="btn btn-primary" data-open="m-transfer"><i data-icon="transfer"></i> New transfer</button>
+    </div>
+  </div>
+
+  <section class="grid g-6 mb-24" data-anno="1A · R08/R14 Enterprise stock position">
+    <div class="kpi"><div class="k-label"><i data-icon="box"></i> <span>Sellable on-hand</span></div><div class="k-value">4,812</div><div class="k-foot"><span>₹3.94 Cr at cost</span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="lock"></i> Reserved</div><div class="k-value">186</div><div class="k-foot"><span>9 expire in 15 min</span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="check-circle"></i> <span>Available (ATP)</span></div><div class="k-value">4,471</div><div class="k-foot"><span>after 155 buffer units</span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="alert-octagon"></i> Quarantine</div><div class="k-value">23</div><div class="k-foot"><span>9 returns · 14 inbound QC</span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="truck"></i> In transit</div><div class="k-value">41</div><div class="k-foot"><span>3 transfers · 1 discrepancy</span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="alert"></i> <span>Low-stock SKUs</span></div><div class="k-value text-warn">18</div><div class="k-foot"><a href="erp-purchasing.html#suggestions">12 PO suggestions →</a></div></div>
+  </section>
+
+  <div data-tabset class="page-tabs">
+    <div class="tabs">
+      <button class="tab active" data-tab="stock"><i data-icon="warehouse"></i> Stock by SKU</button>
+      <button class="tab" data-tab="serials"><i data-icon="scan"></i> Serials</button>
+      <button class="tab" data-tab="movements"><i data-icon="history"></i> Movements</button>
+      <button class="tab" data-tab="transfers"><i data-icon="transfer"></i> Transfers <span class="count">5</span></button>
+      <button class="tab" data-tab="counts"><i data-icon="clipboard"></i> Counts <span class="count">3</span></button>
+      <button class="tab" data-tab="reservations"><i data-icon="lock"></i> Reservations <span class="count">186</span></button>
+      <button class="tab" data-tab="supplier"><i data-icon="building"></i> Supplier stock <span class="count">1 stale</span></button>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- STOCK                                                                -->
+    <!-- ================================================================== -->
+    <div class="tab-panel active" data-panel="stock">
+      <div class="card mb-16" data-anno="1A · R08 §9.2 ATP formula (one stock authority)">
+        <div class="card-head"><div><h3>How available-to-promise is calculated</h3><div class="sub">Per SKU × location × stock owner · worked example for <b id="fx-name">Dell Latitude 5420 (LAP01-RA)</b> — click any row to recalculate</div></div><span class="badge b-brand">Stock authority: Tradex ERP</span></div>
+        <div class="card-body">
+          <div class="row-between wrap gap-16">
+            <div class="formula" id="fx">
+            </div>
+            <div class="small subtle" style="max-width:360px">
+              <div class="mono strong mb-8" style="font-size:13px;color:var(--tx-1)">ATP = max(0, sellable − reserved − buffer)</div>
+              <div><i data-icon="check-circle" class="ic-sm text-ok ii"></i> Sellable on-hand already <b>excludes</b> quarantine, damaged, repair and in-transit units — they are not subtracted twice.</div>
+              <div class="mt-4"><i data-icon="x-circle" class="ic-sm text-bad ii"></i> Open POs and supplier availability are <b>never</b> counted as company stock.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="filterbar">
+        <div class="input-icon" style="width:220px"><i data-icon="search"></i><input class="input" id="s-q" placeholder="SKU, title or barcode" aria-label="Search stock" style="height:34px;width:100%"></div>
+        <select class="select" id="s-loc" aria-label="Location"><option value="">All locations</option></select>
+        <select class="select" id="s-cat" aria-label="Category"><option value="">All categories</option></select>
+        <button class="chip" data-f="low" id="c-low"><i data-icon="alert"></i> Low stock</button>
+        <button class="chip" data-f="q" id="c-q"><i data-icon="alert-octagon"></i> Has quarantine</button>
+        <button class="chip" data-f="t" id="c-t"><i data-icon="truck"></i> In transit</button>
+        <span class="small muted ml-auto" id="s-count"></span>
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table class="table compact stock-t">
+            <thead><tr>
+              <th style="width:30px"></th><th>Product · SKU</th>
+              <th class="r" data-tip="Excludes quarantine & in-transit">Sellable</th><th class="r">Reserved</th><th class="r">Buffer</th><th class="r atp">ATP</th>
+              <th class="r" data-tip="Quarantine · not sellable">Quar.</th><th class="r" data-tip="Not sellable until received">Transit</th><th class="r" data-tip="Reorder point">ROP</th><th>Web shows</th><th>Flags</th>
+            </tr></thead>
+            <tbody id="stock-body"></tbody>
+          </table>
+        </div>
+        <div class="empty hidden" id="stock-empty"><i data-icon="search"></i><h4>No SKUs match</h4><p>Clear a filter to see more stock.</p></div>
+        <div class="card-foot"><span class="small muted" id="stock-foot"></span><span class="small muted">Location view: expand a row · <span class="ico-line"><i data-icon="alert" class="ic-sm text-warn"></i> low stock = ATP ≤ reorder point</span></span></div>
+      </div>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- SERIALS                                                              -->
+    <!-- ================================================================== -->
+    <div class="tab-panel" data-panel="serials">
+      <div class="scanbox mb-12" data-anno="1A · §9.4 Scan internal ID or manufacturer serial">
+        <i data-icon="scan" class="ic-lg" style="color:var(--brand)"></i>
+        <input class="input" id="sn-q" value="U-000812" aria-label="Serial or unit ID" placeholder="Scan or type U-0008xx, manufacturer serial or order no.">
+        <button class="btn btn-primary" id="sn-go">Look up</button>
+      </div>
+      <div class="row wrap gap-6 mb-16 small"><span class="muted">Try:</span>
+        <button class="chip" data-sn="U-000812">U-000812 · returned → quarantine</button>
+        <button class="chip" data-sn="U-000815">U-000815 · sellable</button>
+        <button class="chip" data-sn="U-000807">U-000807 · sold</button>
+        <button class="chip" data-sn="PF3K9Z21">PF3K9Z21 · duplicate serial</button>
+        <button class="chip" data-sn="U-009999">U-009999 · not found</button>
+      </div>
+      <div id="sn-out"></div>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- MOVEMENTS                                                            -->
+    <!-- ================================================================== -->
+    <div class="tab-panel" data-panel="movements">
+      <div class="callout c-brand mb-16" data-anno="1A · Append-only ledger reconciles to balances (§17.6)"><i data-icon="lock"></i><div><strong>Immutable ledger.</strong> Every quantity change is a movement with an event type, reference document and actor. Movements are never edited or deleted — corrections are posted as reversing entries with a reason and approver. Balances on the Stock tab are the sum of this ledger.</div></div>
+      <div class="filterbar">
+        <div class="input-icon" style="width:260px"><i data-icon="search"></i><input class="input" id="mv-q" placeholder="SKU, serial, document…" aria-label="Search movements" style="height:34px;width:100%"></div>
+        <select class="select" id="mv-type" aria-label="Event type"><option value="">All event types</option></select>
+        <select class="select" aria-label="Location"><option>All locations</option><option>WH-BLR</option><option>BR-SPR</option><option>BR-KRM</option><option>BR-MYS</option></select>
+        <div class="seg"><button class="active">Today</button><button>7 days</button><button>30 days</button></div>
+        <button class="btn btn-sm ml-auto" data-toast="Ledger export queued (CSV, signed hash for audit)"><i data-icon="download"></i> Export ledger</button>
+      </div>
+      <div class="card">
+        <div class="table-wrap"><table class="table compact">
+          <thead><tr><th>Time · ID</th><th>Event</th><th>SKU · unit</th><th>From → to</th><th>Disposition change</th><th class="r">Units</th><th class="r" data-tip="Effect on sellable on-hand">Δ Sellable</th><th>Reference</th><th>Actor</th></tr></thead>
+          <tbody id="mv-body"></tbody>
+        </table></div>
+        <div class="pager"><span>Showing 17 of 1,284 movements today · ledger total reconciles with balances <span class="badge b-ok">✓ checked 10:40</span></span><div class="pages"><button class="active">1</button><button>2</button><button>3</button><button aria-label="Next page">›</button></div></div>
+      </div>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- TRANSFERS                                                            -->
+    <!-- ================================================================== -->
+    <div class="tab-panel" data-panel="transfers">
+      <div class="card mb-16">
+        <div class="card-head"><div><h3>Stock transfers</h3><div class="sub">Internal transfers never create or destroy enterprise stock · in-transit is not available at the destination until received</div></div><button class="btn btn-sm btn-primary" data-open="m-transfer"><i data-icon="plus"></i> New transfer</button></div>
+        <div class="table-wrap"><table class="table">
+          <thead><tr><th>Transfer</th><th>Route</th><th class="r">Lines</th><th class="r">Units</th><th class="r">Value (cost)</th><th>Status</th><th>Requested by</th><th>Updated</th></tr></thead>
+          <tbody>
+            <tr class="selected"><td class="mono strong">TR-0214</td><td><span class="tr-route">WH-BLR <i data-icon="arrow-right"></i> BR-MYS</span></td><td class="r">3</td><td class="r">8</td><td class="r">₹1,21,268</td><td><span class="sev serious"><i data-icon="alert"></i> Partly received · −1</span></td><td>Vikram S.</td><td>Today 09:52</td></tr>
+            <tr><td class="mono strong">TR-0213</td><td><span class="tr-route">WH-BLR <i data-icon="arrow-right"></i> BR-KRM</span></td><td class="r">4</td><td class="r">22</td><td class="r">₹1,88,400</td><td><span class="status s-info">In transit · ETA 13:00</span></td><td>Anita R.</td><td>Today 08:30</td></tr>
+            <tr><td class="mono strong">TR-0212</td><td><span class="tr-route">WH-BLR <i data-icon="arrow-right"></i> BR-MYS</span></td><td class="r">2</td><td class="r">11</td><td class="r">₹92,600</td><td><span class="status s-brand">Approved · picking</span></td><td>Vikram S.</td><td>Today 09:40</td></tr>
+            <tr><td class="mono strong">TR-0215</td><td><span class="tr-route">BR-SPR <i data-icon="arrow-right"></i> BR-KRM</span></td><td class="r">1</td><td class="r">1</td><td class="r">₹71,800</td><td><span class="status s-warn">Requested · awaiting approval</span></td><td>Koramangala desk</td><td>Today 10:18</td></tr>
+            <tr><td class="mono strong">TR-0211</td><td><span class="tr-route">BR-SPR <i data-icon="arrow-right"></i> WH-BLR</span></td><td class="r">2</td><td class="r">5</td><td class="r">₹38,500</td><td><span class="status s-ok">Received · matched</span></td><td>Irfan M.</td><td>25 Sep</td></tr>
+            <tr><td class="mono strong">TR-0209</td><td><span class="tr-route">WH-BLR <i data-icon="arrow-right"></i> BR-SPR</span></td><td class="r">1</td><td class="r">4</td><td class="r">₹21,600</td><td><span class="status s-muted">Cancelled · stock returned to source</span></td><td>Anita R.</td><td>23 Sep</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+
+      <div class="sec-row">
+        <div class="card" data-anno="1A · T16 Partial transfer stays visible">
+          <div class="card-head"><div><h3>TR-0214 · WH-BLR → Mysuru Branch</h3><div class="sub">Shipped 25 Sep 17:10 · vehicle KA-09-MH-4471 · received 26 Sep 09:52 by Mysuru desk (scan)</div></div><span class="sev serious"><i data-icon="alert"></i> Discrepancy −1</span></div>
+          <div class="card-body" style="padding-bottom:6px">
+            <div class="stepper mb-16">
+              <div class="step done"><span class="dot"><i data-icon="check" class="ic-sm"></i></span> Requested</div>
+              <div class="step done"><span class="dot"><i data-icon="check" class="ic-sm"></i></span> Approved</div>
+              <div class="step done"><span class="dot"><i data-icon="check" class="ic-sm"></i></span> Shipped</div>
+              <div class="step current"><span class="dot">4</span> Partial</div>
+              <div class="step"><span class="dot">5</span> Closed</div>
+            </div>
+          </div>
+          <table class="table compact">
+            <thead><tr><th>SKU</th><th class="r">Shipped</th><th class="r">Received</th><th class="r">In transit</th><th>Line status</th></tr></thead>
+            <tbody>
+              <tr><td><div class="row" style="gap:8px"><div data-ph="lap-dell" class="thumb"></div><div><div class="cell-main">Dell Latitude 5420 <span class="mono muted small">LAP01-RA</span></div><div class="cell-sub">Serials scanned: U-000816 · U-000819 · U-000821</div></div></div></td><td class="r">3</td><td class="r">3</td><td class="r">0</td><td><span class="status s-ok">Matched</span></td></tr>
+              <tr><td><div class="row" style="gap:8px"><div data-ph="ssd-blue" class="thumb"></div><div><div class="cell-main">Samsung T7 1 TB <span class="mono muted small">SSD01-N</span></div><div class="cell-sub">Not serialised · carton count</div></div></div></td><td class="r">4</td><td class="r">3</td><td class="r text-bad strong">1</td><td><span class="status s-bad">Short 1 · investigating</span></td></tr>
+              <tr><td><div class="row" style="gap:8px"><div data-ph="mouse-white" class="thumb"></div><div><div class="cell-main">Logitech G305 White <span class="mono muted small">MS02-N</span></div><div class="cell-sub">Not serialised</div></div></div></td><td class="r">1</td><td class="r">1</td><td class="r">0</td><td><span class="status s-ok">Matched</span></td></tr>
+            </tbody>
+          </table>
+          <div class="card-body">
+            <div class="callout c-warn"><i data-icon="alert"></i><div><strong>1 × Samsung T7 1 TB (₹6,850 at cost) remains in transit.</strong> It stays on the enterprise ledger under “in transit WH-BLR → BR-MYS”; Mysuru ATP increased only by the 7 units received. Resolve by receiving it, recording a loss (needs approval) or returning it to source.</div></div>
+          </div>
+          <div class="card-foot"><span class="small muted">Discrepancy case DSC-0031 · owner Irfan M. · due 27 Sep</span><div class="row gap-8"><button class="btn btn-sm" data-toast="Late receipt scan opened for TR-0214">Receive late unit</button><button class="btn btn-sm" data-toast="Driver & packing photos requested · case DSC-0031">Investigate</button><button class="btn btn-sm btn-danger" data-toast="Loss write-off submitted · needs manager approval (value ₹6,850)" data-toast-icon="alert">Record loss…</button></div></div>
+        </div>
+        <div class="col gap-16">
+          <div class="card card-pad">
+            <h4 class="mb-12">Enterprise balance check · SSD01-N</h4>
+            <table class="table compact">
+              <tbody>
+                <tr><td>WH-BLR sellable</td><td class="r">56 → 52</td></tr>
+                <tr><td>BR-MYS sellable</td><td class="r">4 → 7</td></tr>
+                <tr><td>In transit (TR-0214)</td><td class="r">0 → 1</td></tr>
+                <tr><td class="strong">Enterprise total</td><td class="r strong">60 → 60 ✓</td></tr>
+              </tbody>
+            </table>
+            <div class="small muted mt-8">Transfers move stock between buckets; totals only change through an approved adjustment.</div>
+          </div>
+          <div class="card card-pad small col gap-8">
+            <h4>Transfer rules (sample — to confirm)</h4>
+            <div class="subtle">Branches can see all locations' ATP and <b>request</b> stock; they can't promise another branch's stock to a customer.</div>
+            <div class="subtle">Approval: ops admin above ₹2 L value; branch manager below.</div>
+            <div class="subtle">Serialised units must be scanned at dispatch and receipt.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- COUNTS                                                               -->
+    <!-- ================================================================== -->
+    <div class="tab-panel" data-panel="counts">
+      <div class="callout c-bad mb-16" data-anno="§9.6 Never overwrite quantity"><i data-icon="alert-octagon"></i><div><strong>Counts never overwrite quantity.</strong> A count records what was observed. Approved variances post an <b>adjustment movement</b> with reason, evidence and approver; unapproved variances change nothing. Bins being counted are frozen or intervening movements are reconciled.</div></div>
+
+      <div class="grid g-4 mb-16">
+        <div class="stat-tile"><div class="l">CC-0038 · WH-BLR zone A</div><div class="n">62%</div><div class="meter thin mt-8"><span style="width:62%"></span></div><div class="small muted mt-4">Blind count · 3 bins frozen</div></div>
+        <div class="stat-tile"><div class="l">Variances awaiting approval</div><div class="n text-warn">3</div><div class="small muted mt-4">−₹47,912 net · ₹64,088 gross</div></div>
+        <div class="stat-tile"><div class="l">Auto-accepted within tolerance</div><div class="n">5</div><div class="small muted mt-4">≤ 1 unit and ≤ ₹1,000</div></div>
+        <div class="stat-tile"><div class="l">Stock accuracy (30 d)</div><div class="n text-ok">98.7%</div><div class="small muted mt-4">A-class weekly · B monthly · C quarterly</div></div>
+      </div>
+
+      <div class="grid" style="grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start">
+        <div class="card">
+          <div class="card-head"><div><h3>Count sheet · CC-0038</h3><div class="sub">Counter: Mohammed Irfan · started 09:15 · expected quantities hidden from counter (blind count)</div></div><span class="badge b-info dot">Counting</span></div>
+          <table class="table compact">
+            <thead><tr><th style="width:64px">Bin</th><th>SKU</th><th class="r">Counted</th><th>Serial check</th><th></th></tr></thead>
+            <tbody id="cs-body"></tbody>
+          </table>
+          <div class="card-foot"><span class="small muted">Scanning a bin locks it until the count is submitted</span><button class="btn btn-sm btn-primary" data-toast="Count submitted · 3 variances sent for review (no stock changed yet)">Submit count</button></div>
+        </div>
+        <div class="card" data-anno="1A · A24 Variance approval by value">
+          <div class="card-head"><div><h3>Variance review</h3><div class="sub">Reviewer sees expected vs counted, value and reason</div></div><span class="badge b-warn">3 open</span></div>
+          <table class="table compact">
+            <thead><tr><th>SKU · bin</th><th class="r">Exp.</th><th class="r">Cnt.</th><th class="r">Var.</th><th class="r">Value</th><th>Approval</th></tr></thead>
+            <tbody>
+              <tr><td><div class="cell-main">Samsung T7 1 TB</div><div class="cell-sub">A-14 · reason: <b>Unknown</b></div></td><td class="r">14</td><td class="r">12</td><td class="r qty-neg">−2</td><td class="r">₹13,700</td><td><span class="status s-warn">Manager</span><div class="cell-sub">Anita R. · due 16:00</div></td></tr>
+              <tr><td><div class="cell-main">LG 27UL550 27" 4K</div><div class="cell-sub">B-03 · reason: <b>Water damage</b> · 4 photos</div></td><td class="r">7</td><td class="r">4</td><td class="r qty-neg">−3</td><td class="r">₹42,300</td><td><span class="status s-bad">Owner / finance</span><div class="cell-sub">Above manager limit</div></td></tr>
+              <tr><td><div class="cell-main">Logitech M190</div><div class="cell-sub">A-11 · reason: <b>Receiving error GRN-0436</b></div></td><td class="r">244</td><td class="r">256</td><td class="r qty-pos">+12</td><td class="r">₹8,088</td><td><span class="status s-warn">Manager</span><div class="cell-sub">Link to GRN evidence</div></td></tr>
+              <tr><td><div class="cell-main">Kingston FURY 16 GB</div><div class="cell-sub">A-12</div></td><td class="r">121</td><td class="r">120</td><td class="r qty-neg">−1</td><td class="r">₹2,284</td><td><span class="status s-ok">Warehouse lead</span><div class="cell-sub">Approved 10:02 · MV-771604</div></td></tr>
+            </tbody>
+          </table>
+          <div class="card-foot"><span class="small muted">Staff submit · managers approve within threshold · large or unexplained losses go to owner/finance</span><div class="row gap-8"><button class="btn btn-sm" data-toast="Recount requested for A-14 by a second counter">Request recount</button><button class="btn btn-sm btn-ok" data-toast="Approved · adjustment movement MV-771640 posted with reason & approver">Approve selected</button></div></div>
+        </div>
+      </div>
+
+      <div class="card mt-16">
+        <div class="card-head"><div><h3>Adjustment approval thresholds</h3><div class="sub">Quantity and value both considered · <b>sample values — exact ₹ limits to be supplied by the client (§18)</b></div></div><a class="btn btn-sm" href="erp-admin.html#thresholds"><i data-icon="settings"></i> Edit in Settings</a></div>
+        <div class="card-body">
+          <div class="thr">
+            <div><b>Warehouse lead</b><div class="v">≤ ₹5,000</div><div class="small muted">and ≤ 2 units · explained reason</div></div>
+            <div><b>Branch / operations manager</b><div class="v">≤ ₹25,000</div><div class="small muted">explained reason with evidence</div></div>
+            <div style="border-color:#f6c9c6;background:#fffafa"><b>Owner / finance</b><div class="v text-bad">&gt; ₹25,000</div><div class="small muted">or any unexplained loss · appears in owner exceptions</div></div>
+          </div>
+          <div class="small muted mt-12">The person who counted cannot approve their own variance. Alternate approver applies when the approver is on leave (delegation).</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- RESERVATIONS                                                         -->
+    <!-- ================================================================== -->
+    <div class="tab-panel" data-panel="reservations">
+      <div class="grid g-4 mb-16">
+        <div class="stat-tile"><div class="l">Active holds</div><div class="n">186</div><div class="small muted">412 units · reduce ATP only</div></div>
+        <div class="stat-tile"><div class="l">Expiring in 15 min</div><div class="n text-warn">9</div><div class="small muted">released by job if unpaid</div></div>
+        <div class="stat-tile"><div class="l">Serial-specific holds</div><div class="n">14</div><div class="small muted">unique refurbished units</div></div>
+        <div class="stat-tile"><div class="l">Payment-race exceptions</div><div class="n text-bad">1</div><div class="small muted"><a href="erp-dashboard.html">TXO-10477 · see Control centre</a></div></div>
+      </div>
+      <div class="card mb-16" data-anno="1A · A05/A06 Time-limited holds & expiry job">
+        <div class="card-head"><div><h3>Active holds</h3><div class="sub">A reservation reduces available-to-promise, not physical on-hand · dispatch consumes it atomically</div></div>
+          <div class="seg" id="rs-seg"><button class="active" data-c="">All channels</button><button data-c="Website">Website</button><button data-c="WhatsApp">WhatsApp</button><button data-c="Assisted">Assisted</button><button data-c="Dealer">Dealer</button><button data-c="Branch POS">Branch POS</button></div></div>
+        <div class="table-wrap"><table class="table compact">
+          <thead><tr><th>Hold · created</th><th>Order</th><th>Channel</th><th>SKU</th><th class="r">Qty</th><th>Unit</th><th>Location</th><th>Expires in</th><th>State</th><th></th></tr></thead>
+          <tbody id="rs-body"></tbody>
+        </table></div>
+      </div>
+      <div class="grid" style="grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);align-items:start">
+        <div class="card">
+          <div class="card-head"><div><h3>Released by job · reservation-expiry</h3><div class="sub">Runs every 5 min · skips holds with a payment in progress · idempotent per hold</div></div><span class="status s-ok">Healthy</span></div>
+          <table class="table compact">
+            <thead><tr><th>Run</th><th class="r">Released</th><th class="r">Skipped</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr><td>10:40</td><td class="r">2</td><td class="r">1</td><td class="small">R-5537 skipped — UPI collect pending (grace 5 min)</td></tr>
+              <tr><td>10:35</td><td class="r">0</td><td class="r">0</td><td class="small muted">—</td></tr>
+              <tr><td>10:30</td><td class="r">3</td><td class="r">0</td><td class="small">WhatsApp draft holds expired after 2 h</td></tr>
+              <tr><td>10:05</td><td class="r">1</td><td class="r">0</td><td class="small text-bad">R-5521 released 10:02 (unit re-sold 10:03); payment captured 10:04 → exception TXO-10477: reserve alternate U-000815 at SP Road or refund</td></tr>
+              <tr><td>09:30</td><td class="r">14</td><td class="r">0</td><td class="small">Batch after gateway outage recovery</td></tr>
+            </tbody>
+          </table>
+          <div class="card-head" style="border-top:1px solid var(--line-2)"><h3>Recent releases</h3></div>
+          <table class="table compact">
+            <tbody>
+              <tr><td class="mono">R-5529</td><td>TXO-10488</td><td class="small">Expired · unpaid 15 min</td><td class="small muted">Job · 10:40</td></tr>
+              <tr><td class="mono">R-5526</td><td>TXO-10485</td><td class="small">Order cancelled by customer</td><td class="small muted">Karthik R. · 10:21</td></tr>
+              <tr><td class="mono">R-5519</td><td>Quote Q-2291</td><td class="small">Manual release · dealer changed quantity</td><td class="small muted">Vikram S. · 09:58</td></tr>
+              <tr><td class="mono">R-5514</td><td>TXO-10479</td><td class="small">Payment failed (card declined ×2)</td><td class="small muted">Job · 09:45</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="card-head"><div><h3>Hold durations by channel</h3><div class="sub">Sample policy · configurable in Automation</div></div></div>
+          <table class="table compact">
+            <tbody>
+              <tr><td>Website checkout (card / netbanking)</td><td class="r strong">15 min</td></tr>
+              <tr><td>Website · UPI collect pending</td><td class="r strong">+5 min grace</td></tr>
+              <tr><td>WhatsApp guided order (draft)</td><td class="r strong">2 h</td></tr>
+              <tr><td>Assisted order / staff quote</td><td class="r strong">24 h</td></tr>
+              <tr><td>Dealer PO awaiting bank transfer</td><td class="r strong">48 h</td></tr>
+              <tr><td>Branch POS (paid at counter)</td><td class="r strong">until pick</td></tr>
+            </tbody>
+          </table>
+          <div class="card-body small subtle">Extending a hold needs a reason and is limited to one extension; late payments after expiry re-reserve if stock is still available, otherwise raise an exception with refund path (T09).</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- SUPPLIER                                                             -->
+    <!-- ================================================================== -->
+    <div class="tab-panel" data-panel="supplier">
+      <div class="callout c-info mb-16"><i data-icon="info"></i><div><strong>Supplier availability is never company stock.</strong> It is stored separately with its own timestamp, source, lead time and buffer, excluded from ATP, and shown to shoppers as “Ships in 4–6 days · partner stock”. Company stock only increases through an authorised goods receipt.</div></div>
+      <div class="card mb-16" data-anno="1B · A21/T14 Stale supplier feed policy">
+        <div class="card-head"><div><h3>Stale-feed handling</h3><div class="sub">Per-supplier freshness deadline (default 24 h)</div></div></div>
+        <div class="card-body">
+          <div class="fresh-bar">
+            <div style="background:var(--ok-50)"><b class="text-ok">Fresh (&lt; 24 h)</b>Offer shows supplier lead time; can be promised at checkout with buffer applied.</div>
+            <div style="background:var(--warn-50)"><b class="text-warn">Stale (24–48 h)</b>Hide immediate-delivery promise · “Confirm availability” — order held until the supplier confirms.</div>
+            <div style="background:var(--bad-50)"><b class="text-bad">Expired (&gt; 48 h)</b>Offer suspended from sale · vendor and buyer notified · reactivates on next valid feed.</div>
+          </div>
+        </div>
+      </div>
+      <div class="card mb-16">
+        <div class="card-head"><div><h3>Supplier feeds</h3><div class="sub">Sources of partner availability</div></div><span class="small muted">Now: 26 Sep 10:42</span></div>
+        <div class="table-wrap"><table class="table">
+          <thead><tr><th>Supplier</th><th>Feed</th><th class="r">Offers</th><th>Last update</th><th>Freshness</th><th>Current policy</th><th></th></tr></thead>
+          <tbody id="feed-body"></tbody>
+        </table></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><div><h3>Partner offers</h3><div class="sub">Company stock shown alongside for clarity — the two are never added together</div></div></div>
+        <div class="table-wrap"><table class="table compact">
+          <thead><tr><th>SKU</th><th>Supplier</th><th class="r" data-tip="Company available-to-promise">Co. ATP</th><th class="r">Supplier qty</th><th class="r">Buffer</th><th>Lead time</th><th>Confirmed</th><th>Freshness</th><th>Storefront promise</th></tr></thead>
+          <tbody id="offer-body"></tbody>
+        </table></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- New transfer modal -->
+  <div class="modal" id="m-transfer"><div class="modal-card lg">
+    <div class="modal-head"><div><h3>New stock transfer</h3><div class="small muted">Draft TR-0216 · stock leaves source only when shipped</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-body col gap-16">
+      <div class="grid g-3">
+        <div class="field"><label for="t-from" class="req">From</label><select class="select" id="t-from"><option>WH-BLR · Central Warehouse</option><option>BR-SPR · SP Road</option><option>BR-KRM · Koramangala</option><option>BR-MYS · Mysuru</option></select></div>
+        <div class="field"><label for="t-to" class="req">To</label><select class="select" id="t-to"><option>BR-MYS · Mysuru</option><option>BR-SPR · SP Road</option><option>BR-KRM · Koramangala</option></select></div>
+        <div class="field"><label for="t-date">Needed by</label><input class="input" id="t-date" value="28 Sep 2026"></div>
+        <div class="field"><label for="t-reason" class="req">Reason</label><select class="select" id="t-reason"><option>Replenish branch stock</option><option>Customer order TXO-10490 (collect in store)</option><option>Rebalance slow stock</option><option>Repair / RMA handling</option></select></div>
+        <div class="field span-2"><label for="t-note">Note</label><input class="input" id="t-note" value="Weekend demand at Mysuru — laptop display units"></div>
+      </div>
+      <table class="table compact">
+        <thead><tr><th>SKU</th><th class="r">ATP at source</th><th class="r">Qty</th><th class="r">Value (cost)</th><th></th></tr></thead>
+        <tbody id="t-lines"></tbody>
+      </table>
+      <button class="btn btn-sm" style="align-self:flex-start" data-toast="SKU picker opened"><i data-icon="plus"></i> Add line</button>
+      <div class="callout c-info" id="t-appr"><i data-icon="info"></i><div></div></div>
+    </div>
+    <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn" data-close data-toast="Draft TR-0216 saved">Save draft</button><button class="btn btn-primary" data-close data-toast="TR-0216 submitted for approval · source stock unchanged until shipped">Submit for approval</button></div>
+  </div></div>
+
+  <!-- Reveal serial modal -->
+  <div class="modal" id="m-reveal"><div class="modal-card">
+    <div class="modal-head"><h3>Reveal manufacturer serial</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-body col gap-12">
+      <p class="subtle">Full manufacturer serials are masked by default. Revealing is logged with your name, time and reason.</p>
+      <div class="field"><label for="rv-r" class="req">Reason</label><select class="select" id="rv-r"><option>Warranty claim with manufacturer</option><option>Police / insurance request</option><option>Customer verification (RMA)</option></select></div>
+    </div>
+    <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-primary" data-close data-toast="Serial revealed for 60 s · audit entry AU-88213" id="rv-ok">Reveal</button></div>
+  </div></div>
+</main>
+<script src="assets/tradex.js"></script>
+<script>
+TX.ready(() => {
+  const $ = TX.$, $$ = TX.$$, ic = TX.icon, esc = TX.esc;
+
+  /* ---------- Tab hash sync ---------- */
+  const syncHash = () => { const h = location.hash.slice(1); if (!h) return; if ($(`.tab[data-tab="${h}"]`)) { TX.activateTab(h); window.scrollTo(0, 0); } else { const m = document.getElementById(h); if (m && m.matches(".modal,.drawer")) TX.open(h); } };
+  window.addEventListener("hashchange", syncHash);
+  document.addEventListener("click", (e) => {
+    const t = e.target.closest(".page-tabs > .tabs > .tab"); if (t) history.replaceState(null, "", "#" + t.dataset.tab);
+    const a = e.target.closest('a[href^="#"]'); if (a && a.getAttribute("href") === location.hash) setTimeout(syncHash);
+  });
+
+  /* ---------- Stock model (deterministic sample, ATP = TX.products qty) ---------- */
+  const ROP = { "lap-04": 20, "gpu-01": 10, "cam-02": 6, "mon-03": 12, "ssd-01": 70, "kb-02": 15, "cpu-01": 24, "lap-02": 10, "lap-03": 3, "lap-07": 2, "mon-02": 3, "gpu-03": 2, "cam-01": 3, "cam-06": 2, "hp-02": 3, "phn-01": 3, "lens-02": 2 };
+  const unique = (p) => p.cond !== "new";
+  const LW = [0.55, 0.2, 0.15, 0.1];
+  const S = TX.products.map((p, i) => {
+    const sup = p.stock === "supplier" || p.stock === "out";
+    const atp = sup ? 0 : p.qty;
+    const reserved = sup ? 0 : p.id === "lap-01" ? 2 : [0, 1, 2, 3, 1, 0, 2, 4][i % 8] + (p.qty > 60 ? 6 : 0);
+    const buffer = sup || unique(p) ? 0 : p.qty > 60 ? 5 : [2, 1, 1][i % 3];
+    const quarantine = p.id === "lap-01" ? 1 : p.id === "mon-04" ? 3 : [0, 0, 1, 0, 2, 0, 0, 0, 1, 0, 0][i % 11];
+    const transit = p.id === "lap-01" ? 1 : p.id === "ssd-01" ? 1 : [0, 2, 0, 0, 0, 1, 0, 3, 0][i % 9];
+    const sellable = atp + reserved + buffer;
+    const rop = ROP[p.id] || (sup ? 0 : Math.max(2, Math.round(p.qty * 0.35)));
+    const low = !sup && atp <= rop;
+    // split by location: sellable first, then reserve/buffer taken from locations that have stock
+    const sell = LW.map((w) => Math.floor(sellable * w)); sell[0] += sellable - sell.reduce((a, b) => a + b, 0);
+    const take = (total) => { const out = [0, 0, 0, 0]; let left = total; for (let k = 0; k < 4 && left > 0; k++) { const cap = sell[k] - (resL ? resL[k] : 0); const t = Math.min(cap, left); out[k] = t; left -= t; } return out; };
+    let resL = null; resL = take(reserved); const res2 = resL.slice(); const bufL = (() => { const out = [0, 0, 0, 0]; let left = buffer; for (let k = 0; k < 4 && left > 0; k++) { const cap = sell[k] - res2[k]; const t = Math.min(cap, left); out[k] = t; left -= t; } return out; })();
+    const locs = TX.locations.map((l, k) => ({ ...l, sell: sell[k], res: res2[k], buf: bufL[k], atp: sell[k] - res2[k] - bufL[k], q: k === 0 ? quarantine : 0, t: k === (p.id === "ssd-01" ? 3 : 2) ? transit : 0, bin: k === 0 ? `A-${10 + (i % 9)}` : "Display/store" }));
+    return { p, sup, atp, reserved, buffer, quarantine, transit, sellable, rop, low, locs };
+  });
+
+  const fx = (r) => {
+    $("#fx-name").textContent = `${r.p.title.split(" ").slice(0, 4).join(" ")} (${r.p.sku})`;
+    $("#fx").innerHTML = `<span class="term"><span>Sellable on-hand</span><b>${r.sellable}</b></span><span class="op">−</span><span class="term"><span>Reserved</span><b>${r.reserved}</b></span><span class="op">−</span><span class="term"><span>Safety buffer</span><b>${r.buffer}</b></span><span class="op">=</span><span class="term atp"><span>ATP</span><b>${r.atp}</b></span>
+      <span class="op" style="margin-left:12px;font-size:13px">not sellable:</span><span class="term aside"><span>Quarantine</span><b>${r.quarantine}</b></span><span class="term aside"><span>In transit</span><b>${r.transit}</b></span>`;
+  };
+  fx(S[0]);
+
+  const webShows = (r) => r.p.id === "gpu-03" ? `<span class="muted small">Hidden · listing suspended</span>` : r.sup ? `<span class="text-brand small ico-line">${ic("truck", "ic-sm")} Partner stock</span>` : r.atp === 0 ? `<span class="text-bad small">Out of stock</span>` : r.p.stock === "low" ? `<span class="text-warn small">Only ${r.atp} left</span>` : `<span class="text-ok small">In stock</span>`;
+  const flags = (r) => [r.low ? `<span class="sev warning">${ic("alert")} Low</span>` : "", r.sup ? `<span class="badge b-info">No company stock</span>` : "", r.quarantine >= 3 ? `<span class="sev serious">${ic("alert-octagon")} QC</span>` : ""].join(" ");
+  const locHTML = (r) => `<div class="loc-t"><table class="table compact"><thead><tr><th>Location</th><th>Bin</th><th class="r">Sellable</th><th class="r">Reserved</th><th class="r">Buffer</th><th class="r">ATP</th><th class="r">Quarantine</th><th class="r">Incoming</th></tr></thead><tbody>
+    ${r.locs.map((l) => `<tr><td><b>${l.name}</b> <span class="muted small mono">${l.code}</span></td><td class="small mono">${l.bin}</td><td class="r">${l.sell}</td><td class="r ${l.res ? "" : "dim"}">${l.res}</td><td class="r ${l.buf ? "" : "dim"}">${l.buf}</td><td class="r strong">${l.atp}</td><td class="r ${l.q ? "text-bad strong" : "dim"}">${l.q}</td><td class="r ${l.t ? "text-brand strong" : "dim"}">${l.t}</td></tr>`).join("")}
+    <tr><td colspan="2" class="strong">Enterprise</td><td class="r strong">${r.sellable}</td><td class="r strong">${r.reserved}</td><td class="r strong">${r.buffer}</td><td class="r strong">${r.atp}</td><td class="r strong">${r.quarantine}</td><td class="r strong">${r.transit}</td></tr>
+    </tbody></table></div>
+    <div class="row gap-16 small mt-8"><a href="#movements">${ic("history", "ic-sm ii")} Movements</a><a href="#reservations">${ic("lock", "ic-sm ii")} ${r.reserved} active holds</a>${unique(r.p) ? `<a href="#serials">${ic("scan", "ic-sm ii")} Serialised units</a>` : ""}${r.low ? `<a href="erp-purchasing.html#suggestions">${ic("clipboard", "ic-sm ii")} Reorder suggestion</a>` : ""}<a href="#" data-open="m-transfer">${ic("transfer", "ic-sm ii")} Transfer</a></div>`;
+
+  $("#s-loc").innerHTML += TX.locations.map((l) => `<option value="${l.code}">${l.code} · ${l.name}</option>`).join("");
+  $("#s-cat").innerHTML += TX.categories.map((c) => `<option value="${c.id}">${c.name}</option>`).join("");
+  let openId = "lap-01";
+  const renderStock = () => {
+    const q = $("#s-q").value.trim().toLowerCase(), cat = $("#s-cat").value, loc = $("#s-loc").value;
+    const fLow = $("#c-low").classList.contains("active"), fQ = $("#c-q").classList.contains("active"), fT = $("#c-t").classList.contains("active");
+    const li = TX.locations.findIndex((l) => l.code === loc);
+    const list = S.filter((r) => (!q || (r.p.title + r.p.sku).toLowerCase().includes(q)) && (!cat || r.p.cat === cat) && (!fLow || r.low) && (!fQ || r.quarantine > 0) && (!fT || r.transit > 0));
+    $("#stock-body").innerHTML = list.map((r) => {
+      const v = li >= 0 ? r.locs[li] : { sell: r.sellable, res: r.reserved, buf: r.buffer, atp: r.atp, q: r.quarantine, t: r.transit };
+      const open = r.p.id === openId;
+      return `<tr class="sku-row ${open ? "open" : ""}" data-id="${r.p.id}">
+        <td><span class="tog" aria-label="Show locations">${ic("chevron-right", "ic-sm")}</span></td>
+        <td><div class="row" style="gap:10px">${TX.ph(r.p.img, "thumb")}<div style="min-width:0"><div class="cell-main truncate" style="max-width:215px">${esc(r.p.title)}</div><div class="cell-sub row gap-6"><span class="mono">${r.p.sku}</span>${TX.condBadge(r.p.cond).replace('class="cond', 'style="height:18px;font-size:10px;padding:0 6px" class="cond')}</div></div></div></td>
+        <td class="r">${v.sell}</td><td class="r ${v.res ? "" : "dim"}">${v.res}</td><td class="r ${v.buf ? "" : "dim"}">${v.buf}</td>
+        <td class="r atp"><b style="font-size:14px" class="${r.low ? "text-warn" : ""}">${v.atp}</b></td>
+        <td class="r ${v.q ? "text-bad strong" : "dim"}">${v.q}</td><td class="r ${v.t ? "text-brand strong" : "dim"}">${v.t}</td>
+        <td class="r muted">${r.rop || "—"}</td><td>${webShows(r)}</td><td class="nowrap">${flags(r)}</td></tr>
+        ${open ? `<tr class="exp-row"><td colspan="11">${locHTML(r)}</td></tr>` : ""}`;
+    }).join("");
+    $("#stock-empty").classList.toggle("hidden", list.length > 0);
+    $("#s-count").textContent = `${list.length} SKUs shown`;
+    $("#stock-foot").textContent = `Sample of ${S.length} SKUs · ${S.filter((r) => r.low).length} below reorder point in this sample (18 across all 2,610 SKUs)`;
+  };
+  ["#s-q"].forEach((s) => $(s).addEventListener("input", renderStock));
+  ["#s-cat", "#s-loc"].forEach((s) => $(s).addEventListener("change", renderStock));
+  ["#c-low", "#c-q", "#c-t"].forEach((s) => $(s).addEventListener("click", (e) => { e.currentTarget.classList.toggle("active"); renderStock(); }));
+  $("#stock-body").addEventListener("click", (e) => {
+    if (e.target.closest("a")) return;
+    const tr = e.target.closest("tr.sku-row"); if (!tr) return;
+    openId = openId === tr.dataset.id ? null : tr.dataset.id;
+    const r = S.find((x) => x.p.id === tr.dataset.id); fx(r); renderStock();
+  });
+  renderStock();
+
+  /* ---------- Serial lookup ---------- */
+  const UNITS = {
+    "U-000812": { pid: "lap-01", mfr: "7H", mfr2: "2K3", mfrLabel: "Dell service tag", grade: "refurb-a", state: ["Quarantine · awaiting re-grade", "s-bad"], loc: "WH-BLR · bin Q-03", photos: ["lap-dell", "lap-side", "lap-grey", "lap-open"],
+      insp: ["INS-2291", "Mohammed Irfan", "07 Sep 2026", "42 / 42 passed", "87% (214 cycles)", "ER-1182 · NIST 800-88 Purge · verified"], warranty: ["Tradex refurbished · 6 months · policy v3", "Tradex", "18 Sep 2026 → 18 Mar 2027 (paused while in RMA)"],
+      tl: [
+        ["done", "clipboard", "Purchase order", "PO-2026-0131 · RenewTech Refurbishers · lot of 12", "02 Sep · Anita R."],
+        ["done", "scan", "Goods receipt (GRN)", "GRN-0428 · WH-BLR dock 1 · serial scanned against PO", "06 Sep · Irfan M."],
+        ["done", "check", "QC inspection", "INS-2291 · 42-point checklist v3 · 42/42 pass · battery 87%", "07 Sep · Irfan M."],
+        ["done", "award", "Graded", "Grade A (rubric v3) · data erasure ER-1182", "07 Sep · Irfan M."],
+        ["done", "camera", "Photographed", "6 actual-unit photos · studio set 3", "08 Sep · Studio"],
+        ["done", "globe", "Published", "Offer LAP01-RA · unit shown with its own photos", "08 Sep · Sneha P."],
+        ["done", "lock", "Reserved", "R-5402 · TXO-10433 · website · serial-specific hold", "15 Sep 11:02 · checkout"],
+        ["done", "truck", "Sold & dispatched", "TXO-10433 · INV-26-10433 · BlueDart AWB 7788 1203 4411", "16 Sep · Pack station 2"],
+        ["warn", "undo", "Returned", "RMA-0091 · “Key sticking on keyboard” · linked to original sale ✓", "22 Sep · WH-BLR returns desk"],
+        ["bad", "alert-octagon", "Quarantine", "Bin Q-03 · not sellable · data-erasure re-check required", "22 Sep · Irfan M."],
+        ["current", "refresh", "Re-grade (pending)", "Proposed Grade B · keyboard replacement quote ₹1,850", "Due 27 Sep · assigned Irfan M."],
+      ] },
+    "U-000815": { pid: "lap-03", mfr: "C02", mfr2: "Q6LR", mfrLabel: "Apple serial", grade: "openbox", state: ["Sellable · available", "s-ok"], loc: "BR-SPR · display drawer 2", photos: ["lap-mac-air", "lap-mac-back", "lap-open", "lap-side"],
+      insp: ["INS-2310", "Vikram Shetty", "19 Sep 2026", "30 / 30 passed (open-box)", "100% (3 cycles)", "Not required (unused)"], warranty: ["Apple 1-year (manufacturer)", "Apple India", "Starts on delivery"],
+      tl: [["done", "clipboard", "Purchase order", "PO-2026-0158 · Prime IT Distributors", "15 Sep · Anita R."], ["done", "scan", "Goods receipt", "GRN-0437 · BR-SPR", "18 Sep · Vikram S."], ["done", "check", "QC inspection", "INS-2310 · open-box checklist v2 · pass", "19 Sep"], ["done", "award", "Graded", "Open box", "19 Sep"], ["done", "camera", "Photographed", "4 photos", "19 Sep"], ["done", "globe", "Published", "LAP03-OB", "19 Sep"], ["current", "lock", "Suggested as alternate unit", "Exception TXO-10477: payment captured after hold R-5521 expired — awaiting decision", "Today 10:05 · Finance · Deepa K."]] },
+    "U-000807": { pid: "lap-02", mfr: "PF3", mfr2: "Z19", mfrLabel: "Lenovo serial", grade: "refurb-b", state: ["Sold · delivered", "s-muted"], loc: "With customer · Whitefield 560066", photos: ["lap-thinkpad", "lap-thinkpad2", "lap-stack", "lap-open"],
+      insp: ["INS-2270", "Mohammed Irfan", "01 Sep 2026", "42 / 42 passed", "78% (402 cycles)", "ER-1160 · NIST 800-88 Purge"], warranty: ["Tradex refurbished · 6 months · policy v3", "Tradex", "12 Sep 2026 → 12 Mar 2027 · active"],
+      tl: [["done", "clipboard", "Purchase order", "PO-2026-0122", "26 Aug"], ["done", "scan", "Goods receipt", "GRN-0419", "29 Aug"], ["done", "check", "QC inspection", "INS-2270 · pass", "01 Sep"], ["done", "award", "Graded", "Grade B", "01 Sep"], ["done", "camera", "Photographed", "5 photos", "02 Sep"], ["done", "globe", "Published", "LAP02-RB", "02 Sep"], ["done", "lock", "Reserved", "R-5377 · WhatsApp order", "10 Sep"], ["done", "truck", "Sold & dispatched", "TXO-10391 · delivered 12 Sep", "11 Sep"]] },
+  };
+  const snOut = $("#sn-out");
+  const lookup = (q) => {
+    q = q.trim().toUpperCase();
+    if (q === "PF3K9Z21") {
+      snOut.innerHTML = `<div class="callout c-bad"><i data-icon="alert-octagon"></i><div><strong>Duplicate manufacturer serial detected — PF3K9Z21</strong><div class="mt-4">Appears on <b>U-000799</b> (sold 04 Sep, TXO-10366) and on a unit scanned into <b>GRN-0442</b> as SSD01-N (receiving now, Prime IT). The new unit is held in receiving and cannot become sellable until resolved (possible mis-scan, relabelled or returned device).</div>
+        <div class="row gap-8 mt-12"><a class="btn btn-sm" href="erp-purchasing.html#receive">Open GRN-0442</a><button class="btn btn-sm" data-toast="Case DSC-0034 opened · supplier asked for proof of origin">Open discrepancy case</button></div></div></div>`;
+      TX.hydrate(snOut); return;
+    }
+    const u = UNITS[q];
+    if (!u) { snOut.innerHTML = `<div class="card"><div class="empty"><i data-icon="search"></i><h4>No unit found for “${esc(q)}”</h4><p>We search internal unit IDs (U-…), manufacturer serials and order numbers. Check for a mis-scan, or look up the GRN if the unit is still being received.</p><div class="row gap-8 mt-12" style="justify-content:center"><a class="btn btn-sm" href="erp-purchasing.html#receive">Receiving</a><a class="btn btn-sm" href="erp-returns.html">Returns desk</a></div></div></div>`; TX.hydrate(snOut); return; }
+    const p = TX.byId(u.pid);
+    snOut.innerHTML = `<div class="unit-grid">
+      <div class="col gap-16">
+        <div class="card">
+          <div class="card-head"><div><div class="small muted">Serialised unit</div><h3 class="row gap-8" style="font-size:18px"><span class="mono">${q}</span> ${TX.condBadge(u.grade)}</h3></div><span class="status ${u.state[1]}">${u.state[0]}</span></div>
+          <div class="card-body">
+            <div class="unit-photos mb-16">${TX.ph(u.photos[0], "wide")}<div class="thumbs">${u.photos.map((k) => TX.ph(k)).join("")}</div></div>
+            <dl class="kv">
+              <dt>Product</dt><dd>${esc(p.title)}</dd>
+              <dt>SKU</dt><dd class="mono">${p.sku}</dd>
+              <dt>${u.mfrLabel}</dt><dd><span class="masked">${u.mfr}•••••${u.mfr2}</span> <button class="link-btn small" data-open="m-reveal">Reveal (audited)</button></dd>
+              <dt>Location</dt><dd>${u.loc}</dd>
+              <dt>Photos</dt><dd>${u.photos.length} actual-unit photos · captured at inspection</dd>
+            </dl>
+          </div>
+        </div>
+        <div class="grid g-2">
+          <div class="card card-pad"><div class="row-between mb-8"><h4>Inspection record</h4><span class="mono small muted">${u.insp[0]}</span></div>
+            <dl class="kv" style="grid-template-columns:90px 1fr"><dt>Inspector</dt><dd>${u.insp[1]}</dd><dt>Date</dt><dd>${u.insp[2]}</dd><dt>Result</dt><dd class="text-ok">${u.insp[3]}</dd><dt>Battery</dt><dd>${u.insp[4]}</dd><dt>Erasure</dt><dd>${u.insp[5]}</dd></dl>
+            <button class="btn btn-sm mt-12" data-toast="Inspection report PDF opened">${ic("file", "ic-sm")} Full checklist</button></div>
+          <div class="card card-pad"><div class="row-between mb-8"><h4>Warranty</h4>${ic("shield", "text-ok")}</div>
+            <dl class="kv" style="grid-template-columns:80px 1fr"><dt>Policy</dt><dd>${u.warranty[0]}</dd><dt>Provider</dt><dd>${u.warranty[1]}</dd><dt>Term</dt><dd>${u.warranty[2]}</dd></dl>
+            <div class="small muted mt-8">Policy version is the one snapshotted on the original order line.</div></div>
+        </div>
+      </div>
+      <div class="card" data-anno="1A · §9.4 Unit lifecycle: PO → sale → return → re-grade">
+        <div class="card-head"><div><h3>Unit lifecycle</h3><div class="sub">Every event is a ledger entry with reference and actor</div></div><button class="btn btn-sm" data-toast="Lifecycle exported for warranty case">${ic("download", "ic-sm")} Export</button></div>
+        <div class="card-body"><ul class="timeline">
+          ${u.tl.map(([st, icon, t, d, m]) => `<li class="${st}"><span class="t-dot">${ic(icon)}</span><div class="t-title">${t}</div><div class="small subtle">${d}</div><div class="t-meta">${m}</div></li>`).join("")}
+        </ul>
+        ${u.state[1] === "s-bad" ? `<div class="callout c-warn mt-8">${ic("alert")}<div>A unit can't be in two active fulfilments. While in quarantine it is excluded from sellable stock and from ATP; re-grading creates a new grade event — the original Grade A history is preserved.</div></div><div class="row gap-8 mt-12"><button class="btn btn-sm btn-primary" data-toast="Re-grade form opened · checklist v3">Start re-grade</button><button class="btn btn-sm" data-toast="Moved to repair queue · RMA-0091">Send to repair</button><button class="btn btn-sm" data-toast="Supplier return (RTV) draft created">Return to supplier</button></div>` : ""}
+        </div>
+      </div>
+    </div>`;
+    TX.hydrate(snOut);
+  };
+  $("#sn-go").addEventListener("click", () => lookup($("#sn-q").value));
+  $("#sn-q").addEventListener("keydown", (e) => { if (e.key === "Enter") lookup(e.target.value); });
+  document.addEventListener("click", (e) => { const c = e.target.closest("[data-sn]"); if (c) { $("#sn-q").value = c.dataset.sn; lookup(c.dataset.sn); } });
+  lookup("U-000812");
+
+  /* ---------- Movement ledger ---------- */
+  const MT = {
+    "Receipt": ["#e6f5fd", "#026aa2", "scan"], "QC pass": ["#e8f7ee", "#067647", "check"], "QC fail": ["#fdeceb", "#b42318", "x"], "Reserve": ["#eef2ff", "#1b3bbe", "lock"], "Release": ["#eef1f5", "#475467", "undo"],
+    "Dispatch": ["#fff3ea", "#b24a00", "truck"], "Return in": ["#fff6e5", "#a15c07", "undo"], "Transfer out": ["#f3eeff", "#5b3cc4", "transfer"], "Transfer in": ["#f3eeff", "#5b3cc4", "transfer"],
+    "Adjustment": ["#fdeceb", "#b42318", "edit"], "Reversal": ["#eef1f5", "#475467", "refresh"], "Re-grade": ["#f3eeff", "#5b3cc4", "award"],
+  };
+  const MV = [
+    ["10:41", "MV-771652", "Dispatch", "LAP04-N", "WH-BLR → customer", "sellable → shipped · reservation consumed", 1, -1, "TXO-10486 · AWB 7788120499", "Pack station 2"],
+    ["10:40", "MV-771651", "Release", "SSD01-N", "WH-BLR", "reserved → free (ATP +1)", 1, 0, "R-5529 expired", "Automation"],
+    ["10:38", "MV-771649", "Reserve", "CAM02-N", "WH-BLR", "free → reserved (ATP −1)", 1, 0, "R-5539 · TXO-10493", "Checkout"],
+    ["10:31", "MV-771644", "Receipt", "SSD01-N", "Supplier → WH-BLR", "→ receiving / QC", 20, 0, "GRN-0441 · PO-2026-0188", "Irfan M."],
+    ["10:31", "MV-771645", "QC pass", "SSD01-N", "WH-BLR", "QC → sellable", 17, 17, "GRN-0441 · QC batch", "Irfan M."],
+    ["10:31", "MV-771646", "QC fail", "SSD01-N", "WH-BLR", "QC → quarantine", 3, 0, "GRN-0441 · dented casing", "Irfan M."],
+    ["10:12", "MV-771640", "Adjustment", "RAM01-N", "WH-BLR · A-12", "sellable · count variance", 1, -1, "CC-0038 · approved", "Irfan M. ✓ Anita R."],
+    ["10:03", "MV-771634", "Reserve", "U-000811 · LAP03-OB", "WH-BLR", "free → reserved (ATP −1)", 1, 0, "R-5522 · TXO-10484", "Checkout"],
+    ["10:02", "MV-771633", "Release", "U-000811 · LAP03-OB", "WH-BLR", "reserved → free (ATP +1)", 1, 0, "R-5521 expired · TXO-10477", "Automation"],
+    ["09:52", "MV-771628", "Transfer in", "LAP01-RA · SSD01-N · MS02-N", "transit → BR-MYS", "transit → sellable", 7, 7, "TR-0214 (partial, 1 short)", "Mysuru desk"],
+    ["09:40", "MV-771620", "Reversal", "MON04-RB", "WH-BLR B-03 → B-04", "bin correction", 1, 0, "Reverses MV-771598 (wrong bin)", "Irfan M. ✓ Anita R."],
+    ["09:35", "MV-771617", "Return in", "U-000830 · HP01-OB", "Customer → WH-BLR", "→ quarantine", 1, 0, "RMA-0094", "Returns desk"],
+    ["09:20", "MV-771609", "Re-grade", "U-000803 · MON04-RB", "WH-BLR", "quarantine → sellable (Grade B)", 1, 1, "INS-2318", "Irfan M."],
+    ["09:05", "MV-771601", "Dispatch", "CPU02-N", "BR-SPR → dealer", "sellable → shipped", 4, -4, "TXO-10480 · Metro Computers", "Vikram S."],
+    ["08:58", "MV-771596", "Transfer out", "22 units · 4 SKUs", "WH-BLR → transit", "sellable → in transit", 22, -22, "TR-0213", "Irfan M."],
+    ["08:40", "MV-771590", "Reserve", "LAP01-RA", "WH-BLR", "free → reserved (ATP −1)", 1, 0, "R-5512 · WhatsApp order", "Karthik R."],
+    ["08:15", "MV-771585", "Dispatch", "MS03-N", "BR-KRM → customer", "sellable → sold (POS)", 2, -2, "POS-KRM-2291", "Koramangala desk"],
+  ];
+  $("#mv-type").innerHTML += Object.keys(MT).map((k) => `<option>${k}</option>`).join("");
+  const renderMv = () => {
+    const q = $("#mv-q").value.trim().toLowerCase(), t = $("#mv-type").value;
+    $("#mv-body").innerHTML = MV.filter((m) => (!q || m.join(" ").toLowerCase().includes(q)) && (!t || m[2] === t)).map(([time, id, type, sku, route, disp, units, d, ref, actor]) => {
+      const c = MT[type];
+      return `<tr><td class="nowrap"><div class="small strong">${time}</div><div class="cell-sub mono">${id}</div></td><td><span class="mv-type" style="background:${c[0]};color:${c[1]}">${ic(c[2], "ic-sm")} ${type}</span></td><td class="small mono">${sku}</td><td class="small nowrap">${route}</td><td class="small muted">${disp}</td>
+        <td class="r">${units}</td><td class="r ${d > 0 ? "qty-pos" : d < 0 ? "qty-neg" : "qty-0"}">${d > 0 ? "+" + d : d === 0 ? "0" : "−" + Math.abs(d)}</td><td class="small">${ref}</td><td class="small nowrap">${actor}</td></tr>`;
+    }).join("") || `<tr><td colspan="9"><div class="empty"><h4>No movements match</h4><p>Try another event type or search.</p></div></td></tr>`;
+  };
+  $("#mv-q").addEventListener("input", renderMv); $("#mv-type").addEventListener("change", renderMv);
+  renderMv();
+
+  /* ---------- Count sheet ---------- */
+  const CS = [["A-10", "CPU02-N", "Intel Core i5-12400F", 34, "—"], ["A-11", "MS03-N", "Logitech M190", 256, "—"], ["A-12", "RAM01-N", "Kingston FURY 16 GB", 120, "—"], ["A-14", "SSD01-N", "Samsung T7 1 TB", 12, "—"], ["A-15", "LAP01-RA", "Dell Latitude 5420", 9, "9/9 scanned ✓"], ["A-16", "LAP02-RB", "ThinkPad T14 Gen 2", null, "0/9 scanned"]];
+  $("#cs-body").innerHTML = CS.map(([bin, sku, name, n, sc]) => `<tr><td class="mono strong nowrap">${bin}${n === null ? `<div class="cell-sub text-brand" style="font-family:var(--font);display:flex;align-items:center;gap:4px">${ic("lock", "ic-sm")} frozen</div>` : ""}</td><td><div class="cell-main">${name}</div><div class="cell-sub mono">${sku}</div></td><td class="r"><input class="input count-in" value="${n === null ? "" : n}" aria-label="Counted quantity ${sku}" ${n === null ? 'placeholder="—"' : ""}></td><td class="small ${sc.includes("✓") ? "text-ok" : "muted"}">${sc}</td><td class="r">${n === null ? `<button class="btn btn-xs btn-primary" data-toast="Scanner ready for bin A-16">${ic("scan", "ic-sm")} Scan</button>` : `<span class="text-ok">${ic("check-circle", "ic-sm")}</span>`}</td></tr>`).join("");
+
+  /* ---------- Reservations ---------- */
+  const RS = [
+    ["R-5539", "TXO-10493", "Website", "CAM02-N", 1, "—", "WH-BLR", "10:38", 14 * 60 + 12, "Payment page open", "s-info"],
+    ["R-5537", "TXO-10492", "Website", "LAP04-N", 1, "—", "WH-BLR", "10:27", 3 * 60 + 12, "UPI collect pending", "s-warn"],
+    ["R-5536", "TXO-10491", "Assisted", "MON03-N", 10, "—", "WH-BLR", "09:31", 22 * 3600 + 49 * 60, "Awaiting discount approval", "s-warn"],
+    ["R-5535", "WA-3391", "WhatsApp", "SSD01-N", 2, "—", "WH-BLR", "10:12", 1 * 3600 + 30 * 60, "Customer confirming address", "s-info"],
+    ["R-5534", "TXO-10490", "Branch POS", "CAM04-N", 1, "—", "BR-KRM", "10:05", null, "Paid · pick in store", "s-ok"],
+    ["R-5533", "TXO-10489", "Dealer", "RAM01-N", 20, "—", "WH-BLR", "Yesterday 16:20", 29 * 3600, "Bank transfer pending", "s-info"],
+    ["R-5531", "TXO-10487", "Website", "LAP01-RA", 1, "U-000819", "BR-MYS", "10:34", 11 * 60 + 5, "Payment page open", "s-info"],
+    ["R-5530", "TXO-10486", "Website", "LAP04-N", 1, "—", "WH-BLR", "10:20", null, "Paid · consumed at dispatch 10:41", "s-muted"],
+  ];
+  const fmtLeft = (s) => s === null ? "—" : s >= 3600 ? `${Math.floor(s / 3600)} h ${Math.floor((s % 3600) / 60)} m` : `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
+  let rsChan = "";
+  const renderRs = () => {
+    $("#rs-body").innerHTML = RS.filter((r) => !rsChan || r[2] === rsChan).map(([id, ord, ch, sku, q, unit, loc, cr, left, st, cls], i) => `<tr>
+      <td class="nowrap"><div class="mono strong">${id}</div><div class="cell-sub">${cr}</div></td><td class="nowrap">${ord}</td><td><span class="badge ${ch === "WhatsApp" ? "b-ok" : ch === "Dealer" ? "b-vendor" : ch === "Website" ? "b-brand" : ""}">${ch}</span></td><td class="mono small nowrap">${sku}</td><td class="r">${q}</td><td class="mono small nowrap">${unit}</td><td class="small">${loc}</td>
+      <td class="nowrap"><span class="countdown ${left !== null && left < 15 * 60 ? "text-warn" : ""}" data-left="${left === null ? "" : left}">${fmtLeft(left)}</span></td>
+      <td><span class="status ${cls}">${st}</span></td>
+      <td class="r nowrap">${left === null ? "" : `<button class="btn btn-xs" data-toast="Extension needs a reason · max 1 extension">Extend</button> <button class="btn btn-xs btn-danger" data-toast="${id} released · ATP +${q} · audit logged">Release</button>`}</td></tr>`).join("");
+  };
+  $("#rs-seg").addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) { rsChan = b.dataset.c; renderRs(); } });
+  renderRs();
+  setInterval(() => { RS.forEach((r) => { if (r[8] !== null && r[8] > 0) r[8]--; }); $$("#rs-body .countdown").forEach((el, k) => { const vis = RS.filter((r) => !rsChan || r[2] === rsChan)[k]; if (vis) { el.textContent = fmtLeft(vis[8]); } }); }, 1000);
+
+  /* ---------- Supplier availability ---------- */
+  const FEEDS = [
+    [TX.vendors[0], "API · every 30 min", 214, "Today 10:30", "12 min ago", ["Fresh", "b-ok"], "Promise with lead time 3–4 days"],
+    [TX.vendors[1], "API · every 30 min", 96, "Today 10:30", "12 min ago", ["Fresh", "b-ok"], "Promise with lead time 4–6 days"],
+    [TX.vendors[2], "Vendor portal (manual)", 38, "Today 07:55", "2 h 47 min ago", ["Fresh", "b-ok"], "Promise with lead time 5–7 days · 1 offer not re-confirmed (expired)"],
+    [TX.vendors[3], "CSV upload", 14, "25 Sep 08:10", "26 h ago", ["Stale", "b-warn"], "Confirm before promise (auto-rule A21)"],
+    [TX.vendors[4], "—", 0, "—", "—", ["Not onboarded", ""], "Marketplace applicant · no offers (Phase 2)"],
+  ];
+  $("#feed-body").innerHTML = FEEDS.map(([v, feed, n, last, ago, fr, pol]) => `<tr>
+    <td><div class="cell-main">${v.name}</div><div class="cell-sub">${v.id} · ${v.model} · ${v.city}</div></td><td class="small">${feed}</td><td class="r">${n}</td>
+    <td class="small">${last}<div class="cell-sub">${ago}</div></td><td><span class="badge ${fr[1]}">${fr[0] === "Stale" ? ic("clock") : fr[0] === "Fresh" ? ic("check-circle") : ""} ${fr[0]}</span></td><td class="small">${pol}</td>
+    <td class="r">${fr[0] === "Stale" ? `<button class="btn btn-xs btn-primary" data-toast="Update request sent to NetCore via portal & email">Request update</button>` : fr[0] === "Fresh" ? `<button class="btn btn-xs" data-toast="Feed log opened">Log</button>` : ""}</td></tr>`).join("");
+  const OFF = [
+    ["lap-06", 0, 0, 4, 1, "3–4 days", "Today 10:30", ["Fresh", "b-ok"], "Ships in 4–6 days · partner stock", ""],
+    ["pc-03", 0, 0, 2, 0, "5–7 days (build)", "Today 10:30", ["Fresh", "b-ok"], "Ships in 6–8 days · built to order", ""],
+    ["prn-02", 1, 0, 3, 1, "4–6 days", "Today 10:30", ["Fresh", "b-ok"], "Ships in 4–6 days · partner stock", ""],
+    ["net-01", 3, 10, 9, 2, "3 days", "25 Sep 08:10", ["Stale · 26 h", "b-warn"], "Company stock shown; partner offer needs confirmation", "warn"],
+    ["net-02", 3, 58, 38, 5, "3 days", "25 Sep 08:10", ["Stale · 26 h", "b-warn"], "Company stock only (partner hidden)", "warn"],
+    ["cam-05", 2, 6, 0, 0, "5–7 days", "23 Sep 18:00", ["Expired · 64 h", "b-bad"], "Partner offer suspended", "bad"],
+  ];
+  $("#offer-body").innerHTML = OFF.map(([id, vi, atp, sq, buf, lead, conf, fr, promise, lvl]) => { const p = TX.byId(id); return `<tr>
+    <td><div class="row" style="gap:8px">${TX.ph(p.img, "thumb")}<div><div class="cell-main truncate" style="max-width:190px">${esc(p.title)}</div><div class="cell-sub mono">${p.sku}</div></div></div></td>
+    <td class="small">${TX.vendors[vi].name}</td><td class="r strong">${atp}</td><td class="r">${sq}</td><td class="r muted">${buf}</td><td class="small">${lead}</td><td class="small">${conf}</td>
+    <td><span class="badge ${fr[1]}">${fr[0]}</span></td><td class="small ${lvl === "bad" ? "text-bad" : lvl === "warn" ? "text-warn" : ""}" style="max-width:200px">${promise}</td></tr>`; }).join("");
+
+  /* ---------- Transfer modal ---------- */
+  const TL = [["lap-01", 3], ["lap-02", 2], ["ssd-01", 5]];
+  const COST = { "lap-01": 30450, "lap-02": 25400, "ssd-01": 6850 };
+  const cost = (p) => COST[p.id] || Math.round(p.price / 1.18 * 0.85);
+  const renderTl = () => {
+    let total = 0;
+    $("#t-lines").innerHTML = TL.map(([id, q], k) => { const p = TX.byId(id); const r = S.find((x) => x.p.id === id); const v = cost(p) * q; total += v; return `<tr><td><div class="row" style="gap:8px">${TX.ph(p.img, "thumb")}<div><div class="cell-main">${esc(p.title)}</div><div class="cell-sub mono">${p.sku}</div></div></div></td><td class="r">${r.locs[0].atp}</td>
+      <td class="r"><div class="qty" style="height:30px"><button data-step="-1" aria-label="Decrease">${ic("minus", "ic-sm")}</button><input value="${q}" min="1" data-tl="${k}" aria-label="Quantity"><button data-step="1" aria-label="Increase">${ic("plus", "ic-sm")}</button></div></td><td class="r">${TX.fmt(v)}</td><td class="r"><button class="btn btn-ghost btn-icon btn-sm" aria-label="Remove line">${ic("trash", "ic-sm")}</button></td></tr>`; }).join("") + `<tr><td colspan="3" class="r strong">Total value at cost</td><td class="r strong">${TX.fmt(total)}</td><td></td></tr>`;
+    const over = total > 200000;
+    $("#t-appr").className = "callout " + (over ? "c-warn" : "c-info");
+    $("#t-appr div").innerHTML = over ? `<strong>Needs operations admin approval</strong> — value ${TX.fmt(total)} is above the ₹2,00,000 branch-manager limit (sample threshold). Anita R. is the approver; Rajesh M. is the alternate.` : `<strong>Branch manager can approve</strong> — value ${TX.fmt(total)} is within the ₹2,00,000 limit (sample threshold).`;
+  };
+  renderTl();
+  $("#t-lines").addEventListener("change", (e) => { const i = e.target.closest("[data-tl]"); if (i) { TL[+i.dataset.tl][1] = Math.max(1, +i.value || 1); renderTl(); } });
+});
+</script>
+</body>
+</html>

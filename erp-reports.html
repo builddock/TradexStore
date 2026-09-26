@@ -1,0 +1,579 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reports · Tradex ERP</title>
+  <link rel="stylesheet" href="assets/tradex.css">
+  <style>
+    /* Report catalogue tiles */
+    .rep-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+    .rep { position: relative; display: flex; flex-direction: column; gap: 9px; padding: 14px 16px; border: 1px solid var(--line); border-radius: var(--r); background: #fff; transition: border-color .15s, box-shadow .15s; }
+    .rep:hover { border-color: var(--brand-200); box-shadow: var(--sh-1); }
+    .rep.is-open { border-color: var(--brand); box-shadow: var(--ring); }
+    .rep .r-top { display: flex; align-items: center; gap: 10px; }
+    .rep .r-ic { width: 32px; height: 32px; border-radius: 8px; display: grid; place-items: center; background: var(--brand-50); color: var(--brand); flex: none; }
+    .rep .r-ic .ic { width: 16px; height: 16px; }
+    .rep .r-ic.warn { background: var(--warn-50); color: var(--warn-tx); }
+    .rep .r-ic.vendor { background: var(--vendor-50); color: #07695b; }
+    .rep .r-ic.dark { background: var(--bg-2); color: var(--tx-2); }
+    .rep h4 { font-size: 13.5px; line-height: 1.3; }
+    .rep .dims { display: flex; flex-wrap: wrap; gap: 4px; }
+    .rep .dims span { font-size: 11px; padding: 1px 6px; border-radius: 4px; background: var(--bg-2); color: var(--tx-2); }
+    .rep .r-act { font-size: 12px; color: var(--tx-2); display: flex; gap: 6px; align-items: flex-start; }
+    .rep .r-act .ic { width: 13px; height: 13px; margin-top: 2px; color: var(--brand); }
+    .rep .r-kpi { font-size: 12px; font-weight: 600; }
+    .rep .r-foot { margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-top: 8px; border-top: 1px dashed var(--line); }
+    .rep .r-foot .status { font-size: 11.5px; }
+    .rep.new-rep { border-style: dashed; background: var(--bg); align-items: center; justify-content: center; text-align: center; color: var(--tx-3); }
+    .lock-tag { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 650; color: #7a4a04; }
+    .lock-tag .ic { width: 12px; height: 12px; }
+
+    /* Opened report */
+    .rep-open-bar { display: flex; align-items: center; gap: 4px; margin: 28px 0 0; }
+    .rep-open-bar .ot { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: var(--r) var(--r) 0 0; background: #fff; border: 1px solid var(--line); border-bottom: 0; font-weight: 650; font-size: 13px; }
+    .rep-open-bar .ot.ghost { background: transparent; border-color: transparent; color: var(--tx-3); font-weight: 550; }
+    .rep-shell { background: #fff; border: 1px solid var(--line); border-radius: 0 var(--r-lg) var(--r-lg) var(--r-lg); }
+    .rep-head { display: flex; justify-content: space-between; gap: 20px; padding: 18px 20px 14px; border-bottom: 1px solid var(--line-2); }
+    .fresh { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; text-align: right; font-size: 12px; color: var(--tx-3); }
+    .rep-filters { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 12px 20px; background: #fafbfc; border-bottom: 1px solid var(--line-2); }
+    .rep-filters .select { width: auto; height: 32px; font-size: 12.5px; padding-right: 28px; background-position: right 8px center; }
+    .rep-body { padding: 16px 20px 20px; }
+    .kpi.sm { padding: 12px 14px; gap: 3px; }
+    .kpi.sm .k-value { font-size: 21px; }
+    .rep-main { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 16px; }
+    .defs { margin: 0; display: flex; flex-direction: column; gap: 11px; font-size: 12.5px; }
+    .defs dt { font-weight: 650; color: var(--tx-1); display: flex; align-items: center; gap: 6px; }
+    .defs dt .ic { width: 14px; height: 14px; color: var(--brand); }
+    .defs dd { margin: 2px 0 0 20px; color: var(--tx-2); }
+    .date-basis { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; margin: 6px 0 0 20px; }
+    .date-basis span { font-size: 10.5px; font-weight: 650; text-align: center; padding: 4px 2px; border-radius: 4px; background: var(--bg-2); color: var(--tx-2); }
+    .date-basis span.on { background: var(--brand); color: #fff; }
+    .table th.sortable { cursor: pointer; user-select: none; }
+    .table th.sortable:hover { color: var(--tx-1); }
+    .table th .ic { width: 11px; height: 11px; display: inline; vertical-align: -1px; opacity: .5; }
+    .state-bar { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--tx-3); margin-bottom: 12px; }
+    .share-bar { display: inline-block; width: 64px; height: 6px; border-radius: 999px; background: var(--brand-100); vertical-align: middle; margin-right: 6px; overflow: hidden; }
+    .share-bar > i { display: block; height: 100%; background: var(--series-1); }
+    .note-list { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; font-size: 12.5px; color: var(--tx-2); }
+    .xl-cell { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 11.5px; background: var(--bg); border: 1px solid var(--line-2); border-radius: 4px; padding: 1px 5px; }
+  </style>
+</head>
+<body data-app="erp" data-page="reports">
+<main>
+  <div class="page-head">
+    <div>
+      <div class="crumbs"><span>Finance &amp; insight</span><i data-icon="chevron-right"></i><span>Reports</span></div>
+      <h1>Reports</h1>
+      <p class="sub">15 standard reports · every figure labelled gross/net and GST-inclusive/exclusive · every export audited</p>
+    </div>
+    <div class="actions">
+      <a class="btn" href="#schedules"><i data-icon="calendar"></i> Scheduled reports <span class="badge b-brand">6</span></a>
+      <a class="btn" href="#exports"><i data-icon="download"></i> My exports</a>
+      <button class="btn btn-primary" data-open="m-request"><i data-icon="plus"></i> Request a report</button>
+    </div>
+  </div>
+
+  <!-- ========================= Catalogue ========================= -->
+  <section class="card" data-anno="1A · R14 Standard report catalogue (blueprint §14.3)">
+    <div class="card-head">
+      <div><h3>Report catalogue</h3><div class="sub">Each report states its dimensions and the decision it supports. Restricted reports show a lock for roles without access.</div></div>
+      <div class="input-icon" style="width:260px"><i data-icon="search"></i><input class="input input-sm" id="rep-q" placeholder="Find a report…" aria-label="Find a report"></div>
+    </div>
+    <div class="card-body">
+      <div class="row wrap gap-8 mb-16" id="rep-groups">
+        <button class="chip active" data-grp="all">All <b>15</b></button>
+        <button class="chip" data-grp="sales"><i data-icon="chart"></i> Sales &amp; customers</button>
+        <button class="chip" data-grp="stock"><i data-icon="warehouse"></i> Stock</button>
+        <button class="chip" data-grp="orders"><i data-icon="receipt"></i> Orders, payments &amp; returns</button>
+        <button class="chip" data-grp="partners"><i data-icon="building"></i> Partners</button>
+        <button class="chip" data-grp="gov"><i data-icon="shield"></i> Governance</button>
+        <span class="ml-auto small muted row gap-6"><span class="lock-tag"><i data-icon="lock"></i> Restricted</span> = cost, margin or personal data (§14.4)</span>
+      </div>
+      <div class="rep-grid" id="rep-grid"></div>
+      <div class="empty hidden" id="rep-none"><i data-icon="search"></i><h4>No report matches “<span id="rep-none-q"></span>”</h4><p>Try “stock”, “margin” or “audit”, or request a new report.</p></div>
+    </div>
+  </section>
+
+  <!-- ========================= Opened report ========================= -->
+  <div class="rep-open-bar" id="report">
+    <span class="ot"><i data-icon="chart" class="ic-sm"></i> Sales &amp; returns <button class="btn btn-ghost btn-xs btn-icon" aria-label="Close report" data-toast="Report closed · filters kept in your saved view"><i data-icon="x" class="ic-sm"></i></button></span>
+    <span class="ot ghost"><i data-icon="plus" class="ic-sm"></i> Open another report from the catalogue</span>
+  </div>
+  <section class="rep-shell">
+    <div class="rep-head">
+      <div>
+        <div class="row gap-8"><span class="badge b-brand sq">RPT-01</span><span class="badge b-outline sq">Saved view · Monthly branch review</span><span class="badge sq">1A · R14</span></div>
+        <h2 class="mt-8" id="rep-title">Sales &amp; returns by branch</h2>
+        <p class="small muted mt-4">Owner: Rajesh M. · Visible to Owner, Ops admin, Finance; branch managers see their own branch only · Definitions v1.2 approved by Deepa K. (Finance), 14 Sep 2026</p>
+      </div>
+      <div class="col gap-8" style="align-items:flex-end">
+        <div class="fresh" id="fresh" data-anno="§14.4 Data freshness &amp; failed-feed indicators">
+          <span class="status s-ok" id="fresh-status">Data fresh · 10:42 IST</span>
+          <span id="fresh-detail">Invoices &amp; credit notes 10:42 · settlements 07:10 · courier status 10:30</span>
+        </div>
+        <div class="row gap-8">
+          <button class="btn btn-sm" data-toast="View saved · Monthly branch review"><i data-icon="check" class="ic-sm"></i> Save view</button>
+          <button class="btn btn-sm" data-open="m-schedule"><i data-icon="calendar" class="ic-sm"></i> Schedule</button>
+          <button class="btn btn-sm" data-toast="Print layout opened (A4 landscape, filters printed in header)"><i data-icon="printer" class="ic-sm"></i> Print</button>
+          <button class="btn btn-sm btn-primary" data-open="m-export"><i data-icon="download" class="ic-sm"></i> Export CSV</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Single filter row scopes KPIs, chart and table -->
+    <div class="rep-filters" data-anno="One filter row scopes KPIs, chart and table">
+      <div class="seg" id="period"><button class="active">30 days</button><button>MTD</button><button>QTD</button><button>Custom…</button></div>
+      <select class="select" aria-label="Date basis" id="basis" title="Date basis">
+        <option value="invoice">Invoice date</option><option value="order">Order date</option><option value="payment">Payment date</option><option value="dispatch">Dispatch date</option><option value="settlement">Settlement date</option>
+      </select>
+      <select class="select" aria-label="Location"><option>All locations</option><option>Central WH</option><option>SP Road</option><option>Koramangala</option><option>Mysuru</option></select>
+      <select class="select" aria-label="Channel"><option>All channels</option><option>Website</option><option>Branch POS</option><option>WhatsApp</option><option>Assisted</option></select>
+      <select class="select" aria-label="Buyer type"><option>All buyers</option><option>Consumers</option><option>Dealers</option></select>
+      <select class="select" aria-label="Condition"><option>All conditions</option><option>New</option><option>Open box</option><option>Refurbished</option><option>Used</option></select>
+      <select class="select" aria-label="Category"><option>All categories</option><option>Laptops</option><option>Components</option><option>Cameras</option><option>Storage</option></select>
+      <button class="btn btn-ghost btn-sm btn-icon" aria-label="Reset filters" data-tip="Reset to saved view" data-toast="Filters reset to saved view"><i data-icon="refresh" class="ic-sm"></i></button>
+    </div>
+
+    <div class="rep-body">
+      <div class="state-bar">
+        <span class="upper" style="font-size:10.5px">Prototype · preview state</span>
+        <div class="seg" id="state"><button class="active" data-state="normal">Normal</button><button data-state="stale">Stale feed</button><button data-state="empty">No results</button><button data-state="restricted">Branch manager view</button></div>
+        <span class="ml-auto row gap-8">Showing
+          <div class="seg" id="tax"><button class="active" data-tax="ex">Excl. GST</button><button data-tax="in">Incl. GST</button></div>
+        </span>
+      </div>
+
+      <div class="callout c-warn mb-16 hidden" id="st-stale"><i data-icon="alert"></i><div><strong>Some feeds are behind — figures may be incomplete.</strong> Courier status sync paused at 08:15 (3 failed attempts), so the <em>dispatch-date</em> basis excludes 17 shipments. Settlement file for 25 Sep not yet received — settlement-date figures stop at 24 Sep. Invoice-date figures below are complete. <a href="erp-automation.html#runs">View failed job →</a></div></div>
+      <div class="callout c-brand mb-16 hidden" id="st-restricted"><i data-icon="lock"></i><div><strong>Viewing as Vikram Shetty · Branch manager, SP Road.</strong> Record scope limits this report to BR-SPR; other branches, supplier cost and margin columns are not shown, and exports are limited to the same scope (§18.2).</div></div>
+
+      <div id="rep-content">
+        <div class="grid g-6 mb-16" id="kpis" data-anno="Gross vs net labelled on every figure"></div>
+
+        <div class="rep-main">
+          <div class="card">
+            <div class="card-head">
+              <div><h3 id="ch-title">Net sales by branch</h3><div class="sub" id="ch-sub">₹ excl. GST · invoice date · 28 Aug – 26 Sep 2026</div></div>
+              <div class="row gap-8">
+                <div class="seg" id="groupby" data-anno="R14 Branch · channel · condition"><button class="active" data-g="branch">Branch</button><button data-g="channel">Channel</button><button data-g="condition">Condition</button><button data-g="trend">Daily trend</button></div>
+                <button class="btn btn-sm btn-ghost" id="tbl-toggle"><i data-icon="list" class="ic-sm"></i> Table view</button>
+              </div>
+            </div>
+            <div class="card-body"><div id="chart"></div>
+              <div class="small muted mt-12 row gap-6"><i data-icon="info" class="ic-sm"></i> Location = site that fulfilled the order (stock source), not where it was placed. Hover or use arrow keys for values.</div>
+              <hr>
+              <div class="grid g-2 gap-24">
+                <div>
+                  <div class="row-between mb-8"><h4>Net sales mix by condition</h4><span class="small muted">share of net</span></div>
+                  <div id="mix"></div>
+                  <div class="small muted mt-12">Refurbished (A + B) = 27% of net sales but 37% of returns value — see Returns &amp; warranty report.</div>
+                </div>
+                <div>
+                  <div class="row-between mb-8"><h4>Top return reasons</h4><span class="small muted">share of returns value</span></div>
+                  <table class="table compact" aria-label="Top return reasons">
+                    <tbody>
+                      <tr><td>Changed mind (within policy)</td><td class="r strong">31%</td></tr>
+                      <tr><td>Defective on arrival</td><td class="r strong">24%</td></tr>
+                      <tr><td>Condition not as described</td><td class="r strong text-warn">18%</td></tr>
+                      <tr><td>Wrong item / not compatible</td><td class="r strong">15%</td></tr>
+                      <tr><td>Other · delivery damage</td><td class="r strong">12%</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" data-anno="§14.4 Definitions: event dates · gross vs net · tax basis">
+            <div class="card-head"><div><h3>Definitions used in this report</h3><div class="sub">Version 1.2 · approved by Finance · <a href="#" data-toast="Definition history opened (v1.0 → v1.2)">history</a></div></div></div>
+            <div class="card-body">
+              <dl class="defs">
+                <div><dt><i data-icon="rupee"></i> Gross vs net sales</dt>
+                  <dd><b>Gross</b> = tax-invoice line value after line discounts, before returns. <b>Net</b> = gross − credit notes (returns &amp; refunds) issued in the period. Shipping recovery and payment fees are excluded.</dd></div>
+                <div><dt><i data-icon="calendar"></i> Order vs invoice vs dispatch dates</dt>
+                  <dd>Each event has its own date; the filter row chooses the basis. This view uses <b>invoice date</b>.</dd>
+                  <div class="date-basis" id="basis-strip"><span>Order</span><span>Payment</span><span class="on">Invoice</span><span>Dispatch</span><span>Settlement</span></div></div>
+                <div><dt><i data-icon="undo"></i> Refunds in a later period</dt>
+                  <dd>Counted when the credit note is issued, not against the original sale. ₹1.12 L of this period’s returns relate to August invoices.</dd></div>
+                <div><dt><i data-icon="percent"></i> Tax-inclusive / exclusive</dt>
+                  <dd>Figures are <b>excl. GST</b> unless toggled; GST is shown separately. Storefront consumer prices are GST-inclusive, dealer prices ex-GST. GST is computed per line (5% / 12% / 18%), not a flat rate.</dd></div>
+                <div><dt><i data-icon="filter"></i> Exclusions</dt>
+                  <dd>Test orders, orders cancelled before invoicing and inter-branch transfers are excluded. Not a statutory profit &amp; loss statement.</dd></div>
+              </dl>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mt-16">
+          <div class="table-toolbar">
+            <b id="tbl-title">Breakdown by branch</b><span class="small muted" id="tbl-sub">4 rows · click a column to sort · click a row to drill into orders</span>
+            <span class="ml-auto small muted">Δ compares with the previous 30 days (29 Jul – 27 Aug)</span>
+          </div>
+          <div class="table-wrap"><table class="table" id="rep-table">
+            <thead><tr id="rep-thead"></tr></thead>
+            <tbody id="rep-tbody"></tbody>
+            <tfoot id="rep-tfoot"></tfoot>
+          </table></div>
+          <div class="card-foot"><span class="small muted row gap-6"><i data-icon="shield" class="ic-sm"></i> Export of this table: 2,961 invoice lines · within the 50,000-row limit · link expires in 24 h · formula-safe CSV</span><button class="btn btn-sm" data-open="m-export"><i data-icon="download" class="ic-sm"></i> Export CSV</button></div>
+        </div>
+      </div>
+
+      <div class="card hidden" id="st-empty">
+        <div class="empty"><i data-icon="chart"></i><h4>No sales match these filters</h4><p>Mysuru Branch · WhatsApp · Used · 1–3 Sep 2026 (invoice date) returned no invoices.<br>Try a wider period or switch the date basis — orders placed on these dates may have been invoiced later.</p>
+          <div class="row gap-8 mt-16" style="justify-content:center"><button class="btn btn-sm" data-toast="Period widened to last 30 days">Widen to 30 days</button><button class="btn btn-sm" data-toast="Date basis switched to order date">Use order date</button></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================= Schedules & exports ========================= -->
+  <section class="card mt-24" id="schedules" data-anno="1A · R14 Scheduled digests &amp; accountant export">
+    <div class="card-head">
+      <div><h3>Scheduled reports</h3><div class="sub">Delivered as expiring secure links (never raw attachments with personal data) · a delivery failure retries 3× then raises one exception</div></div>
+      <button class="btn btn-sm btn-primary" data-open="m-schedule"><i data-icon="plus" class="ic-sm"></i> New schedule</button>
+    </div>
+    <div class="table-wrap"><table class="table compact">
+      <thead><tr><th style="min-width:230px">Schedule</th><th>Recipients</th><th>Frequency</th><th>Contents &amp; format</th><th>Last run</th><th>Next run</th><th>Status</th><th></th></tr></thead>
+      <tbody>
+        <tr>
+          <td><div class="cell-main">Owner weekly digest</div><div class="cell-sub">Sales &amp; returns, exceptions, automation value, stock ageing</div></td>
+          <td><div class="cell-main nowrap">Rajesh Menon</div><div class="cell-sub">Email + WhatsApp summary</div></td>
+          <td class="small">Weekly · Mon 08:00</td>
+          <td class="small">1-page PDF summary + drill-down link</td>
+          <td class="small"><span class="status s-ok">Delivered</span><div class="cell-sub">Mon 21 Sep 08:00 · opened 08:14</div></td>
+          <td class="small">Mon 28 Sep 08:00</td>
+          <td><span class="badge b-ok">Active</span></td>
+          <td class="r"><button class="btn btn-xs" data-open="m-digest">Preview</button></td>
+        </tr>
+        <tr>
+          <td><div class="cell-main">Accountant monthly export</div><div class="cell-sub">Sales register, credit notes, settlements, GST summary, stock valuation</div></td>
+          <td><div class="cell-main nowrap">Deepa Krishnan</div><div class="cell-sub">+ S. Ramesh &amp; Co., external CA (OTP link)</div></td>
+          <td class="small">Monthly · 1st, 06:00</td>
+          <td class="small">CSV bundle (Tally-ready) + control totals sheet</td>
+          <td class="small"><span class="status s-ok">Delivered</span><div class="cell-sub">1 Sep · control totals matched ₹1.71 Cr</div></td>
+          <td class="small">Thu 1 Oct 06:00</td>
+          <td><span class="badge b-ok">Active</span></td>
+          <td class="r"><button class="btn btn-xs" data-toast="Test run queued · Deepa K. will receive a preview link">Test run</button></td>
+        </tr>
+        <tr>
+          <td><div class="cell-main">Branch daily sales</div><div class="cell-sub">Own branch only (record scope applied per recipient)</div></td>
+          <td class="small">3 branch managers</td>
+          <td class="small">Daily · 21:30</td>
+          <td class="small">Email summary + link</td>
+          <td class="small"><span class="status s-ok">Delivered</span><div class="cell-sub">Fri 25 Sep 21:30</div></td>
+          <td class="small">Today 21:30</td>
+          <td><span class="badge b-ok">Active</span></td>
+          <td class="r"><button class="btn btn-xs" data-toast="Schedule opened for editing">Edit</button></td>
+        </tr>
+        <tr>
+          <td><div class="cell-main">Low stock &amp; purchase suggestions</div><div class="cell-sub">SKUs below reorder point with open POs</div></td>
+          <td class="small">Anita Rao (buyer)</td>
+          <td class="small">Daily · 07:00</td>
+          <td class="small">XLSX + link to draft POs</td>
+          <td class="small"><span class="status s-ok">Delivered</span><div class="cell-sub">Today 07:00 · 18 SKUs</div></td>
+          <td class="small">Sun 27 Sep 07:00</td>
+          <td><span class="badge b-ok">Active</span></td>
+          <td class="r"><button class="btn btn-xs" data-toast="Schedule opened for editing">Edit</button></td>
+        </tr>
+        <tr>
+          <td><div class="cell-main">Stock ageing &gt; 90 days</div><div class="cell-sub">By receipt cohort and condition</div></td>
+          <td class="small">Rajesh M., Anita R.</td>
+          <td class="small">Fortnightly · Fri 06:00</td>
+          <td class="small">XLSX</td>
+          <td class="small"><span class="status s-warn">Delivered after retry</span><div class="cell-sub">18 Sep · 1st attempt timed out (&gt; 60 s), retry 06:20 OK</div></td>
+          <td class="small">Fri 2 Oct 06:00</td>
+          <td><span class="badge b-ok">Active</span></td>
+          <td class="r"><button class="btn btn-xs" data-toast="Run history opened">History</button></td>
+        </tr>
+        <tr>
+          <td><div class="cell-main">Dealer tier sales</div><div class="cell-sub">Sales by dealer price list and quantity tier</div></td>
+          <td class="small">Anita R., Deepa K.</td>
+          <td class="small">Weekly · Fri 18:00</td>
+          <td class="small">CSV</td>
+          <td class="small"><span class="status s-muted">Skipped</span><div class="cell-sub">Paused by Anita R. 12 Sep — price list under revision</div></td>
+          <td class="small muted">—</td>
+          <td><span class="badge b-warn"><i data-icon="pause"></i> Paused</span></td>
+          <td class="r"><button class="btn btn-xs" data-toast="Schedule resumed · next run Fri 2 Oct 18:00">Resume</button></td>
+        </tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section class="grid mt-16" style="grid-template-columns:minmax(0,1fr) minmax(0,1.9fr)" id="exports">
+    <div class="card" data-anno="§14.4 Row limits · expiring links · formula-injection safe">
+      <div class="card-head"><div><h3>How exports work</h3><div class="sub">Applies to every report and scheduled file</div></div><i data-icon="shield"></i></div>
+      <div class="card-body">
+        <ul class="note-list">
+          <li><b>Row limit:</b> up to 50,000 rows per direct download. Larger extracts run as a background job so they cannot slow checkout, and arrive as a link.</li>
+          <li><b>Expiring links:</b> downloads are private to the requester and expire after 24 h (external accountant: 7 days + OTP).</li>
+          <li><b>Formula-injection safe:</b> text cells starting with <span class="xl-cell">=</span> <span class="xl-cell">+</span> <span class="xl-cell">-</span> <span class="xl-cell">@</span> or tab/CR are prefixed with <span class="xl-cell">'</span> so spreadsheets never run them. Example: a customer name <span class="xl-cell">=HYPERLINK(…)</span> exports as <span class="xl-cell">'=HYPERLINK(…)</span>.</li>
+          <li><b>Plain values:</b> amounts in INR without symbols, dates as ISO 8601 (IST), tax basis in the file header.</li>
+          <li><b>Permissions:</b> personal data, supplier cost and margin columns need the matching permission; every export is logged with filters and row count in the audit trail.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><div><h3>Recent exports</h3><div class="sub">Yours and your team’s · last 7 days</div></div><a class="small strong" href="erp-admin.html#audit">Export audit →</a></div>
+      <div class="table-wrap"><table class="table compact">
+        <thead><tr><th>Export</th><th>Report · filters · requested by</th><th class="r">Rows</th><th>Link</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td class="mono nowrap">EXP-0412</td><td><div class="cell-main">Sales &amp; returns</div><div class="cell-sub">30 days · invoice date · all locations · Deepa K.</div></td><td class="r">2,961</td><td class="small nowrap">Expires in 23 h</td><td class="nowrap"><span class="status s-ok">Ready</span> <button class="btn btn-xs btn-icon" aria-label="Download EXP-0412" data-toast="Download started · EXP-0412.csv (logged)"><i data-icon="download" class="ic-sm"></i></button></td></tr>
+          <tr><td class="mono nowrap">EXP-0410</td><td><div class="cell-main">Sales lines FY 2026-27</div><div class="cell-sub">1 Apr – 26 Sep · all fields · Deepa K.</div></td><td class="r">1,86,420</td><td class="small">Background job · emailed link</td><td><span class="status s-warn">Over 50k limit → job</span></td></tr>
+          <tr><td class="mono nowrap">EXP-0409</td><td><div class="cell-main">Stock position</div><div class="cell-sub">All warehouses · sellable + quarantine · Anita R.</div></td><td class="r">6,214</td><td class="small muted nowrap">Expired 25 Sep</td><td><span class="status s-muted">Expired</span></td></tr>
+          <tr><td class="mono nowrap">EXP-0407</td><td><div class="cell-main">Audit export</div><div class="cell-sub">Permission changes · Sep · Rajesh M.</div></td><td class="r">1,120</td><td class="small muted">Downloaded 1× · expired</td><td><span class="status s-muted">Expired</span></td></tr>
+          <tr><td class="mono nowrap">EXP-0405</td><td><div class="cell-main">Customer list with phone numbers</div><div class="cell-sub">Consumers · Koramangala · Karthik R.</div></td><td class="r">—</td><td class="small muted">Not generated</td><td><span class="status s-bad">Denied</span><div class="cell-sub">needs “Export customer data”</div></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- ========================= Modals ========================= -->
+  <div class="modal" id="m-export"><div class="modal-card lg">
+    <div class="modal-head"><div><h3>Export · Sales &amp; returns</h3><div class="small muted">Current filters: last 30 days · invoice date · all locations · all channels · excl. GST</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-body col gap-16">
+      <div class="form-grid">
+        <div class="field"><label>Format</label><div class="seg"><button class="active">CSV (UTF-8)</button><button>XLSX</button></div></div>
+        <div class="field"><label for="ex-scope">Rows</label>
+          <select class="select" id="ex-scope"><option value="ok">Invoice lines matching filters — 2,961 rows</option><option value="sum">Summary by branch — 4 rows</option><option value="big">All invoice lines since 1 Apr 2026 — 1,86,420 rows</option></select></div>
+      </div>
+      <div class="callout c-ok" id="ex-ok"><i data-icon="check-circle"></i><div>Within the <b>50,000-row</b> direct-download limit. The file is ready in a few seconds.</div></div>
+      <div class="callout c-warn hidden" id="ex-big"><i data-icon="alert"></i><div><b>Over the 50,000-row limit.</b> This will run as a background job (est. 3 min) at low priority so it doesn’t affect checkout. You’ll get an email with a private link that expires in 24 h.</div></div>
+      <div>
+        <div class="label mb-8">Columns</div>
+        <div class="grid g-2" style="gap:8px">
+          <label class="check"><input type="checkbox" checked> Invoice no., dates (order / invoice / dispatch)</label>
+          <label class="check"><input type="checkbox" checked> Location, channel, buyer type, condition</label>
+          <label class="check"><input type="checkbox" checked> SKU, serial, quantity, amounts excl. GST, GST</label>
+          <label class="check"><input type="checkbox" checked> Credit note reference &amp; return reason</label>
+          <label class="check" style="opacity:.6" data-tip="Needs the ‘Export customer data’ permission"><input type="checkbox" disabled> <i data-icon="lock" class="ic-sm"></i> Customer name, phone, address</label>
+          <label class="check"><input type="checkbox"> <i data-icon="lock" class="ic-sm"></i> Supplier cost &amp; margin (Owner/Finance)</label>
+        </div>
+      </div>
+      <div class="panel small col gap-6">
+        <div class="row gap-8"><i data-icon="clock" class="ic-sm"></i><span>Download link is private to you and expires in <b>24 hours</b>.</span></div>
+        <div class="row gap-8"><i data-icon="shield" class="ic-sm"></i><span>Formula-injection safe: text starting with = + − @ tab or CR is prefixed with an apostrophe.</span></div>
+        <div class="row gap-8"><i data-icon="history" class="ic-sm"></i><span>Logged as <b>EXP-0413</b> with your filters, columns and row count in the audit trail.</span></div>
+      </div>
+    </div>
+    <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-primary" data-close id="ex-go" data-toast="EXP-0413 ready · 2,961 rows · link expires in 24 h"><i data-icon="download"></i> Generate CSV</button></div>
+  </div></div>
+
+  <div class="modal" id="m-schedule"><div class="modal-card lg">
+    <div class="modal-head"><h3>Schedule a report</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="field"><label for="sc-name">Name</label><input class="input" id="sc-name" value="Sales & returns — monthly branch review"></div>
+        <div class="field"><label for="sc-rep">Report &amp; saved view</label><select class="select" id="sc-rep"><option>Sales &amp; returns · Monthly branch review</option><option>Stock ageing</option><option>Payment reconciliation</option><option>Automation health</option></select></div>
+        <div class="field"><label for="sc-freq">Frequency</label><select class="select" id="sc-freq"><option>Monthly · 1st working day</option><option>Weekly · Monday</option><option>Daily</option></select></div>
+        <div class="field"><label for="sc-time">Time (IST)</label><input class="input" id="sc-time" value="07:30"></div>
+        <div class="field full"><label for="sc-to">Recipients</label><input class="input" id="sc-to" value="Rajesh Menon; Deepa Krishnan"><span class="hint">Each recipient’s record scope is applied — a branch manager only receives their branch.</span></div>
+        <div class="field"><label>Format</label><div class="seg"><button class="active">PDF summary + link</button><button>CSV</button><button>XLSX</button></div></div>
+        <div class="field"><label>If data is stale</label><select class="select" aria-label="If data is stale"><option>Send with a stale-data warning</option><option>Hold and retry for 2 h</option><option>Skip this run</option></select></div>
+        <div class="full col gap-8">
+          <label class="check"><input type="checkbox" checked> Skip sending when the report is empty</label>
+          <label class="check"><input type="checkbox" checked> Raise one exception if delivery fails after 3 retries</label>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-primary" data-close data-toast="Schedule created · first run Thu 1 Oct 07:30">Create schedule</button></div>
+  </div></div>
+
+  <div class="modal" id="m-request"><div class="modal-card">
+    <div class="modal-head"><h3>Request a new report</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-body col gap-16">
+      <div class="field"><label for="rq-q">What decision should this report support?</label><textarea class="textarea" id="rq-q" placeholder="e.g. Which refurbished grades are returned most by dealers, so we can change sourcing"></textarea></div>
+      <div class="field"><label for="rq-d">Dimensions and filters</label><input class="input" id="rq-d" placeholder="e.g. grade, supplier, dealer, return reason"></div>
+      <div class="callout c-info"><i data-icon="info"></i><div>New reports go through change control: definitions are agreed with Finance before the report is published (§14.4, §25.5).</div></div>
+    </div>
+    <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-primary" data-close data-toast="Request logged as CR-031 · Anita R. will review">Submit request</button></div>
+  </div></div>
+
+  <div class="modal" id="m-digest"><div class="modal-card lg">
+    <div class="modal-head"><div><h3>Owner weekly digest · preview</h3><div class="small muted">Mon 28 Sep 08:00 · covers 21–27 Sep · only material items</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-body col gap-16">
+      <div class="grid g-4"><div class="kpi sm"><div class="k-label">Net sales (excl. GST)</div><div class="k-value">₹43.8 L</div><div class="k-sub">+9.2% vs prior week</div></div><div class="kpi sm"><div class="k-label">Returns</div><div class="k-value">4.1%</div><div class="k-sub">of gross · Grade B highest</div></div><div class="kpi sm"><div class="k-label">Owner decisions</div><div class="k-value">6</div><div class="k-sub">from 19 four weeks ago</div></div><div class="kpi sm"><div class="k-label">Hours saved (est.)</div><div class="k-value">41 h</div><div class="k-sub">17 automation rules</div></div></div>
+      <div class="callout c-warn"><i data-icon="alert"></i><div><strong>Decide this week:</strong> Dealer Gold Q4 price list · ₹6.2 L stock older than 90 days (mostly Grade B monitors) · PO-2026-0194 above limit.</div></div>
+      <div class="callout c-info"><i data-icon="info"></i><div><strong>Data freshness:</strong> invoices complete · courier status incomplete for 17 shipments (sync paused) · settlements to 24 Sep.</div></div>
+    </div>
+    <div class="modal-foot"><button class="btn" data-close>Close</button><button class="btn btn-primary" data-close data-toast="Digest settings saved">Edit digest</button></div>
+  </div></div>
+</main>
+<script src="assets/tradex.js"></script>
+<script>
+TX.ready(() => {
+  const $ = TX.$, $$ = TX.$$, ic = TX.icon;
+
+  /* ---------------- Catalogue ---------------- */
+  const REPORTS = [
+    { id: "sales", grp: "sales", icon: "chart", name: "Sales & returns", dims: ["Date", "Channel", "Branch", "Buyer type", "Category", "Condition"], act: "Understand net sales and mix", ph: "1A", fresh: ["ok", "Fresh · 10:42"], kpi: "Net ₹1.84 Cr · 30 days", open: true },
+    { id: "stockpos", grp: "stock", icon: "warehouse", name: "Stock position", dims: ["SKU", "Warehouse", "Stock owner", "Disposition", "Reserved qty"], act: "Transfer or replenish", ph: "1A", fresh: ["ok", "Live · lag 14 s"], kpi: "₹3.42 Cr at cost · 4 sites" },
+    { id: "ageing", grp: "stock", icon: "history", tone: "warn", name: "Stock ageing", dims: ["Receipt cohort", "Serial", "Category", "Value"], act: "Clear slow-moving stock", ph: "1A", fresh: ["ok", "Nightly · 02:00"], kpi: "₹6.2 L older than 90 days", warn: true },
+    { id: "low", grp: "stock", icon: "alert", tone: "warn", name: "Low stock", dims: ["Lead time", "Reorder point", "Open POs"], act: "Review purchasing suggestions", ph: "1A", fresh: ["ok", "Live"], kpi: "18 SKUs below reorder point", warn: true },
+    { id: "extract", grp: "stock", icon: "download", tone: "dark", name: "Inventory extract (accountant)", dims: ["Location", "Valuation", "Serial", "As-of date"], act: "Month-end stock file for the accountant", ph: "1A", fresh: ["ok", "Month-end 31 Aug"], restricted: "Finance · Owner" },
+    { id: "orderage", grp: "orders", icon: "clock", name: "Order ageing", dims: ["Current stage", "Payment", "Branch", "Assignee"], act: "Resolve delayed fulfilment", ph: "1A", fresh: ["warn", "Courier status 2 h behind"], kpi: "2 orders overdue > 24 h", bad: true },
+    { id: "recon", grp: "orders", icon: "wallet", name: "Payment reconciliation", dims: ["Order", "Capture", "Fee", "Refund", "Settlement ref"], act: "Resolve mismatches", ph: "1A", fresh: ["ok", "Settlements 07:10"], restricted: "Finance · Owner", kpi: "4 unmatched lines · ₹18,420", warn: true },
+    { id: "returns", grp: "orders", icon: "undo", name: "Returns & warranty", dims: ["Reason", "Condition", "Serial", "Supplier", "Resolution"], act: "Improve quality and sourcing", ph: "1A", fresh: ["ok", "Fresh · 10:40"], kpi: "Grade B return rate 7.2%" },
+    { id: "margin", grp: "sales", icon: "percent", name: "Gross margin", dims: ["SKU / order", "Allocated discounts", "Known costs"], act: "Review margin leakage", ph: "1A", fresh: ["ok", "Nightly · 02:00"], restricted: "Finance · Owner", kpi: "Illustrative — not a statutory P&L" },
+    { id: "funnel", grp: "sales", icon: "filter", name: "Customer funnel", dims: ["Device", "Channel", "Buyer segment"], act: "Improve discovery and checkout", ph: "1A", fresh: ["ok", "Daily · to 25 Sep"], kpi: "Excludes test & duplicate events" },
+    { id: "branch", grp: "sales", icon: "store", name: "Branch comparison", dims: ["Branch", "Net sales", "Stock turns", "Paid → dispatched"], act: "Compare sites like-for-like", ph: "1A", fresh: ["ok", "Fresh · 10:42"], kpi: "Mysuru dispatch 9.1 h vs 5.8 h avg" },
+    { id: "vendor", grp: "partners", icon: "building", tone: "vendor", name: "Vendor performance", dims: ["Freshness", "Fill rate", "Dispatch", "Returns"], act: "Adjust vendor permissions / priority", ph: "1B", fresh: ["warn", "1 feed stale 26 h"], kpi: "NetCore fill rate 81%", warn: true },
+    { id: "auto", grp: "gov", icon: "zap", name: "Automation health", dims: ["Runs", "Errors", "Age", "Retry count", "Net time saved"], act: "Repair unreliable workflows", ph: "1A", fresh: ["ok", "Live"], kpi: "3 failing jobs · 41 h saved / wk", href: "erp-automation.html#runs" },
+    { id: "approval", grp: "gov", icon: "check-circle", name: "Approval ageing", dims: ["Type", "Assignee", "Due time", "Value"], act: "Remove bottlenecks", ph: "1B", fresh: ["ok", "Live"], kpi: "9 waiting · oldest 1 d 4 h", href: "erp-automation.html#approvals" },
+    { id: "audit", grp: "gov", icon: "shield", tone: "dark", name: "Audit export", dims: ["Actor", "Object", "Action", "Before / after", "Reason"], act: "Investigate changes", ph: "1A", fresh: ["ok", "Real-time"], restricted: "Owner · Admin", href: "erp-admin.html#audit" },
+  ];
+  const card = (r) => `<article class="rep ${r.open ? "is-open" : ""}" data-grp="${r.grp}" data-name="${(r.name + " " + r.dims.join(" ") + " " + r.act).toLowerCase()}">
+      <div class="r-top"><span class="r-ic ${r.tone || ""}">${ic(r.icon)}</span><h4 class="grow">${r.name}</h4><span class="badge b-outline sq">${r.ph}</span></div>
+      <div class="dims">${r.dims.map((d) => `<span>${d}</span>`).join("")}</div>
+      <div class="r-act">${ic("arrow-right")}<span>${r.act}</span></div>
+      ${r.kpi ? `<div class="r-kpi ${r.bad ? "text-bad" : r.warn ? "text-warn" : ""}">${r.kpi}</div>` : ""}
+      <div class="r-foot">
+        ${r.restricted ? `<span class="lock-tag" data-tip="Restricted to ${r.restricted}">${ic("lock")} ${r.restricted}</span>` : `<span class="status s-${r.fresh[0]}">${r.fresh[1]}</span>`}
+        ${r.open ? `<span class="badge b-brand">Open below</span>` : r.href ? `<a class="btn btn-xs" href="${r.href}">Open ${ic("arrow-right", "ic-sm")}</a>` : `<button class="btn btn-xs" data-toast="${r.name} opened in a new report tab">Open</button>`}
+      </div>
+    </article>`;
+  $("#rep-grid").innerHTML = REPORTS.map(card).join("") +
+    `<button class="rep new-rep" data-open="m-request">${ic("plus", "ic-lg")}<b style="color:var(--tx-1)">Request a report</b><span class="small">Agree the decision it supports and its definitions first</span></button>`;
+  let grp = "all";
+  const filterCards = () => {
+    const q = $("#rep-q").value.trim().toLowerCase(); let n = 0;
+    $$("#rep-grid .rep[data-grp]").forEach((c) => { const on = (grp === "all" || c.dataset.grp === grp) && (!q || c.dataset.name.includes(q)); c.classList.toggle("hidden", !on); if (on) n++; });
+    $(".new-rep").classList.toggle("hidden", !!q && n === 0);
+    $("#rep-none").classList.toggle("hidden", n > 0); $("#rep-none-q").textContent = q;
+  };
+  $("#rep-groups").addEventListener("click", (e) => { const b = e.target.closest(".chip[data-grp]"); if (!b) return; grp = b.dataset.grp; $$("#rep-groups .chip").forEach((c) => c.classList.toggle("active", c === b)); filterCards(); });
+  $("#rep-q").addEventListener("input", filterCards);
+
+  /* ---------------- Report data (last 30 days, invoice date, excl. GST) ---------------- */
+  // net = gross − returns; returns = credit notes issued in period; d = change vs previous 30 days
+  const DATA = {
+    branch: { label: "Location", title: "branch", rows: [
+      { k: "Central Warehouse", sub: "WH-BLR · web & dealer orders", orders: 552, units: 1310, net: 7920000, ret: 426000, d: 0.146 },
+      { k: "SP Road Branch", sub: "BR-SPR · Bengaluru", orders: 372, units: 842, net: 5410000, ret: 237000, d: 0.122 },
+      { k: "Koramangala Branch", sub: "BR-KRM · Bengaluru", orders: 238, units: 540, net: 3380000, ret: 163000, d: 0.104 },
+      { k: "Mysuru Branch", sub: "BR-MYS · Mysuru", orders: 122, units: 269, net: 1690000, ret: 67000, d: 0.075 } ] },
+    channel: { label: "Channel", title: "channel", rows: [
+      { k: "Website", sub: "Consumers & signed-in dealers", orders: 604, units: 1402, net: 8860000, ret: 556000, d: 0.152 },
+      { k: "Branch POS", sub: "Walk-in sales at 3 branches", orders: 452, units: 1021, net: 6420000, ret: 208000, d: 0.049 },
+      { k: "WhatsApp", sub: "Guided draft → confirmed order", orders: 168, units: 351, net: 1980000, ret: 87000, d: 0.318 },
+      { k: "Assisted / dealer", sub: "Staff-entered, quotes & tenders", orders: 60, units: 187, net: 1140000, ret: 42000, d: 0.084 } ] },
+    condition: { label: "Condition", title: "condition", rows: [
+      { k: "New", cond: "new", orders: 812, units: 2190, net: 10670000, ret: 395000, d: 0.104 },
+      { k: "Open box", cond: "openbox", orders: 104, units: 128, net: 1660000, ret: 86000, d: 0.11 },
+      { k: "Refurbished · Grade A", cond: "refurb-a", orders: 196, units: 332, net: 3310000, ret: 205000, d: 0.21 },
+      { k: "Refurbished · Grade B", cond: "refurb-b", orders: 108, units: 214, net: 1660000, ret: 129000, d: 0.17 },
+      { k: "Used · Good", cond: "used", orders: 64, units: 97, net: 1100000, ret: 78000, d: 0.05 } ] },
+  };
+  const GST = 0.178; // blended effective rate — computed per line in the real report
+  let group = "branch", tax = "ex", state = "normal", sortKey = "net", sortDir = -1;
+  const days = [...Array(30)].map((_, i) => new Date(2026, 7, 28 + i).toLocaleDateString("en-IN", { day: "numeric", month: "short" }));
+  const raw = days.map((_, i) => 560000 + 90000 * Math.sin((i + 2) / 3.1) + i * 4200 + ((i * 7919) % 17) * 5200 + (i % 7 === 5 ? 140000 : 0));
+  const rs = raw.reduce((a, b) => a + b, 0); const trend = raw.map((v) => Math.round((v / rs) * 18400000));
+
+  const money = (v) => TX.fmt(tax === "in" ? v * (1 + GST) : v);
+  const moneyK = (v) => TX.fmtK(Math.round(tax === "in" ? v * (1 + GST) : v));
+  const pct = (v, dp = 1) => (v * 100).toFixed(dp) + "%";
+  const rowsFor = () => {
+    let rows = DATA[group === "trend" ? "branch" : group].rows.map((r) => ({ ...r, gross: r.net + r.ret, rr: r.ret / (r.net + r.ret), prev: r.net / (1 + r.d) }));
+    if (state === "restricted") rows = DATA.branch.rows.filter((r) => r.k === "SP Road Branch").map((r) => ({ ...r, gross: r.net + r.ret, rr: r.ret / (r.net + r.ret), prev: r.net / (1 + r.d) }));
+    return rows;
+  };
+  const totals = (rows) => { const t = rows.reduce((a, r) => ({ orders: a.orders + r.orders, units: a.units + r.units, net: a.net + r.net, ret: a.ret + r.ret, prev: a.prev + r.prev }), { orders: 0, units: 0, net: 0, ret: 0, prev: 0 }); t.gross = t.net + t.ret; t.rr = t.ret / t.gross; t.d = t.net / t.prev - 1; return t; };
+
+  function renderKPIs() {
+    const t = totals(rowsFor()); const tl = tax === "in" ? "incl. GST" : "excl. GST";
+    const k = (icon, label, value, foot) => `<div class="kpi sm"><div class="k-label">${ic(icon)} <span>${label}</span></div><div class="k-value">${value}</div><div class="k-foot">${foot}</div></div>`;
+    $("#kpis").innerHTML =
+      k("receipt", "Gross sales", moneyK(t.gross), `<span>before returns</span>`) +
+      k("undo", "Returns", "−" + moneyK(t.ret), `<span class="delta up-bad">${pct(t.rr)} of gross</span>`) +
+      k("rupee", "Net sales", moneyK(t.net), `<span class="delta ${t.d >= 0 ? "up-good" : "down-bad"}">${ic(t.d >= 0 ? "trending-up" : "trending-down")} ${t.d >= 0 ? "+" : ""}${pct(t.d)} vs prev.</span>`) +
+      k("package", "Invoiced orders", TX.num(t.orders), `<span>${TX.num(t.units)} units</span>`) +
+      k("tag", "Avg. order value", moneyK(t.net / t.orders), `<span>net ÷ orders</span>`) +
+      k("percent", "GST on net sales", TX.fmtK(Math.round(t.net * GST)), `<span>shown separately</span>`);
+  }
+
+  function renderChart() {
+    const host = $("#chart"); const tl = tax === "in" ? "incl. GST" : "excl. GST";
+    const basis = $("#basis").selectedOptions[0].textContent.toLowerCase();
+    $("#ch-sub").textContent = `₹ ${tl} · ${basis} · 28 Aug – 26 Sep 2026`;
+    if (group === "trend") {
+      $("#ch-title").textContent = "Daily net sales";
+      TX.charts.line(host, { title: "Daily net sales, last 30 days", labels: days, height: 262, series: [{ name: "Net sales", color: "var(--series-1)", values: trend.map((v) => (state === "restricted" ? v * 5410000 / 18400000 : v) * (tax === "in" ? 1 + GST : 1)) }], format: (v) => "₹" + (v / 1e5).toFixed(2) + " L", axisFormat: (v) => "₹" + (v / 1e5).toFixed(0) + "L" });
+    } else {
+      $("#ch-title").textContent = `Net sales by ${DATA[group].title}`;
+      const rows = rowsFor();
+      TX.charts.hbar(host, { title: `Net sales by ${DATA[group].title}`, seriesName: `Net sales (${tl})`, labelHeader: DATA[group].label, labelWidth: 168, format: (v) => TX.fmtK(Math.round(v)),
+        items: rows.map((r) => ({ label: r.k.replace("Refurbished · ", "Refurb "), value: tax === "in" ? r.net * (1 + GST) : r.net })) });
+    }
+  }
+
+  const COLS = [
+    { k: "k", label: () => DATA[group === "trend" ? "branch" : group].label },
+    { k: "orders", label: () => "Orders", r: 1 }, { k: "units", label: () => "Units", r: 1 },
+    { k: "gross", label: () => "Gross sales", r: 1, m: 1 }, { k: "ret", label: () => "Returns", r: 1, m: 1 },
+    { k: "net", label: () => "Net sales", r: 1, m: 1 }, { k: "share", label: () => "Share of net", r: 0 },
+    { k: "rr", label: () => "Return rate", r: 1 }, { k: "aov", label: () => "AOV", r: 1, m: 1 }, { k: "d", label: () => "Δ net", r: 1 },
+  ];
+  function renderTable() {
+    const rows = rowsFor(); const t = totals(rows);
+    rows.forEach((r) => { r.share = r.net / t.net; r.aov = r.net / r.orders; });
+    rows.sort((a, b) => (typeof a[sortKey] === "string" ? a[sortKey].localeCompare(b[sortKey]) : a[sortKey] - b[sortKey]) * sortDir);
+    const tl = tax === "in" ? " (incl. GST)" : "";
+    $("#rep-thead").innerHTML = COLS.map((c) => `<th class="sortable ${c.r ? "r" : ""}" data-sort="${c.k}">${c.label()}${c.m ? `<span class="muted" style="text-transform:none;letter-spacing:0">${tl}</span>` : ""} ${sortKey === c.k ? ic(sortDir < 0 ? "chevron-down" : "chevron-up") : ""}</th>`).join("");
+    $("#rep-tbody").innerHTML = rows.map((r) => `<tr style="cursor:pointer" data-drill="${r.k}">
+      <td>${r.cond ? `<div class="row gap-8">${TX.condBadge(r.cond)}</div>` : `<div class="cell-main">${r.k}</div><div class="cell-sub">${r.sub}</div>`}</td>
+      <td class="r">${TX.num(r.orders)}</td><td class="r">${TX.num(r.units)}</td>
+      <td class="r">${money(r.gross)}</td><td class="r text-bad">−${money(r.ret)}</td><td class="r strong">${money(r.net)}</td>
+      <td><span class="share-bar"><i style="width:${(r.share * 100).toFixed(1)}%"></i></span><span class="small">${pct(r.share)}</span></td>
+      <td class="r ${r.rr > 0.06 ? "text-warn strong" : ""}">${pct(r.rr)}${r.rr > 0.06 ? " " + ic("alert", "ic-sm") : ""}</td>
+      <td class="r">${money(r.aov)}</td>
+      <td class="r"><span class="delta ${r.d >= 0 ? "up-good" : "down-bad"}">${r.d >= 0 ? "+" : ""}${pct(r.d)}</span></td></tr>`).join("");
+    $("#rep-tfoot").innerHTML = `<tr><td>Total${state === "restricted" ? " (your scope)" : ""}</td><td class="r">${TX.num(t.orders)}</td><td class="r">${TX.num(t.units)}</td><td class="r">${money(t.gross)}</td><td class="r text-bad">−${money(t.ret)}</td><td class="r">${money(t.net)}</td><td class="small">100%</td><td class="r">${pct(t.rr)}</td><td class="r">${money(t.net / t.orders)}</td><td class="r"><span class="delta up-good">+${pct(t.d)}</span></td></tr>`;
+    const g = group === "trend" ? "branch" : group;
+    $("#tbl-title").textContent = `Breakdown by ${DATA[g].title}`;
+    $("#tbl-sub").textContent = `${rows.length} row${rows.length > 1 ? "s" : ""} · click a column to sort · click a row to drill into its invoices`;
+    $("#rep-title").textContent = group === "trend" ? "Sales & returns — daily trend" : `Sales & returns by ${DATA[g].title}`;
+  }
+  const renderAll = () => { renderKPIs(); renderChart(); renderTable(); };
+  TX.charts.stack($("#mix"), { parts: [
+    { name: "New", value: 58, color: "var(--series-1)" }, { name: "Refurbished", value: 27, color: "var(--series-2)" },
+    { name: "Open box", value: 9, color: "var(--series-3)" }, { name: "Used", value: 6, color: "#eda100" } ] });
+  renderAll();
+
+  $("#groupby").addEventListener("click", (e) => { const b = e.target.closest("button[data-g]"); if (!b) return; group = b.dataset.g; if (sortKey === "k") sortKey = "net"; renderAll(); });
+  $("#tax").addEventListener("click", (e) => { const b = e.target.closest("button[data-tax]"); if (!b) return; tax = b.dataset.tax; renderAll(); });
+  $("#tbl-toggle").addEventListener("click", () => TX.charts.toggleTable($("#chart")));
+  $("#rep-thead").addEventListener("click", (e) => { const th = e.target.closest("th[data-sort]"); if (!th || th.dataset.sort === "share") return; const k = th.dataset.sort; sortDir = sortKey === k ? -sortDir : k === "k" ? 1 : -1; sortKey = k; renderTable(); });
+  $("#rep-tbody").addEventListener("click", (e) => { const tr = e.target.closest("tr[data-drill]"); if (tr) TX.toast(`Drill-down: invoices for ${tr.dataset.drill} · last 30 days · ${$("#basis").value} date`, "external"); });
+  $("#basis").addEventListener("change", () => {
+    const v = $("#basis").value; const order = ["order", "payment", "invoice", "dispatch", "settlement"];
+    $$("#basis-strip span").forEach((s, i) => s.classList.toggle("on", order[i] === v));
+    renderChart(); TX.toast(`Date basis: ${v} date — figures recalculated`, "calendar");
+  });
+
+  $("#state").addEventListener("click", (e) => {
+    const b = e.target.closest("button[data-state]"); if (!b) return; state = b.dataset.state;
+    $("#st-stale").classList.toggle("hidden", state !== "stale");
+    $("#st-restricted").classList.toggle("hidden", state !== "restricted");
+    $("#rep-content").classList.toggle("hidden", state === "empty");
+    $("#st-empty").classList.toggle("hidden", state !== "empty");
+    const fs = $("#fresh-status");
+    if (state === "stale") { fs.className = "status s-warn"; fs.textContent = "Partially stale · 2 feeds behind"; $("#fresh-detail").textContent = "Invoices 10:42 · settlements to 24 Sep · courier status paused 08:15"; }
+    else { fs.className = "status s-ok"; fs.textContent = "Data fresh · 10:42 IST"; $("#fresh-detail").textContent = "Invoices & credit notes 10:42 · settlements 07:10 · courier status 10:30"; }
+    if (state === "restricted" && group !== "branch" && group !== "trend") { group = "branch"; $$("#groupby button").forEach((x) => x.classList.toggle("active", x.dataset.g === "branch")); }
+    $$("#groupby button").forEach((x) => { const lock = state === "restricted" && (x.dataset.g === "channel" || x.dataset.g === "condition"); x.disabled = lock; x.style.opacity = lock ? .45 : ""; x.title = lock ? "Not available in your record scope in this prototype" : ""; });
+    if (state !== "empty") renderAll();
+  });
+
+  // Deep-link a preview state, e.g. erp-reports.html?state=stale
+  const st0 = TX.param("state"); if (st0) { const b = TX.$(`#state button[data-state="${st0}"]`); if (b) b.click(); }
+  const g0 = TX.param("group"); if (g0) { const b = TX.$(`#groupby button[data-g="${g0}"]`); if (b) b.click(); }
+
+  $("#ex-scope").addEventListener("change", (e) => {
+    const big = e.target.value === "big";
+    $("#ex-ok").classList.toggle("hidden", big); $("#ex-big").classList.toggle("hidden", !big);
+    $("#ex-go").innerHTML = big ? ic("clock") + " Queue background export" : ic("download") + " Generate CSV";
+    $("#ex-go").dataset.toast = big ? "EXP-0413 queued · 1,86,420 rows · emailed link expires in 24 h" : "EXP-0413 ready · 2,961 rows · link expires in 24 h";
+  });
+});
+</script>
+</body>
+</html>

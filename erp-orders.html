@@ -1,0 +1,751 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Orders · Tradex ERP</title>
+  <link rel="stylesheet" href="assets/tradex.css">
+  <style>
+    .ord-table th, .ord-table td { padding-left: 7px; padding-right: 7px; }
+    .ord-table td.check-col, .ord-table th.check-col { padding-left: 12px; width: 30px; }
+    .ord-table td { padding-top: 9px; padding-bottom: 9px; }
+    .ord-table .status { font-size: 12px; }
+    .ord-table .cell-main.mono { font-size: 12.5px; }
+    .ord-table .cell-sub .ic { display: inline; vertical-align: -2px; width: 12px; height: 12px; }
+    .ord-table th.grp { text-align: center; font-size: 10.5px; letter-spacing: .05em; color: var(--brand-700); background: var(--brand-50); border-bottom: 1px solid var(--brand-100); padding: 5px 8px; }
+    .ord-table th.grp-blank { background: #fafbfc; padding: 5px 8px; border-bottom: 0; }
+    .ord-table thead tr:nth-child(2) th { top: 27px; }
+    .ord-table td.st-col { background: #fcfdff; }
+    .ord-table tbody tr { cursor: pointer; }
+    .ord-table .o-note { display: flex; align-items: center; gap: 4px; font-size: 11.5px; font-weight: 600; margin-top: 2px; max-width: 158px; }
+    .ord-table .o-note .ic { width: 12px; height: 12px; flex: none; }
+    .ch { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--tx-2); white-space: nowrap; }
+    .ch .ic { width: 15px; height: 15px; color: var(--tx-3); }
+    .ch.wa .ic { color: #1faa59; }
+    .sla { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+    .sla .ic { width: 13px; height: 13px; }
+    .sla.ok { color: var(--ok-tx); } .sla.warn { color: var(--warn-tx); } .sla.bad { color: var(--bad-tx); } .sla.none { color: var(--tx-4); font-weight: 500; }
+    .sv-tabs { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; border-bottom: 1px solid var(--line); padding: 0 12px; }
+    .sv-tabs .tabs { border-bottom: 0; }
+    .sv-tabs .tab { padding: 12px 10px; font-size: 13px; }
+    .legend-states { display: flex; gap: 14px; align-items: center; font-size: 12px; color: var(--tx-3); }
+    /* Drawer */
+    .states { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 14px; }
+    .st-box { border: 1px solid var(--line); border-radius: var(--r); padding: 9px 12px; background: #fff; min-width: 0; }
+    .st-box .st-l { font-size: 10.5px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--tx-3); display: flex; align-items: center; gap: 6px; margin-bottom: 3px; }
+    .st-box .st-l .ic { width: 13px; height: 13px; }
+    .st-box .st-m { font-size: 11.5px; color: var(--tx-3); margin-top: 2px; }
+    .dsec { margin-top: 20px; }
+    .dsec:first-child { margin-top: 4px; }
+    .dsec h4 { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .dsec h4 .ic { color: var(--tx-3); width: 16px; height: 16px; }
+    .il { display: inline-flex; align-items: center; gap: 4px; }
+    .rule-tag { white-space: normal !important; text-align: right; }
+    .snap { display: grid; grid-template-columns: 1.3fr 1fr; gap: 14px; }
+    .tot { display: grid; grid-template-columns: 1fr auto; gap: 6px 16px; font-size: 13px; }
+    .tot .g { font-size: 15px; font-weight: 750; border-top: 1px solid var(--line); padding-top: 8px; }
+    .tot .g + .g { border: 0; padding-top: 8px; }
+    .evt td { font-size: 12.5px; }
+    .evt tr.ign td { background: #fafbfc; color: var(--tx-3); }
+    .evt tr.ign .mono { text-decoration: line-through; text-decoration-color: rgba(0,0,0,.25); }
+    .drawer-foot { justify-content: space-between; }
+    .drawer .table.compact td, .drawer .table.compact th { padding-left: 9px; padding-right: 9px; }
+    .drawer-foot .dd-menu { top: auto; bottom: calc(100% + 6px); }
+    .drawer .tabs { margin: 0 -22px; padding: 0 12px; position: sticky; top: -22px; background: #fff; z-index: 3; }
+    .unit-chip { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; color: var(--brand-700); background: var(--brand-50); padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+    .unit-chip .ic { width: 12px; height: 12px; }
+    /* Assisted order */
+    .as-grid { display: grid; grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr); gap: 20px; }
+    .as-results { border: 1px solid var(--line); border-radius: var(--r); margin-top: 6px; max-height: 230px; overflow-y: auto; }
+    .as-res { display: grid; grid-template-columns: 44px 1fr auto auto; gap: 10px; align-items: center; padding: 8px 10px; border-bottom: 1px solid var(--line-2); font-size: 12.5px; }
+    .as-res:last-child { border-bottom: 0; }
+    .as-res:hover { background: var(--bg); }
+    .as-lines td { vertical-align: top; }
+    .as-lines .rule-tag { max-width: 130px; }
+    .as-lines td, .as-lines th { padding-left: 8px !important; padding-right: 8px !important; }
+    .as-lines .qty { height: 30px; }
+    .as-lines .qty button { width: 26px; }
+    .as-lines .qty input { width: 34px; }
+    .rule-tag { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 650; color: #07695b; background: var(--vendor-50); padding: 1px 6px; border-radius: 4px; white-space: nowrap; margin-top: 3px; }
+    .hint-up { font-size: 11px; color: var(--accent-600); font-weight: 600; margin-top: 3px; }
+    .auth-row { display: grid; grid-template-columns: 140px 1fr; gap: 12px; align-items: center; }
+    .pay-opt { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--r); cursor: pointer; font-size: 13px; background: #fff; }
+    .pay-opt input { margin-top: 3px; accent-color: var(--brand); }
+    .pay-opt:has(input:checked) { border-color: var(--brand); box-shadow: var(--ring); }
+    .cancel-line { display: grid; grid-template-columns: auto 44px 1fr auto; gap: 10px; align-items: center; padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--r); margin-bottom: 8px; font-size: 13px; }
+    .cancel-line.dis { opacity: .55; background: var(--bg); }
+  </style>
+</head>
+<body data-app="erp" data-page="orders">
+<main>
+  <div class="page-head">
+    <div>
+      <div class="crumbs"><span>Sell &amp; serve</span><i data-icon="chevron-right"></i><span>Orders</span></div>
+      <h1>Orders</h1>
+      <p class="sub">All channels · Saturday, 26 September 2026 · live, refreshed 10:42:08 · stock authority in sync (lag 14 s)</p>
+    </div>
+    <div class="actions">
+      <button class="btn"><i data-icon="download"></i> Export</button>
+      <button class="btn" data-toast="Pick lists for 6 released orders sent to WH-BLR printer"><i data-icon="printer"></i> Print pick lists</button>
+      <button class="btn btn-primary" data-open="m-assisted" data-anno="1A/1B · R11 Assisted order"><i data-icon="plus"></i> Assisted order</button>
+    </div>
+  </div>
+
+  <!-- KPI strip -->
+  <section class="grid g-6">
+    <div class="kpi"><div class="k-label"><i data-icon="receipt"></i> <span>Orders today</span></div><div class="k-value">47</div><div class="k-foot"><span class="delta up-good"><i data-icon="trending-up"></i> +9% vs last Sat</span><span id="sp1"></span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="clock"></i> <span>Awaiting payment</span></div><div class="k-value">12</div><div class="k-foot"><span>₹3.42 L in live reservations</span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="flag"></i> <span>Needs action</span></div><div class="k-value text-bad">7</div><div class="k-foot"><span>Oldest 26 h · 1 critical</span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="truck"></i> <span>Overdue dispatch</span></div><div class="k-value text-warn">2</div><div class="k-foot"><span class="delta down-good"><i data-icon="trending-down"></i> −3 vs last week</span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="activity"></i> <span>Paid → dispatched</span></div><div class="k-value">5.8 h</div><div class="k-foot"><span class="delta down-good"><i data-icon="trending-down"></i> −1.4 h</span><span id="sp2"></span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="undo"></i> <span>Cancel requests</span></div><div class="k-value">2</div><div class="k-foot"><span>₹39,960 at stake · SLA 4 h</span></div></div>
+  </section>
+
+  <!-- Filter bar -->
+  <div class="filterbar mt-16">
+    <div class="input-icon" style="width:210px"><i data-icon="search"></i><input class="input" id="f-q" placeholder="Order no., customer, serial…" aria-label="Search orders" style="height:34px;width:100%"></div>
+    <select class="select" id="f-date" aria-label="Date range" style="width:128px"><option>Today</option><option selected>Last 7 days</option><option>Last 30 days</option><option>This financial year</option><option>Custom range…</option></select>
+    <select class="select" id="f-loc" aria-label="Location" style="width:165px"><option value="">All locations</option></select>
+    <select class="select" id="f-ch" aria-label="Channel" style="width:140px"><option value="">All channels</option><option value="web">Web</option><option value="pos">Branch POS</option><option value="whatsapp">WhatsApp</option><option value="assisted">Assisted (staff)</option></select>
+    <select class="select" id="f-bt" aria-label="Buyer type" style="width:150px"><option value="">All buyers</option><option value="consumer">Consumer (B2C)</option><option value="dealer">Approved dealer (B2B)</option></select>
+    <select class="select" id="f-pay" aria-label="Payment state" style="width:170px"><option value="">Any payment state</option><option value="notstarted">Not started</option><option value="pending">Pending</option><option value="failed">Failed</option><option value="captured">Captured</option><option value="cod">COD · due on delivery</option><option value="refunded">Refunded</option></select>
+    <button class="btn btn-sm btn-ghost" id="f-reset"><i data-icon="x"></i> Reset</button>
+  </div>
+
+  <div class="callout c-warn mb-16" data-anno="Stale-data state · courier sync paused">
+    <i data-icon="alert"></i>
+    <div class="grow"><strong>Courier status sync paused since 08:15</strong> (provider timeout, 3 auto-retries). Fulfilment states for 17 dispatched shipments may be stale — order and payment states are unaffected. <a href="erp-automation.html">View job</a></div>
+    <button class="btn btn-xs" data-toast="Manual courier sync queued · 17 AWBs">Sync now</button>
+  </div>
+
+  <!-- Orders table -->
+  <section class="card">
+    <div class="sv-tabs" data-anno="1A · Saved views = work queues · §10.1 order ≠ payment ≠ fulfilment">
+      <div class="tabs" id="sv-tabs" role="tablist">
+        <button class="tab active" data-sv="all">All <span class="count">148</span></button>
+        <button class="tab" data-sv="needs"><i data-icon="flag" class="ic-sm"></i> Needs action <span class="count" data-c="needs"></span></button>
+        <button class="tab" data-sv="awaiting">Awaiting payment <span class="count" data-c="awaiting"></span></button>
+        <button class="tab" data-sv="hold">On hold <span class="count" data-c="hold"></span></button>
+        <button class="tab" data-sv="partial">Partially fulfilled <span class="count" data-c="partial"></span></button>
+        <button class="tab" data-sv="cancel">Cancellation requests <span class="count" data-c="cancel"></span></button>
+      </div>
+      <div class="row gap-6" style="padding-bottom:8px">
+        <button class="btn btn-sm btn-ghost" data-toast="View saved as “Dealer orders · WH-BLR” for your team"><i data-icon="flag" class="ic-sm"></i> Save view</button>
+        <button class="btn btn-sm btn-ghost" aria-label="Columns"><i data-icon="sliders" class="ic-sm"></i></button>
+      </div>
+    </div>
+    <div class="bulkbar">
+      <b><span class="bulk-count">0</span> selected</b>
+      <button class="btn btn-sm" data-toast="Released to fulfilment queue · eligible orders only (paid + reserved)"><i data-icon="truck" class="ic-sm"></i> Release to fulfilment</button>
+      <button class="btn btn-sm" data-toast="Pick lists printed"><i data-icon="printer" class="ic-sm"></i> Print pick lists</button>
+      <button class="btn btn-sm" data-toast="Assigned to Irfan M. · WH-BLR"><i data-icon="user" class="ic-sm"></i> Assign…</button>
+      <button class="btn btn-sm" data-open="m-hold"><i data-icon="pause" class="ic-sm"></i> Place on hold</button>
+      <button class="btn btn-sm" data-toast="Payment reminders queued · 1 skipped (customer opted out)"><i data-icon="bell" class="ic-sm"></i> Payment reminder</button>
+      <button class="btn btn-sm" data-toast="CSV export started"><i data-icon="download" class="ic-sm"></i> Export</button>
+      <span class="ml-auto small" style="color:#9aa6bf">Each order keeps its own decision history</span>
+    </div>
+    <div class="table-wrap">
+      <table class="table ord-table">
+        <thead><tr><th class="grp-blank" colspan="6"></th><th class="grp" colspan="3">Three independent state machines — never one status</th><th class="grp-blank" colspan="1"></th></tr><tr>
+          <th class="check-col"><input type="checkbox" data-check-all aria-label="Select all orders"></th>
+          <th>Order</th><th>Buyer</th><th>Channel</th><th>Loc.</th><th class="r">Value</th>
+          <th>Order state</th><th>Payment</th><th>Fulfilment</th><th>SLA flag · age</th>
+        </tr></thead>
+        <tbody id="ord-body"></tbody>
+      </table>
+    </div>
+    <div class="pager"><span id="pager-txt">Showing 1–18 of 148</span><div class="pages"><button class="active">1</button><button>2</button><button>3</button><button>…</button><button>9</button></div></div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- Order detail drawer                                                    -->
+  <!-- ===================================================================== -->
+  <div class="drawer" id="d-order"><div class="drawer-card wide">
+    <div class="drawer-head" style="display:block">
+      <div class="row-between">
+        <div>
+          <div class="small muted" id="od-meta"></div>
+          <div class="row gap-8 mt-4"><h2 class="mono" id="od-id" style="font-size:22px"></h2><span id="od-buyer-badge"></span><span id="od-src"></span></div>
+        </div>
+        <div class="row gap-6">
+          <button class="btn btn-sm btn-ghost" data-toast="Link copied"><i data-icon="link" class="ic-sm"></i> Copy link</button>
+          <button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button>
+        </div>
+      </div>
+      <div class="states" id="od-states"></div>
+      <div id="od-alert"></div>
+    </div>
+    <div class="drawer-body" data-tabset>
+      <div class="tabs">
+        <button class="tab active" data-tab="od-lines">Lines &amp; pricing</button>
+        <button class="tab" data-tab="od-pay">Payments <span class="count" id="od-pay-n">2</span></button>
+        <button class="tab" data-tab="od-ship">Shipments</button>
+        <button class="tab" data-tab="od-time">Timeline &amp; audit</button>
+        <button class="tab" data-tab="od-notes">Notes <span class="count">2</span></button>
+      </div>
+      <div class="tab-panel active" data-panel="od-lines" id="p-lines" style="padding-top:18px"></div>
+      <div class="tab-panel" data-panel="od-pay" id="p-pay" style="padding-top:18px"></div>
+      <div class="tab-panel" data-panel="od-ship" id="p-ship" style="padding-top:18px"></div>
+      <div class="tab-panel" data-panel="od-time" id="p-time" style="padding-top:18px"></div>
+      <div class="tab-panel" data-panel="od-notes" id="p-notes" style="padding-top:18px">
+        <div class="col gap-12">
+          <div class="panel"><div class="row-between small"><b>Karthik R. · Support</b><span class="muted">26 Sep, 10:21</span></div><div class="mt-4 small">Customer asked on WhatsApp (SUP-7742) to drop the 2 mice — they found stock locally. Raised cancellation request for line 3. Remaining lines unchanged.</div></div>
+          <div class="panel"><div class="row-between small"><b>Irfan M. · Warehouse</b><span class="muted">26 Sep, 10:34</span></div><div class="mt-4 small">SSDs picked from A-03 (10/10). Laptop U-000806 picked from R-12, accessories bag attached. Holding mice at pack bench until cancel decision.</div></div>
+          <div class="field"><label for="note-in">Add internal note</label><textarea class="textarea" id="note-in" placeholder="Visible to staff only · @mention to notify"></textarea></div>
+          <div class="row"><button class="btn btn-primary btn-sm" data-toast="Note added to order audit trail">Add note</button><span class="small muted">Notes are internal and never sent to the customer.</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="drawer-foot">
+      <div class="row gap-8">
+        <button class="btn btn-sm" data-open="m-hold"><i data-icon="pause" class="ic-sm"></i> Hold</button>
+        <button class="btn btn-sm btn-danger" id="btn-cancel-line"><i data-icon="x-circle" class="ic-sm"></i> Cancel line…</button>
+        <div class="dd"><button class="btn btn-sm" data-dd-toggle><i data-icon="send" class="ic-sm"></i> Resend notification <i data-icon="chevron-up" class="ic-sm"></i></button>
+          <div class="dd-menu left" style="width:330px">
+            <div class="dd-label">Transactional · consent checked</div>
+            <button class="dd-item" data-toast="Order confirmation re-sent by email">
+              <i data-icon="mail" class="ic-sm"></i> Order confirmation · email</button>
+            <button class="dd-item" data-toast="WhatsApp template order_confirmed v3 queued" data-toast-icon="whatsapp"><i data-icon="whatsapp" class="ic-sm"></i> WhatsApp · template order_confirmed v3</button>
+            <button class="dd-item" data-toast="SMS with tracking link queued"><i data-icon="phone" class="ic-sm"></i> SMS · dispatch &amp; tracking</button>
+            <hr><div class="small muted" style="padding:4px 10px 6px">Last email bounced at 09:59 (mailbox full) · auto-retry at 10:29</div>
+          </div></div>
+        <button class="btn btn-sm" data-tab="od-notes" onclick="TX.activateTab('od-notes')"><i data-icon="edit" class="ic-sm"></i> Add note</button>
+      </div>
+      <div class="row gap-8">
+        <button class="btn btn-sm" data-toast="Tax invoice INV-BLR-26-004812 opened (generated once)"><i data-icon="file" class="ic-sm"></i> Invoice</button>
+        <a class="btn btn-sm btn-primary" href="erp-fulfilment.html#picking">Open in fulfilment <i data-icon="arrow-right" class="ic-sm"></i></a>
+      </div>
+    </div>
+  </div></div>
+
+  <!-- Hold modal -->
+  <div class="modal" id="m-hold"><div class="modal-card">
+    <div class="modal-head"><div><h3>Place order on hold</h3><div class="small muted">Stops release to fulfilment · payment and reservations are kept</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-body col gap-16">
+      <div class="field"><label for="hold-r" class="req">Reason</label><select class="select" id="hold-r"><option>Customer request — confirm details</option><option>Address / GSTIN verification</option><option>Payment review (mismatch or risk)</option><option>Stock exception</option><option>Awaiting approval</option></select></div>
+      <div class="form-grid">
+        <div class="field"><label for="hold-due">Review by</label><input class="input" id="hold-due" type="datetime-local" value="2026-09-26T14:00"></div>
+        <div class="field"><label for="hold-own">Owner</label><select class="select" id="hold-own"><option>Karthik R. · Support</option><option>Anita R. · Operations</option><option>Deepa K. · Finance</option></select></div>
+      </div>
+      <div class="field"><label for="hold-n">Note (internal)</label><textarea class="textarea" id="hold-n" placeholder="What must happen before release?"></textarea></div>
+      <label class="switch"><input type="checkbox"> Notify customer that the order is under review (template order_review v1)</label>
+      <div class="callout c-info small"><i data-icon="info"></i><div>Reservation R-5534 is extended while on hold (max 48 h by policy). If the hold exceeds the review time, the case escalates to the operations manager once.</div></div>
+    </div>
+    <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-primary" data-close data-toast="Order placed on hold · reason recorded in audit log">Place on hold</button></div>
+  </div></div>
+
+  <!-- Cancel line modal -->
+  <div class="modal" id="m-cancel"><div class="modal-card lg">
+    <div class="modal-head"><div><h3>Cancel line(s) · <span class="mono" id="cx-id"></span></h3><div class="small muted">Only lines not yet dispatched are eligible · refund uses the original allocated price</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-body" data-anno="1A · T34 Partial cancel · allocated refund">
+      <div id="cx-lines"></div>
+      <div class="field mt-12"><label for="cx-r" class="req">Cancellation reason</label><select class="select" id="cx-r"><option>Customer request (before dispatch)</option><option>Out of stock / cannot fulfil</option><option>Pricing error</option><option>Suspected fraud</option></select></div>
+      <div class="grid g-2 mt-16">
+        <div class="panel">
+          <div class="upper muted mb-8">Refund preview</div>
+          <div class="tot" id="cx-tot"></div>
+        </div>
+        <div class="col gap-8 small">
+          <div class="callout c-info"><i data-icon="warehouse"></i><div id="cx-res"></div></div>
+          <div id="cx-promo"></div>
+          <div class="callout"><i data-icon="shield"></i><div>Support initiates · <b>Finance executes</b> the refund (refund state machine: requested → approved → submitted → completed). A repeated click returns the same refund request — no duplicate refund (T18).</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot"><button class="btn" data-close>Keep lines</button><button class="btn btn-danger" data-close data-toast="Line cancelled · refund request RF-0288 sent to finance · reservation released · customer notified">Cancel selected &amp; request refund</button></div>
+  </div></div>
+
+  <!-- ===================================================================== -->
+  <!-- Assisted order modal                                                   -->
+  <!-- ===================================================================== -->
+  <div class="modal" id="m-assisted"><div class="modal-card xl">
+    <div class="modal-head">
+      <div><h3>New assisted order</h3><div class="small muted">Staff-created order · uses the same pricing engine, stock reservation and payment rules as the website</div></div>
+      <div class="row gap-8">
+        <label class="small muted" for="as-role">Acting as</label>
+        <select class="select input-sm" id="as-role" style="width:300px" aria-label="Acting as role (prototype)">
+          <option value="3">Karthik R. · Support executive (≤ 3%)</option>
+          <option value="8">Vikram S. · Branch manager (≤ 8%)</option>
+          <option value="100">Rajesh M. · Owner (no limit)</option>
+        </select>
+        <button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="callout c-brand mb-16" id="as-source" data-anno="1B · R11 A08 WhatsApp draft basket → order">
+        <i data-icon="whatsapp"></i>
+        <div class="grow"><strong>Created from WhatsApp draft basket DB-0417</strong> · conversation <a href="erp-support.html">SUP-7742</a> with Arun Kumar (Metro Computers) · identity verified by OTP 09:31. Items and quantities were pre-filled from the guided chat — <b>chat prices are not trusted</b>; every price below is recomputed by the pricing engine.</div>
+        <div class="seg" aria-label="Order source"><button class="active" data-src="wa">WhatsApp basket</button><button data-src="phone">Phone</button><button data-src="walkin">Walk-in</button></div>
+      </div>
+      <div class="as-grid">
+        <div class="col gap-16">
+          <div class="form-grid">
+            <div class="field"><label for="as-cust">Customer</label>
+              <select class="select" id="as-cust">
+                <option value="dealer">Metro Computers — Arun Kumar · Dealer Gold · GSTIN 29AABCM4421F1Z6</option>
+                <option value="consumer">Priya Nair — consumer · +91 98450 •••10</option>
+                <option value="new">New walk-in customer (consumer)</option>
+              </select>
+              <span class="hint">Buyer type comes from the approved account — it can't be changed on the order (T10).</span></div>
+            <div class="field"><label for="as-loc">Fulfil from</label>
+              <select class="select" id="as-loc"><option>Central Warehouse · WH-BLR (all lines available)</option><option>SP Road Branch · BR-SPR (1 line short)</option><option>Customer pickup · Koramangala</option></select>
+              <span class="hint">Single location that can fulfil every line is suggested first.</span></div>
+          </div>
+          <div class="field" style="position:relative">
+            <label for="as-q">Add product</label>
+            <div class="input-icon"><i data-icon="search"></i><input class="input" id="as-q" placeholder="Search by name, model or SKU — e.g. “T7”, “SSD01”, “ThinkPad”" autocomplete="off"></div>
+            <div class="as-results" id="as-results"></div>
+          </div>
+          <div class="card" style="border-radius:var(--r)">
+            <div class="table-wrap"><table class="table compact as-lines">
+              <thead><tr><th>Item · availability</th><th>Qty</th><th class="r">Unit price · rule</th><th class="r">Line total</th><th></th></tr></thead>
+              <tbody id="as-lines"></tbody>
+            </table></div>
+          </div>
+          <div class="panel" data-anno="1A · R10 §18 Discount above authority → approval">
+            <div class="auth-row">
+              <label for="as-disc" class="label">Staff discount</label>
+              <div class="row gap-8">
+                <div class="input-group" style="width:120px"><input class="input input-sm" id="as-disc" type="text" inputmode="decimal" value="5" aria-label="Discount percent" style="text-align:right"><span class="addon">%</span></div>
+                <select class="select input-sm" id="as-disc-r" style="width:230px" aria-label="Discount reason"><option>Reason: bulk / tender quote</option><option>Reason: price match (evidence)</option><option>Reason: service recovery</option></select>
+                <span class="small muted" id="as-auth-txt"></span>
+              </div>
+            </div>
+            <div id="as-approval" class="mt-12"></div>
+          </div>
+        </div>
+        <div class="col gap-12">
+          <div class="panel">
+            <div class="row-between mb-8"><span class="upper muted">Price summary</span><span class="small muted" id="as-list"></span></div>
+            <div class="tot" id="as-tot"></div>
+            <div class="small mt-12" id="as-margin"></div>
+          </div>
+          <div class="col gap-8">
+            <span class="label">Payment</span>
+            <label class="pay-opt"><input type="radio" name="as-pay" checked><div><b>Send secure checkout link</b><div class="small muted">WhatsApp (service window open) · SMS · email. Customer confirms address &amp; final price, pays via Razorpay.</div></div></label>
+            <label class="pay-opt"><input type="radio" name="as-pay"><div><b>Collect at branch counter (POS)</b><div class="small muted">UPI / card on terminal · invoice printed at counter</div></div></label>
+            <label class="pay-opt"><input type="radio" name="as-pay"><div><b>Bank transfer (dealer prepaid)</b><div class="small muted">Released only after finance matches the credit · credit terms not enabled</div></div></label>
+          </div>
+          <div class="callout c-info small"><i data-icon="lock"></i><div>Stock is <b>reserved for 30 min</b> when the link is sent (R-55xx). Checkout revalidates price &amp; stock; quantity changes re-run tier pricing.</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot" style="justify-content:space-between">
+      <span class="small muted">Draft saved automatically · DB-0417 → order on confirmation</span>
+      <div class="row gap-8">
+        <button class="btn" data-close>Cancel</button>
+        <button class="btn" data-close data-toast="Draft saved · no stock reserved yet">Save draft</button>
+        <button class="btn btn-primary" id="as-submit" data-close>Send checkout link</button>
+      </div>
+    </div>
+  </div></div>
+</main>
+<script src="assets/tradex.js"></script>
+<script>
+TX.ready(() => {
+  const $ = TX.$, $$ = TX.$$, ic = TX.icon, fmt = TX.fmt;
+
+  /* ---------- Reference dictionaries ---------- */
+  const EXTRA = { "x-p2422h": { id: "x-p2422h", title: 'Dell P2422H 24" FHD IPS Monitor', brand: "Dell", sku: "MONP2422H-N", cond: "new", price: 15490, mrp: 19999, img: "mon-pink", dealer: 12210, tiers: [{ min: 5, p: 11840 }, { min: 10, p: 11600 }], qty: 22 } };
+  const X = (id) => EXTRA[id] || TX.byId(id);
+  const ORD = { draft: ["Draft", "s-muted"], awaiting: ["Awaiting payment", "s-warn"], confirmed: ["Confirmed", "s-brand"], hold: ["On hold", "s-bad"], partial: ["Partially fulfilled", "s-info"], fulfilled: ["Fulfilled", "s-ok"], cancelled: ["Cancelled", "s-muted"], closed: ["Closed", "s-ok"] };
+  const PAY = { notstarted: ["Not started", "s-muted"], pending: ["Pending", "s-warn"], failed: ["Failed", "s-bad"], captured: ["Captured", "s-ok"], cod: ["COD · due", "s-warn"], refunded: ["Refunded", "s-muted"] };
+  const FUL = { unallocated: ["Unallocated", "s-muted"], allocated: ["Allocated", "s-brand"], picking: ["Picking", "s-info"], packed: ["Packed", "s-info"], partdisp: ["Partly dispatched", "s-info"], dispatched: ["Dispatched", "s-brand"], delivered: ["Delivered", "s-ok"], failed: ["Delivery failed", "s-bad"], released: ["Released", "s-muted"] };
+  const CH = { web: ["Web", "globe"], pos: ["POS", "store"], whatsapp: ["WhatsApp", "whatsapp"], assisted: ["Assisted", "headset"] };
+  const st = (map, k) => `<span class="status ${map[k][1]}">${map[k][0]}</span>`;
+
+  /* ---------- Orders (sample) ---------- */
+  const O = [
+    { id: "TXO-10493", at: "26 Sep, 10:31", age: "11 min", buyer: "Arjun Patil", bt: "consumer", ch: "whatsapp", loc: "BR-KRM", lines: [["kb-01", 1]], ord: "awaiting", pay: "notstarted", ful: "unallocated", sla: ["ok", "Link exp. 11:01"], views: ["awaiting"], src: "WhatsApp draft basket DB-0415", res: ["R-5541", "11:01", "active"] },
+    { id: "TXO-10492", at: "26 Sep, 10:20", age: "22 min", buyer: "Priya Nair", bt: "consumer", ch: "web", loc: "WH-BLR", lines: [["lap-01", 1, "U-000812"], ["ms-02", 1]], ord: "confirmed", pay: "captured", ful: "allocated", sla: ["ok", "Dispatch by 16:00"], views: [], disc: 1000, promo: "Coupon FESTIVE1000" },
+    { id: "TXO-10491", at: "26 Sep, 09:30", age: "1 h 12 min", buyer: "St. Joseph's High School", bt: "consumer", ch: "assisted", loc: "BR-SPR", lines: [["x-p2422h", 10]], ord: "draft", pay: "notstarted", ful: "unallocated", sla: ["warn", "Approval due 12:00"], views: ["needs"], note: ["warn", "Discount 14% > authority 8% · APR-0231"], src: "Assisted · Vikram S." },
+    { id: "TXO-10490", at: "26 Sep, 10:24", age: "18 min", buyer: "Metro Computers", bt: "dealer", list: "Dealer Gold", ch: "web", loc: "WH-BLR", lines: [["cpu-01", 5], ["ram-01", 10]], ord: "awaiting", pay: "pending", ful: "unallocated", sla: ["warn", "Hold exp. 10:54"], views: ["awaiting"], res: ["R-5538", "10:54", "active"] },
+    { id: "TXO-10489", at: "26 Sep, 09:37", age: "1 h 5 min", buyer: "Rahul Verma", bt: "consumer", ch: "whatsapp", loc: "BR-KRM", lines: [["hp-01", 1]], ord: "confirmed", pay: "captured", ful: "packed", sla: ["ok", "Pickup 17:00"], views: [] },
+    { id: "TXO-10488", at: "26 Sep, 08:02", age: "2 h 40 min", buyer: "Coastal Infotech", bt: "dealer", list: "Dealer Gold", ch: "assisted", loc: "WH-BLR", lines: [["cpu-02", 12], ["ram-01", 12]], ord: "hold", pay: "captured", ful: "allocated", sla: ["warn", "At risk · 3 h left"], views: ["needs", "hold"], note: ["bad", "Hold: GSTIN mismatch on invoice"] },
+    { id: "TXO-10487", at: "25 Sep, 08:40", age: "1 d 2 h", buyer: "Ananya Iyer", bt: "consumer", ch: "web", loc: "WH-BLR", lines: [["cam-02", 1, "U-000774"], ["lens-03", 1]], ord: "partial", pay: "captured", ful: "partdisp", sla: ["ok", "Line 2 due 29 Sep"], views: ["partial"] },
+    { id: "TXO-10486", at: "26 Sep, 09:58", age: "44 min", buyer: "Metro Computers", bt: "dealer", list: "Dealer Gold", ch: "whatsapp", loc: "WH-BLR", lines: [["ssd-01", 10], ["lap-01", 1, "U-000806"], ["ms-02", 2, null, "cancelreq"]], ord: "confirmed", pay: "captured", ful: "picking", sla: ["ok", "Dispatch by 16:00"], views: ["needs", "cancel"], note: ["warn", "Cancel request · line 3"], disc: 1500, promo: "Promo PRM-26-09 · ₹1,500 off ≥ ₹1 L", src: "WhatsApp draft basket DB-0412 · Karthik R.", flagship: true, res: ["R-5534", "", "converted"] },
+    { id: "TXO-10485", at: "26 Sep, 08:52", age: "1 h 50 min", buyer: "Sai Systems & Services", bt: "dealer", list: "Dealer Standard", ch: "pos", loc: "BR-SPR", lines: [["net-02", 6]], ord: "closed", pay: "captured", ful: "delivered", sla: ["none", "—"], views: [] },
+    { id: "TXO-10484", at: "24 Sep, 06:30", age: "2 d 4 h", buyer: "Deepak Shenoy", bt: "consumer", ch: "web", loc: "BR-MYS", lines: [["mon-01", 1]], ord: "confirmed", pay: "captured", ful: "failed", sla: ["bad", "Address issue"], views: ["needs"], note: ["bad", "Courier: consignee unreachable"] },
+    { id: "TXO-10483", at: "26 Sep, 09:55", age: "47 min", buyer: "Farah Khan", bt: "consumer", ch: "web", loc: "WH-BLR", lines: [["lap-07", 1]], ord: "awaiting", pay: "failed", ful: "unallocated", sla: ["warn", "Hold exp. 10:55"], views: ["awaiting"], res: ["R-5536", "10:55", "active"] },
+    { id: "TXO-10482", at: "25 Sep, 09:40", age: "1 d 1 h", buyer: "Priya Nair", bt: "consumer", ch: "web", loc: "WH-BLR", lines: [["ssd-01", 2], ["ms-02", 1]], ord: "fulfilled", pay: "captured", ful: "dispatched", sla: ["ok", "ETA Tue 29 Sep"], views: [] },
+    { id: "TXO-10481", at: "25 Sep, 07:15", age: "1 d 3 h", buyer: "Suresh Gowda", bt: "consumer", ch: "whatsapp", loc: "BR-KRM", lines: [["tab-01", 1]], ord: "cancelled", pay: "refunded", ful: "released", sla: ["none", "—"], views: [] },
+    { id: "TXO-10480", at: "25 Sep, 05:20", age: "1 d 5 h", buyer: "Harish Kumar", bt: "consumer", ch: "web", loc: "BR-MYS", lines: [["kb-01", 1]], ord: "confirmed", pay: "cod", ful: "dispatched", sla: ["ok", "ETA Mon 28 Sep"], views: [] },
+    { id: "TXO-10477", at: "26 Sep, 09:31", age: "1 h 11 min", buyer: "Nikhil Rao", bt: "consumer", ch: "web", loc: "BR-SPR", lines: [["lap-03", 1]], ord: "hold", pay: "captured", ful: "unallocated", sla: ["bad", "Critical · 11:30"], views: ["needs", "hold"], note: ["bad", "Paid after reservation expired"], res: ["R-5521", "10:02", "expired"] },
+    { id: "TXO-10476", at: "26 Sep, 07:32", age: "3 h 10 min", buyer: "Sai Systems & Services", bt: "dealer", list: "Dealer Standard", ch: "web", loc: "WH-BLR", lines: [["ssd-03", 5]], ord: "confirmed", pay: "captured", ful: "allocated", sla: ["warn", "Reply by 13:10"], views: ["needs", "cancel"], note: ["warn", "Cancel request · whole order"] },
+    { id: "TXO-10474", at: "24 Sep, 09:10", age: "2 d 1 h", buyer: "Meera Joshi", bt: "consumer", ch: "web", loc: "WH-BLR", lines: [["usb-01", 2], ["prn-02", 1]], ord: "partial", pay: "captured", ful: "partdisp", sla: ["warn", "Supplier by 12:00"], views: ["partial"] },
+    { id: "TXO-10471", at: "25 Sep, 08:30", age: "26 h", buyer: "Kavya Reddy", bt: "consumer", ch: "web", loc: "WH-BLR", lines: [["gpu-01", 1]], ord: "confirmed", pay: "captured", ful: "allocated", sla: ["bad", "Overdue · 26 h"], views: ["needs"], note: ["bad", "Bin A-21 empty · count task"] },
+  ];
+
+  /* ---------- Pricing (same rules as the engine; illustrative) ---------- */
+  const unitFor = (o, p, q) => {
+    if (o.bt === "dealer") {
+      if (q >= 10) return [p.tiers[1].p, `${o.list} v2026.3 · tier 10+`];
+      if (q >= 5) return [p.tiers[0].p, `${o.list} v2026.3 · tier 5+`];
+      return [p.dealer, `${o.list} v2026.3 · base`];
+    }
+    return [p.price, "Public list v2026.9"];
+  };
+  const calc = (o) => {
+    const L = o.lines.map(([id, q, unit, flag]) => { const p = X(id); const [u, rule] = unitFor(o, p, q); return { p, q, unit, flag, u, rule, t: u * q }; });
+    const sub = L.reduce((a, l) => a + l.t, 0), disc = o.disc || 0;
+    if (o.bt === "dealer") { const taxable = sub - disc, gst = Math.round(taxable * 0.18); return { L, sub, disc, taxable, gst, total: taxable + gst, exGST: true }; }
+    const total = sub - disc; return { L, sub, disc, taxable: Math.round(total / 1.18), gst: total - Math.round(total / 1.18), total, exGST: false };
+  };
+  const sn = (u) => "5CD" + (parseInt(u.replace(/\D/g, ""), 10) * 7919 % 100000).toString().padStart(5, "0") + "QX";
+
+  /* ---------- Table ---------- */
+  const locSel = $("#f-loc");
+  TX.locations.forEach((l) => locSel.insertAdjacentHTML("beforeend", `<option value="${l.code}">${l.name} · ${l.code}</option>`));
+  let sv = "all";
+  const f = () => ({ q: $("#f-q").value.trim().toLowerCase(), loc: locSel.value, ch: $("#f-ch").value, bt: $("#f-bt").value, pay: $("#f-pay").value });
+  const slaHTML = ([k, t]) => `<span class="sla ${k}">${k === "none" ? "" : ic(k === "ok" ? "check-circle" : k === "warn" ? "clock" : "alert")}${t}</span>`;
+  function rowHTML(o) {
+    const c = calc(o);
+    const n = o.lines.reduce((a, l) => a + l[1], 0);
+    const note = o.note ? `<div class="o-note text-${o.note[0]}" title="${o.note[1]}">${ic(o.note[0] === "bad" ? "alert-octagon" : "alert")}<span class="truncate">${o.note[1]}</span></div>` : `<div class="cell-sub">${o.at}</div>`;
+    return `<tr data-drawer="d-order" data-id="${o.id}">
+      <td class="check-col"><input type="checkbox" aria-label="Select ${o.id}"></td>
+      <td><div class="cell-main mono">${o.id}</div>${note}</td>
+      <td><div class="cell-main truncate" style="max-width:132px">${o.buyer}</div><div class="cell-sub">${o.bt === "dealer" ? `<span class="badge b-vendor" style="height:18px;font-size:10.5px">${ic("briefcase")} ${o.list}</span>` : `<span class="badge" style="height:18px;font-size:10.5px">Consumer</span>`}</div></td>
+      <td><span class="ch ${o.ch === "whatsapp" ? "wa" : ""}">${ic(CH[o.ch][1])}${CH[o.ch][0]}</span></td>
+      <td class="nowrap"><span class="mono small" data-tip="${TX.locations.find((l) => l.code === o.loc).name}">${o.loc}</span></td>
+      <td class="r"><div class="cell-main">${fmt(c.total)}</div><div class="cell-sub nowrap">${n} unit${n > 1 ? "s" : ""}</div></td>
+      <td class="st-col">${st(ORD, o.ord)}</td><td class="st-col">${st(PAY, o.pay)}</td><td class="st-col">${st(FUL, o.ful)}</td>
+      <td>${slaHTML(o.sla)}<div class="cell-sub nowrap">${ic("history", "ic-sm")} ${o.age} old</div></td>
+    </tr>`;
+  }
+  function renderTable() {
+    const F = f();
+    const list = O.filter((o) => (sv === "all" || o.views.includes(sv)) && (!F.loc || o.loc === F.loc) && (!F.ch || o.ch === F.ch) && (!F.bt || o.bt === F.bt) && (!F.pay || o.pay === F.pay) &&
+      (!F.q || (o.id + " " + o.buyer + " " + o.lines.map((l) => X(l[0]).title + " " + (l[2] || "")).join(" ")).toLowerCase().includes(F.q)));
+    $("#ord-body").innerHTML = list.length ? list.map(rowHTML).join("") :
+      `<tr><td colspan="10"><div class="empty">${ic("inbox")}<h4>No orders match these filters</h4><p>Nothing in <b>${$("#sv-tabs .tab.active").childNodes[0].textContent.trim() || "this view"}</b> for the selected location, channel or payment state.</p><button class="btn btn-sm mt-12" id="empty-reset">Clear filters</button></div></td></tr>`;
+    const filtered = sv !== "all" || Object.values(F).some(Boolean);
+    $("#pager-txt").textContent = filtered ? `Showing ${list.length} of ${list.length} matching` : "Showing 1–18 of 148";
+  }
+  $$("[data-c]").forEach((el) => (el.textContent = O.filter((o) => o.views.includes(el.dataset.c)).length));
+  $("#sv-tabs").addEventListener("click", (e) => { const t = e.target.closest(".tab"); if (!t) return; $$("#sv-tabs .tab").forEach((x) => x.classList.toggle("active", x === t)); sv = t.dataset.sv; renderTable(); });
+  ["#f-loc", "#f-ch", "#f-bt", "#f-pay"].forEach((s) => $(s).addEventListener("change", renderTable));
+  $("#f-q").addEventListener("input", renderTable);
+  const reset = () => { ["#f-loc", "#f-ch", "#f-bt", "#f-pay"].forEach((s) => ($(s).value = "")); $("#f-q").value = ""; renderTable(); };
+  $("#f-reset").addEventListener("click", reset);
+  document.addEventListener("click", (e) => { if (e.target.closest("#empty-reset")) reset(); });
+  renderTable();
+  TX.charts.spark($("#sp1"), [31, 38, 35, 42, 40, 44, 39, 47]);
+  TX.charts.spark($("#sp2"), [8.9, 8.1, 7.6, 7, 6.8, 6.3, 6.1, 5.8]);
+
+  /* ---------- Drawer rendering ---------- */
+  let cur = null;
+  const byId = (id) => O.find((o) => o.id === id);
+  const tm = (o, add) => { const [d, t] = o.at.split(", "); let [h, m] = t.split(":").map(Number); m += add; h += Math.floor(m / 60); m %= 60; return `${d}, ${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`; };
+  const hhmm = (o, add) => tm(o, add).split(", ")[1];
+
+  function renderOrder(o) {
+    cur = o;
+    const c = calc(o);
+    $("#od-id").textContent = o.id;
+    $("#od-meta").innerHTML = `Created ${o.at} · ${CH[o.ch][0]} · fulfil from ${TX.locations.find((l) => l.code === o.loc).name} (${o.loc})`;
+    $("#od-buyer-badge").innerHTML = o.bt === "dealer" ? `<span class="badge b-vendor">${ic("briefcase")} ${o.buyer} · ${o.list}</span>` : `<span class="badge">${ic("user")} ${o.buyer} · Consumer</span>`;
+    $("#od-src").innerHTML = o.src ? `<span class="badge b-outline">${ic(o.ch === "whatsapp" ? "whatsapp" : "headset")} ${o.src}</span>` : "";
+    const retTxt = ["delivered", "dispatched"].includes(o.ful) ? "Eligible until 6 Oct (policy v2026.2)" : "Not delivered yet";
+    $("#od-states").innerHTML = `
+      <div class="st-box"><div class="st-l">${ic("receipt")} Order</div>${st(ORD, o.ord)}<div class="st-m">${o.ord === "hold" ? "Release blocked until resolved" : o.ord === "draft" ? "Awaiting approval APR-0231" : o.ord === "awaiting" ? "Reserved · waiting for payment" : "Guard: paid + stock allocated"}</div></div>
+      <div class="st-box"><div class="st-l">${ic("wallet")} Payment</div>${st(PAY, o.pay)}<div class="st-m">${o.pay === "captured" ? `${fmt(c.total)} · Razorpay` : o.pay === "cod" ? "Collect on delivery · COD eligible PIN" : o.pay === "refunded" ? "Refund RF-0271 completed" : o.pay === "failed" ? "1 failed attempt · link still valid" : o.pay === "pending" ? "UPI collect sent 10:25" : "No attempt yet"}</div></div>
+      <div class="st-box"><div class="st-l">${ic("truck")} Fulfilment</div>${st(FUL, o.ful)}<div class="st-m">${o.ful === "picking" ? "Wave W-26-07 · Irfan M." : o.ful === "failed" ? "Attempt 2 of 3 on 28 Sep" : o.ful === "dispatched" ? "Delhivery · in transit" : o.ful === "partdisp" ? "1 of 2 lines shipped" : o.ful === "allocated" ? "In pick queue" : "Nothing allocated"}</div></div>
+      <div class="st-box"><div class="st-l">${ic("undo")} Return</div><span class="status s-muted">None</span><div class="st-m">${retTxt}</div></div>`;
+    // Alerts for exception orders
+    const alerts = {
+      "TXO-10477": `<div class="callout c-bad mt-12"><i data-icon="alert-octagon"></i><div class="grow"><strong>Critical · payment captured after reservation expiry.</strong> Reservation R-5521 expired 10:02; Razorpay capture pay_Nx8QpL4 arrived 10:04. Order held automatically — stock was not oversold. Alternate unit U-000815 (Open box, same config) is free at SP Road. Owner: Deepa K. (Finance) · due 11:30.</div><div class="row gap-6"><button class="btn btn-sm btn-primary" data-toast="U-000815 reserved · customer asked to confirm via template stock_alternate v1">Reserve alternate</button><button class="btn btn-sm" data-toast="Refund request created · finance approval">Refund</button></div></div>`,
+      "TXO-10486": `<div class="callout c-warn mt-12"><i data-icon="alert"></i><div class="grow"><strong>Cancellation requested for line 3</strong> (2 × Logitech G305) by the customer on WhatsApp at 10:20. Line is picked but not packed — eligible. Respond by 14:20.</div><button class="btn btn-sm" data-cancel-open>Review &amp; cancel line</button></div>`,
+      "TXO-10476": `<div class="callout c-warn mt-12"><i data-icon="alert"></i><div class="grow"><strong>Dealer requested full cancellation</strong> (duplicate PO on their side). Nothing picked yet — whole order eligible; refund ₹${TX.num(c.total)} to original UPI.</div><button class="btn btn-sm" data-cancel-open>Review</button></div>`,
+      "TXO-10488": `<div class="callout c-bad mt-12"><i data-icon="pause"></i><div class="grow"><strong>On hold — GSTIN on invoice doesn't match the dealer profile.</strong> Customer emailed a new GSTIN (SUP-7738). Finance must verify before a B2B tax invoice is issued. Reservation extended to 27 Sep 10:00.</div><button class="btn btn-sm" data-toast="Hold released · order returns to pick queue">Release hold</button></div>`,
+      "TXO-10471": `<div class="callout c-bad mt-12"><i data-icon="alert"></i><div class="grow"><strong>Overdue dispatch (26 h).</strong> Pick failed: bin A-21 empty although 1 unit allocated — stock mismatch raised a cycle-count task. A second unit is available at SP Road (transfer TR-0219 suggested).</div><button class="btn btn-sm" data-toast="Transfer TR-0219 requested · SP Road → WH-BLR">Request transfer</button></div>`,
+      "TXO-10484": `<div class="callout c-bad mt-12"><i data-icon="truck"></i><div class="grow"><strong>Delivery failed — consignee unreachable</strong> (raw courier status “UD: CNEE NOT AVAILABLE”). Order and payment states are unchanged. Next attempt 28 Sep; RTO after attempt 3.</div><button class="btn btn-sm" data-toast="Address confirmation request sent (template address_check v2)">Ask customer</button></div>`,
+      "TXO-10491": `<div class="callout c-warn mt-12"><i data-icon="percent"></i><div class="grow"><strong>Approval request APR-0231:</strong> 14% discount requested by Vikram S. (authority 8%). Margin after discount 3.1% vs floor 6%. Waiting on owner · due 12:00. Order stays <b>Draft</b> — no stock reserved, no link sent.</div><a class="btn btn-sm" href="erp-automation.html#approvals">Open approval</a></div>`,
+    };
+    $("#od-alert").innerHTML = alerts[o.id] || "";
+
+    // Lines & pricing
+    const unitTxt = (l) => {
+      if (l.unit) return `<span class="unit-chip">${ic("qr")} ${l.unit}</span><div class="cell-sub mono mt-4">S/N ${sn(l.unit)} · <a href="erp-inventory.html">IR-${2291 + parseInt(l.unit.slice(-2), 10)}</a></div>`;
+      if (["unallocated", "released"].includes(o.ful)) return `<span class="small muted">Not allocated</span>`;
+      if (o.ful === "picking") return l.flag ? `<span class="small">Picked · held at pack bench</span>` : `<span class="small">${l.q}/${l.q} serials scanned</span><div class="cell-sub">Bin A-03 · WH-BLR</div>`;
+      if (["dispatched", "delivered", "partdisp"].includes(o.ful)) return `<span class="small">Serials captured at pack</span><div class="cell-sub mono">S7T1NS0W${l.p.id.length}41…</div>`;
+      return `<span class="small">Qty allocated · serial at pick</span>`;
+    };
+    const lineStat = (l) => l.flag === "cancelreq" ? `<span class="badge b-warn" title="Cancellation requested by customer">${ic("clock")} Cancel req.</span>` : `<span class="status ${FUL[o.ful][1]}">${FUL[o.ful][0]}</span>`;
+    const resv = o.res || (o.pay === "captured" || o.pay === "cod" ? [`R-55${(parseInt(o.id.slice(-2), 10) + 10)}`, "", "converted"] : ["—", "", "none"]);
+    const resHTML = resv[2] === "active"
+      ? `<div class="row-between"><div><b class="mono">${resv[0]}</b> · ${o.loc} · <span class="status s-warn">Active</span></div><span class="small">expires <b>${resv[1]}</b></span></div><div class="meter m-warn thin mt-8"><span style="width:58%"></span></div><div class="small muted mt-4">30-min hold created at checkout · released automatically if unpaid (A06)</div>`
+      : resv[2] === "expired"
+      ? `<div class="row-between"><div><b class="mono">${resv[0]}</b> · ${o.loc} · <span class="status s-bad">Expired ${resv[1]}</span></div><span class="small text-bad">unit re-reserved by another order</span></div><div class="small muted mt-4">Late capture handled by policy: re-reserve alternate or refund — never negative stock.</div>`
+      : resv[2] === "converted"
+      ? `<div><b class="mono">${resv[0]}</b> · ${o.loc} · <span class="status s-ok">Converted to allocation</span> <span class="muted">at payment capture ${o.flagship ? "09:58:04" : hhmm(o, 3)}</span></div><div class="small muted mt-4">Created at checkout ${o.flagship ? "09:57" : hhmm(o, 1)} · 30-min expiry · no oversell possible across web, POS and WhatsApp</div>`
+      : `<div class="small muted">No reservation — ${o.ord === "draft" ? "draft orders don't hold stock until approved and sent" : "stock released"}.</div>`;
+    const cur10486 = o.flagship ? `<div class="callout c-info small mt-8"><i data-icon="history"></i><div>Dealer Gold v2026.4 (effective 1 Oct) lowers the T7 tier-10 price to ₹6,690 — <b>this order keeps its snapshot</b> (T33).</div></div>` : "";
+    $("#p-lines").innerHTML = `
+      <div class="dsec">
+        <h4>${ic("package")} Lines <span class="small muted" style="font-weight:500">· ${o.lines.length} line${o.lines.length > 1 ? "s" : ""} · condition and allocated unit per line</span></h4>
+        <div class="card" style="border-radius:var(--r)"><div class="table-wrap"><table class="table compact">
+          <thead><tr><th>Item · condition</th><th class="r">Qty</th><th>Allocated unit</th><th class="r">Unit ${c.exGST ? "ex-GST" : "incl. GST"} · rule</th><th class="r">Line total</th><th>Line status</th></tr></thead>
+          <tbody>${c.L.map((l) => `<tr>
+            <td><div class="row gap-8">${TX.ph(l.p.img, "thumb")}<div style="max-width:230px"><div class="cell-main truncate" style="font-size:12.5px">${l.p.title}</div><div class="row gap-6 mt-4">${TX.condBadge(l.p.cond)}<span class="cell-sub mono">${l.p.sku}</span></div></div></div></td>
+            <td class="r">${l.q}</td><td style="max-width:170px">${unitTxt(l)}</td>
+            <td class="r">${fmt(l.u)}<div><span class="rule-tag">${l.rule}</span></div></td><td class="r strong">${fmt(l.t)}</td><td>${lineStat(l)}</td></tr>`).join("")}</tbody>
+        </table></div></div>
+      </div>
+      <div class="dsec snap">
+        <div data-anno="1A · R03/R04 · T33 Price snapshot + rule version">
+          <h4>${ic("tag")} Price snapshot</h4>
+          <div class="panel small col gap-6">
+            <div class="row-between"><span class="muted">Price list · rule</span><b>${o.bt === "dealer" ? `${o.list} v2026.3 · tier 10+ / base per line` : "Public list v2026.9 (GST-inclusive)"}</b></div>
+            <div class="row-between"><span class="muted">Quote</span><b class="mono">Q-${3300 + parseInt(o.id.slice(-2), 10)} · locked ${o.flagship ? "09:52" : hhmm(o, 0)} · 30 min</b></div>
+            <div class="row-between"><span class="muted">Revalidated at checkout</span><span class="text-ok strong il">${ic("check-circle", "ic-sm")} No change · ${o.flagship ? "09:57" : hhmm(o, 1)}</span></div>
+            <div class="row-between"><span class="muted">Promotion</span><b>${o.promo || "None"}</b></div>
+            <div class="row-between"><span class="muted">Stacking policy</span><b>v2 · promo + tier allowed, one promo max</b></div>
+            <div class="row-between"><span class="muted">Margin check</span><span class="text-ok strong il">${ic("check-circle", "ic-sm")} Above floor (6%)</span></div>
+          </div>
+          ${cur10486}
+        </div>
+        <div>
+          <h4>${ic("rupee")} Totals</h4>
+          <div class="panel"><div class="tot">
+            <span class="muted">Subtotal ${c.exGST ? "(ex-GST)" : "(incl. GST)"}</span><span>${fmt(c.sub)}</span>
+            ${c.disc ? `<span class="muted">Order discount</span><span class="text-ok">−${fmt(c.disc)}</span>` : ""}
+            <span class="muted">${c.exGST ? "CGST 9% + SGST 9%" : "GST included (18%)"}</span><span>${c.exGST ? "" : "("}${fmt(c.gst)}${c.exGST ? "" : ")"}</span>
+            <span class="muted">Shipping</span><span>Free</span>
+            <span class="g">Order total</span><span class="g">${fmt(c.total)}</span>
+          </div>
+          <div class="small muted mt-8">${c.exGST ? "B2B tax invoice · place of supply Karnataka (29)" : "B2C invoice · consumer price shown GST-inclusive"}</div></div>
+        </div>
+      </div>
+      <div class="dsec grid g-2">
+        <div data-anno="1A · R08 Time-limited stock reservation">
+          <h4>${ic("lock")} Stock reservation</h4>
+          <div class="panel small">${resHTML}</div>
+        </div>
+        <div>
+          <h4>${ic("pin")} Customer &amp; delivery</h4>
+          <div class="panel small"><dl class="kv" style="grid-template-columns:110px 1fr">
+            <dt>Buyer</dt><dd>${o.buyer}${o.bt === "dealer" ? " · GSTIN 29AABCM4421F1Z6" : ""}</dd>
+            <dt>Contact</dt><dd>+91 98450 •••10 · verified</dd>
+            <dt>Ship to</dt><dd>${o.bt === "dealer" ? "No. 14, Sayyaji Rao Road, Mysuru 570001" : "4th Cross, 5th Block Koramangala, Bengaluru 560034"}</dd>
+            <dt>Promise</dt><dd>${o.flagship ? "Dispatch today · delivery Tue 29 Sep" : "Per serviceability at checkout"}</dd>
+          </dl></div>
+        </div>
+      </div>`;
+
+    // Payments
+    const amt = fmt(c.total);
+    let att = [], evts = [];
+    if (o.flagship) {
+      att = [["PA-1", "pay_OQx81fT2nWb4", "UPI · Google Pay", amt, ["Failed", "s-bad"], "09:55:10", "Bank declined (U30)"], ["PA-2", "pay_OQx9LmR7aK1c", "UPI · PhonePe", amt, ["Captured", "s-ok"], "09:58:04", "Settlement batch setl_ORb2 (T+2)"]];
+      evts = [["evt_OQx81ab", "payment.failed", "09:55:14", "Applied", "PA-1 → failed", 0], ["evt_OQx9Aa1", "payment.authorized", "09:58:02", "Applied", "PA-2 → authorised", 0], ["evt_OQx9Cc7", "payment.captured", "09:58:04", "Applied", "PA-2 → captured · order → confirmed · 1 pick task", 0], ["evt_OQx9Dd2", "order.paid", "09:58:05", "Applied (no-op)", "Order already confirmed", 0], ["evt_OQx9Cc7", "payment.captured", "09:58:36", "Ignored", "Duplicate event id — already processed (idempotency key)", 1], ["evt_OQx81ab", "payment.failed", "10:01:09", "Ignored", "Out-of-order redelivery for PA-1 — never downgrades a proven capture", 1]];
+    } else if (o.pay === "captured" || o.pay === "refunded") {
+      att = [["PA-1", "pay_" + o.id.slice(-3) + "Kx2mP9qL", o.ch === "pos" ? "UPI · counter terminal" : "Card · Visa ••4417", amt, ["Captured", "s-ok"], hhmm(o, 2), "Settlement T+2"]];
+      evts = [["evt_" + o.id.slice(-3) + "A1", "payment.captured", hhmm(o, 2) + ":06", "Applied", "PA-1 → captured · order → confirmed", 0], ["evt_" + o.id.slice(-3) + "A1", "payment.captured", hhmm(o, 3) + ":40", "Ignored", "Duplicate event id — already processed", 1]];
+      if (o.pay === "refunded") evts.push(["evt_rf" + o.id.slice(-3), "refund.processed", "25 Sep 11:02", "Applied", "RF-0271 → completed", 0]);
+    } else if (o.pay === "pending") {
+      att = [["PA-1", "pay_OQy2UpC0llt", "UPI collect", amt, ["Pending", "s-warn"], "10:25:18", "Awaiting customer approval in UPI app"]];
+      evts = [["evt_OQy2Pa", "payment.created", "10:25:18", "Applied", "PA-1 → pending", 0]];
+    } else if (o.pay === "failed") {
+      att = [["PA-1", "pay_OQx7FaiL3d", "Card · Mastercard ••0921", amt, ["Failed", "s-bad"], "09:57:40", "3-D Secure not completed"]];
+      evts = [["evt_OQx7F1", "payment.failed", "09:57:44", "Applied", "PA-1 → failed · retry link valid until reservation expiry", 0]];
+    } else if (o.pay === "cod") {
+      att = [["PA-1", "COD", "Cash on delivery", amt, ["Due on delivery", "s-warn"], "—", "Remittance via courier COD report"]];
+    }
+    $("#od-pay-n").textContent = att.length;
+    $("#p-pay").innerHTML = `
+      <div class="dsec"><h4>${ic("card")} Payment attempts</h4>
+        ${att.length ? `<div class="card" style="border-radius:var(--r)"><table class="table compact"><thead><tr><th>Attempt</th><th>Provider reference</th><th>Method</th><th class="r">Amount</th><th>State</th><th>Time</th><th>Detail</th></tr></thead><tbody>
+        ${att.map((a) => `<tr><td class="mono">${a[0]}</td><td class="mono">${a[1]}</td><td>${a[2]}</td><td class="r">${a[3]}</td><td><span class="status ${a[4][1]}">${a[4][0]}</span></td><td class="small">${a[5]}</td><td class="small muted">${a[6]}</td></tr>`).join("")}</tbody></table></div>`
+        : `<div class="empty" style="padding:24px">${ic("wallet")}<h4>No payment attempt yet</h4><p>${o.ord === "draft" ? "Checkout link is sent only after the discount approval." : "Checkout link sent — waiting for the customer."}</p></div>`}
+      </div>
+      ${evts.length ? `<div class="dsec" data-anno="1A · T07/T08 Idempotent, signed webhooks"><h4>${ic("server")} Webhook event log <span class="small muted" style="font-weight:500">· signature verified · recorded once · applied in legal order</span></h4>
+        <div class="card" style="border-radius:var(--r)"><table class="table compact evt"><thead><tr><th>Event id</th><th>Type</th><th>Received</th><th>Signature</th><th>Result</th><th>Effect</th></tr></thead><tbody>
+        ${evts.map((e) => `<tr class="${e[5] ? "ign" : ""}"><td class="mono">${e[0]}</td><td class="mono">${e[1]}</td><td>${e[2]}</td><td><span class="text-ok small il">${ic("check", "ic-sm")} valid</span></td><td>${e[5] ? `<span class="badge">${ic("copy")} ${e[3]}</span>` : `<span class="badge b-ok">${ic("check")} ${e[3]}</span>`}</td><td class="small">${e[4]}</td></tr>`).join("")}</tbody></table></div>
+        <div class="row-between small mt-8"><span class="muted il">${ic("refresh", "ic-sm")} Reconciled against Razorpay API at 10:15 — provider and order records match.</span><button class="btn btn-xs" data-toast="Reconciliation job queued for ${o.id}">Reconcile now</button></div></div>` : ""}
+      <div class="dsec"><h4>${ic("undo")} Refunds</h4>
+        ${o.pay === "refunded" ? `<div class="panel small row-between"><span><b class="mono">RF-0271</b> · ${amt} · original UPI · completed 25 Sep 11:02 · rfnd_OPq71Zx</span><span class="status s-ok">Completed</span></div>` : `<div class="panel small muted">No refunds. Line cancellations and returns create a refund request for finance — one provider refund per request (T18).</div>`}
+      </div>
+      <div class="dsec"><h4>${ic("file")} Invoice</h4><div class="panel small row-between"><span>${o.pay === "captured" ? `<b class="mono">INV-BLR-26-004812</b> · generated once on confirmation · ${c.exGST ? "B2B tax invoice" : "B2C invoice"}` : "Invoice is generated on payment confirmation."}</span>${o.pay === "captured" ? `<button class="btn btn-xs" data-toast="Invoice PDF opened">${ic("download", "ic-sm")} PDF</button>` : ""}</div></div>`;
+
+    // Shipments
+    let ship;
+    if (["dispatched", "delivered", "failed", "partdisp"].includes(o.ful) && o.ch !== "pos") {
+      const raw = o.ful === "failed" ? [["26 Sep 08:10", "UD", "CNEE NOT AVAILABLE · Mysuru DC", "Delivery failed"], ["25 Sep 18:40", "OFD", "Out for delivery", "Out for delivery"], ["24 Sep 21:02", "IT", "Bag received Mysuru_DC", "In transit"], ["24 Sep 16:35", "PU", "Picked up", "Dispatched"]] : [["26 Sep 06:12", "IT", "Bag received Bengaluru_Hub", "In transit"], ["25 Sep 17:05", "PU", "Picked up from WH-BLR", "Dispatched"]];
+      ship = `<div class="panel small mb-12"><div class="row-between"><div><b class="mono">SHP-${2200 + parseInt(o.id.slice(-2), 10)}</b> · Delhivery · AWB <b class="mono">1490 2233 88${o.id.slice(-2)}</b> · 1 parcel · 2.1 kg</div><span class="status ${FUL[o.ful][1]}">${FUL[o.ful][0]}</span></div>
+        <div class="muted mt-4">Booked via courier API · label printed · manifest MF-0925-02 · handover evidence: rider OTP + photo</div></div>
+        ${o.ful === "partdisp" ? `<div class="callout c-warn small mb-12"><i data-icon="clock"></i><div>Second line ships separately (${X(o.lines[1][0]).title.slice(0, 40)}…) — ${o.id === "TXO-10474" ? "partner stock, supplier confirmation due 12:00" : "arriving by transfer TR-0215"}. Customer was told at checkout (split shipment approved).</div></div>` : ""}
+        <div class="card" style="border-radius:var(--r)"><table class="table compact"><thead><tr><th>Carrier time</th><th>Raw carrier status</th><th>Canonical</th></tr></thead><tbody>
+        ${raw.map((r) => `<tr><td class="small">${r[0]}</td><td class="mono">${r[1]} · ${r[2]}</td><td><span class="badge ${r[3] === "Delivery failed" ? "b-bad" : "b-info"}">${r[3]}</span></td></tr>`).join("")}</tbody></table></div>
+        <div class="small muted mt-8">Courier events are external evidence — mapped to canonical fulfilment states; raw events kept. They never change order or payment state.</div>`;
+    } else if (o.ch === "pos") {
+      ship = `<div class="panel small"><b>Handed over at SP Road counter</b> · 26 Sep 08:58 · signature captured · serials printed on invoice. No courier shipment.</div>`;
+    } else {
+      ship = `<div class="empty" style="padding:28px">${ic("truck")}<h4>No shipment yet</h4><p>${["picking", "allocated", "packed"].includes(o.ful) ? "Courier is booked automatically when the parcel is packed (Delhivery API · booking de-duplicated). Manual booking with reference capture is the fallback." : "A shipment is created after the order is confirmed and packed."}</p></div>
+        <div class="panel small mt-12"><dl class="kv" style="grid-template-columns:160px 1fr"><dt>Serviceability</dt><dd class="il">${o.loc} → ${o.bt === "dealer" ? "570001" : "560034"} · ${ic("check-circle", "ic-sm")} Delhivery Surface · COD ${o.bt === "dealer" ? "not offered (B2B)" : "eligible"}</dd><dt>Promised dispatch</dt><dd>${o.sla[1]}</dd></dl></div>`;
+    }
+    $("#p-ship").innerHTML = `<div class="dsec"><h4>${ic("truck")} Shipments</h4>${ship}</div>`;
+
+    // Timeline
+    const T = o.flagship ? [
+      ["done", "Draft basket DB-0412 created from WhatsApp", "09:44 · Karthik R. · conversation SUP-7742 · 3 items", "whatsapp"],
+      ["done", "Quote Q-3386 locked · Dealer Gold v2026.3", "09:52 · pricing engine · checkout link sent (template checkout_link v2)", "tag"],
+      ["done", "Customer confirmed address & price · reservation R-5534", "09:57 · WH-BLR · expires 10:27", "lock"],
+      ["warn", "Payment attempt PA-1 failed (U30)", "09:55 · evt_OQx81ab · customer retried", "x-circle"],
+      ["done", "Payment captured · order confirmed", "09:58 · evt_OQx9Cc7 · automation A09 · duplicate event ignored 09:58:36", "check"],
+      ["done", "Invoice INV-BLR-26-004812 · pick task released", "09:58 · automation A11/A12 · wave W-26-07", "file"],
+      ["warn", "Email confirmation bounced", "09:59 · mailbox full · WhatsApp template delivered · retry 10:29", "mail"],
+      ["done", "Cancellation requested for line 3 (2 × G305)", "10:20 · customer via WhatsApp · Karthik R.", "undo"],
+      ["current", "Picking in progress", "10:31 · Irfan M. · 11 of 13 units scanned", "scan"],
+    ] : [
+      ["done", `Order created · ${CH[o.ch][0]}`, `${tm(o, 0)} · ${o.src || "customer checkout"}`, CH[o.ch][1]],
+      ["done", `Price computed · ${calc(o).L[0].rule}`, `${tm(o, 0)} · pricing engine · server-side`, "tag"],
+      o.ord === "draft" ? ["warn", "Discount above authority → approval requested", `${tm(o, 2)} · APR-0231 · owner`, "percent"] : ["done", `Stock reserved ${resv[0] !== "—" ? resv[0] : ""}`, `${tm(o, 1)} · ${o.loc} · 30 min`, "lock"],
+      ...(o.pay === "captured" || o.pay === "refunded" ? [["done", "Payment captured · order confirmed", `${tm(o, 2)} · signed webhook · A09`, "check"]] : o.pay === "failed" ? [["warn", "Payment attempt failed", `${tm(o, 2)} · retry link valid until hold expiry`, "x-circle"]] : o.pay === "cod" ? [["done", "Confirmed as COD", `${tm(o, 1)} · COD eligibility rule v1 passed`, "check"]] : []),
+      ...(o.ord === "hold" ? [["warn", "Order placed on hold", `${tm(o, 5)} · ${o.note ? o.note[1] : ""}`, "pause"]] : []),
+      ...(["dispatched", "delivered", "failed", "partdisp"].includes(o.ful) ? [["done", "Packed & dispatched", `${o.ch === "pos" ? "Handed over at counter" : "Delhivery AWB booked · manifest signed"}`, "truck"]] : []),
+      ...(o.ful === "failed" ? [["warn", "Delivery attempt failed", "26 Sep 08:10 · consignee unreachable", "alert"]] : []),
+      ...(o.ord === "cancelled" ? [["done", "Cancelled by customer · refund completed", "25 Sep 11:02 · RF-0271", "undo"]] : []),
+      ["current", "Now", `${o.sla[1]}`, "clock"],
+    ];
+    $("#p-time").innerHTML = `<div class="grid" style="grid-template-columns:1.2fr 1fr;gap:20px">
+      <div class="dsec"><h4>${ic("history")} Timeline</h4><ul class="timeline">${T.map((t) => `<li class="${t[0]}"><span class="t-dot">${ic(t[3])}</span><div class="t-title">${t[1]}</div><div class="t-meta">${t[2]}</div></li>`).join("")}</ul></div>
+      <div class="dsec"><h4>${ic("shield")} Audit trail</h4><div class="card" style="border-radius:var(--r)"><table class="table compact"><thead><tr><th>Actor</th><th>Change</th></tr></thead><tbody>
+        <tr><td class="small"><b>Automation A09</b><div class="cell-sub">rule v4 · ${o.flagship ? "09:58" : hhmm(o, 2)}</div></td><td class="small">order.state awaiting → confirmed<div class="cell-sub">input: evt capture · idem-key ${o.id}-pay</div></td></tr>
+        <tr><td class="small"><b>Pricing engine</b><div class="cell-sub">${o.flagship ? "09:52" : hhmm(o, 0)}</div></td><td class="small">price snapshot written<div class="cell-sub">${calc(o).L[0].rule}</div></td></tr>
+        ${o.flagship ? `<tr><td class="small"><b>Karthik R.</b><div class="cell-sub">Support · 10:20</div></td><td class="small">line 3 cancel request created<div class="cell-sub">reason: customer request · source SUP-7742</div></td></tr><tr><td class="small"><b>Irfan M.</b><div class="cell-sub">Warehouse · 10:31</div></td><td class="small">pick started · wave W-26-07</td></tr>` : ""}
+        <tr><td class="small"><b>Rajesh M.</b><div class="cell-sub">Owner · 10:42</div></td><td class="small">viewed order<div class="cell-sub">read access logged</div></td></tr>
+      </tbody></table></div></div></div>`;
+    TX.hydrate($("#d-order"));
+  }
+
+  /* ---------- Cancel-line modal ---------- */
+  function renderCancel() {
+    const o = cur, c = calc(o);
+    $("#cx-id").textContent = o.id;
+    const eligible = !["dispatched", "delivered", "partdisp", "released"].includes(o.ful) && o.pay !== "refunded";
+    $("#cx-lines").innerHTML = c.L.map((l, i) => {
+      const ok = eligible;
+      const pre = o.flagship ? l.flag === "cancelreq" : o.id === "TXO-10476";
+      return `<label class="cancel-line ${ok ? "" : "dis"}"><input type="checkbox" data-cx="${i}" ${ok ? "" : "disabled"} ${ok && pre ? "checked" : ""} aria-label="Cancel line ${i + 1}">${TX.ph(l.p.img, "thumb")}
+        <div><div class="strong small">${l.p.title}</div><div class="small muted">${l.q} × ${fmt(l.u)} · ${TX.conditions[l.p.cond].label}${l.flag ? " · customer requested" : ""}</div></div>
+        <div class="r"><b>${fmt(l.t)}</b><div class="small muted">${ok ? (o.ful === "picking" ? "picked · return to bin" : "not picked") : "already shipped → use return"}</div></div></label>`;
+    }).join("");
+    TX.hydrate($("#cx-lines"));
+    const upd = () => {
+      const idx = $$("[data-cx]:checked").map((x) => +x.dataset.cx);
+      const lt = idx.reduce((a, i) => a + c.L[i].t, 0);
+      const share = c.disc ? Math.round((c.disc * lt) / c.sub) : 0;
+      const net = lt - share;
+      const refund = c.exGST ? Math.round(net * 1.18) : net;
+      const gst = c.exGST ? refund - net : refund - Math.round(refund / 1.18);
+      const paid = ["captured", "cod"].includes(o.pay);
+      $("#cx-tot").innerHTML = `<span class="muted">Line value ${c.exGST ? "(ex-GST)" : "(incl. GST)"}</span><span>${fmt(lt)}</span>
+        <span class="muted">Allocated order discount</span><span>${share ? "−" + fmt(share) : "₹0"}</span>
+        <span class="muted">${c.exGST ? "GST reversed (18%)" : "of which GST"}</span><span>${c.exGST ? "+" : "("}${fmt(gst)}${c.exGST ? "" : ")"}</span>
+        <span class="muted">Shipping</span><span>₹0 (free)</span>
+        <span class="g">Refund to customer</span><span class="g">${paid ? fmt(refund) : "No refund"}</span>
+        <span class="small muted" style="grid-column:1/-1">${paid ? "To original method · UPI via Razorpay (pay_OQx9LmR7aK1c) · credit note CN-BLR-26-0391" : "Payment not captured — reservation released only"}</span>`;
+      const units = idx.reduce((a, i) => a + c.L[i].q, 0);
+      $("#cx-res").innerHTML = units ? `<b>${units} unit${units > 1 ? "s" : ""}</b> released from ${o.loc} back to available stock${o.ful === "picking" ? " after the picker returns them to bin (task created)" : ""}. Other lines keep their allocation.` : "Select a line to see the stock effect.";
+      $("#cx-promo").innerHTML = o.flagship && idx.length ? `<div class="callout c-warn"><i data-icon="percent"></i><div>Order falls to <b>${fmt(c.sub - lt)}</b> ex-GST — below the ₹1 L threshold of PRM-26-09. Policy v2 (proposed, client to confirm): <b>no clawback</b> on partial cancellation; the promo is re-allocated to remaining lines. Tier 10+ on the SSD line is unaffected.</div></div>` : "";
+      TX.hydrate($("#cx-promo"));
+    };
+    $("#cx-lines").onchange = upd; upd();
+    TX.open("m-cancel");
+  }
+  document.addEventListener("click", (e) => {
+    const tr = e.target.closest("#ord-body tr[data-id]");
+    if (tr && !e.target.closest("input,label")) { renderOrder(byId(tr.dataset.id)); TX.activateTab("od-lines"); if (e.target.closest("button")) TX.open("d-order"); }
+    if (e.target.closest("#btn-cancel-line,[data-cancel-open]")) renderCancel();
+  });
+  renderOrder(byId(TX.param("order") || "TXO-10486"));
+  if (TX.param("order")) { TX.open("d-order"); if (TX.param("tab")) TX.activateTab(TX.param("tab")); }
+  if (TX.param("cancel")) renderCancel();
+
+  /* ---------- Assisted order ---------- */
+  const AS = { cust: "dealer", lines: [["ssd-03", 10], ["hub-02", 4]] };
+  const res = $("#as-results");
+  function renderResults() {
+    const q = $("#as-q").value.trim().toLowerCase();
+    const list = (q ? TX.products.filter((p) => (p.title + " " + p.sku + " " + p.brand).toLowerCase().includes(q)) : TX.products.filter((p) => ["ssd-01", "lap-02", "ms-02", "mon-03"].includes(p.id))).slice(0, 6);
+    res.innerHTML = (q ? "" : `<div class="upper muted" style="padding:8px 10px 4px">Suggested for this customer</div>`) + (list.length ? list.map((p) => {
+      const o = { bt: AS.cust === "dealer" ? "dealer" : "consumer", list: "Dealer Gold" };
+      const [u] = unitFor(o, p, 1);
+      return `<div class="as-res">${TX.ph(p.img, "thumb")}<div><div class="strong truncate">${p.title}</div><div class="muted mono" style="font-size:11.5px">${p.sku} · ${TX.conditions[p.cond].label}</div></div>
+        <div class="r"><b>${fmt(u)}</b><div class="tiny muted">${o.bt === "dealer" ? "ex-GST" : "incl. GST"} · ${p.stock === "supplier" ? "partner stock" : p.qty + " avail."}</div></div>
+        <button class="btn btn-xs btn-soft" data-as-add="${p.id}">${ic("plus", "ic-sm")} Add</button></div>`;
+    }).join("") : `<div class="empty" style="padding:18px">${ic("search")}<h4>No match</h4><p>Try a model number or SKU.</p></div>`);
+  }
+  function renderAssisted() {
+    const o = { bt: AS.cust === "dealer" ? "dealer" : "consumer", list: "Dealer Gold" };
+    const auth = +$("#as-role").value, d = +$("#as-disc").value || 0;
+    const rows = AS.lines.map(([id, q], i) => {
+      const p = X(id); const [u, rule] = unitFor(o, p, q);
+      const next = o.bt === "dealer" ? (q < 5 ? [5 - q, "tier 5+", p.tiers[0].p] : q < 10 ? [10 - q, "tier 10+", p.tiers[1].p] : null) : null;
+      const short = p.stock !== "supplier" && q > p.qty;
+      return { p, q, u, rule, t: u * q, next, short, i };
+    });
+    $("#as-lines").innerHTML = rows.length ? rows.map((r) => `<tr>
+      <td><div class="row gap-8">${TX.ph(r.p.img, "thumb")}<div style="min-width:0;width:200px"><div class="strong small truncate">${r.p.title}</div><div class="row gap-6 mt-4">${TX.condBadge(r.p.cond)}<span class="tiny muted mono">${r.p.sku}</span></div>
+        <div class="tiny mt-4">${r.p.stock === "supplier" ? `<span class="text-brand">Partner stock · 4–6 days</span>` : `<span class="${r.short ? "text-bad strong" : "muted"}">${r.p.qty} available at WH-BLR${r.short ? ` · short by ${r.q - r.p.qty}` : ""}</span>`}</div></div></div></td>
+      <td><div class="qty"><button data-step="-1" aria-label="Decrease">${ic("minus", "ic-sm")}</button><input value="${r.q}" min="1" data-as-q="${r.i}" aria-label="Quantity"><button data-step="1" aria-label="Increase">${ic("plus", "ic-sm")}</button></div></td>
+      <td class="r"><b>${fmt(r.u)}</b><div><span class="rule-tag">${r.rule}</span></div>${r.next ? `<div class="hint-up">+${r.next[0]} → ${r.next[1]} ${fmt(r.next[2])}</div>` : ""}</td>
+      <td class="r strong">${fmt(r.t)}</td>
+      <td><button class="btn btn-ghost btn-icon btn-sm" data-as-rm="${r.i}" aria-label="Remove line">${ic("trash", "ic-sm")}</button></td></tr>`).join("")
+      : `<tr><td colspan="5"><div class="empty" style="padding:20px">${ic("cart")}<h4>No items yet</h4><p>Search above to add products.</p></div></td></tr>`;
+    const sub = rows.reduce((a, r) => a + r.t, 0), disc = Math.round(sub * d / 100);
+    let gst, total;
+    if (o.bt === "dealer") { gst = Math.round((sub - disc) * 0.18); total = sub - disc + gst; } else { total = sub - disc; gst = total - Math.round(total / 1.18); }
+    $("#as-list").textContent = o.bt === "dealer" ? "Dealer Gold v2026.3 · ex-GST" : "Public list v2026.9 · GST-incl.";
+    $("#as-tot").innerHTML = `<span class="muted">Subtotal</span><span>${fmt(sub)}</span>
+      <span class="muted">Staff discount (${d}%)</span><span class="${d ? "text-ok" : ""}">${d ? "−" + fmt(disc) : "₹0"}</span>
+      <span class="muted">${o.bt === "dealer" ? "GST 18% (CGST + SGST)" : "GST included"}</span><span>${o.bt === "dealer" ? "" : "("}${fmt(gst)}${o.bt === "dealer" ? "" : ")"}</span>
+      <span class="muted">Shipping</span><span>Free</span>
+      <span class="g">Payable</span><span class="g">${fmt(total)}</span>`;
+    // margin: illustrative cost factors by condition
+    const cf = { new: 0.82, openbox: 0.75, "refurb-a": 0.62, "refurb-b": 0.6, used: 0.55 };
+    const cost = rows.reduce((a, r) => a + (r.p.price / 1.18) * cf[r.p.cond] * r.q, 0);
+    const netEx = o.bt === "dealer" ? sub - disc : (sub - disc) / 1.18;
+    const m = netEx ? ((netEx - cost) / netEx) * 100 : 0;
+    const floorBad = m < 6;
+    $("#as-margin").innerHTML = rows.length ? `<div class="row-between"><span class="muted">Margin after discount (est.)</span><b class="${floorBad ? "text-bad" : "text-ok"}">${m.toFixed(1)}% ${floorBad ? "· below 6% floor" : "· above 6% floor"}</b></div><div class="meter ${floorBad ? "m-bad" : "m-ok"} thin mt-4"><span style="width:${Math.max(4, Math.min(100, m * 4))}%"></span></div>` : "";
+    $("#as-auth-txt").innerHTML = auth >= 100 ? "No limit (owner) · still audited" : `Your authority: up to <b>${auth}%</b> <span class="tiny">(example threshold)</span>`;
+    const over = d > auth || (floorBad && auth < 100 && rows.length);
+    $("#as-approval").innerHTML = over ? `<div class="callout c-warn"><i data-icon="alert"></i><div><strong>Needs approval — becomes request APR-0232.</strong> ${d > auth ? `${d}% exceeds your ${auth}% authority` : "Margin falls below the 6% floor"}. Routed to <b>Vikram S. (Branch manager)</b>${d > 8 ? " → <b>Owner</b> (above manager limit)" : ""} with your reason. The order stays <b>Draft</b>; no stock is reserved and no link is sent until approved. Deadline 2 h, alternate approver Anita R.</div></div>`
+      : auth >= 100 && floorBad && rows.length ? `<div class="callout c-warn small"><i data-icon="shield"></i><div><b>Owner override below the 6% margin floor.</b> Allowed for your role, but a reason is mandatory and the override appears in the daily digest and audit log.</div></div>`
+      : d ? `<div class="callout c-ok small"><i data-icon="check-circle"></i><div>Within your authority — discount applies immediately and is recorded with your reason in the audit log.</div></div>` : "";
+    TX.hydrate($("#as-approval"));
+    const btn = $("#as-submit");
+    btn.textContent = over ? "Submit for approval" : "Send checkout link";
+    btn.className = over ? "btn btn-accent" : "btn btn-primary";
+    btn.dataset.toast = over ? "Approval request APR-0232 sent · order saved as Draft" : `Checkout link sent on WhatsApp (template checkout_link v2) · stock reserved 30 min`;
+    btn.dataset.toastIcon = over ? "clock" : "whatsapp";
+  }
+  $("#as-q").addEventListener("input", renderResults);
+  $("#as-cust").addEventListener("change", (e) => { AS.cust = e.target.value; renderResults(); renderAssisted(); });
+  $("#as-role").addEventListener("change", renderAssisted);
+  $("#as-disc").addEventListener("input", renderAssisted);
+  $("#m-assisted").addEventListener("change", (e) => { const q = e.target.closest("[data-as-q]"); if (q) { AS.lines[+q.dataset.asQ][1] = Math.max(1, +q.value || 1); renderAssisted(); } });
+  $("#m-assisted").addEventListener("click", (e) => {
+    const a = e.target.closest("[data-as-add]");
+    if (a) { const ex = AS.lines.find((l) => l[0] === a.dataset.asAdd); if (ex) ex[1]++; else AS.lines.push([a.dataset.asAdd, 1]); renderAssisted(); TX.toast("Added · price computed by pricing engine", "tag"); }
+    const r = e.target.closest("[data-as-rm]"); if (r) { AS.lines.splice(+r.dataset.asRm, 1); renderAssisted(); }
+    const s = e.target.closest("[data-src]");
+    if (s) {
+      const src = s.dataset.src;
+      $("#as-source").querySelector(".grow").innerHTML = src === "wa" ? `<strong>Created from WhatsApp draft basket DB-0417</strong> · conversation <a href="erp-support.html">SUP-7742</a> with Arun Kumar (Metro Computers) · identity verified by OTP 09:31. Items were pre-filled from the guided chat — <b>chat prices are not trusted</b>; every price is recomputed by the pricing engine.`
+        : src === "phone" ? `<strong>Phone order</strong> · caller identity must be verified (OTP to the registered number) before account prices or order history are shown.`
+        : `<strong>Walk-in at branch</strong> · customer present at SP Road counter · pay at POS or send link.`;
+    }
+  });
+  renderResults(); renderAssisted();
+  const openAssisted = () => { if (location.hash === "#assisted") TX.open("m-assisted"); };
+  openAssisted(); window.addEventListener("hashchange", openAssisted);
+  document.addEventListener("click", (e) => { if (e.target.closest('a[href$="#assisted"]')) { e.preventDefault(); TX.open("m-assisted"); } });
+});
+</script>
+</body>
+</html>

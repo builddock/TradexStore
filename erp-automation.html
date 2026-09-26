@@ -1,0 +1,566 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Automation &amp; exceptions · Tradex ERP</title>
+  <link rel="stylesheet" href="assets/tradex.css">
+  <style>
+    .top-grid { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 16px; }
+    .formula { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; background: var(--bg); border: 1px solid var(--line-2); border-radius: var(--r-sm); padding: 8px 10px; color: var(--tx-2); }
+    .main-tabs { padding: 0 12px; }
+    .tbl-rules td { vertical-align: top; }
+    .tbl-rules .when { font-size: 12px; color: var(--tx-2); line-height: 1.45; }
+    .tbl-rules .when b { color: var(--tx-3); font-weight: 650; font-size: 10.5px; letter-spacing: .05em; text-transform: uppercase; margin-right: 4px; }
+    .tbl-rules tr { cursor: pointer; }
+    .tbl-rules tr.is-paused td { background: #fffaf0; }
+    .tbl-rules tr.is-off td { color: var(--tx-3); }
+    .rid { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 11px; font-weight: 700; color: var(--tx-2); background: var(--bg-2); border-radius: 4px; padding: 1px 5px; }
+    .switch .lbl { font-size: 12px; font-weight: 650; }
+    .succ { display: flex; flex-direction: column; gap: 4px; width: 64px; }
+    .killbox { display: flex; gap: 14px; align-items: center; padding: 14px 16px; border: 1px solid #f6c9c6; background: #fff8f7; border-radius: var(--r); }
+    .killbox.off { border-color: var(--line); background: var(--bg); }
+    .spec-table th { width: 26%; }
+    .evidence { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 11.5px; line-height: 1.6; background: var(--ink-900); color: #c9d2e3; border-radius: var(--r); padding: 12px 14px; white-space: pre-wrap; overflow-x: auto; }
+    .evidence .k { color: #8fa8ff; } .evidence .bad { color: #ff8f8f; } .evidence .ok { color: #7ee2a8; } .evidence .dim { color: #6b7894; }
+    .exc-tbl td { vertical-align: top; }
+    .esc { font-size: 11.5px; color: var(--tx-2); display: flex; flex-direction: column; gap: 2px; }
+    .esc > span:not(:first-child) { padding-left: 2px; }
+    .esc .ic { width: 11px; height: 11px; color: var(--tx-4); }
+    .due-bad { color: var(--bad-tx); font-weight: 650; }
+    .due-warn { color: var(--warn-tx); font-weight: 650; }
+    .act-col { display: flex; flex-direction: column; gap: 4px; align-items: flex-end; }
+    .appr-tbl td { vertical-align: top; }
+    .appr-tbl tr.self td { background: #fafafa; }
+    .ic-in { display: inline-block; vertical-align: -2px; }
+    .legend-sev { display: flex; gap: 6px; flex-wrap: wrap; }
+    .health-row { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--line-2); }
+    .health-row > div { padding: 12px 16px; border-right: 1px solid var(--line-2); }
+    .health-row > div:last-child { border-right: 0; }
+    .health-row b { font-size: 18px; display: block; }
+    .health-row span { font-size: 11.5px; color: var(--tx-3); }
+  </style>
+</head>
+<body data-app="erp" data-page="automation">
+<main>
+  <div class="page-head">
+    <div>
+      <div class="crumbs"><span>Finance &amp; insight</span><i data-icon="chevron-right"></i><span>Automation</span></div>
+      <h1>Automation &amp; exceptions</h1>
+      <p class="sub">Deterministic rules — no AI in Phase 1. Every rule has an owner, an idempotency key, a retry policy, a human boundary and a kill switch.</p>
+    </div>
+    <div class="actions">
+      <span class="badge b-outline" data-anno="R09/R10 Named reviewer may disable a faulty rule (§26.6 Q60)"><i data-icon="user"></i> Rule reviewer: Anita R. · Mondays 10:00</span>
+      <button class="btn btn-danger" data-open="m-pauseall"><i data-icon="pause"></i> Pause automation…</button>
+      <button class="btn btn-primary" data-open="m-propose"><i data-icon="plus"></i> Propose a rule</button>
+    </div>
+  </div>
+
+  <section class="grid g-6" id="kpis">
+    <div class="kpi"><div class="k-label"><i data-icon="zap"></i> <span>Active rules</span></div><div class="k-value">15 <span class="muted" style="font-size:15px">/ 17</span></div><div class="k-foot"><span>1 paused · 1 off</span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="activity"></i> <span>Runs today</span></div><div class="k-value">2,418</div><div class="k-foot"><span>14,165 in 7 days</span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="check-circle"></i> <span>Success rate</span></div><div class="k-value">99.2%</div><div class="k-foot"><span>today · 7 d <b id="succ7"></b></span></div></div>
+    <div class="kpi" data-anno="§12.4 Hours saved are estimates, measured weekly"><div class="k-label"><i data-icon="clock"></i> <span>Staff time saved</span></div><div class="k-value">41 h</div><div class="k-foot"><span class="delta up-good"><i data-icon="trending-up"></i> +3 h wk/wk</span><span>est.</span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="alert"></i> <span>Open exceptions</span></div><div class="k-value">23</div><div class="k-foot"><span><b class="text-bad">1 critical</b> · 6 owner-level</span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="check"></i> <span>Approvals waiting</span></div><div class="k-value">10</div><div class="k-foot"><span><b class="text-warn">1 overdue</b> · 5 on me</span></div></div>
+  </section>
+
+  <section class="top-grid mt-16">
+    <div class="card" data-anno="1A/1B · R09 Measured value — hours saved per week">
+      <div class="card-head">
+        <div><h3>Estimated staff hours saved per week</h3><div class="sub">All enabled rules, net of exception-handling time · weeks starting Monday</div></div>
+        <button class="btn btn-sm btn-ghost" id="val-toggle"><i data-icon="list" class="ic-sm"></i> Table view</button>
+      </div>
+      <div class="card-body">
+        <div id="ch-value"></div>
+        <div class="row gap-12 mt-12" style="align-items:flex-start">
+          <div class="formula grow">hours_saved = cases × minutes_saved ÷ 60 − exception_handling_hours</div>
+          <div class="small muted" style="max-width:300px">Time study refreshed monthly (last: 14 Sep, 60 observed orders). Overlapping rules are not double-counted. ₹ value per hour to be confirmed by client.</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><div><h3>Health right now</h3><div class="sub">Worker queue, retries and failing rules · 10:42</div></div><span class="status s-warn">1 rule paused</span></div>
+      <div class="list-row"><span class="li-icon bad"><i data-icon="pause"></i></span><div class="grow"><b>Courier tracking sync auto-paused</b><div class="small muted">3 × HTTP 504 since 08:15 · 17 shipments without update</div></div><button class="btn btn-xs" data-goto="runs">Evidence</button></div>
+      <div class="list-row"><span class="li-icon warn"><i data-icon="upload"></i></span><div class="grow"><b>Supplier import: 38 rows rejected</b><div class="small muted">Prime IT · IMP-0332 · missing HSN code</div></div><button class="btn btn-xs" data-goto="exceptions">Open</button></div>
+      <div class="list-row"><span class="li-icon warn"><i data-icon="wallet"></i></span><div class="grow"><b>Settlement matching partial</b><div class="small muted">4 unmatched lines · ₹18,420 · Finance</div></div><button class="btn btn-xs" data-goto="exceptions">Open</button></div>
+      <div class="list-row"><span class="li-icon ok"><i data-icon="shield"></i></span><div class="grow"><b>Global pause: off</b><div class="small muted">Last used 14 Aug · payment provider incident · 42 min</div></div></div>
+      <div class="health-row">
+        <div><b>12 s</b><span>Oldest queued job</span></div>
+        <div><b>14</b><span>Retries · 24 h · 11 recovered</span></div>
+        <div><b>3</b><span>Failed → exception</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================= Main tabs ========================= -->
+  <section class="card mt-16" data-tabset>
+    <div class="tabs main-tabs">
+      <button class="tab active" data-tab="rules"><i data-icon="zap" class="ic-sm"></i> Rules <span class="count">17</span></button>
+      <button class="tab" data-tab="runs"><i data-icon="activity" class="ic-sm"></i> Job runs <span class="count">3 failed</span></button>
+      <button class="tab" data-tab="exceptions"><i data-icon="alert" class="ic-sm"></i> Exceptions <span class="count">23</span></button>
+      <button class="tab" data-tab="approvals"><i data-icon="check-circle" class="ic-sm"></i> Approvals <span class="count">10</span></button>
+    </div>
+
+    <!-- Rules catalogue -->
+    <div class="tab-panel active" data-panel="rules" data-anno="1A/1B · R09 Rules catalogue from blueprint §12.2 (A01–A38)">
+      <div class="table-toolbar">
+        <div class="input-icon" style="width:240px"><i data-icon="search"></i><input class="input input-sm" id="rule-q" placeholder="Search rules, triggers, IDs…" aria-label="Search rules"></div>
+        <div class="row gap-6" id="rule-f">
+          <button class="chip active" data-f="all">All 17</button>
+          <button class="chip" data-f="on">Active 15</button>
+          <button class="chip" data-f="paused"><i data-icon="pause"></i> Paused 1</button>
+          <button class="chip" data-f="off">Off 1</button>
+          <button class="chip" data-f="failing"><i data-icon="alert"></i> Failed in 7 d</button>
+        </div>
+        <select class="select input-sm" style="width:auto" id="rule-ph" aria-label="Phase"><option value="">All phases</option><option>1A</option><option>1B</option></select>
+        <span class="ml-auto small muted">Click a rule for its full definition, runs and kill switch</span>
+      </div>
+      <div class="table-wrap"><table class="table compact tbl-rules">
+        <thead><tr><th style="min-width:215px">Rule</th><th style="min-width:280px">When → then</th><th>Owner</th><th>Status</th><th>Runs 7 d · success</th><th class="r">Saved</th><th>Last failure</th></tr></thead>
+        <tbody id="rules-body"></tbody>
+      </table></div>
+      <div class="pager"><span id="rules-count">17 rules</span><span>Candidates not yet built: A29 abandoned carts (P2), A30 forecasting (P2), A31 invoice OCR (P2), A33 seller payouts (P2), A34/A35 (P3)</span></div>
+    </div>
+
+    <!-- Job-run log -->
+    <div class="tab-panel" data-panel="runs" data-anno="§16.3 Durable jobs · retries with backoff · evidence">
+      <div class="table-toolbar">
+        <div class="seg" id="run-f"><button class="active" data-f="all">All</button><button data-f="failed">Failed 3</button><button data-f="retry">Retrying 1</button><button data-f="partial">Partial 2</button><button data-f="skipped">Skipped (duplicate) 1</button></div>
+        <select class="select input-sm" style="width:auto" aria-label="Rule"><option>All rules</option><option>A05 Payment → reserve → pick</option><option>A13.2 Courier tracking sync</option><option>A14 Status notifications</option></select>
+        <div class="seg"><button>Last hour</button><button class="active">Today</button><button>7 days</button></div>
+        <span class="ml-auto small muted">Backoff: 1 m → 2 m → 4 m (+ jitter), max 5 attempts · logs kept 90 days, failure evidence 1 year</span>
+      </div>
+      <div class="table-wrap"><table class="table compact" id="runs-tbl">
+        <thead><tr><th>Run</th><th>Rule</th><th>Entity</th><th>Started</th><th class="r">Duration</th><th class="c">Attempt</th><th>Result</th><th>Detail</th></tr></thead>
+        <tbody>
+          <tr data-f="ok"><td class="mono nowrap">JOB-88231</td><td class="nowrap"><span class="rid">A06</span> Reservation expiry</td><td class="mono nowrap">R-5534</td><td>10:40:02</td><td class="r">38 ms</td><td class="c">1/5</td><td><span class="status s-ok">Succeeded</span></td><td class="small muted">1 unit released · availability event sent</td></tr>
+          <tr data-f="ok"><td class="mono nowrap">JOB-88230</td><td class="nowrap"><span class="rid">A05</span> Payment → reserve → pick</td><td class="mono nowrap">TXO-10496</td><td>10:39:47</td><td class="r">212 ms</td><td class="c">1/5</td><td><span class="status s-ok">Succeeded</span></td><td class="small muted">Pick task PT-3318 · SP Road</td></tr>
+          <tr data-f="skipped"><td class="mono nowrap">JOB-88229</td><td class="nowrap"><span class="rid">A09</span> Payment webhook</td><td class="mono nowrap">pay_Nx9C4…</td><td>10:39:46</td><td class="r">9 ms</td><td class="c">1/1</td><td><span class="status s-muted">Skipped · duplicate</span></td><td class="small muted">Event evt_Nx9C… already processed at 10:39:44 — no second effect</td></tr>
+          <tr data-f="retry"><td class="mono nowrap">JOB-88226</td><td class="nowrap"><span class="rid">A14</span> Status notification</td><td class="mono nowrap">TXO-10488</td><td>10:36:10</td><td class="r">1.2 s</td><td class="c">2/4</td><td><span class="status s-warn">Retrying in 3 m 40 s</span></td><td class="small muted">WhatsApp provider 429 (rate limit) · backoff 2 m → 4 m · SMS fallback after attempt 4</td></tr>
+          <tr data-f="ok"><td class="mono nowrap">JOB-88221</td><td class="nowrap"><span class="rid">A04</span> Availability refresh</td><td class="mono nowrap">SSD01-N</td><td>10:31:55</td><td class="r">84 ms</td><td class="c">1/5</td><td><span class="status s-ok">Succeeded</span></td><td class="small muted">ATP 63 → 61 · storefront + search updated</td></tr>
+          <tr data-f="partial"><td class="mono nowrap">JOB-88207</td><td class="nowrap"><span class="rid">A01</span> Supplier import</td><td class="mono nowrap">IMP-0332</td><td>09:12:18</td><td class="r">41 s</td><td class="c">1/1</td><td><span class="status s-warn">Partial</span></td><td class="small muted">1,204 rows staged for review · 38 rejected (missing HSN) → EX-2238</td></tr>
+          <tr data-f="failed" class="selected"><td class="mono nowrap">JOB-88213</td><td class="nowrap"><span class="rid">A13.2</span> Courier tracking sync</td><td class="mono nowrap">17 shipments</td><td>08:15:04</td><td class="r">30.0 s</td><td class="c">3/3</td><td><span class="status s-bad">Failed → rule auto-paused</span></td><td class="small">HTTP 504 × 3 · <a href="#ev-88213">evidence below</a> · EX-2240</td></tr>
+          <tr data-f="ok"><td class="mono nowrap">JOB-88174</td><td class="nowrap"><span class="rid">A13</span> Courier booking</td><td class="mono nowrap">TXO-10479</td><td>08:15:31</td><td class="r">4.1 s</td><td class="c">2/5</td><td><span class="status s-ok">Succeeded after retry</span></td><td class="small muted">1st attempt timed out · same idempotency key → no double booking · AWB 1490 2281 7736</td></tr>
+          <tr data-f="ok"><td class="mono nowrap">JOB-88188</td><td class="nowrap"><span class="rid">A19</span> Owner daily digest</td><td class="mono nowrap">DIG-0926</td><td>08:00:00</td><td class="r">6.4 s</td><td class="c">1/3</td><td><span class="status s-ok">Succeeded</span></td><td class="small muted">Email + WhatsApp delivered to Rajesh M. · 2 decisions listed</td></tr>
+          <tr data-f="partial"><td class="mono nowrap">JOB-88161</td><td class="nowrap"><span class="rid">A10</span> Settlement matching</td><td class="mono nowrap">SETL-2609</td><td>07:10:12</td><td class="r">18 s</td><td class="c">1/1</td><td><span class="status s-warn">Partial</span></td><td class="small muted">412 lines matched · 4 unmatched (₹18,420) → Finance queue</td></tr>
+          <tr data-f="failed"><td class="mono nowrap">JOB-88102</td><td class="nowrap"><span class="rid">A14</span> Status notification</td><td class="mono nowrap">TXO-10461</td><td>06:05:40</td><td class="r">0.4 s</td><td class="c">1/1</td><td><span class="status s-bad">Failed · not retried</span></td><td class="small muted">Customer opted out of WhatsApp on 24 Sep → permanent error, no retry · email sent instead</td></tr>
+          <tr data-f="failed"><td class="mono nowrap">JOB-88044</td><td class="nowrap"><span class="rid">A09</span> Payment webhook</td><td class="mono nowrap">evt_Nw1…</td><td>02:14:09</td><td class="r">5 ms</td><td class="c">1/1</td><td><span class="status s-bad">Rejected</span></td><td class="small muted">Signature invalid → rejected, not processed · security alert to Deepa K.</td></tr>
+        </tbody>
+      </table></div>
+
+      <div class="card-body" id="ev-88213" style="border-top:1px solid var(--line-2)" data-anno="A38 One actionable incident per failure, with evidence">
+        <div class="row-between mb-12">
+          <div><h3>Failed job JOB-88213 · Courier tracking sync</h3><div class="small muted">Rule A13.2 v2 · owner Anita R. (Operations) · exception EX-2240 · provider ticket DLV-58213</div></div>
+          <div class="row gap-8">
+            <button class="btn btn-sm" data-toast="Manual retry queued · attempt 4 (outside auto-retry cap, logged)"><i data-icon="refresh" class="ic-sm"></i> Retry now</button>
+            <button class="btn btn-sm" data-toast="17 shipments moved to manual tracking queue · Ops"><i data-icon="clipboard" class="ic-sm"></i> Switch to manual tracking</button>
+            <button class="btn btn-sm btn-primary" data-open="m-resume"><i data-icon="play" class="ic-sm"></i> Resume rule…</button>
+          </div>
+        </div>
+        <div class="grid" style="grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:20px">
+          <div>
+            <ul class="timeline">
+              <li class="done"><span class="t-dot"><i data-icon="check"></i></span><div class="t-title">08:14:59 · Scheduled run started</div><div class="t-meta">Idempotency key trk:2026-09-26T08:15 · read-only sync, safe to repeat</div></li>
+              <li class="warn"><span class="t-dot"><i data-icon="x"></i></span><div class="t-title">08:15:04 · Attempt 1 → HTTP 504 after 30 s</div><div class="t-meta">Backoff 2 m (+ 11 s jitter)</div></li>
+              <li class="warn"><span class="t-dot"><i data-icon="x"></i></span><div class="t-title">08:17:15 · Attempt 2 → HTTP 504 after 30 s</div><div class="t-meta">Backoff 4 m (+ 7 s jitter)</div></li>
+              <li class="warn"><span class="t-dot"><i data-icon="x"></i></span><div class="t-title">08:21:52 · Attempt 3 → HTTP 504 after 30 s</div><div class="t-meta">Retry cap reached for this rule (3)</div></li>
+              <li class="current"><span class="t-dot"><i data-icon="pause"></i></span><div class="t-title">08:22:23 · Rule auto-paused · EX-2240 raised</div><div class="t-meta">One exception (not 17) · assigned Anita R. · due 12:15 · owner digest if &gt; 4 h</div></li>
+            </ul>
+            <div class="callout c-info small"><i data-icon="info"></i><div><b>Customer impact:</b> 17 shipments show “Status update delayed” on the tracking page instead of an outdated status. No orders, payments or stock were changed.</div></div>
+          </div>
+<div class="evidence"><span class="dim"># request (credentials redacted)</span>
+<span class="k">GET</span> https://track.courier.example/v2/shipments?awb=1490228…,+16
+Authorization: Bearer ••••••••Q7fA
+X-Idempotency-Key: trk:2026-09-26T08:15
+
+<span class="dim"># response · attempt 3</span>
+<span class="bad">HTTP/1.1 504 Gateway Timeout</span>  (30,002 ms)
+x-provider-request-id: 7f3a9c1e-44b2
+body: {"error":"upstream_timeout","retry_after":null}
+
+<span class="dim"># checks</span>
+provider status page ........ <span class="bad">degraded since 08:02</span>
+other endpoints (booking) ... <span class="ok">OK · 4.1 s</span>
+last successful sync ........ <span class="ok">07:45:02 · 212 shipments</span>
+affected AWBs ............... 17 (list attached to EX-2240)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Exceptions -->
+    <div class="tab-panel" data-panel="exceptions" data-anno="1A · R10 Exception queue: what, why, who, by when (§12.5)">
+      <div class="table-toolbar">
+        <div class="seg" id="exc-f"><button class="active" data-f="all">All teams 23</button><button data-f="owner">Owner-level 6</button><button data-f="mine">Mine 4</button><button data-f="overdue">Overdue 2</button></div>
+        <select class="select input-sm" style="width:auto" aria-label="Team"><option>All teams</option><option>Finance</option><option>Operations</option><option>Warehouse</option><option>Catalog</option><option>Branches</option><option>Returns desk</option></select>
+        <div class="legend-sev">
+          <span class="sev critical"><i data-icon="alert-octagon"></i> Critical</span><span class="sev serious"><i data-icon="alert"></i> Serious</span><span class="sev warning"><i data-icon="info"></i> Warning</span><span class="sev good"><i data-icon="check-circle"></i> Resolved</span>
+        </div>
+        <span class="ml-auto small muted">Sorted by severity, then due time</span>
+      </div>
+      <div class="table-wrap"><table class="table exc-tbl">
+        <thead><tr><th>Severity</th><th style="min-width:300px">Exception · evidence</th><th>Entity</th><th>Age</th><th>Assignee</th><th>Due</th><th>Escalation path</th><th class="r">Recommended actions</th></tr></thead>
+        <tbody id="exc-body"></tbody>
+      </table></div>
+      <div class="card-foot"><span class="small muted">Showing 13 of 23 · resolved items keep their resolution reason · 3 exceptions recurred ≥ 5× this month → flagged for policy review, not more owner calls</span><a class="small strong" href="erp-reports.html">Approval &amp; exception ageing report →</a></div>
+    </div>
+
+    <!-- Approvals -->
+    <div class="tab-panel" data-panel="approvals" data-anno="1B · R06 Approvals: reason, deadline, alternate approver (§18.2)">
+      <div class="table-toolbar">
+        <div class="seg" id="apr-f"><button class="active" data-f="all">All 10</button><button data-f="me">Waiting on me 5</button><button data-f="overdue">Overdue / escalated 1</button></div>
+        <select class="select input-sm" style="width:auto" aria-label="Approval type"><option>All types</option><option>Discount override</option><option>Stock write-off</option><option>Purchase order</option><option>Price change</option><option>Vendor content</option><option>Refund</option><option>Payout account</option></select>
+        <span class="ml-auto small muted">Thresholds: <a href="erp-admin.html#thresholds">Settings → Approval thresholds</a> (values to be confirmed by client)</span>
+      </div>
+      <div class="table-wrap"><table class="table appr-tbl">
+        <thead><tr><th>Type</th><th>Item · requested by</th><th>Why approval is needed</th><th class="r">Value</th><th>Deadline</th><th>Approver → alternate</th><th class="r">Decision</th></tr></thead>
+        <tbody id="apr-body"></tbody>
+      </table></div>
+      <div class="card-foot"><span class="small muted">Each decision records approver, reason and time — bulk review is allowed only where every item keeps its own decision history.</span><span class="small muted">Decided today: 7 (5 by staff within delegated authority)</span></div>
+    </div>
+  </section>
+
+  <!-- ========================= Rule drawer ========================= -->
+  <div class="drawer" id="d-rule"><div class="drawer-card wide">
+    <div class="drawer-head">
+      <div>
+        <div class="row gap-8"><span class="rid" id="dr-id">A05</span><span class="badge b-outline sq" id="dr-ph">1A</span><span id="dr-status"></span></div>
+        <h2 class="mt-8" id="dr-name">Payment → reserve → pick task</h2>
+        <div class="small muted mt-4" id="dr-sub"></div>
+      </div>
+      <button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button>
+    </div>
+    <div class="drawer-body col gap-16">
+      <div class="killbox" id="dr-kill" data-anno="§12.3 Disable / rollback — kill switch">
+        <label class="switch"><input type="checkbox" id="dr-switch" checked aria-label="Rule enabled"></label>
+        <div class="grow"><b id="dr-kill-t">Kill switch · rule is running</b><div class="small subtle" id="dr-kill-d">Turning it off stops new runs immediately. In-flight runs finish; queued work moves to the owner’s manual queue. Nothing is replayed automatically when re-enabled.</div></div>
+        <button class="btn btn-sm btn-danger" id="dr-kill-btn"><i data-icon="pause" class="ic-sm"></i> Stop rule</button>
+      </div>
+      <div class="grid g-4" id="dr-kpis"></div>
+      <div data-tabset>
+        <div class="tabs pills mb-12">
+          <button class="tab active" data-tab="rd-def">Definition</button>
+          <button class="tab" data-tab="rd-runs">Recent runs</button>
+          <button class="tab" data-tab="rd-hist">Change history</button>
+        </div>
+        <div class="tab-panel active" data-panel="rd-def">
+          <div class="card" style="overflow:hidden"><table class="spec-table" id="dr-spec"></table></div>
+          <div class="small muted mt-8">Template: blueprint §12.3 · every field is required before a rule can be enabled in production.</div>
+        </div>
+        <div class="tab-panel" data-panel="rd-runs">
+          <div class="card"><table class="table compact" id="dr-runs"></table></div>
+        </div>
+        <div class="tab-panel" data-panel="rd-hist">
+          <ul class="timeline mt-8" id="dr-hist"></ul>
+        </div>
+      </div>
+    </div>
+    <div class="drawer-foot">
+      <button class="btn" data-toast="Dry run queued on staging with last 50 real inputs (masked)"><i data-icon="play"></i> Dry-run on staging</button>
+      <button class="btn" data-toast="Draft v4 created · changes need approval by Rajesh M. before release"><i data-icon="edit"></i> Edit (needs approval)</button>
+      <button class="btn btn-primary" data-close>Done</button>
+    </div>
+  </div></div>
+
+  <!-- ========================= Modals ========================= -->
+  <div class="modal" id="m-kill"><div class="modal-card">
+    <div class="modal-head"><h3>Stop rule <span id="mk-name"></span>?</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-body col gap-16">
+      <div class="callout c-warn"><i data-icon="alert"></i><div><b>What happens:</b> new runs stop now · in-flight runs complete · <span id="mk-queue">queued items</span> move to the manual queue · the rule owner and reviewer are notified · the change is audited.</div></div>
+      <div class="field"><label for="mk-reason" class="req">Reason</label><select class="select" id="mk-reason"><option>Provider outage / degraded</option><option>Wrong results observed</option><option>Business policy change</option><option>Planned maintenance</option><option>Other</option></select></div>
+      <div class="field"><label for="mk-note">Note for the audit log</label><textarea class="textarea" id="mk-note" placeholder="e.g. Courier API timing out since 08:02 — manual tracking until provider confirms fix (ticket DLV-58213)"></textarea></div>
+      <div class="field"><label for="mk-until">Auto-resume</label><select class="select" id="mk-until"><option>Never — resume manually</option><option>In 1 hour (with health check)</option><option>At 18:00 today (with health check)</option></select></div>
+    </div>
+    <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-danger" id="mk-go" data-close><i data-icon="pause"></i> Stop rule</button></div>
+  </div></div>
+
+  <div class="modal" id="m-resume"><div class="modal-card">
+    <div class="modal-head"><h3>Resume courier tracking sync</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-body col gap-12">
+      <div class="callout c-info"><i data-icon="info"></i><div>A health check runs first (1 test call). If it passes, the rule resumes and the 17 delayed shipments are re-synced once — the sync is read-only, so repeating it is safe.</div></div>
+      <div class="field"><label for="rs-note" class="req">Reason</label><textarea class="textarea" id="rs-note">Provider status page shows recovery at 10:35 (DLV-58213).</textarea></div>
+    </div>
+    <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-primary" data-close data-toast="Health check passed · rule resumed · 17 shipments re-synced"><i data-icon="play"></i> Health check &amp; resume</button></div>
+  </div></div>
+
+  <div class="modal" id="m-pauseall"><div class="modal-card lg">
+    <div class="modal-head"><div><h3>Pause automation</h3><div class="small muted">Incident control (§20.4) · requires Owner or Ops admin · audited</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-body col gap-12">
+      <label class="panel row-top gap-12" style="cursor:pointer"><input type="radio" name="pa" checked style="margin-top:3px"><div><b>Non-critical only</b><div class="small subtle">Notifications, digests, reminders, suggestions and imports pause. Payment webhooks, reservations and availability keep running so stock stays correct.</div></div></label>
+      <label class="panel row-top gap-12" style="cursor:pointer"><input type="radio" name="pa" style="margin-top:3px"><div><b>Incident mode — stop checkout-affecting automation</b><div class="small subtle">Use when stock or payment integrity is uncertain. Checkout is switched to “temporarily unavailable” at the same time; provider events are stored and replayed after reconciliation.</div></div></label>
+      <div class="field"><label for="pa-r" class="req">Reason</label><input class="input" id="pa-r" placeholder="e.g. Payment provider incident — duplicate webhooks observed"></div>
+    </div>
+    <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-danger" data-close data-toast="Non-critical automation paused · Rajesh M. and Anita R. notified" data-toast-icon="pause"><i data-icon="pause"></i> Pause</button></div>
+  </div></div>
+
+  <div class="modal" id="m-propose"><div class="modal-card lg">
+    <div class="modal-head"><div><h3>Propose an automation rule</h3><div class="small muted">Observed first (§12.1), valued (§12.4), then built and reviewed</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="field full"><label for="pp-1" class="req">Business problem (observable manual step)</label><textarea class="textarea" id="pp-1" style="min-height:64px" placeholder="e.g. Branch staff phone the warehouse to check transfer arrival ~12 times a day"></textarea></div>
+        <div class="field"><label for="pp-2" class="req">Trigger</label><select class="select" id="pp-2"><option>Event</option><option>Schedule</option><option>Threshold</option><option>Explicit user action</option></select></div>
+        <div class="field"><label for="pp-3" class="req">Owner role</label><select class="select" id="pp-3"><option>Operations</option><option>Finance</option><option>Warehouse</option><option>Catalog</option><option>Support</option></select></div>
+        <div class="field"><label for="pp-4">Cases per month (observed)</label><input class="input" id="pp-4" placeholder="e.g. 360"></div>
+        <div class="field"><label for="pp-5">Minutes saved per case</label><input class="input" id="pp-5" placeholder="e.g. 3"></div>
+        <div class="field full"><label for="pp-6" class="req">Human boundary — what the rule must never decide</label><input class="input" id="pp-6" placeholder="e.g. cannot cancel a transfer or adjust stock"></div>
+        <div class="full callout c-brand"><i data-icon="info"></i><div>Phase 1 rules are deterministic. Suggestions that need judgement (compatibility answers, forecasting, invoice OCR) are logged for Phase 2/3 review — not built as rules.</div></div>
+      </div>
+    </div>
+    <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-primary" data-close data-toast="Proposal AP-019 logged · observation session to be scheduled">Submit proposal</button></div>
+  </div></div>
+
+  <div class="modal" id="m-approve"><div class="modal-card">
+    <div class="modal-head"><h3 id="ma-title">Approve</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-body col gap-12">
+      <div class="panel small" id="ma-sum"></div>
+      <div class="field"><label for="ma-r" class="req">Reason (stored in the audit log)</label><textarea class="textarea" id="ma-r" placeholder="e.g. School tender — strategic account; margin accepted once, not a new policy"></textarea></div>
+      <label class="check small"><input type="checkbox"> This exception recurs — flag it for a policy/threshold review</label>
+    </div>
+    <div class="modal-foot"><button class="btn btn-danger" data-close data-toast="Rejected · requester notified with your reason">Reject</button><button class="btn btn-ok" data-close id="ma-go" data-toast="Approved · reason recorded in audit log">Approve</button></div>
+  </div></div>
+</main>
+<script src="assets/tradex.js"></script>
+<script>
+TX.ready(() => {
+  const $ = TX.$, $$ = TX.$$, ic = TX.icon;
+
+  /* ---------------- Value chart ---------------- */
+  const weeks = ["6 Jul", "13 Jul", "20 Jul", "27 Jul", "3 Aug", "10 Aug", "17 Aug", "24 Aug", "31 Aug", "7 Sep", "14 Sep", "21 Sep"];
+  TX.charts.line($("#ch-value"), { title: "Estimated staff hours saved per week", labels: weeks, height: 220,
+    series: [{ name: "Hours saved (est.)", color: "var(--series-3)", values: [6, 9, 12, 14, 13, 19, 24, 27, 31, 35, 38, 41] }],
+    format: (v) => v.toFixed(0) + " h", axisFormat: (v) => v + " h" });
+  $("#val-toggle").addEventListener("click", () => TX.charts.toggleTable($("#ch-value")));
+
+  /* ---------------- Rules ---------------- */
+  const R = [
+    { id: "A09", name: "Payment webhook → payment state", manual: "Checking online payments manually", when: "Signed provider webhook (payment captured / failed, refund events)", then: "Verify signature; update the payment attempt; confirm the order if its reservation is valid", owner: "Finance", who: "Deepa Krishnan", ph: "1A", st: "on", runs: 1146, succ: 99.9, hrs: 3.2, fail: "Today 02:14 · bad signature, rejected", failBad: true, control: "Provider reconciliation and duplicate protection; the browser redirect is never treated as payment proof",
+      idem: "Provider event id stored before processing — 38 duplicate deliveries skipped this week with no second effect" },
+    { id: "A05", name: "Payment → reserve → pick task", manual: "Checking stock for every paid order and phoning the warehouse", when: "Order confirmed with a captured, verified payment", then: "Convert the reservation into an allocation; create one pick task at the fulfilling location", owner: "Operations", who: "Anita Rao", ph: "1A", st: "on", runs: 412, succ: 100, hrs: 7.2, fail: "None in 30 d", control: "Cannot cancel or refund, override a hold, or pick a different condition/grade than ordered",
+      tpl: {
+        problem: "Staff re-checked stock and phoned the warehouse for every paid order — about 4 minutes each, ~410 orders a week.",
+        inputs: "Confirmed order (version-stamped), captured payment reconciled to the order, active reservation, fulfilling location from the allocation rule.",
+        pre: "Payment captured and matched to this order · reservation still active · order not on hold · SKU sellable at the location.",
+        action: "In one stock transaction: consume reservation → allocation, create one pick task (priority = promised dispatch time), notify the location queue. No external calls inside the transaction.",
+        idem: "Key = order id + payment id. A repeated event finds the existing pick task and is logged “skipped · duplicate”.",
+        fail: "Reservation expired → never oversell: try an alternate unit at another location, else raise “Payment captured, order not confirmed” (Critical) for Finance. Technical errors retry 1 m / 2 m / 4 m, max 5.",
+        notify: "Warehouse queue only — no owner message. Critical exception → Finance immediately, owner via digest.",
+        kpi: "Paid → pick task median 40 s · exception rate 0.2% · ~7 h/week touch time saved.",
+        rollback: "Kill switch → paid orders land in “Confirmed · to allocate” for Ops to allocate by hand; nothing is un-allocated retroactively." } },
+    { id: "A06", name: "Reservation expiry", manual: "Releasing abandoned stock holds", when: "Every 5 min · checkout holds older than 15 min, WhatsApp drafts older than 24 h", then: "Release the reserved quantity and refresh availability; a late capture raises an exception", owner: "Operations", who: "Anita Rao", ph: "1A", st: "on", runs: 2016, succ: 99.8, hrs: 1.5, fail: "Today 10:02 · late capture (EX-2231)", control: "Payment-race safeguard (3-min grace when a payment is pending) and late-capture policy",
+      tpl: {
+        problem: "Stock held by abandoned carts stayed unavailable until someone noticed — lost sales on last units.",
+        inputs: "Active reservations with expiry time; payment attempts in pending/authorised state.",
+        pre: "No payment attempt pending or authorised for the order (3-minute grace).",
+        action: "Mark reservation expired, release quantity, publish an availability event (A04).",
+        idem: "Key = reservation id — expiring an already-expired hold is a no-op.",
+        fail: "Late capture after expiry → try to re-reserve the same unit; if gone, raise Critical “Payment captured, order not confirmed” for Finance.",
+        notify: "None for routine expiries; exceptions only.",
+        kpi: "Holds released on time 99.8% · late-capture exceptions: 1 this week.",
+        rollback: "Kill switch keeps holds until released by hand — availability looks artificially low, so pause max 2 h." } },
+    { id: "A04", name: "Stock movement → website availability", manual: "Updating website quantity", when: "Committed stock movement (receipt, QC pass, dispatch, transfer, adjustment)", then: "Recompute available-to-promise; refresh storefront and search projections", owner: "Operations", who: "Anita Rao", ph: "1A", st: "on", runs: 6930, succ: 99.97, hrs: 3.0, fail: "25 Sep · index timeout, retried", control: "Retry and nightly reconciliation; checkout revalidates stock regardless of the projection" },
+    { id: "A17", name: "Low-stock replenishment suggestion", manual: "Identifying low stock", when: "Nightly 02:30 · available below reorder point (lead-time adjusted)", then: "Create draft purchase suggestions grouped by supplier", owner: "Purchasing", who: "Anita Rao", ph: "1A", st: "on", runs: 7, succ: 100, hrs: 2.5, fail: "—", control: "A buyer approves every PO; discontinued items excluded" },
+    { id: "A01", name: "Supplier import validation", manual: "Re-entering supplier product details", when: "Supplier file upload or scheduled API pull", then: "Map and validate fields, detect duplicates, stage a preview; rejected rows go to a queue", owner: "Catalog", who: "Sneha Pillai", ph: "1B", st: "on", runs: 23, succ: 91.3, hrs: 4.6, fail: "Today 09:12 · 38 rows rejected", failWarn: true, control: "Staging preview and review — nothing publishes without a catalog reviewer",
+      tpl: {
+        problem: "Catalog staff re-typed supplier price lists and specs — ~6 minutes per product, 180 products a week, with frequent typos in HSN and warranty.",
+        inputs: "Supplier file (CSV/XLSX) or API payload with version; category attribute template; existing SKUs and supplier codes.",
+        pre: "Supplier active and authorised for the category · file within 20 MB / 10,000 rows · outbound URLs on the allow-list (SSRF protection).",
+        action: "Map columns, validate required fields per category, detect duplicates/near-matches, stage a preview. Valid rows become drafts; nothing is published.",
+        idem: "Key = supplier + file checksum. Re-uploading the same file shows the earlier batch instead of creating duplicates.",
+        fail: "Row-level errors go to the rejected-rows queue with the reason; a batch with > 5% rejects raises one exception for Catalog.",
+        notify: "Catalog queue; supplier sees their own rejected rows in the vendor portal.",
+        kpi: "Rows accepted first time 96.9% · staff minutes per product 6 → 1.5.",
+        rollback: "Kill switch stops new batches; staged drafts remain for manual review." } },
+    { id: "A13", name: "Courier booking & label", manual: "Booking shipments and printing labels", when: "Order packed and serial verified at the pack station", then: "Check serviceability, book the shipment, fetch label and AWB", owner: "Fulfilment", who: "Mohammed Irfan", ph: "1A", st: "on", runs: 298, succ: 98.7, hrs: 4.2, fail: "Today 08:15 · timeout, retried", control: "Booking de-duplication; a timeout is checked with the provider before re-booking" },
+    { id: "A13.2", name: "Courier tracking sync", manual: "Checking courier websites for delivery status", when: "Every 30 min + courier webhooks", then: "Pull shipment status; update tracking history and the customer view", owner: "Operations", who: "Anita Rao", ph: "1A", st: "paused", runs: 1204, succ: 96.2, hrs: 1.8, fail: "Today 08:15 · HTTP 504 × 3", failBad: true, control: "Cannot mark delivered/RTO on its own when statuses conflict — goes to Ops",
+      tpl: {
+        problem: "Support staff looked up each AWB on the courier website to answer “where is my order?” — ~2 min per lookup.",
+        inputs: "Open shipments with AWB, courier status feed (webhook + poll), last known status timestamp.",
+        pre: "Shipment dispatched and not yet closed; status transitions must be valid (e.g. delivered cannot follow RTO-delivered).",
+        action: "Append new courier events to shipment history; update the customer tracking view; trigger A14 notifications for approved transitions.",
+        idem: "Events keyed by AWB + provider event id + timestamp; read-only against the provider, so repeats are safe.",
+        fail: "Retry 2 m / 4 m, max 3 attempts, then auto-pause the rule and raise one exception (A38) with evidence; tracking page shows “status update delayed”.",
+        notify: "Ops queue; owner only via digest unless > 4 h with customer impact.",
+        kpi: "Status lag median 6 min · WISMO chats −35% since go-live.",
+        rollback: "Paused now → Ops uses the courier portal for 17 open shipments; resume replays one sync." } },
+    { id: "A14", name: "Order status notifications", manual: "Sending order status updates", when: "Approved transitions: confirmed, dispatched, out for delivery, delivered, refund completed", then: "Send approved email / SMS / WhatsApp template within consent and frequency caps", owner: "Support", who: "Karthik R", ph: "1A", st: "on", runs: 1872, succ: 99.1, hrs: 3.4, fail: "Today 06:05 · opted out → email", failWarn: true, control: "Consent record, approved template, frequency cap (max 3/day), opt-out honoured" },
+    { id: "A08", name: "WhatsApp guided draft order", manual: "Re-typing WhatsApp orders", when: "Customer completes guided item & quantity selection in chat", then: "Create a draft order with price quote; customer confirms price and address; reserve on confirmation", owner: "Support", who: "Karthik R", ph: "1B", st: "on", pilot: true, runs: 64, succ: 95.3, hrs: 2.1, fail: "25 Sep · ambiguous SKU → agent", failWarn: true, control: "The customer confirms price and address; any ambiguity goes to a person — no free-text AI in Phase 1",
+      tpl: {
+        problem: "Support re-typed orders from WhatsApp chats into the ERP — ~7 min each, frequent SKU mix-ups.",
+        inputs: "Verified WhatsApp number linked to an account, guided menu selections (category → model → condition → qty), current price and availability.",
+        pre: "Number verified (OTP) · customer within the 24 h service window · selected offer sellable · dealer prices only for linked dealer accounts.",
+        action: "Create draft order + quote message with GST-inclusive total, delivery date and warranty provider; on “Confirm”, reserve stock and send a payment link.",
+        idem: "Key = conversation id + draft version; a double tap on “Confirm” returns the same order.",
+        fail: "Ambiguous item, price change or stock gone → hand the chat to an agent with the draft attached.",
+        notify: "Support inbox (assigned agent); no owner notification.",
+        kpi: "Chat → confirmed order 38% · agent handoff rate 21% · ~7 min saved per order.",
+        rollback: "Kill switch → chats go straight to agents; drafts stay editable." } },
+    { id: "A21", name: "Stale supplier feed", manual: "Chasing suppliers for stock updates", when: "Supplier availability older than 24 h", then: "Ask the vendor for an update; switch offers to “confirm before promise”; suspend at 48 h", owner: "Vendors", who: "Anita Rao", ph: "1B", st: "on", runs: 42, succ: 100, hrs: 1.2, fail: "—", control: "Supplier SLA; company stock is offered first when a feed is stale" },
+    { id: "A19", name: "Owner daily digest", manual: "Preparing the owner’s daily report", when: "Daily 08:00", then: "Compile KPIs and exceptions above delegated authority; send email + WhatsApp summary", owner: "Owner", who: "Rajesh Menon", ph: "1A", st: "on", runs: 7, succ: 100, hrs: 1.7, fail: "—", control: "Freshness labels and drill-down evidence; routine items stay in staff queues" },
+    { id: "A16", name: "Pending fulfilment chase", manual: "Chasing pending fulfilment", when: "Confirmed > 4 h and not picked, or > 24 h and not dispatched", then: "Remind the assignee; escalate to the branch manager once", owner: "Branches", who: "Vikram Shetty", ph: "1A", st: "on", runs: 96, succ: 100, hrs: 1.1, fail: "—", control: "Escalates once — no alert storms" },
+    { id: "A22", name: "Return request routing", manual: "Routing return requests", when: "Customer or staff raises an RMA", then: "Check the return window, original policy version and serial; assign an inspection queue", owner: "Returns desk", who: "Vikram Shetty", ph: "1A", st: "on", runs: 38, succ: 97.4, hrs: 1.3, fail: "24 Sep · serial mismatch", failWarn: true, control: "Serial mismatch or suspected misuse goes to a person — never auto-rejected or accused" },
+    { id: "A10", name: "Settlement matching", manual: "Matching settlement deposits", when: "Daily settlement file import, 07:00", then: "Match captures, fees and refunds to settlement lines", owner: "Finance", who: "Deepa Krishnan", ph: "1A", st: "on", runs: 7, succ: 85.7, hrs: 1.4, fail: "Today 07:10 · 4 unmatched", failWarn: true, control: "Unmatched or partial entries go to Finance; nothing is written off automatically" },
+    { id: "A36", name: "Margin leakage flag", manual: "Spotting margin leakage", when: "Nightly · discount or fees push line margin below the floor", then: "Flag order lines for Finance review", owner: "Finance", who: "Deepa Krishnan", ph: "1B", st: "off", runs: 0, succ: null, hrs: 0, fail: "Not enabled · awaits cost data (D-11)", control: "Finance validates cost and allocation before any conclusion" },
+    { id: "A38", name: "Import / sync failure monitor", manual: "Noticing failed imports and syncs", when: "Any job exhausts its retry cap", then: "Create one actionable exception per job + entity with evidence and owner", owner: "Operations", who: "Anita Rao", ph: "1A", st: "on", runs: 3, succ: 100, hrs: 0.8, fail: "—", control: "Retry cap, owner, evidence, resolution status — one incident, not one per record" },
+  ];
+  const stHTML = (r) => r.st === "on" ? `<span class="lbl text-ok">On</span>${r.pilot ? ' <span class="badge b-info">Pilot</span>' : ""}` : r.st === "paused" ? `<span class="lbl text-warn">Paused · auto</span>` : `<span class="lbl muted">Off</span>`;
+  const succHTML = (r) => r.succ == null ? `<span class="muted small">—</span>` : `<div class="succ"><span class="small strong ${r.succ < 95 ? "text-bad" : r.succ < 99 ? "text-warn" : ""}">${r.succ}%</span><div class="meter thin ${r.succ < 95 ? "m-bad" : r.succ < 99 ? "m-warn" : "m-ok"}"><span style="width:${r.succ}%"></span></div></div>`;
+  const rowHTML = (r) => `<tr data-rule="${r.id}" class="${r.st === "paused" ? "is-paused" : r.st === "off" ? "is-off" : ""}">
+      <td><div class="row-top gap-8"><span class="rid">${r.id}</span><div><div class="cell-main">${r.name}</div><div class="cell-sub">${r.manual} · <b>${r.ph}</b></div></div></div></td>
+      <td><div class="when"><b>When</b>${r.when}</div><div class="when"><b>Then</b>${r.then}</div></td>
+      <td><div class="small strong">${r.owner}</div><div class="cell-sub nowrap">${r.who}</div></td>
+      <td><label class="switch nowrap"><input type="checkbox" data-kill="${r.id}" ${r.st === "on" ? "checked" : ""} aria-label="${r.name} enabled">${stHTML(r)}</label></td>
+      <td><div class="row gap-8"><span class="small" style="min-width:40px;text-align:right">${TX.num(r.runs)}</span>${succHTML(r)}</div></td>
+      <td class="r strong nowrap">${r.hrs ? r.hrs.toFixed(1) + " h/wk" : "—"}</td>
+      <td class="small ${r.failBad ? "text-bad" : r.failWarn ? "text-warn" : "muted"}" style="max-width:130px">${r.fail}</td></tr>`;
+  let rf = "all";
+  const renderRules = () => {
+    const q = $("#rule-q").value.trim().toLowerCase(), ph = $("#rule-ph").value;
+    const list = R.filter((r) => (rf === "all" || (rf === "failing" ? (r.failBad || r.failWarn) : r.st === rf)) && (!ph || r.ph === ph) && (!q || (r.id + r.name + r.when + r.then + r.owner + r.manual).toLowerCase().includes(q)));
+    $("#rules-body").innerHTML = list.length ? list.map(rowHTML).join("") : `<tr><td colspan="7"><div class="empty">${ic("search")}<h4>No rules match</h4><p>Clear the search or filters.</p></div></td></tr>`;
+    $("#rules-count").textContent = `${list.length} of ${R.length} rules · ${list.reduce((a, r) => a + r.hrs, 0).toFixed(1)} h/week saved (est.)`;
+  };
+  renderRules();
+  const tot = R.reduce((a, r) => ({ n: a.n + r.runs, f: a.f + (r.succ == null ? 0 : r.runs * (100 - r.succ) / 100) }), { n: 0, f: 0 });
+  $("#succ7").textContent = (100 - (tot.f / tot.n) * 100).toFixed(1) + "%";
+  $("#rule-q").addEventListener("input", renderRules);
+  $("#rule-ph").addEventListener("change", renderRules);
+  $("#rule-f").addEventListener("click", (e) => { const b = e.target.closest(".chip[data-f]"); if (!b) return; rf = b.dataset.f; $$("#rule-f .chip").forEach((c) => c.classList.toggle("active", c === b)); renderRules(); });
+
+  /* ---------------- Rule drawer ---------------- */
+  const tplFor = (r) => {
+    const t = r.tpl || {};
+    return [
+      ["Business problem", t.problem || `${r.manual} by hand — measured in the observation week, see value estimate.`],
+      ["Owner", `${r.owner} · ${r.who} (accountable for outcome and exceptions)`],
+      ["Trigger", r.when],
+      ["Inputs", t.inputs || "Authoritative records from the operational core (version-stamped). Inputs older than their freshness limit stop the run."],
+      ["Preconditions", t.pre || "Rule enabled · permissions checked server-side · records in approved status."],
+      ["Action", t.action || r.then],
+      ["Idempotency", t.idem || r.idem || `Key = ${r.id} + entity id + version. A repeated event is logged “skipped · duplicate” with no second effect.`],
+      ["Failure behaviour", t.fail || "Retry 1 m → 2 m → 4 m (+ jitter), max 5 attempts; then stop for that entity and raise one exception (A38) with evidence."],
+      ["Human boundary", r.control],
+      ["Audit", `Actor “System · rule ${r.id} v3”, time, input versions, decision reason and outcome stored for every run.`],
+      ["Notification", t.notify || `${r.who}’s queue; deduplicated per entity; max one reminder per 4 h; owner only via digest when material.`],
+      ["KPI", t.kpi || `Success rate (${r.succ == null ? "—" : r.succ + "%"}), exception rate, touch time saved (${r.hrs} h/week est.).`],
+      ["Disable / rollback", t.rollback || `Kill switch stops new runs; in-flight runs finish; pending items move to ${r.owner}’s manual queue. No retroactive changes.`],
+    ];
+  };
+  let cur = R[1];
+  const fillDrawer = (r) => {
+    cur = r;
+    $("#dr-id").textContent = r.id; $("#dr-ph").textContent = r.ph + (r.pilot ? " · pilot" : "");
+    $("#dr-status").innerHTML = r.st === "on" ? `<span class="status s-ok">Running</span>` : r.st === "paused" ? `<span class="status s-warn">Paused automatically · 08:22</span>` : `<span class="status s-muted">Off · not yet enabled</span>`;
+    $("#dr-name").textContent = r.name;
+    $("#dr-sub").textContent = `Replaces: ${r.manual.toLowerCase()} · owner ${r.who} (${r.owner}) · version 3, approved by Rajesh M. on 2 Sep 2026`;
+    const on = r.st === "on";
+    $("#dr-switch").checked = on; $("#dr-kill").classList.toggle("off", !on);
+    $("#dr-kill-t").textContent = on ? "Kill switch · rule is running" : r.st === "paused" ? "Kill switch · rule is paused" : "Rule is off";
+    $("#dr-kill-d").textContent = on ? "Turning it off stops new runs immediately. In-flight runs finish; queued work moves to the owner’s manual queue. Nothing is replayed automatically when re-enabled."
+      : r.st === "paused" ? "Auto-paused after the retry cap. Resuming runs a health check first; the rule then processes the backlog once (idempotent)." : "Enabling requires every template field, a staging dry run and owner approval.";
+    $("#dr-kill-btn").innerHTML = on ? `${ic("pause", "ic-sm")} Stop rule` : `${ic("play", "ic-sm")} ${r.st === "paused" ? "Resume…" : "Request enable"}`;
+    $("#dr-kill-btn").className = "btn btn-sm " + (on ? "btn-danger" : "btn-primary");
+    const k = (l, v, s) => `<div class="kpi" style="padding:12px 14px"><div class="k-label">${l}</div><div class="k-value" style="font-size:20px">${v}</div>${s ? `<div class="k-sub">${s}</div>` : ""}</div>`;
+    $("#dr-kpis").innerHTML = k("Runs · 7 days", TX.num(r.runs), "") + k("Success", r.succ == null ? "—" : r.succ + "%", r.succ != null && r.succ < 99 ? "below 99% target" : "target ≥ 99%") + k("Saved / week", r.hrs ? r.hrs.toFixed(1) + " h" : "—", "estimate") + k("Open exceptions", r.failBad || r.failWarn ? "1" : "0", "");
+    $("#dr-spec").innerHTML = "<tbody>" + tplFor(r).map(([a, b]) => `<tr><th>${a}</th><td>${b}</td></tr>`).join("") + "</tbody>";
+    const t0 = [["10:40", "ok"], ["10:35", "ok"], ["10:30", r.failWarn ? "warn" : "ok"], ["10:25", "ok"], ["10:20", "dup"], ["10:15", r.failBad ? "bad" : "ok"]];
+    $("#dr-runs").innerHTML = `<thead><tr><th>Run</th><th>Started</th><th class="c">Attempt</th><th>Result</th><th class="r">Duration</th></tr></thead><tbody>` + (r.st === "off" ? `<tr><td colspan="5"><div class="empty">${ic("pause")}<h4>No runs yet</h4><p>This rule has never been enabled in production.</p></div></td></tr>` :
+      t0.map(([t, s], i) => `<tr><td class="mono">JOB-8${8230 - i * 7}</td><td>${t}</td><td class="c">${s === "bad" ? "3/3" : s === "warn" ? "2/5" : "1/5"}</td><td>${s === "ok" ? '<span class="status s-ok">Succeeded</span>' : s === "dup" ? '<span class="status s-muted">Skipped · duplicate</span>' : s === "warn" ? '<span class="status s-warn">Succeeded after retry</span>' : '<span class="status s-bad">Failed → exception</span>'}</td><td class="r">${[38, 212, 1400, 64, 9, 30000][i] >= 1000 ? ([38, 212, 1400, 64, 9, 30000][i] / 1000).toFixed(1) + " s" : [38, 212, 1400, 64, 9, 30000][i] + " ms"}</td></tr>`).join("")) + "</tbody>";
+    $("#dr-hist").innerHTML = [
+      r.st === "paused" ? ["warn", "pause", "26 Sep 08:22 · Auto-paused by system", "Retry cap reached (3 × HTTP 504) · EX-2240"] : null,
+      ["done", "check", "2 Sep · v3 approved by Rajesh M.", "Changed retry cap 5 → 3 for provider calls; added jitter"],
+      ["done", "play", "14 Aug · Resumed by Anita R.", "After payment provider incident (global pause 42 min)"],
+      ["done", "edit", "28 Jul · v2 by Anita R.", "Added notification deduplication per entity"],
+      ["done", "zap", "6 Jul · v1 enabled at go-live", "Staging dry run on 50 masked real cases · UAT sign-off T31"],
+    ].filter(Boolean).map(([c, i, t, m]) => `<li class="${c}"><span class="t-dot">${ic(i)}</span><div class="t-title">${t}</div><div class="t-meta">${m}</div></li>`).join("");
+  };
+  fillDrawer(R.find((r) => r.id === (TX.param("rule") || "A05")) || R[1]);
+  $("#rules-body").addEventListener("click", (e) => {
+    const tr = e.target.closest("tr[data-rule]"); if (!tr || e.target.closest("a,button,input,label")) return;
+    fillDrawer(R.find((r) => r.id === tr.dataset.rule)); TX.activateTab("rd-def"); TX.open("d-rule");
+  });
+  const askKill = (r) => { $("#mk-name").textContent = `${r.id} · ${r.name}`; $("#mk-queue").textContent = `queued items for ${r.name.toLowerCase()}`; TX.open("m-kill"); };
+  $("#rules-body").addEventListener("change", (e) => {
+    const cb = e.target.closest("input[data-kill]"); if (!cb) return; const r = R.find((x) => x.id === cb.dataset.kill);
+    if (!cb.checked) { cb.checked = true; askKill(r); }
+    else { cb.checked = false; if (r.st === "paused") TX.open("m-resume"); else TX.toast(`${r.id} enabling needs a staging dry run and owner approval`, "lock"); }
+  });
+  $("#dr-switch").addEventListener("change", (e) => { e.target.checked = !e.target.checked; $("#dr-kill-btn").click(); });
+  $("#dr-kill-btn").addEventListener("click", () => { if (cur.st === "on") askKill(cur); else if (cur.st === "paused") TX.open("m-resume"); else TX.toast("Enable request sent to Rajesh M. · dry run required first", "lock"); });
+  $("#mk-go").addEventListener("click", () => TX.toast(`${$("#mk-name").textContent} stopped · pending work moved to manual queue · audited`, "pause"));
+
+  /* ---------------- Runs filter ---------------- */
+  $("#run-f").addEventListener("click", (e) => { const b = e.target.closest("button[data-f]"); if (!b) return; const f = b.dataset.f;
+    $$("#runs-tbl tbody tr").forEach((tr) => tr.classList.toggle("hidden", f !== "all" && tr.dataset.f !== f)); });
+
+  /* ---------------- Exceptions ---------------- */
+  const SEV = { critical: ["alert-octagon", "Critical"], serious: ["alert", "Serious"], warning: ["info", "Warning"], good: ["check-circle", "Resolved"] };
+  const E = [
+    { sev: "critical", t: "Payment captured, order not confirmed — reservation expired", ev: "pay_Nx8Q… captured 10:04 · R-5521 expired 10:02 · alternate unit U-000815 at SP Road", ent: "TXO-10477 · ₹84,990", age: "38 min", who: ["DK", "#c2410c", "Deepa K.", "Finance"], due: "11:30 · in 48 min", dueC: "due-warn", esc: ["Finance", "Owner at 1 h"], acts: [["Reserve U-000815", "primary", "Unit U-000815 reserved for TXO-10477 · customer notified"], ["Refund", "", "Refund initiated · Finance maker/checker"]], f: "owner mine" },
+    { sev: "serious", t: "Courier tracking sync auto-paused after 3 failures", ev: "HTTP 504 × 3 since 08:15 · provider degraded · 17 shipments without status", ent: "JOB-88213 · 17 AWBs", age: "2 h 27 m", who: ["AR", "#7c3aed", "Anita R.", "Operations"], due: "12:15", esc: ["Ops", "Owner if > 4 h"], acts: [["Manual tracking", "", "17 shipments moved to manual tracking queue"], ["Evidence", "goto-runs", ""]], f: "" },
+    { sev: "serious", t: "Refund failed at payment provider (2 retries)", ev: "Provider error BAD_REQUEST_ERROR: card expired · original method unusable", ent: "RMA-0093 · ₹19,990", age: "3 h", who: ["DK", "#c2410c", "Deepa K.", "Finance"], due: "13:40 · customer SLA 6 h", esc: ["Finance", "Owner"], acts: [["Bank transfer…", "", "Refund-method change sent for maker/checker approval"]], f: "owner" },
+    { sev: "serious", t: "Discount below margin floor — owner approval", ev: "14% requested for a school tender · margin after discount 3.1% (floor 6% · TBC)", ent: "TXO-10491 · 10 × Dell P2422H", age: "1 h 12 m", who: ["RM", "#2e5bff", "Rajesh M.", "Owner"], due: "12:00", esc: ["Branch mgr", "Owner", "alt. Anita R. ≤ 10%"], acts: [["Decide…", "approve", "TXO-10491 discount 14%"]], f: "owner mine" },
+    { sev: "serious", t: "Cycle-count variance −2 units", ev: "Counted 61, system 63 · bin locked for picking · last movement GRN-0441 10:31", ent: "WH-BLR A-14 · Samsung T7 1 TB", age: "5 h", who: ["MI", "#0b8ec9", "Mohammed I.", "Warehouse"], due: "Today 18:00", esc: ["Warehouse", "Ops", "Owner > ₹25k (TBC)"], acts: [["Recount", "", "Blind recount task created for bin A-14"], ["Adjust…", "", "Adjustment request ADJ-0189 raised · ₹17,998 · Ops approval"]], f: "" },
+    { sev: "serious", t: "Serial mismatch at return inspection", ev: "Returned serial 1832… not on invoice INV-26-10388 · refund on hold · do not accuse — ask for evidence", ent: "RMA-0097 · Canon EOS 80D", age: "1 d 2 h", who: ["VS", "#0e9f8a", "Vikram S.", "Returns desk"], due: "Overdue 1 h 42 m", dueC: "due-bad", esc: ["Returns", "Ops (escalated 09:00)"], acts: [["Request evidence", "", "Customer asked for purchase proof & photos"]], f: "overdue" },
+    { sev: "warning", t: "Dispatch overdue > 24 h", ev: "Both lines allocated at SP Road · pick not started · assignee on leave", ent: "TXO-10452 · and TXO-10455", age: "26 h", who: ["VS", "#0e9f8a", "Vikram S.", "SP Road"], due: "Overdue 2 h", dueC: "due-bad", esc: ["Branch", "Ops (escalated once)"], acts: [["Reassign", "", "Pick tasks reassigned to Koramangala team"], ["Notify", "", "Customers notified with new dispatch date"]], f: "overdue" },
+    { sev: "warning", t: "Stock write-off above Ops threshold", ev: "3 × LG 27UL550 · water damage · photos + count sheet attached", ent: "ADJ-0187 · ₹42,300", age: "4 h", who: ["RM", "#2e5bff", "Rajesh M.", "Owner"], due: "Today 18:00", esc: ["Warehouse", "Ops", "Owner (no alternate)"], acts: [["Decide…", "approve", "ADJ-0187 write-off ₹42,300"]], f: "owner mine" },
+    { sev: "warning", t: "Supplier availability feed stale for 26 h", ev: "Auto-rule A21 switched 14 offers to “confirm before promise” · suspend at 48 h", ent: "V-037 · NetCore Solutions", age: "26 h", who: ["AR", "#7c3aed", "Anita R.", "Vendors"], due: "27 Sep 10:00", esc: ["Vendor mgr", "Owner at 48 h"], acts: [["Contact vendor", "", "Reminder sent to NetCore via vendor portal + email"]], f: "owner" },
+    { sev: "warning", t: "Supplier import: 38 rows rejected", ev: "Missing HSN code on 31 rows, duplicate supplier code on 7 · 1,204 rows staged", ent: "IMP-0332 · Prime IT", age: "1 h 30 m", who: ["SP", "#be185d", "Sneha P.", "Catalog"], due: "27 Sep 17:00", esc: ["Catalog", "Ops"], acts: [["Rejected rows", "", "Opening rejected rows for IMP-0332"]], f: "" },
+    { sev: "warning", t: "Settlement lines unmatched", ev: "2 refunds netted across settlements · 2 fee lines without order ref", ent: "SETL-2609 · ₹18,420", age: "3 h 32 m", who: ["DK", "#c2410c", "Deepa K.", "Finance"], due: "28 Sep", esc: ["Finance only"], acts: [["Match…", "", "Manual matching opened for SETL-2609"]], f: "mine" },
+    { sev: "warning", t: "Transfer partly received (−1 unit)", ev: "Sent 6 × Logitech G305 · received 5 at Mysuru · transit record kept open", ent: "TR-0211 · WH-BLR → BR-MYS", age: "1 d 4 h", who: ["RK", "#4d7c0f", "Ravi K.", "Mysuru"], due: "27 Sep", esc: ["Branch", "Ops"], acts: [["Investigate", "", "Investigation opened · CCTV & packing photos requested"]], f: "" },
+    { sev: "good", t: "Resolved · feed price differed from approved price list", ev: "Resolution reason: supplier corrected feed; approved list price kept; no customer impact · by Sneha P. 09:12", ent: "CPU01-N · AMD Ryzen 7 7700X", age: "closed", who: ["SP", "#be185d", "Sneha P.", "Catalog"], due: "met", esc: ["Catalog"], acts: [["Reopen", "", "Exception reopened"]], f: "" },
+  ];
+  let ef = "all";
+  const renderExc = () => {
+    const list = E.filter((x) => ef === "all" || x.f.split(" ").includes(ef));
+    $("#exc-body").innerHTML = list.map((x) => `<tr ${x.sev === "good" ? 'style="opacity:.75"' : ""}>
+      <td><span class="sev ${x.sev}">${ic(SEV[x.sev][0])} ${SEV[x.sev][1]}</span></td>
+      <td><div class="cell-main">${x.t}</div><div class="cell-sub">${x.ev}</div></td>
+      <td style="max-width:170px">${(([h, ...t]) => `<div class="mono nowrap strong" style="font-size:12px">${h}</div>${t.length ? `<div class="cell-sub">${t.join(" · ")}</div>` : ""}`)(x.ent.split(" · "))}</td>
+      <td class="small nowrap">${x.age}</td>
+      <td><div class="row gap-6"><div class="avatar sm" style="background:${x.who[1]}">${x.who[0]}</div><div class="small"><b class="nowrap">${x.who[2]}</b><div class="muted">${x.who[3]}</div></div></div></td>
+      <td class="small ${x.dueC || ""}" style="max-width:110px">${x.due}</td>
+      <td><div class="esc">${x.esc.map((s, i) => `<span class="row gap-4">${i ? ic("arrow-right") : ""}${s}</span>`).join("")}</div></td>
+      <td><div class="act-col">${x.acts.map(([l, k, msg]) => k === "approve" ? `<button class="btn btn-xs btn-primary" data-approve="${msg}">${l}</button>` : k === "goto-runs" ? `<button class="btn btn-xs" data-goto="runs">${l}</button>` : `<button class="btn btn-xs ${k === "primary" ? "btn-primary" : ""}" data-toast="${msg}">${l}</button>`).join("")}</div></td></tr>`).join("");
+  };
+  renderExc();
+  $("#exc-f").addEventListener("click", (e) => { const b = e.target.closest("button[data-f]"); if (!b) return; ef = b.dataset.f; renderExc(); });
+
+  /* ---------------- Approvals ---------------- */
+  const A = [
+    { type: "Discount override", ic: "percent", item: "TXO-10491 · 10 × Dell P2422H · school tender", by: "Vikram S. · limit 8%", why: "14% requested; margin after discount 3.1% is below the 6% floor", val: "₹38,200", dl: "Today 12:00", dlC: "due-warn", ap: "Rajesh M.", alt: "Anita R. (≤ 10% only)", me: true },
+    { type: "Stock write-off", ic: "warehouse", item: "ADJ-0187 · 3 × LG 27UL550 · water damage", by: "Mohammed I.", why: "Above Ops admin threshold ₹25,000 (TBC) · photos + count sheet attached", val: "₹42,300", dl: "Today 18:00", ap: "Rajesh M.", alt: "None — owner-only", me: true },
+    { type: "Purchase order", ic: "clipboard", item: "PO-2026-0194 · Prime IT Distributors · 24 lines", by: "Anita R.", why: "PO value above buyer limit ₹5,00,000 (TBC) · 3 quotes attached", val: "₹6,48,000", dl: "Today 14:00", dlC: "due-warn", ap: "Rajesh M.", alt: "Deepa K. (Finance)", me: true },
+    { type: "Price list change", ic: "tag", item: "Dealer Gold · Q4 revision · 38 SKUs · avg −1.8%", by: "Sneha P.", why: "List-wide dealer price change — owner policy decision", val: "−₹1.2 L / month (est.)", dl: "28 Sep", ap: "Rajesh M.", alt: "Not set", altBad: true, me: true },
+    { type: "Vendor content", ic: "building", item: "VS-0231 · RenewTech · warranty 6 → 3 months on 4 SKUs", by: "RenewTech Refurbishers (vendor)", why: "Material change to warranty terms — live listing unchanged until approved", val: "—", dl: "29 Sep", ap: "Sneha P.", alt: "Anita R." },
+    { type: "Refund method", ic: "undo", item: "RMA-0093 · refund by bank transfer (card expired)", by: "Karthik R.", why: "Refund to a different account needs Finance maker/checker", val: "₹19,990", dl: "Today 16:00", ap: "Deepa K.", alt: "Rajesh M." },
+    { type: "Dealer application", ic: "briefcase", item: "Byte Point Solutions, Hubballi · GSTIN verified", by: "System (A27)", why: "New business account + Dealer Standard price list", val: "—", dl: "30 Sep", ap: "Anita R.", alt: "Rajesh M." },
+    { type: "Payout account", ic: "wallet", item: "V-031 CamWorld Imports · new bank account", by: "Vendor → maker Anita R.", why: "Maker/checker + call-back verification on the registered number", val: "—", dl: "28 Sep", ap: "Deepa K. (checker)", alt: "None", status: "Awaiting call-back" },
+    { type: "Stock transfer", ic: "transfer", item: "TR-0214 · WH-BLR → BR-KRM · 6 × MacBook Air M2", by: "Mohammed I.", why: "High-value transfer (above ₹2,00,000 · TBC)", val: "₹3,10,000", dl: "Overdue since 09:00", dlC: "due-bad", ap: "Anita R. (escalated)", alt: "from Vikram S. (no response)", overdue: true },
+    { type: "Price change", ic: "tag", item: "MacBook Air M2 open box · ₹84,990 → ₹82,490", by: "Rajesh M. (you)", why: "Separation of duties — requester cannot approve own price change", val: "−₹2,500 / unit", dl: "27 Sep", ap: "Anita R.", alt: "Deepa K.", self: true },
+  ];
+  let af = "all";
+  const renderApr = () => {
+    const list = A.filter((a) => af === "all" || (af === "me" ? a.me : a.overdue));
+    $("#apr-body").innerHTML = list.map((a) => `<tr class="${a.self ? "self" : ""}">
+      <td><div class="row gap-8 nowrap">${ic(a.ic, "ic-sm")}<span class="small strong">${a.type}</span></div></td>
+      <td><div class="cell-main" style="font-size:12.5px">${a.item}</div><div class="cell-sub">by ${a.by}</div>${a.status ? `<span class="badge b-info mt-4">${a.status}</span>` : ""}</td>
+      <td class="small subtle">${a.why}</td>
+      <td class="r small strong">${a.val}</td>
+      <td class="small ${a.dlC || ""}">${a.dlC === "due-bad" ? ic("clock", "ic-sm ic-in") + " " : ""}${a.dl}</td>
+      <td class="small"><b>${a.ap}</b><div class="${a.altBad ? "text-bad" : "muted"}">${a.altBad ? ic("alert", "ic-sm ic-in") + " " : "→ "}${a.alt}</div></td>
+      <td class="r">${a.self ? `<span class="badge b-outline" data-tip="Separation of duties (§18.2)">${ic("lock")} Cannot self-approve</span>` : a.status ? `<button class="btn btn-xs" data-toast="Call-back logged · awaiting checker">Log call-back</button>` : `<div class="act-col"><button class="btn btn-xs btn-ok" data-approve="${a.type} · ${a.item} · ${a.val}">Approve…</button><button class="btn btn-xs" data-approve="${a.type} · ${a.item} · ${a.val}">Reject…</button></div>`}</td></tr>`).join("");
+  };
+  renderApr();
+  $("#apr-f").addEventListener("click", (e) => { const b = e.target.closest("button[data-f]"); if (!b) return; af = b.dataset.f; renderApr(); });
+
+  /* ---------------- Shared handlers ---------------- */
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest("[data-approve]");
+    if (a) { $("#ma-title").textContent = "Decision required"; $("#ma-sum").textContent = a.dataset.approve; TX.open("m-approve"); }
+    const g = e.target.closest("[data-goto]");
+    if (g) { TX.activateTab(g.dataset.goto); document.querySelector(".main-tabs").scrollIntoView({ behavior: "smooth", block: "start" }); }
+  });
+});
+</script>
+</body>
+</html>

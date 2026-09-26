@@ -1,0 +1,603 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Availability &amp; orders · Tradex Vendor Portal</title>
+  <link rel="stylesheet" href="assets/tradex.css">
+  <style>
+    /* Vendor accent (page-level overrides on shared tokens) */
+    body[data-app="vendor"] { --ring: 0 0 0 3px rgba(14, 159, 138, .22); }
+    .btn-vendor { --b-bg: var(--vendor); --b-fg: #fff; --b-bd: var(--vendor); }
+    .btn-vendor:hover { background: #0b8a78; }
+    .btn-vsoft { --b-bg: var(--vendor-50); --b-fg: #07695b; --b-bd: #c4ebe3; }
+    .btn-vsoft:hover { background: #d3f1eb; }
+    .ws-main a:not(.btn), .drawer a:not(.btn), .modal a:not(.btn) { color: #0a7a6a; }
+    .ws-main .tab.active, .drawer .tab.active { color: #07695b; }
+    .ws-main .tab.active::after { background: var(--vendor); }
+    .ws-main .tab.active .count { background: var(--vendor-50); color: #07695b; }
+    .ws-main .tabs.pills .tab.active { background: #07695b; color: #fff; }
+    .input:focus, .select:focus, .textarea:focus { border-color: var(--vendor); }
+    .check input, .grade-opt input { accent-color: var(--vendor); }
+    .meter.m-vendor { background: #cdeee8; } .meter.m-vendor > span { background: var(--vendor); }
+    .timeline li.current .t-dot { background: var(--vendor); }
+    .dropzone .ic { color: var(--vendor); }
+
+    .strip { display: grid; grid-template-columns: 1.3fr repeat(4, 1fr); }
+    .strip > div { padding: 14px 18px; border-right: 1px solid var(--line-2); }
+    .strip > div:last-child { border-right: 0; }
+    .strip .s-n { font-size: 21px; font-weight: 700; letter-spacing: -.02em; }
+    .strip .s-l { font-size: 12px; color: var(--tx-3); font-weight: 550; }
+    .countdown { font-variant-numeric: tabular-nums; }
+    .fresh-big { font-size: 34px; font-weight: 750; letter-spacing: -.02em; line-height: 1.1; font-variant-numeric: tabular-nums; }
+    .policy { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .policy > div { border: 1px solid var(--line); border-radius: var(--r); padding: 12px; font-size: 12.5px; color: var(--tx-2); background: #fff; }
+    .policy > div b { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--tx-1); margin-bottom: 3px; }
+    .policy > div.now { border-color: var(--vendor); box-shadow: 0 0 0 3px rgba(14,159,138,.14); background: #f6fcfa; }
+    .policy > div.now.w { border-color: var(--warn); box-shadow: 0 0 0 3px rgba(245,165,36,.18); background: #fffaf0; }
+    .policy > div.now.b { border-color: var(--bad); box-shadow: 0 0 0 3px rgba(229,72,77,.14); background: #fff8f8; }
+    .rules { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; font-size: 13px; }
+    .rules li { display: flex; gap: 10px; align-items: flex-start; }
+    .rules li .ic { width: 16px; height: 16px; margin-top: 2px; color: #07695b; flex: none; }
+    tr.changed td { background: #f4fbf9; }
+    tr.held td { background: #fffaf0; }
+    tr.row-muted td { color: var(--tx-3); }
+    .lead-in { width: 62px !important; height: 30px; font-size: 13px; text-align: center; padding: 0 6px; }
+    .qty.sm { height: 30px; } .qty.sm button { width: 26px; } .qty.sm input { width: 40px; font-size: 13px; }
+    .keybox { display: flex; align-items: center; gap: 8px; border: 1px solid var(--line); border-radius: var(--r-sm); padding: 6px 6px 6px 12px; background: var(--bg); }
+    .code { background: var(--ink-900); color: #d7e2f5; border-radius: var(--r); padding: 12px 14px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; line-height: 1.6; white-space: pre; overflow-x: auto; }
+    .code .k { color: #7ee3cf; } .code .s { color: #ffcf70; } .code .c { color: #6b7a99; }
+    .task { display: grid; grid-template-columns: 36px minmax(0, 1fr) 250px 200px; gap: 18px; align-items: start; padding: 16px 20px; border-bottom: 1px solid var(--line-2); }
+    .task:last-child { border-bottom: 0; }
+    .task .t-id { font-weight: 700; }
+    .task .pii { display: grid; grid-template-columns: auto 1fr; gap: 3px 10px; font-size: 12.5px; }
+    .task .pii dt { color: var(--tx-3); } .task .pii dd { margin: 0; font-weight: 600; }
+    .task .t-act { display: flex; flex-direction: column; gap: 6px; align-items: stretch; min-width: 170px; }
+    .timer { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 700; color: #a32121; background: #fbe9e9; padding: 3px 10px; border-radius: 999px; font-variant-numeric: tabular-nums; }
+    .timer .ic { width: 13px; height: 13px; }
+    .ev { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    .ev .ph { aspect-ratio: 4 / 3; }
+    .res-opt { display: flex; gap: 10px; align-items: flex-start; border: 1.5px solid var(--line); border-radius: var(--r); padding: 11px 12px; cursor: pointer; }
+    .res-opt:has(input:checked) { border-color: var(--vendor); background: #f3fbf9; }
+    .res-opt input { margin-top: 3px; accent-color: var(--vendor); }
+    .po-lines td { vertical-align: top; }
+    .po-lines .select, .po-lines .input { height: 30px; font-size: 12.5px; }
+    .mini-kpi { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line-2); border-bottom: 1px solid var(--line-2); }
+    .mini-kpi > div { background: #fff; padding: 12px 18px; }
+    .mini-kpi .n { font-size: 19px; font-weight: 700; }
+    .mini-kpi .l { font-size: 12px; color: var(--tx-3); }
+  </style>
+</head>
+<body data-app="vendor" data-page="availability">
+<main>
+  <div class="page-head">
+    <div>
+      <div class="crumbs"><a href="vendor-dashboard.html">Vendor portal</a><i data-icon="chevron-right"></i><span>Availability &amp; orders</span></div>
+      <h1>Availability &amp; orders</h1>
+      <p class="sub">Declare what you hold, confirm Tradex purchase orders, fulfil pilot tasks and resolve returns — for RenewTech (V-022) only.</p>
+    </div>
+    <div class="actions">
+      <button class="btn" data-toast="Downloaded renewtech_availability_2026-09-26.csv (38 offers)"><i data-icon="download"></i> Export current feed</button>
+      <button class="btn btn-vendor" data-goto="feed" data-focus="#feed-form"><i data-icon="refresh"></i> Update availability</button>
+    </div>
+  </div>
+
+  <!-- Status strip -->
+  <section class="card strip" data-anno="1B · §9.7 Freshness deadline per supplier">
+    <div id="strip-fresh">
+      <div class="s-l">Availability feed</div>
+      <div class="row gap-8"><span class="s-n text-warn countdown" data-countdown="21599" data-fmt="clock">05:59:59</span><span class="badge b-warn">until stale</span></div>
+      <div class="small muted">Updated 25 Sep 16:45 · CSV</div>
+    </div>
+    <div><div class="s-l">Offers declared</div><div class="s-n">38</div><div class="small muted">214 supplier-held units</div></div>
+    <div><div class="s-l">POs awaiting you</div><div class="s-n text-warn">1</div><div class="small muted">PO-2026-0192 · by 18:00</div></div>
+    <div><div class="s-l">Pilot tasks due</div><div class="s-n">2</div><div class="small muted">1 needs confirmation &lt; 4 h</div></div>
+    <div><div class="s-l">Returns awaiting you</div><div class="s-n">1</div><div class="small muted">RTV-0031 · due 28 Sep</div></div>
+  </section>
+
+  <div data-tabset class="mt-16">
+    <div class="tabs">
+      <button class="tab active" data-tab="feed"><i data-icon="package"></i> Availability feed</button>
+      <button class="tab" data-tab="pos"><i data-icon="clipboard"></i> Purchase orders <span class="count">1 to confirm</span></button>
+      <button class="tab" data-tab="tasks"><i data-icon="truck"></i> Fulfilment tasks <span class="badge b-info sq" style="height:18px;font-size:10.5px">Pilot</span> <span class="count">2</span></button>
+      <button class="tab" data-tab="returns"><i data-icon="undo"></i> Returns to vendor <span class="count">3 open</span></button>
+    </div>
+
+    <!-- ===================== FEED ===================== -->
+    <div class="tab-panel active" data-panel="feed">
+      <div class="grid mt-16" style="grid-template-columns:minmax(0,1.35fr) minmax(0,1fr)">
+        <div class="card" data-anno="1B · T14 Stale feed pauses delivery promises">
+          <div class="card-head"><div><h3>Feed freshness</h3><div class="sub">Freshness window agreed for RenewTech: 24 hours (terms v3 §6.1)</div></div>
+            <div class="seg" id="fresh-seg" aria-label="Preview feed state"><button class="active" data-s="fresh">Fresh</button><button data-s="stale">Stale</button><button data-s="susp">Suspended</button></div></div>
+          <div class="card-body col gap-16" id="fresh-body"></div>
+        </div>
+        <div class="card" data-anno="1B · R08 Supplier stock is never Tradex stock">
+          <div class="card-head"><h3>How your availability is used</h3><span class="badge b-vendor">Policy</span></div>
+          <div class="card-body">
+            <ul class="rules">
+              <li><i data-icon="shield"></i><div><b>Supplier stock is never counted as Tradex stock.</b> Customers see it only as “Ships in 4–6 days · partner stock” — never “In stock”.</div></li>
+              <li><i data-icon="warehouse"></i><div>It becomes Tradex stock only after goods are received and inspected at a Tradex warehouse (GRN + QC).</div></li>
+              <li><i data-icon="layers"></i><div>Tradex holds back a safety buffer of <b>2 units</b> per offer before promising delivery.</div></li>
+              <li><i data-icon="clipboard"></i><div>Quantities you confirm on a PO are deducted from your declared availability automatically.</div></li>
+              <li><i data-icon="zap"></i><div>Routine refreshes within ±50% are accepted automatically; bigger jumps are held for a quick Tradex check.</div></li>
+              <li><i data-icon="clock"></i><div>If the feed isn't refreshed in 24 h, delivery promises pause automatically; after 72 h offers are hidden.</div></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mt-16" id="feed-form" data-anno="1B · §11.3 Routine refresh auto-accepted within bounds">
+        <div class="card-head"><div><h3>Update availability</h3><div class="sub">Three ways in — all go through the same validation and freshness clock</div></div></div>
+        <div data-tabset>
+          <div class="tabs pills" style="padding:12px 20px 0">
+            <button class="tab active" data-tab="m-form"><i data-icon="edit"></i> Edit in portal</button>
+            <button class="tab" data-tab="m-csv"><i data-icon="file"></i> CSV upload</button>
+            <button class="tab" data-tab="m-api"><i data-icon="key"></i> API</button>
+          </div>
+
+          <div class="tab-panel active" data-panel="m-form">
+            <div class="table-toolbar mt-8">
+              <div class="input-icon" style="width:260px"><i data-icon="search"></i><input class="input input-sm" id="f-q" placeholder="Search your code or product" aria-label="Search offers"></div>
+              <span class="small muted">Showing 9 of 38 offers · edited rows are highlighted</span>
+              <button class="btn btn-sm ml-auto" id="confirm-all" data-anno="1B · Confirm unchanged also restarts the clock"><i data-icon="check-circle"></i> Confirm all unchanged</button>
+            </div>
+            <div class="table-wrap"><table class="table">
+              <thead><tr><th>Offer</th><th>Your code · confirmed</th><th class="c">Supplier-held qty</th><th class="c">Lead days</th><th>Customer sees</th><th style="min-width:190px">Check</th></tr></thead>
+              <tbody id="feed-body"></tbody>
+            </table></div>
+            <div class="card-foot"><span class="small muted" id="feed-foot"></span><div class="row gap-8"><button class="btn btn-sm btn-ghost" id="feed-reset">Discard changes</button><button class="btn btn-sm btn-vendor" id="feed-save"><i data-icon="check"></i> Save &amp; refresh feed</button></div></div>
+          </div>
+
+          <div class="tab-panel" data-panel="m-csv">
+            <div class="card-body grid g-2">
+              <div class="col gap-12">
+                <div class="dropzone"><i data-icon="upload"></i><div><b style="color:var(--tx-1)">Drop availability CSV</b> or <a href="#" data-toast="File picker opened (prototype)">browse</a></div><div class="small">Columns: code, qty, lead_days, as_of · UTF-8 · max 5,000 rows</div></div>
+                <div class="row gap-8"><button class="btn btn-sm" data-toast="Downloaded availability_template_v2.csv"><i data-icon="download"></i> Template v2</button><button class="btn btn-sm" data-toast="Downloaded current feed as CSV (38 rows)"><i data-icon="download"></i> Current feed as CSV</button></div>
+                <div class="small muted">Rows for codes not in your approved offers are rejected. A file older than the last update (by <span class="mono">as_of</span>) is ignored.</div>
+              </div>
+              <div>
+                <h4 class="mb-8">Recent CSV uploads</h4>
+                <div class="table-wrap"><table class="table compact">
+                  <thead><tr><th>Uploaded</th><th class="r">Rows</th><th>Result</th></tr></thead>
+                  <tbody>
+                    <tr><td>25 Sep 16:45 · Meena R.</td><td class="r">38</td><td><span class="status s-ok">38 accepted</span></td></tr>
+                    <tr><td>24 Sep 15:10 · Meena R.</td><td class="r">38</td><td><span class="status s-warn">36 accepted · 2 rejected</span><div class="cell-sub">Row 12: unknown code RT-XPS13-A · Row 30: qty “ten” not a number</div></td></tr>
+                    <tr><td>23 Sep 16:02 · Meena R.</td><td class="r">37</td><td><span class="status s-warn">36 accepted · 1 held</span><div class="cell-sub">RT-U2419H-A 40 → 120 (+200%) held for check · accepted 23 Sep 17:10</div></td></tr>
+                  </tbody>
+                </table></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-panel" data-panel="m-api">
+            <div class="card-body grid g-2" data-anno="1B · API key scoped to availability only · masked">
+              <div class="col gap-12">
+                <div class="field"><label>Live API key</label>
+                  <div class="keybox"><i data-icon="key" class="ic-sm"></i><span class="mono grow" id="api-key">rtk_live_••••••••••••••••••••7f3a</span>
+                    <button class="btn btn-xs" id="key-show" aria-label="Reveal key"><i data-icon="eye"></i> Reveal</button>
+                    <button class="btn btn-xs" data-toast="Key copied to clipboard · it will be cleared in 60 s" aria-label="Copy key"><i data-icon="copy"></i></button>
+                    <button class="btn btn-xs btn-danger" data-open="m-rotate"><i data-icon="refresh"></i> Rotate</button></div>
+                  <span class="hint">Created 14 Mar 2026 by Suresh B. · last used 25 Sep 16:45 · expires 14 Mar 2027</span></div>
+                <dl class="kv"><dt>Scope</dt><dd><span class="badge b-vendor mono">availability:write</span> <span class="badge mono">submissions:write</span></dd>
+                  <dt>Cannot</dt><dd class="small">Publish products, read orders, customers, prices or other vendors</dd>
+                  <dt>IP allowlist</dt><dd class="mono">49.207.54.18, 49.207.54.19</dd>
+                  <dt>Rate limit</dt><dd>60 requests / minute · idempotency key required</dd></dl>
+                <div class="callout c-warn small"><i data-icon="alert"></i><div>Keys are shown once on creation. Revealing requires your password + OTP and is logged. Never share keys by email or WhatsApp.</div></div>
+              </div>
+              <div class="col gap-12">
+<div class="code"><span class="c"># Replace quantities for listed codes (others unchanged)</span>
+<span class="k">PUT</span> https://api.tradex.example/v1/vendor/availability
+Authorization: Bearer rtk_live_••••7f3a
+Idempotency-Key: <span class="s">rt-20260926-1045</span>
+
+{ <span class="s">"as_of"</span>: <span class="s">"2026-09-26T10:45:00+05:30"</span>,
+  <span class="s">"items"</span>: [
+    { <span class="s">"code"</span>: <span class="s">"RT-LAT5420-A"</span>, <span class="s">"qty"</span>: 22, <span class="s">"lead_days"</span>: 3 },
+    { <span class="s">"code"</span>: <span class="s">"RT-LG27UL-B"</span>,  <span class="s">"qty"</span>: 31, <span class="s">"lead_days"</span>: 3 } ] }</div>
+                <div class="table-wrap"><table class="table compact">
+                  <thead><tr><th>Recent calls</th><th>Result</th></tr></thead>
+                  <tbody>
+                    <tr><td class="mono small">25 Sep 16:45 · PUT · 38 items</td><td><span class="status s-ok">200 OK</span></td></tr>
+                    <tr><td class="mono small">25 Sep 04:45 · PUT · 38 items</td><td><span class="status s-ok">200 OK</span></td></tr>
+                    <tr><td class="mono small">24 Sep 16:44 · PUT · 38 items</td><td><span class="status s-bad">422</span><div class="cell-sub">lead_days must be ≥ 1 (RT-U2419H-A)</div></td></tr>
+                  </tbody>
+                </table></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== POs ===================== -->
+    <div class="tab-panel" data-panel="pos">
+      <div class="callout c-info mt-16" data-anno="1A/1B · §9.3 PO confirmation → ASN with serials → GRN & QC">
+        <i data-icon="info"></i>
+        <div><strong>Purchase orders are Tradex's orders to you.</strong> Confirm, partially confirm or reject each line with a reason before the confirmation deadline. Ship against an advance shipping notice (ASN) with serial numbers — Tradex receives against it (GRN) and inspects every unit before it becomes sellable.</div>
+      </div>
+      <div class="card mt-16">
+        <div class="table-toolbar">
+          <div class="seg" id="po-seg"><button class="active" data-v="open">Open · 4</button><button data-v="all">All · 6</button><button data-v="closed">Closed · 2</button></div>
+          <span class="small muted ml-auto">Prices are your agreed supplier prices, ex-GST</span>
+        </div>
+        <div class="table-wrap"><table class="table">
+          <thead><tr><th>PO</th><th>Issued</th><th>Lines</th><th class="r">Value</th><th>Deliver to</th><th>Deadline</th><th>Status</th><th class="r"></th></tr></thead>
+          <tbody id="po-body"></tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- ===================== TASKS ===================== -->
+    <div class="tab-panel" data-panel="tasks">
+      <div class="callout c-brand mt-16" data-anno="1B pilot · §3.2 Company sale with supplier fulfilment" style="background:var(--vendor-50);border-color:#c4ebe3;color:#07463d">
+        <i data-icon="truck"></i>
+        <div><strong>Supplier-fulfilment pilot · 4 SKUs · since 15 Sep 2026.</strong> Tradex sells to the customer; you ship on Tradex's behalf with Tradex's invoice and packing slip. Confirm each task within <b>4 hours</b> or it returns to Tradex for reallocation. You see only the minimum data needed to ship — the courier label carries the full address.</div>
+      </div>
+      <div class="card mt-16" style="overflow:hidden" data-anno="1B · §11.2 Minimum customer data: name, city, masked phone/PIN">
+        <div class="mini-kpi">
+          <div><div class="n">96%</div><div class="l">Confirmed within 4 h · target 95%</div></div>
+          <div><div class="n">91%</div><div class="l">Handed to courier same day · target 90%</div></div>
+          <div><div class="n">23</div><div class="l">Tasks this month</div></div>
+          <div><div class="n text-warn">1</div><div class="l">Reassigned to Tradex (expired)</div></div>
+        </div>
+        <div class="table-toolbar"><div class="seg"><button class="active">Open · 2</button><button>Shipped · 1</button><button>Expired · 1</button><button>All</button></div><span class="small muted ml-auto">Times in IST · confirmation clock pauses 21:00–08:00</span></div>
+
+        <div class="task">
+          <span class="li-icon warn" style="width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--warn-50);color:var(--warn-tx)"><i data-icon="clock"></i></span>
+          <div>
+            <div class="row gap-8"><span class="t-id mono">FT-0041</span><span class="status s-warn">Awaiting your confirmation</span><span class="timer"><i data-icon="clock"></i> <span class="countdown" data-countdown="8040" data-fmt="hm">2h 14m</span> left</span></div>
+            <div class="row mt-8"><div data-ph="lap-dell" class="thumb"></div><div><div class="strong">1 × Dell Latitude 5420 14" · Refurbished Grade A</div><div class="small muted">RT-LAT5420-A · Tradex order TXO-10488 · promised delivery Tue, 29 Sep</div></div></div>
+          </div>
+          <dl class="pii"><dt>Ship to</dt><dd>Priya N.</dd><dt>City</dt><dd>Bengaluru, Karnataka</dd><dt>Phone</dt><dd class="mono">+91 98••• ••321</dd><dt>PIN</dt><dd class="mono">560•••</dd></dl>
+          <div class="t-act"><button class="btn btn-sm btn-vendor" data-toast="FT-0041 confirmed · courier pickup booked for today 16:00">Confirm — can ship today</button><button class="btn btn-sm btn-danger" data-open="m-decline">Can't fulfil</button></div>
+        </div>
+        <div class="task">
+          <span style="width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--vendor-50);color:#07695b"><i data-icon="package"></i></span>
+          <div>
+            <div class="row gap-8"><span class="t-id mono">FT-0040</span><span class="status s-info">Confirmed · pack &amp; hand over</span><span class="badge b-warn">Pickup by 17:00 today</span></div>
+            <div class="row mt-8"><div data-ph="mon-setup" class="thumb"></div><div><div class="strong">1 × LG 27UL550 27" 4K · Refurbished Grade B</div><div class="small muted">RT-LG27UL-B · Tradex order TXO-10483 · courier Delhivery (Tradex account)</div></div></div>
+          </div>
+          <dl class="pii"><dt>Ship to</dt><dd>Karthik S.</dd><dt>City</dt><dd>Mysuru, Karnataka</dd><dt>Phone</dt><dd class="mono">+91 90••• ••118</dd><dt>PIN</dt><dd class="mono">570•••</dd></dl>
+          <div class="t-act"><button class="btn btn-sm" data-toast="Label & Tradex invoice downloaded · TXO-10483"><i data-icon="printer"></i> Label &amp; invoice</button><button class="btn btn-sm btn-vendor" data-open="m-evidence"><i data-icon="upload"></i> Upload shipment evidence</button></div>
+        </div>
+        <div class="task">
+          <span style="width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--ok-50);color:var(--ok-tx)"><i data-icon="truck"></i></span>
+          <div>
+            <div class="row gap-8"><span class="t-id mono">FT-0038</span><span class="status s-ok">Shipped · in transit</span></div>
+            <div class="row mt-8"><div data-ph="lap-grey" class="thumb"></div><div><div class="strong">1 × HP EliteBook 840 G8 14" · Refurbished Grade A</div><div class="small muted">TXO-10471 · AWB 1490 2213 5567 · serial 5CG1301K7Q · 2 packing photos</div></div></div>
+          </div>
+          <dl class="pii"><dt>Ship to</dt><dd>Faisal A.</dd><dt>City</dt><dd>Mangaluru, Karnataka</dd><dt>Status</dt><dd>Out for delivery</dd></dl>
+          <div class="t-act"><button class="btn btn-sm" data-toast="Evidence for FT-0038 opened">View evidence</button></div>
+        </div>
+        <div class="task" style="background:#fffbf3">
+          <span style="width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--bad-50);color:var(--bad-tx)"><i data-icon="x-circle"></i></span>
+          <div>
+            <div class="row gap-8"><span class="t-id mono">FT-0035</span><span class="status s-bad">Expired · reassigned to Tradex</span></div>
+            <div class="small mt-8"><b>1 × Lenovo ThinkPad T14 Gen 2</b> · TXO-10455 · not confirmed within 4 h (received 22 Sep 14:10). Tradex shipped from its own stock. Counts toward your response-time score.</div>
+          </div>
+          <dl class="pii"><dt>Customer data</dt><dd class="muted">Hidden after reassignment</dd></dl>
+          <div class="t-act"><button class="btn btn-sm btn-ghost" data-toast="Explanation sent to Tradex vendor management">Add explanation</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== RETURNS ===================== -->
+    <div class="tab-panel" data-panel="returns">
+      <div class="callout c-info mt-16" data-anno="1B · R19 Supplier RMA with evidence & resolution">
+        <i data-icon="info"></i>
+        <div><strong>Returns to vendor (RTV)</strong> are raised by Tradex when a unit fails inbound QC or a warranty claim falls under your warranty. Respond within <b>3 working days</b> (terms v3 §9) with a resolution or a dispute with evidence. Customer identity is never shared — only the unit, serial and evidence.</div>
+      </div>
+      <div class="card mt-16">
+        <div class="table-toolbar"><div class="seg" id="rtv-seg"><button class="active" data-v="open">Open · 3</button><button data-v="all">All · 4</button></div><span class="small muted ml-auto">Linked GRN / RMA references are Tradex documents</span></div>
+        <div class="table-wrap"><table class="table">
+          <thead><tr><th>RTV</th><th>Source</th><th>Unit</th><th>Issue &amp; evidence</th><th>Requested</th><th>Due</th><th>Status</th></tr></thead>
+          <tbody id="rtv-body"></tbody>
+        </table></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PO drawer -->
+  <div class="drawer" id="d-po"><div class="drawer-card wide">
+    <div class="drawer-head">
+      <div><div class="row gap-8"><span class="mono strong">PO-2026-0192</span><span class="status s-warn">Awaiting your confirmation</span><span class="badge b-bad"><i data-icon="clock"></i> Confirm by today 18:00</span></div>
+        <h3 class="mt-4">Purchase order from Tradex Electronics Pvt Ltd</h3><div class="small muted">Issued 26 Sep 2026 09:10 by Anita Rao (Purchasing) · 2 lines · 10 units</div></div>
+      <button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button>
+    </div>
+    <div class="drawer-body col gap-16">
+      <div class="grid g-2">
+        <dl class="kv"><dt>Deliver to</dt><dd>Tradex Central Warehouse (WH-BLR)<div class="small muted" style="font-weight:400">Plot 22, Bommasandra Industrial Area, Bengaluru 560099</div></dd><dt>Receiving hours</dt><dd>Mon–Sat, 09:30–17:30</dd><dt>Requested ship-by</dt><dd>Fri, 2 Oct 2026</dd></dl>
+        <dl class="kv"><dt>Bill to</dt><dd>Tradex Electronics Pvt Ltd<div class="small muted mono" style="font-weight:400">GSTIN 29AAGCT4821K1Z5</div></dd><dt>Payment terms</dt><dd>Net 30 from GRN (terms v3)</dd><dt>Price basis</dt><dd>Agreed supplier prices, ex-GST</dd></dl>
+      </div>
+      <div class="card">
+        <div class="table-wrap"><table class="table po-lines">
+          <thead><tr><th>Line</th><th class="r">Ordered</th><th>Your decision &amp; reason</th><th class="c">Confirm qty</th><th>Your ship-by</th></tr></thead>
+          <tbody id="po-lines"></tbody>
+          <tfoot><tr><td colspan="2">Confirmed value (ex-GST)</td><td colspan="3" class="r" id="po-total"></td></tr></tfoot>
+        </table></div>
+      </div>
+      <div class="callout c-warn small hidden" id="po-err"><i data-icon="alert"></i><div>Give a reason for every partially confirmed or rejected line.</div></div>
+      <div class="callout c-info small"><i data-icon="info"></i><div>Confirmed quantities are deducted from your declared availability (RT-LAT5420-A 22 → 16, RT-LG27UL-B 31 → 28). Unconfirmed quantity goes back to Tradex purchasing to source elsewhere.</div></div>
+      <div><h4 class="mb-8">History</h4>
+        <ul class="timeline"><li class="current"><span class="t-dot"><i data-icon="clock"></i></span><div class="t-title">Awaiting your confirmation</div><div class="t-meta">Reminder sent 26 Sep 13:00 by email &amp; WhatsApp</div></li>
+          <li class="done"><span class="t-dot"><i data-icon="check"></i></span><div class="t-title">Issued by Anita Rao</div><div class="t-meta">26 Sep 09:10 · approved within buyer limit</div></li></ul></div>
+    </div>
+    <div class="drawer-foot"><button class="btn btn-danger" data-open="m-reject">Reject whole PO</button><button class="btn" data-close data-toast="Draft response saved">Save draft</button><button class="btn btn-vendor" id="po-confirm"><i data-icon="check"></i> Send confirmation</button></div>
+  </div></div>
+
+  <!-- RTV drawer -->
+  <div class="drawer" id="d-rtv"><div class="drawer-card wide">
+    <div class="drawer-head">
+      <div><div class="row gap-8"><span class="mono strong">RTV-0031</span><span class="status s-warn">Awaiting your response</span><span class="badge b-warn">Due 28 Sep</span></div>
+        <h3 class="mt-4">LG 27UL550 27" 4K · Refurbished Grade B</h3><div class="small muted">Inbound QC failure · GRN-0436 (PO-2026-0183) · unit U-000842 · serial 104NTXRJK231</div></div>
+      <button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button>
+    </div>
+    <div class="drawer-body col gap-16">
+      <div class="callout c-bad"><i data-icon="alert-octagon"></i><div><strong>Failed inbound QC:</strong> backlight bleed in the lower-left corner exceeds Grade B limits (rubric v2.1, “minor, corners only” at 50% brightness). Unit is in Tradex quarantine — not sellable.</div></div>
+      <div><h4 class="mb-8">Evidence from Tradex QC <span class="small muted" style="font-weight:500">· Mohammed Irfan · 21 Sep 15:40</span></h4>
+        <div class="ev"><div data-ph="mon-setup"></div><div data-ph="mon-curved"></div><div data-ph="mon-curved2"></div><div data-ph="mon-pink"></div></div>
+        <div class="small muted mt-8">4 photos · dark-screen test at 50% and 100% brightness · QC checklist PDF</div></div>
+      <div><h4 class="mb-8">Your resolution</h4>
+        <div class="grid g-2">
+          <label class="res-opt"><input type="radio" name="res" checked><div><b>Send a replacement unit</b><div class="small muted">Ship within 5 working days on a new ASN</div></div></label>
+          <label class="res-opt"><input type="radio" name="res"><div><b>Issue a credit note</b><div class="small muted">₹11,520 + GST against invoice RT/26-27/0398</div></div></label>
+          <label class="res-opt"><input type="radio" name="res"><div><b>Repair &amp; return</b><div class="small muted">Tradex ships the unit to your Guindy address</div></div></label>
+          <label class="res-opt"><input type="radio" name="res"><div><b>Dispute with evidence</b><div class="small muted">Goes to Tradex purchasing for a decision</div></div></label>
+        </div></div>
+      <div class="field"><label for="rtv-note">Note to Tradex</label><textarea class="textarea" id="rtv-note" placeholder="e.g. Replacement unit S/N 104NTXRJK288 dispatched with PO-2026-0192."></textarea></div>
+      <div class="dropzone" style="padding:14px"><i data-icon="paperclip"></i><div class="small"><b style="color:var(--tx-1)">Attach counter-evidence</b> (your outbound QC photos, test logs) — optional</div></div>
+      <div><h4 class="mb-8">History</h4>
+        <ul class="timeline"><li class="current"><span class="t-dot"><i data-icon="clock"></i></span><div class="t-title">Waiting for RenewTech</div><div class="t-meta">Raised 22 Sep 10:05 · 3 working days</div></li>
+          <li class="done"><span class="t-dot"><i data-icon="check"></i></span><div class="t-title">Quarantined at WH-BLR</div><div class="t-meta">21 Sep 15:40 · 5 of 6 units on GRN-0436 passed</div></li></ul></div>
+    </div>
+    <div class="drawer-foot"><button class="btn" data-close>Later</button><button class="btn btn-vendor" data-close data-toast="Response sent for RTV-0031 · Tradex purchasing notified">Send response</button></div>
+  </div></div>
+
+  <!-- Modals -->
+  <div class="modal" id="m-reject"><div class="modal-card">
+    <div class="modal-head"><h3>Reject PO-2026-0192</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-body col gap-12">
+      <div class="field"><label class="req" for="rj-r">Reason</label><select class="select" id="rj-r"><option>Stock no longer available</option><option>Price has changed</option><option>Model discontinued</option><option>Quality hold on this batch</option><option>Cannot meet ship-by date</option><option>Other</option></select></div>
+      <div class="field"><label for="rj-n">Details for Tradex purchasing</label><textarea class="textarea" id="rj-n" placeholder="Optional, but helps Tradex source elsewhere quickly"></textarea></div>
+      <div class="callout c-warn small"><i data-icon="alert"></i><div>Rejections count toward your fill rate (94.2%). Consider a partial confirmation instead.</div></div>
+    </div>
+    <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-danger" data-close data-toast="PO-2026-0192 rejected · reason recorded · Tradex purchasing notified">Reject PO</button></div>
+  </div></div>
+
+  <div class="modal" id="m-asn"><div class="modal-card lg">
+    <div class="modal-head"><div><h3>Advance shipping notice · PO-2026-0189</h3><div class="small muted">10 × HP EliteBook 840 G8 14" · Grade A · ship-by 29 Sep</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="field"><label class="req" for="asn-d">Dispatch date</label><input class="input" id="asn-d" value="28 Sep 2026"></div>
+        <div class="field"><label class="req" for="asn-c">Carrier</label><select class="select" id="asn-c"><option>Blue Dart</option><option>Delhivery</option><option>Safexpress</option><option>Own vehicle</option></select></div>
+        <div class="field"><label class="req" for="asn-a">AWB / LR number</label><input class="input mono" id="asn-a" value="81234 55670"></div>
+        <div class="field"><label class="req" for="asn-b">Boxes</label><input class="input" id="asn-b" value="2"></div>
+        <div class="field"><label class="req" for="asn-i">Your tax invoice no.</label><input class="input mono" id="asn-i" value="RT/26-27/0421"><span class="hint">PDF attached · ₹3,19,000 + GST ₹57,420</span></div>
+        <div class="field"><label class="req" for="asn-e">E-way bill no.</label><input class="input mono" id="asn-e" value="1812 4509 7731"><span class="hint">Required for consignments above ₹50,000</span></div>
+        <div class="field full" id="asn-sf"><label class="req" for="asn-s">Serial numbers (one per line — scan or paste)</label>
+          <textarea class="textarea mono" id="asn-s" style="min-height:150px">5CG1301K7Q
+5CG1301K8V
+5CG1301K9A
+5CG1301KB2
+5CG1301KC7
+5CG1301KD1
+5CG1301KF4
+5CG1301KG9
+5CG1301KH3
+5CG1301KH3</textarea>
+          <span class="small strong" id="asn-count"></span></div>
+      </div>
+    </div>
+    <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-vendor" id="asn-send"><i data-icon="send"></i> Send ASN</button></div>
+  </div></div>
+
+  <div class="modal" id="m-evidence"><div class="modal-card lg">
+    <div class="modal-head"><div><h3>Shipment evidence · FT-0040</h3><div class="small muted">TXO-10483 · 1 × LG 27UL550 · Delhivery (Tradex account)</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-body col gap-16">
+      <div class="form-grid">
+        <div class="field"><label class="req" for="ev-awb">AWB number</label><input class="input mono" id="ev-awb" value="1490 2213 5601"><span class="hint">Pre-filled from the Tradex label</span></div>
+        <div class="field"><label class="req" for="ev-sn">Serial shipped (scan)</label><input class="input mono" id="ev-sn" value="104NTXRJK305"><span class="hint text-ok" style="color:var(--ok-tx)">✓ Matches a Grade B unit on your approved offer</span></div>
+        <div class="field"><label for="ev-w">Packed weight</label><div class="input-group"><input class="input" id="ev-w" value="7.4"><span class="addon">kg</span></div></div>
+        <div class="field"><label>Handover time</label><input class="input" value="26 Sep 2026, 16:20" aria-label="Handover time"></div>
+      </div>
+      <div><div class="label mb-8">Packing photos (min 2)</div>
+        <div class="row gap-8"><div data-ph="mon-setup" class="thumb-lg"></div><div data-ph="pc-setup-white" class="thumb-lg"></div><div class="dropzone" style="padding:12px 18px;flex:1"><div class="small"><b style="color:var(--tx-1)">Add photo</b> · sealed box with label visible</div></div></div></div>
+      <label class="check"><input type="checkbox" checked> Tradex invoice and packing slip enclosed; no RenewTech price list or branding inside the box</label>
+    </div>
+    <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-vendor" data-close data-toast="Evidence uploaded · FT-0040 marked shipped · customer notified by Tradex">Submit evidence</button></div>
+  </div></div>
+
+  <div class="modal" id="m-decline"><div class="modal-card">
+    <div class="modal-head"><h3>Can't fulfil FT-0041</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-body col gap-12">
+      <div class="field"><label class="req" for="dc-r">Reason</label><select class="select" id="dc-r"><option>Unit no longer available</option><option>Failed our final check</option><option>Cannot ship today</option><option>Other</option></select></div>
+      <div class="callout c-info small"><i data-icon="info"></i><div>The task returns to Tradex immediately so the customer's delivery date can be protected. Your availability for RT-LAT5420-A will be reduced by 1.</div></div>
+    </div>
+    <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-danger" data-close data-toast="FT-0041 returned to Tradex · reason recorded">Return task to Tradex</button></div>
+  </div></div>
+
+  <div class="modal" id="m-rotate"><div class="modal-card">
+    <div class="modal-head"><h3>Rotate API key?</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-body col gap-12">
+      <p class="subtle">A new key is created and shown once. The current key keeps working for <b>24 hours</b> so you can update your system, then it is revoked.</p>
+      <div class="field"><label for="otp">OTP sent to +91 98••• ••077</label><input class="input mono" id="otp" placeholder="6-digit code" style="max-width:180px"></div>
+    </div>
+    <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-danger" data-close data-toast="New key created · old key revoked in 24 h · logged in audit trail">Rotate key</button></div>
+  </div></div>
+</main>
+<script src="assets/tradex.js"></script>
+<script>
+TX.ready(() => {
+  const $ = TX.$, $$ = TX.$$, ic = TX.icon, fmt = TX.fmt;
+  const r10 = (n) => Math.round(n / 10) * 10;
+  const sp = (id) => r10((TX.byId(id).price / 1.18) * 0.8);
+
+  // nav helpers
+  document.addEventListener("click", (e) => { const g = e.target.closest("[data-goto]"); if (g) { e.preventDefault(); TX.activateTab(g.dataset.goto); const f = g.dataset.focus && $(g.dataset.focus); (f || document.body).scrollIntoView({ behavior: "smooth", block: "start" }); } });
+  window.addEventListener("hashchange", () => { const h = location.hash.slice(1); if ($(`.tab[data-tab="${h}"]`)) TX.activateTab(h); });
+
+  // ---------------------------------------------------------------- countdowns
+  let t0 = Date.now();
+  const p2 = (n) => String(n).padStart(2, "0");
+  const tick = () => $$("[data-countdown]").forEach((el) => {
+    const left = Math.max(0, +el.dataset.countdown - Math.floor((Date.now() - t0) / 1000));
+    const h = Math.floor(left / 3600), m = Math.floor((left % 3600) / 60), s = left % 60;
+    el.textContent = el.dataset.fmt === "clock" ? `${p2(h)}:${p2(m)}:${p2(s)}` : `${h}h ${p2(m)}m`;
+  });
+  tick(); setInterval(tick, 1000);
+
+  // ---------------------------------------------------------------- freshness states
+  const policy = (cur) => `<div class="policy">
+      <div class="${cur === "fresh" ? "now" : ""}"><b>${ic("check-circle", "ic-sm")} 0–24 h · Fresh</b>Delivery dates shown as “Ships in X–Y days · partner stock”.</div>
+      <div class="${cur === "stale" ? "now w" : ""}"><b>${ic("pause", "ic-sm")} 24–72 h · Stale</b>Delivery promises paused; orders show “confirm before promise”.</div>
+      <div class="${cur === "susp" ? "now b" : ""}"><b>${ic("eye-off", "ic-sm")} 72 h + · Suspended</b>Offers hidden from the storefront until you refresh.</div></div>`;
+  const fresh = {
+    fresh: () => `<div class="row-between"><div><div class="upper muted">Goes stale in</div><div class="fresh-big text-warn"><span class="countdown" data-countdown="21599" data-fmt="clock">05:59:59</span></div><div class="small muted">Deadline today 16:45 IST · last update 25 Sep 16:45 via CSV (Meena R.)</div></div>
+        <div style="width:220px"><div class="row-between small mb-8"><span class="muted">Window used</span><b>75%</b></div><div class="meter m-warn"><span style="width:75%"></span></div><div class="small muted mt-8">Reminder sent at 12 h and 6 h left</div></div></div>${policy("fresh")}`,
+    stale: () => `<div class="callout c-warn">${ic("alert")}<div><strong>Feed stale since 16:45 (2 h 10 m).</strong> 38 offers now show “confirm before promise” instead of a delivery date. Every new order on your offers creates a confirmation request with a 4-hour deadline.</div></div>${policy("stale")}`,
+    susp: () => `<div class="callout c-bad">${ic("alert-octagon")}<div><strong>No update for 74 hours — offers suspended.</strong> 38 offers are hidden from the storefront. Open POs and tasks are not affected. Refresh your feed to restore them automatically.</div></div>${policy("susp")}`,
+  };
+  const setFresh = (k) => { $("#fresh-body").innerHTML = fresh[k](); tick(); };
+  setFresh("fresh");
+  $("#fresh-seg").addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) setFresh(b.dataset.s); });
+
+  // ---------------------------------------------------------------- feed form
+  const F = [
+    { id: "lap-01", code: "RT-LAT5420-A", old: 25, qty: 22, lead0: 3, lead: 3, last: "25 Sep 16:45" },
+    { id: "lap-02", code: "RT-T14G2-B", old: 14, qty: 14, lead0: 3, lead: 3, last: "25 Sep 16:45" },
+    { id: "lap-08", code: "RT-MBP14-A", old: 4, qty: 4, lead0: 5, lead: 5, last: "25 Sep 16:45" },
+    { id: "mon-04", code: "RT-LG27UL-B", old: 31, qty: 31, lead0: 2, lead: 3, last: "25 Sep 16:45" },
+    { t: "HP EliteBook 840 G8 14\"", img: "lap-grey", cond: "refurb-a", code: "RT-EB840G8-A", old: 18, qty: 18, lead0: 3, lead: 3, last: "25 Sep 16:45" },
+    { t: "Dell UltraSharp U2419H 24\"", img: "mon-pink", cond: "refurb-a", code: "RT-U2419H-A", old: 40, qty: 40, lead0: 2, lead: 2, last: "25 Sep 16:45" },
+    { t: "HP ProBook 450 G8 15.6\"", img: "lap-stack", cond: "refurb-a", code: "RT-PB450-A", old: 9, qty: 60, lead0: 4, lead: 4, last: "25 Sep 16:45" },
+    { t: "Lenovo ThinkPad X1 Carbon Gen 8", img: "lap-thinkpad2", cond: "refurb-b", code: "RT-X1C8-B", old: 0, qty: 0, lead0: 5, lead: 5, last: "22 Sep 10:00", susp: true },
+    { t: "Dell Latitude 7420 14\" (draft VS-0224)", img: "lap-dell", cond: "refurb-a", code: "RT-LAT7420-A", old: 12, qty: 12, lead0: 3, lead: 3, last: "—", draft: true },
+  ].map((f) => { if (f.id) { const p = TX.byId(f.id); f.t = p.title.replace(/ (Laptop|Business Laptop|Monitor|HDR10 Monitor)$/, ""); f.img = p.img; f.cond = p.cond; } return f; });
+  const initial = F.map((f) => ({ qty: f.qty, lead: f.lead }));
+  function check(f) {
+    if (f.susp) return '<span class="status s-bad">Listing suspended</span><div class="cell-sub">Quantity ignored</div>';
+    if (f.draft) return '<span class="status s-muted">Not listed yet</span><div class="cell-sub">Used after approval</div>';
+    if (f.heldSent && f.qty !== f.old) return `<span class="status s-warn">Held · awaiting Tradex</span><div class="cell-sub">Sent 10:46 · storefront keeps ${f.old} until accepted</div>`;
+    if (f.old > 0 && (f.qty > f.old * 1.5 || f.qty < f.old * 0.5) && f.qty !== f.old) return `<span class="status s-warn">Held for check</span><div class="cell-sub">${f.qty > f.old ? "+" : ""}${Math.round((f.qty / f.old - 1) * 100)}% vs ${f.old} · old value stays until accepted</div>`;
+    if (f.qty !== f.old || f.lead !== f.lead0) return '<span class="status s-ok">Auto-accept</span><div class="cell-sub">Within ±50% bounds</div>';
+    return '<span class="status s-muted">No change</span>';
+  }
+  const promise = (f) => f.susp || f.draft ? '<span class="muted">—</span>' : (f.qty - 2) > 0 ? `Ships in ${f.lead + 1}–${f.lead + 3} days` : '<span class="text-warn">Confirm before promise</span>';
+  let fq = "";
+  function renderFeed() {
+    $("#feed-body").innerHTML = F.map((f, i) => ({ f, i })).filter(({ f }) => !fq || (f.t + f.code).toLowerCase().includes(fq.toLowerCase())).map(({ f, i }) => {
+      const changed = f.qty !== f.old || f.lead !== f.lead0, held = check(f).includes("Held");
+      return `<tr data-i="${i}" class="${held ? "held" : changed ? "changed" : ""} ${f.susp || f.draft ? "row-muted" : ""}">
+      <td><div class="row">${TX.ph(f.img, "thumb")}<div style="min-width:0"><div class="cell-main truncate" style="max-width:230px">${f.t}</div><div class="cell-sub"><span class="cond refurb" style="height:18px;font-size:10.5px;padding:0 6px">Refurb · ${f.cond === "refurb-a" ? "Grade A" : "Grade B"}</span></div></div></div></td>
+      <td class="nowrap"><div class="mono small strong">${f.code}</div><div class="cell-sub">${f.last}</div></td>
+      <td class="c"><div class="qty sm" ${f.susp ? 'style="opacity:.5;pointer-events:none"' : ""}><button data-step="-1" aria-label="Decrease" ${f.susp ? "disabled" : ""}>${ic("minus", "ic-sm")}</button><input value="${f.qty}" min="0" aria-label="Quantity ${f.code}" ${f.susp ? "disabled" : ""}><button data-step="1" aria-label="Increase" ${f.susp ? "disabled" : ""}>${ic("plus", "ic-sm")}</button></div>${f.qty !== f.old ? `<div class="cell-sub">was ${f.old}</div>` : ""}</td>
+      <td class="c"><input class="input lead-in" value="${f.lead}" aria-label="Lead time ${f.code}" ${f.susp ? "disabled" : ""}>${f.lead !== f.lead0 ? `<div class="cell-sub">was ${f.lead0}</div>` : ""}</td>
+      <td class="small">${promise(f)}${f.susp || f.draft ? "" : '<div class="cell-sub">after 2-unit buffer</div>'}</td>
+      <td class="small">${check(f)}</td></tr>`; }).join("");
+    const n = F.filter((f) => !f.heldSent && (f.qty !== f.old || f.lead !== f.lead0)).length, h = F.filter((f) => !f.heldSent && check(f).includes("Held")).length;
+    $("#feed-foot").innerHTML = n ? `<b style="color:var(--tx-1)">${n} unsaved change${n > 1 ? "s" : ""}</b>${h ? ` · ${h} will be held for a Tradex check` : ""} · saving also confirms all other rows and restarts the 24 h clock` : "No changes — use “Confirm all unchanged” to restart the 24 h clock";
+  }
+  $("#feed-body").addEventListener("change", (e) => {
+    const tr = e.target.closest("tr[data-i]"); if (!tr) return; const f = F[+tr.dataset.i];
+    if (e.target.closest(".qty")) f.qty = Math.max(0, parseInt($(".qty input", tr).value) || 0);
+    if (e.target.classList.contains("lead-in")) { const v = parseInt(e.target.value); if (!(v >= 1 && v <= 30)) { TX.toast("Lead time must be 1–30 working days", "alert"); e.target.value = f.lead; return; } f.lead = v; }
+    renderFeed();
+  });
+  $("#f-q").addEventListener("input", (e) => { fq = e.target.value; renderFeed(); });
+  const restartClock = (msg) => {
+    F.forEach((f) => { if (!f.susp && !f.draft) { if (!check(f).includes("Held")) f.old = f.qty; else f.heldSent = true; f.lead0 = f.lead; f.last = "26 Sep 10:46"; } });
+    $$("[data-countdown='21599']").forEach((el) => (el.dataset.countdown = 86400));
+    t0 = Date.now(); tick(); renderFeed(); TX.toast(msg, "refresh");
+  };
+  $("#feed-save").addEventListener("click", () => restartClock("Feed saved · 1 change held for Tradex check · fresh until 27 Sep 10:46"));
+  $("#confirm-all").addEventListener("click", () => restartClock("All quantities confirmed · feed fresh until 27 Sep 10:46"));
+  $("#feed-reset").addEventListener("click", () => { F.forEach((f, i) => { if (!f.heldSent) { f.qty = initial[i].qty; f.lead = initial[i].lead; } }); renderFeed(); });
+  renderFeed();
+
+  // API key reveal (logged)
+  $("#key-show").addEventListener("click", () => TX.toast("Reveal needs your password + OTP · request logged", "lock"));
+
+  // ---------------------------------------------------------------- POs
+  const POS = [
+    { po: "PO-2026-0192", iss: "26 Sep 09:10", lines: "6 × Dell Latitude 5420 · 4 × LG 27UL550", units: 10, val: 6 * sp("lap-01") + 4 * sp("mon-04"), to: "WH-BLR", dl: '<b class="text-bad">Confirm by today 18:00</b><div class="cell-sub">Ship-by 2 Oct</div>', st: '<span class="status s-warn">Awaiting confirmation</span>', act: '<button class="btn btn-sm btn-vendor" data-open="d-po">Review &amp; confirm</button>', open: true },
+    { po: "PO-2026-0189", iss: "23 Sep 11:30", lines: "10 × HP EliteBook 840 G8", units: 10, val: 10 * 31900, to: "WH-BLR", dl: "Ship-by <b>29 Sep</b><div class='cell-sub'>ASN not sent yet</div>", st: '<span class="status s-info">Confirmed</span>', act: '<button class="btn btn-sm" data-open="m-asn"><i data-icon="send"></i> Create ASN</button>', open: true },
+    { po: "PO-2026-0187", iss: "20 Sep 15:05", lines: "12 × ThinkPad T14 Gen 2 → 8 confirmed", units: 8, val: 8 * sp("lap-02"), to: "WH-BLR", dl: "Arriving 27 Sep<div class='cell-sub'>Blue Dart 80977 12045</div>", st: '<span class="status s-brand">Partially confirmed · in transit</span><div class="cell-sub">ASN-0187-1 · 8 serials</div>', act: '<button class="btn btn-sm btn-ghost" data-toast="ASN-0187-1 opened (8 serials)">View ASN</button>', open: true },
+    { po: "PO-2026-0184", iss: "18 Sep 10:20", lines: "20 × Dell U2419H · 6 × LG 27UL550", units: 26, val: 20 * 9400 + 6 * sp("mon-04"), to: "WH-BLR", dl: "Ship-by <b>6 Oct</b><div class='cell-sub'>Your date: 5 Oct</div>", st: '<span class="status s-info">Confirmed</span>', act: '<button class="btn btn-sm" data-toast="ASN form opened for PO-2026-0184">Create ASN</button>', open: true },
+    { po: "PO-2026-0183", iss: "12 Sep 09:45", lines: "6 × LG 27UL550", units: 6, val: 6 * sp("mon-04"), to: "WH-BLR", dl: "Received 21 Sep<div class='cell-sub'>GRN-0436</div>", st: '<span class="status s-ok">Received · 5 passed QC</span><div class="cell-sub">1 unit → RTV-0031</div>', act: '<button class="btn btn-sm btn-ghost" data-goto="returns">View RTV</button>', open: false },
+    { po: "PO-2026-0178", iss: "8 Sep 14:00", lines: "5 × Lenovo ThinkPad T470s", units: 5, val: 5 * 16800, to: "WH-BLR", dl: "—", st: '<span class="status s-bad">Rejected by you</span><div class="cell-sub">Model discontinued · 9 Sep</div>', act: "", open: false },
+  ];
+  let pf = "open";
+  function renderPOs() {
+    $("#po-body").innerHTML = POS.filter((p) => pf === "all" || (pf === "open" ? p.open : !p.open)).map((p) => `<tr>
+      <td class="mono strong nowrap">${p.po}</td><td class="small nowrap">${p.iss}</td><td class="small">${p.lines}<div class="cell-sub">${p.units} units</div></td>
+      <td class="r strong">${fmt(p.val)}</td><td class="small">${p.to}<div class="cell-sub">Bengaluru</div></td><td class="small">${p.dl}</td><td>${p.st}</td><td class="r">${p.act}</td></tr>`).join("");
+    TX.hydrate($("#po-body"));
+  }
+  $("#po-seg").addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) { pf = b.dataset.v; renderPOs(); } });
+  renderPOs();
+
+  // PO lines (confirm / partial / reject with reason)
+  const LN = [
+    { id: "lap-01", code: "RT-LAT5420-A", n: 6, dec: "confirm", q: 6, reason: "" },
+    { id: "mon-04", code: "RT-LG27UL-B", n: 4, dec: "partial", q: 3, reason: "Only 3 units meet Grade B" },
+  ];
+  function renderLines() {
+    $("#po-lines").innerHTML = LN.map((l, i) => { const p = TX.byId(l.id); return `<tr data-l="${i}">
+      <td><div class="row">${TX.ph(p.img, "thumb")}<div><div class="cell-main nowrap">${p.title.split(" ").slice(0, 3).join(" ")}</div><div class="cell-sub mono nowrap">${l.code}</div></div></div></td>
+      <td class="r"><b>${l.n}</b><div class="cell-sub nowrap">× ${fmt(sp(l.id))}</div></td>
+      <td><select class="select" data-k="dec" aria-label="Decision" style="min-width:170px"><option value="confirm" ${l.dec === "confirm" ? "selected" : ""}>Confirm</option><option value="partial" ${l.dec === "partial" ? "selected" : ""}>Partially confirm</option><option value="reject" ${l.dec === "reject" ? "selected" : ""}>Reject line</option></select>${l.dec === "confirm" ? "" : `<select class="select mt-4 ${!l.reason ? "is-error" : ""}" data-k="reason" aria-label="Reason" style="min-width:170px;display:block"><option value="">Choose a reason…</option>${["Only 3 units meet Grade B", "Stock no longer available", "Price has changed", "Cannot meet ship-by date", "Model discontinued"].map((r) => `<option ${r === l.reason ? "selected" : ""}>${r}</option>`).join("")}</select>`}</td>
+      <td class="c"><div class="qty sm"><button data-step="-1" aria-label="Decrease">${ic("minus", "ic-sm")}</button><input value="${l.q}" min="0" max="${l.n}" aria-label="Confirm quantity"><button data-step="1" aria-label="Increase">${ic("plus", "ic-sm")}</button></div></td>
+      <td>${l.dec === "reject" ? '<span class="muted small">—</span>' : '<input class="input" value="2 Oct 2026" aria-label="Your ship-by date" style="width:120px">'}</td></tr>`; }).join("");
+    const tot = LN.reduce((a, l) => a + l.q * sp(l.id), 0), units = LN.reduce((a, l) => a + l.q, 0);
+    $("#po-total").innerHTML = `<b>${fmt(tot)}</b> <span class="muted small" style="font-weight:500">· ${units} of 10 units</span>`;
+  }
+  $("#po-lines").addEventListener("change", (e) => {
+    const tr = e.target.closest("tr[data-l]"); const l = LN[+tr.dataset.l];
+    if (e.target.dataset.k === "dec") { l.dec = e.target.value; l.q = l.dec === "confirm" ? l.n : l.dec === "reject" ? 0 : Math.min(l.q, l.n - 1); if (l.dec === "confirm") l.reason = ""; }
+    if (e.target.dataset.k === "reason") l.reason = e.target.value;
+    if (e.target.closest(".qty")) { l.q = Math.min(l.n, Math.max(0, parseInt($(".qty input", tr).value) || 0)); l.dec = l.q === l.n ? "confirm" : l.q === 0 ? "reject" : "partial"; }
+    renderLines(); $("#po-err").classList.add("hidden");
+  });
+  $("#po-confirm").addEventListener("click", () => {
+    if (LN.some((l) => l.dec !== "confirm" && !l.reason)) { $("#po-err").classList.remove("hidden"); TX.toast("Add a reason for each partial or rejected line", "alert"); return; }
+    const units = LN.reduce((a, l) => a + l.q, 0);
+    TX.close($("#po-confirm")); TX.toast(`PO-2026-0192 ${units === 10 ? "confirmed" : "partially confirmed"} · ${units} of 10 units · Tradex purchasing notified`);
+  });
+  renderLines();
+
+  // ASN serial validation
+  const asnCheck = () => {
+    const lines = $("#asn-s").value.split(/\n/).map((s) => s.trim()).filter(Boolean);
+    const dup = lines.filter((s, i) => lines.indexOf(s) !== i);
+    const ok = lines.length === 10 && !dup.length;
+    $("#asn-count").innerHTML = ok ? `<span class="text-ok row gap-4">${ic("check-circle", "ic-sm")} 10 of 10 serials · no duplicates</span>`
+      : `<span class="text-bad row gap-4">${ic("alert", "ic-sm")} ${lines.length} of 10 serials${dup.length ? ` · duplicate: ${[...new Set(dup)].join(", ")}` : ""}</span>`;
+    $("#asn-s").classList.toggle("is-error", !ok); $("#asn-s").style.borderColor = ok ? "" : "var(--bad)";
+    return ok;
+  };
+  $("#asn-s").addEventListener("input", asnCheck); asnCheck();
+  $("#asn-send").addEventListener("click", () => { if (asnCheck()) { TX.close($("#asn-send")); TX.toast("ASN sent for PO-2026-0189 · Tradex warehouse will receive against these serials"); } else TX.toast("Fix the serial list before sending", "alert"); });
+
+  // ---------------------------------------------------------------- RTV
+  const RTV = [
+    { id: "RTV-0031", src: "Inbound QC", ref: "GRN-0436 · PO-2026-0183", img: "mon-setup", unit: "LG 27UL550 27\"", sn: "U-000842 · S/N 104NTXRJK231", issue: "Backlight bleed beyond Grade B (rubric v2.1)", ev: "4 photos · QC checklist", req: "Replacement or credit note", due: '<b class="text-warn">28 Sep</b>', st: '<span class="status s-warn">Awaiting your response</span>', open: true, drawer: true },
+    { id: "RTV-0030", src: "Warranty claim", ref: "Customer RMA-0089", img: "lap-dell", unit: "Dell Latitude 5420", sn: "U-000811 · S/N 7H2KQ53", issue: "Battery swelling at 4 months — RenewTech 6-month warranty", ev: "3 photos · diagnostics report", req: "Repair or replace", due: "—", st: '<span class="status s-info">Accepted · pickup 27 Sep</span><div class="cell-sub">Your choice: replace</div>', open: true },
+    { id: "RTV-0028", src: "Inbound QC", ref: "GRN-0433 · PO-2026-0179", img: "lap-grey", unit: "HP EliteBook 840 G8", sn: "U-000796 · S/N 5CG1288J2L", issue: "Missing key cap (F7)", ev: "2 photos", req: "Credit note", due: "—", st: '<span class="status s-brand">Disputed · Tradex reviewing</span><div class="cell-sub">You: “packed intact — transit damage” + 2 photos</div>', open: true },
+    { id: "RTV-0027", src: "Inbound QC", ref: "GRN-0431 · PO-2026-0171", img: "lap-thinkpad2", unit: "3 × ThinkPad X1 Carbon Gen 8", sn: "U-000771, U-000772, U-000775", issue: "Battery health below 80% (Grade B minimum)", ev: "Battery reports × 3", req: "Credit note", due: "—", st: '<span class="status s-ok">Resolved · debit note DN-0142</span><div class="cell-sub">₹1,23,600 + GST · listing suspended</div>', open: false },
+  ];
+  let rf = "open";
+  function renderRTV() {
+    $("#rtv-body").innerHTML = RTV.filter((r) => rf === "all" || r.open).map((r) => `<tr ${r.drawer ? 'data-drawer="d-rtv" style="cursor:pointer"' : ""}>
+      <td class="mono strong nowrap">${r.id}</td>
+      <td class="small nowrap">${r.src}<div class="cell-sub">${r.ref.replace(" · ", "<br>")}</div></td>
+      <td><div class="row">${TX.ph(r.img, "thumb")}<div><div class="cell-main">${r.unit}</div><div class="cell-sub mono">${r.sn.replace(" · ", "<br>")}</div></div></div></td>
+      <td class="small" style="max-width:240px">${r.issue}<div class="cell-sub row gap-4">${ic("image", "ic-sm")} ${r.ev}</div></td>
+      <td class="small">${r.req}</td><td class="small nowrap">${r.due}</td>
+      <td>${r.st}${r.drawer ? '<div class="mt-4"><button class="btn btn-xs btn-vendor" data-open="d-rtv">Respond</button></div>' : ""}</td></tr>`).join("");
+  }
+  $("#rtv-seg").addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) { rf = b.dataset.v; renderRTV(); } });
+  renderRTV();
+});
+</script>
+</body>
+</html>

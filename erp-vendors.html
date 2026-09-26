@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vendors · Tradex ERP</title>
+  <link rel="stylesheet" href="assets/tradex.css">
+  <style>
+    #tabs-main > .tabs .tab { padding: 10px 12px; }
+    .split { display: grid; grid-template-columns: 300px minmax(0, 1fr); min-height: 560px; }
+    .split > .side { border-right: 1px solid var(--line-2); }
+    .pick { display: flex; gap: 12px; align-items: flex-start; padding: 13px 16px; border-bottom: 1px solid var(--line-2); cursor: pointer; }
+    .pick:hover { background: #fafbff; }
+    .pick.active { background: var(--brand-50); box-shadow: inset 3px 0 0 var(--brand); }
+    .pick .p-t { font-weight: 650; font-size: 13.5px; }
+    .pick .p-s { font-size: 12px; color: var(--tx-3); margin-top: 2px; }
+    .flag { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 700; padding: 2px 8px; border-radius: 4px; background: #fdefe8; color: #a8441b; }
+    .flag .ic { width: 12px; height: 12px; }
+    .diff .flagged { box-shadow: inset 3px 0 0 #ec835a; font-weight: 650; color: var(--tx-1); }
+    .vrow { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; gap: 10px; align-items: start; padding: 10px 0; border-bottom: 1px solid var(--line-2); font-size: 13px; }
+    .vrow:last-child { border-bottom: 0; }
+    .vrow .ci { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; }
+    .vrow .ci .ic { width: 13px; height: 13px; stroke-width: 3; }
+    .ci.ok { background: var(--ok-50); color: var(--ok-tx); } .ci.bad { background: var(--bad-50); color: var(--bad-tx); } .ci.warn { background: var(--warn-50); color: var(--warn-tx); } .ci.muted { background: var(--bg-2); color: var(--tx-3); }
+    .fresh-bar { position: relative; height: 8px; border-radius: 999px; background: var(--bg-2); overflow: visible; width: 100px; flex: none; }
+    .fresh-bar > span { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 999px; }
+    .fresh-bar > i { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--tx-2); }
+    .locked { position: relative; }
+    .locked .lk-body { opacity: .62; pointer-events: none; filter: grayscale(.4); }
+    .prereq { display: grid; grid-template-columns: 34px minmax(0, 1fr) 190px 150px; gap: 12px; align-items: center; padding: 12px 20px; border-bottom: 1px solid var(--line-2); }
+    .prereq:last-child { border-bottom: 0; }
+    .prereq .n { width: 26px; height: 26px; border-radius: 50%; background: var(--bg-2); color: var(--tx-2); display: grid; place-items: center; font-size: 12px; font-weight: 700; }
+    .cat-check { display: flex; flex-wrap: wrap; gap: 6px; }
+    .cat-check label { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); border-radius: 999px; padding: 4px 10px; font-size: 12.5px; cursor: pointer; }
+    .cat-check input { accent-color: var(--brand); }
+    .model-opt { display: flex; gap: 10px; align-items: flex-start; border: 1px solid var(--line); border-radius: var(--r); padding: 10px 12px; cursor: pointer; }
+    .model-opt input { margin-top: 3px; accent-color: var(--brand); }
+    .model-opt.disabled { opacity: .55; cursor: not-allowed; background: var(--bg); }
+  </style>
+</head>
+<body data-app="erp" data-page="vendors">
+<main>
+  <div class="page-head">
+    <div>
+      <div class="crumbs"><span>Partners</span><i data-icon="chevron-right"></i><span>Vendors</span></div>
+      <h1>Vendors</h1>
+      <p class="sub">Suppliers submit product & availability data for review · submissions never overwrite live listings until approved · vendors only ever see their own data</p>
+    </div>
+    <div class="actions">
+      <span class="badge b-info" data-anno="Phase 1B · R05 Vendor portal & submissions">Phase 1B</span>
+      <button class="btn" data-open="m-policy"><i data-icon="shield"></i> Review policy</button>
+      <button class="btn btn-primary" data-open="m-invite"><i data-icon="plus"></i> Invite vendor</button>
+    </div>
+  </div>
+
+  <div class="callout c-brand mb-16" data-anno="§3.2 Launch model: company sells; supplier fulfilment is a pilot; marketplace is Phase 2">
+    <i data-icon="info"></i>
+    <div class="grow"><strong>Launch model:</strong> customers buy from Tradex. Suppliers provide data and stock; <b>NetCore Solutions</b> runs a supplier-fulfilment pilot with confirmation deadlines. <b>Marketplace selling</b> (third-party seller of record, commissions, settlements) is Phase 2 and stays locked until its prerequisites are signed off.</div>
+    <button class="btn btn-sm" data-goto="marketplace">Prerequisites</button>
+  </div>
+
+  <section class="grid g-6">
+    <div class="kpi"><div class="k-label"><i data-icon="building"></i> <span>Active vendors</span></div><div class="k-value">4</div><div class="k-foot"><span>3 suppliers · 1 pilot · 1 suspended</span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="inbox"></i> <span>Applications</span></div><div class="k-value">2</div><div class="k-foot"><span>1 blocked by Phase 2</span></div></div>
+    <div class="kpi" data-anno="R05 Review queue with SLA"><div class="k-label"><i data-icon="clipboard"></i> <span>To review</span></div><div class="k-value text-warn">3</div><div class="k-foot"><span>oldest 20 h · SLA 24 h</span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="zap"></i> <span>Auto-accepted</span></div><div class="k-value">1,284</div><div class="k-foot"><span>stock refreshes today · within bounds</span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="clock"></i> <span>Stale feeds</span></div><div class="k-value text-bad">1</div><div class="k-foot"><span>14 offers confirm-before-promise</span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="target"></i> <span>Avg. fill rate · 30 d</span></div><div class="k-value">93.4%</div><div class="k-foot"><span class="delta up-good"><i data-icon="trending-up"></i> +1.2 pt</span></div></div>
+  </section>
+
+  <section class="card mt-16" data-tabset id="tabs-main">
+    <div class="tabs" style="padding:0 12px">
+      <button class="tab active" data-tab="list">Vendors <span class="count">6</span></button>
+      <button class="tab" data-tab="applications">Applications <span class="count">2</span></button>
+      <button class="tab" data-tab="submissions">Submissions <span class="count">3</span></button>
+      <button class="tab" data-tab="freshness">Availability feeds <span class="count" style="background:var(--bad-50);color:var(--bad-tx)">1 stale</span></button>
+      <button class="tab" data-tab="performance">Performance</button>
+      <button class="tab" data-tab="marketplace"><i data-icon="lock" class="ic-sm"></i> Marketplace · Phase 2</button>
+    </div>
+
+    <!-- VENDOR LIST -->
+    <div class="tab-panel active" data-panel="list">
+      <div class="table-toolbar">
+        <div class="input-icon" style="width:260px"><i data-icon="search"></i><input class="input input-sm" id="v-q" placeholder="Vendor, city, category…" aria-label="Search vendors"></div>
+        <div class="seg" id="v-model"><button class="active" data-m="all">All models</button><button data-m="Supplier">Supplier</button><button data-m="pilot">Supplier fulfilment</button><button data-m="Marketplace">Marketplace</button></div>
+        <span class="ml-auto small muted">Supplier quantities are never shown as Tradex-owned stock</span>
+      </div>
+      <div class="table-wrap"><table class="table">
+        <thead><tr><th>Vendor</th><th>Model</th><th>Status</th><th>Permitted categories</th><th>Feed freshness</th><th class="r">Offers</th><th class="r">Pending</th><th>Score</th></tr></thead>
+        <tbody id="v-body"></tbody>
+      </table></div>
+      <div class="card-foot"><span class="small muted">Suspended vendors can't submit live changes; their historical orders, POs and statements stay accessible to authorised staff.</span><span class="small muted">Click a vendor for details</span></div>
+    </div>
+
+    <!-- APPLICATIONS -->
+    <div class="tab-panel" data-panel="applications">
+      <div class="split">
+        <div class="side">
+          <div class="row-between" style="padding:12px 16px;border-bottom:1px solid var(--line-2)"><b class="small">Applications</b><span class="small muted">applicant ≠ activated vendor</span></div>
+          <div class="pick active" data-apk="lens"><span class="avatar sm sq" style="background:#0e9f8a">LC</span><div class="grow"><div class="p-t">LensCraft Optics</div><div class="p-s">Kochi · Supplier · lenses & filters</div><div class="mt-4"><span class="status s-ok">Ready for review</span></div></div></div>
+          <div class="pick" data-apk="dh"><span class="avatar sm sq" style="background:#7c3aed">DH</span><div class="grow"><div class="p-t">Digital Hub Traders</div><div class="p-s">Pune · applied as marketplace seller</div><div class="mt-4"><span class="status s-muted">Blocked · Phase 2</span></div></div></div>
+          <div style="padding:14px 16px" class="small muted"><div class="upper mb-8">Recently decided</div>
+            <div class="row-between"><span>NetCore Solutions</span><span class="status s-ok">Approved · pilot</span></div><div class="mb-8">2 Aug · Networking, Accessories · terms v2.1</div>
+            <div class="row-between"><span>QuickParts Online</span><span class="status s-bad">Rejected</span></div><div>11 Sep · grey-market imports, no brand authorisation</div></div>
+        </div>
+        <div style="min-width:0">
+          <div data-apd="lens" style="padding:20px" data-anno="§11.1 Approval records reviewer, reasons, categories, locations, terms version, date">
+            <div class="row-between mb-16" style="align-items:flex-start"><div><div class="row gap-8"><h2 style="font-size:19px">LensCraft Optics</h2><span class="status s-ok">Ready for review</span></div><div class="small muted mt-4">Applied 24 Sep 2026 via public vendor form · contact Thomas Mathew · Kochi 682016, Kerala</div></div><span class="badge b-outline">Vendor applicant · no catalog or stock access</span></div>
+            <div class="grid" style="grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:20px">
+              <div>
+                <h4 class="mb-8">Checks</h4>
+                <div class="panel" style="padding:2px 14px">
+                  <div class="vrow"><span class="ci ok"><i data-icon="check"></i></span><div><b>GSTIN 32AAGFL3321R1ZQ verified</b><div class="small muted">GST portal check · active · legal name matches · Kerala (32)</div></div><span></span></div>
+                  <div class="vrow"><span class="ci ok"><i data-icon="check"></i></span><div><b>Bank account verified</b><div class="small muted">Penny-drop ₹1 · name match 96% · for supplier bill payments</div></div><span></span></div>
+                  <div class="vrow"><span class="ci ok"><i data-icon="check"></i></span><div><b>Brand authorisation</b><div class="small muted">Distributor letter for Hoya & K&F filters · Sigma lenses (valid to Mar 2027)</div></div><button class="btn btn-xs btn-ghost" data-toast="Document opened (watermarked, access logged)">Open</button></div>
+                  <div class="vrow"><span class="ci warn"><i data-icon="alert"></i></span><div><b>Sample price file</b><div class="small muted">38 rows · 4 rows with missing HSN · will fail import until fixed</div></div><button class="btn btn-xs btn-ghost" data-toast="Validation report downloaded">Report</button></div>
+                  <div class="vrow"><span class="ci ok"><i data-icon="check"></i></span><div><b>Contacts verified</b><div class="small muted">2 approved contacts · email & mobile OTP</div></div><span></span></div>
+                </div>
+                <h4 class="mb-8 mt-16">Business model</h4>
+                <div class="col gap-8">
+                  <label class="model-opt"><input type="radio" name="lc-model" checked><div><b>Supplier</b><div class="small muted">Tradex buys and receives stock; vendor submits product data & availability</div></div></label>
+                  <label class="model-opt"><input type="radio" name="lc-model"><div><b>Supplier fulfilment (pilot)</b><div class="small muted">Vendor ships for Tradex after confirmation · pilot capacity: 1 of 1 used</div></div></label>
+                  <label class="model-opt disabled"><input type="radio" name="lc-model" disabled><div><b>Marketplace seller</b> <span class="badge sq">Phase 2 · locked</span><div class="small muted">Requires marketplace prerequisites sign-off</div></div></label>
+                </div>
+              </div>
+              <div>
+                <h4 class="mb-8">Decision record</h4>
+                <div class="col gap-12">
+                  <div class="field"><label>Permitted categories</label><div class="cat-check"><label><input type="checkbox" checked> Lenses</label><label><input type="checkbox" checked> Camera accessories</label><label><input type="checkbox"> Cameras</label><label><input type="checkbox"> Audio</label></div></div>
+                  <div class="field"><label>Permitted delivery locations</label><div class="cat-check"><label><input type="checkbox" checked> Central Warehouse · WH-BLR</label><label><input type="checkbox"> SP Road · BR-SPR</label><label><input type="checkbox"> Koramangala · BR-KRM</label><label><input type="checkbox"> Mysuru · BR-MYS</label></div></div>
+                  <div class="form-grid">
+                    <div class="field"><label for="lc-terms">Terms version</label><select class="select" id="lc-terms"><option>v2.1 · 1 Aug 2026</option><option>v2.0 · superseded</option></select></div>
+                    <div class="field"><label for="lc-fresh">Feed freshness deadline</label><select class="select" id="lc-fresh"><option>24 h</option><option>12 h</option><option>6 h</option></select></div>
+                    <div class="field"><label>Reviewer</label><input class="input" value="Rajesh Menon (Owner)" readonly></div>
+                    <div class="field"><label>Review date</label><input class="input" value="26 Sep 2026" readonly></div>
+                  </div>
+                  <div class="field"><label class="req" for="lc-reason">Reasons</label><textarea class="textarea" id="lc-reason" placeholder="e.g. Authorised distributor for Hoya/K&F; approved for lenses & accessories only; fix HSN in price file before first import."></textarea><span class="err hidden" id="lc-err">Reasons are required and stored with the decision.</span></div>
+                  <div class="row gap-8"><button class="btn btn-danger" data-vdec="reject">Reject</button><button class="btn" data-vdec="info">Request info</button><span class="ml-auto"></span><button class="btn btn-ok" data-vdec="approve"><i data-icon="check" class="ic-sm"></i> Approve</button></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div data-apd="dh" class="hidden" style="padding:20px">
+            <div class="row-between mb-16" style="align-items:flex-start"><div><div class="row gap-8"><h2 style="font-size:19px">Digital Hub Traders</h2><span class="status s-muted">Blocked · Phase 2</span></div><div class="small muted mt-4">V-041 · applied 19 Sep 2026 as <b>marketplace seller</b> · Pune 411014 · docs verified</div></div></div>
+            <div class="callout c-warn mb-16"><i data-icon="lock"></i><div><strong>Marketplace selling isn't enabled.</strong> This applicant wants to sell to customers as seller of record with its own stock. That needs seller agreements, commission, settlement, returns and tax decisions (see Marketplace prerequisites). You can hold the application, or offer the supplier model instead.</div></div>
+            <dl class="kv mb-16"><dt>GSTIN</dt><dd><span class="mono">27AAKCD7751L1ZB</span> · verified (Maharashtra)</dd><dt>Categories requested</dt><dd>Mobile phones, Tablets, Wearables</dd><dt>Fulfilment</dt><dd>Own warehouse, Pune · ships pan-India</dd><dt>Payout details</dt><dd>Submitted · not verified (not needed until Phase 2)</dd></dl>
+            <div class="row gap-8"><button class="btn" data-toast="Application on hold until marketplace go-live decision · applicant informed">Hold until Phase 2</button><button class="btn btn-primary" data-toast="Offer sent: join as supplier (Tradex is seller of record)">Offer supplier model</button><button class="btn btn-danger" data-toast="Rejection needs a reason — opens decision form">Reject…</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUBMISSIONS -->
+    <div class="tab-panel" data-panel="submissions">
+      <div class="split">
+        <div class="side">
+          <div class="row-between" style="padding:12px 16px;border-bottom:1px solid var(--line-2)"><div class="seg"><button class="active">Needs review (3)</button><button>All</button></div></div>
+          <div id="vs-list"></div>
+        </div>
+        <div id="vs-detail" style="min-width:0" data-anno="1B · R05 Submission review: diff, validation, sensitive flags"></div>
+      </div>
+    </div>
+
+    <!-- FRESHNESS -->
+    <div class="tab-panel" data-panel="freshness">
+      <div class="card-body" style="padding-bottom:0">
+        <div class="grid g-3 mb-16" data-anno="§9.7 Stale feeds switch automatically · never shown as company stock">
+          <div class="panel"><div class="row gap-8"><span class="status s-ok">Fresh</span></div><div class="small muted mt-4">Within deadline · delivery promises shown normally (supplier lead time + buffer)</div></div>
+          <div class="panel"><div class="row gap-8"><span class="status s-warn">Stale → confirm before promise</span></div><div class="small muted mt-4">Past deadline · immediate-delivery promise hidden · checkout shows “availability confirmed within 4 h”</div></div>
+          <div class="panel"><div class="row gap-8"><span class="status s-bad">Suspended</span></div><div class="small muted mt-4">Past 3× deadline · offers hidden from sale · vendor and buyer team alerted</div></div>
+        </div>
+      </div>
+      <div class="table-wrap"><table class="table">
+        <thead><tr><th>Vendor · feed</th><th class="r">Offers</th><th>Last update</th><th>Age vs deadline</th><th>State</th><th>Last run</th><th class="r"></th></tr></thead>
+        <tbody id="f-body"></tbody>
+      </table></div>
+      <div class="card-body grid g-2" style="border-top:1px solid var(--line-2)">
+        <div>
+          <h4 class="mb-8">NetCore Solutions · what happened</h4>
+          <ul class="timeline">
+            <li class="done"><span class="t-dot"><i data-icon="check"></i></span><div class="t-title">Last successful API update · 214 rows</div><div class="t-meta">25 Sep 08:12</div></li>
+            <li class="warn"><span class="t-dot"><i data-icon="alert"></i></span><div class="t-title">Deadline passed (12 h) · reminder to vendor contact</div><div class="t-meta">25 Sep 20:12 · email + portal notification</div></li>
+            <li class="warn"><span class="t-dot"><i data-icon="zap"></i></span><div class="t-title">Automation A21: 14 offers → “confirm before promise”</div><div class="t-meta">25 Sep 20:12 · storefront delivery dates hidden · audit AUD-55011</div></li>
+            <li class="current"><span class="t-dot"><i data-icon="clock"></i></span><div class="t-title">Auto-suspend at 36 h if still stale</div><div class="t-meta">26 Sep 20:12 · 1 open order needs manual confirmation (TXO-10485)</div></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="mb-8">Freshness rules</h4>
+          <dl class="kv"><dt>Deadline</dt><dd>Per vendor (6–24 h) · set at approval</dd><dt>On stale</dt><dd>Hide immediate-delivery promise · require confirmation</dd><dt>On 3× deadline</dt><dd>Suspend offers from sale</dd><dt>Routine refresh</dt><dd>Auto-accepted within ±50% qty, known SKUs, no sensitive fields</dd><dt>Ownership</dt><dd>A feed never creates Tradex stock — only a GRN does</dd><dt>Escalation</dt><dd>Buyer (Anita R.) once · then daily digest</dd></dl>
+        </div>
+      </div>
+    </div>
+
+    <!-- PERFORMANCE -->
+    <div class="tab-panel" data-panel="performance">
+      <div class="card-body">
+        <div class="row-between mb-8"><h4>Last 90 days</h4><div class="seg"><button>30 d</button><button class="active">90 d</button><button>12 m</button></div></div>
+        <div class="table-wrap" style="border:1px solid var(--line);border-radius:var(--r)"><table class="table compact">
+          <thead><tr><th>Vendor</th><th>Model</th><th class="r">Fill rate</th><th class="r">Response time</th><th class="r">Dispatch SLA</th><th class="r">Return / defect</th><th class="r">First-pass approval</th><th class="r">Feed on time</th></tr></thead>
+          <tbody id="p-body"></tbody>
+        </table></div>
+        <p class="small muted mt-8">Fill rate = PO lines received in full ÷ lines ordered. Response time = median time to confirm a PO or availability request. Dispatch SLA applies to the supplier-fulfilment pilot only. First-pass approval = submissions approved without changes.</p>
+        <div class="grid g-2 mt-16">
+          <div>
+            <div class="row-between mb-8"><h4>Performance score</h4><button class="btn btn-sm btn-ghost" data-table-toggle="ch-score"><i data-icon="list"></i> Table</button></div>
+            <div id="ch-score"></div>
+          </div>
+          <div class="col gap-12">
+            <div class="callout c-info small"><i data-icon="info"></i><div>Scores drive vendor priority in replenishment suggestions and whether routine stock refreshes are auto-accepted. They never change prices on their own.</div></div>
+            <div class="panel small"><b>Score weights (proposed)</b><div class="muted mt-4">Fill rate 30% · response time 20% · return/defect 20% · first-pass data quality 15% · feed on time 15%. Below 70 → buyer review of permissions; below 60 → auto-accept of stock refreshes switched off.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MARKETPLACE (LOCKED) -->
+    <div class="tab-panel" data-panel="marketplace">
+      <div class="card-body" style="padding-bottom:12px">
+        <div class="callout c-warn" data-anno="Phase 2 · §11.4 Marketplace prerequisites gate">
+          <i data-icon="lock"></i><div class="grow"><strong>Marketplace selling is locked (Phase 2).</strong> It can only be activated once every prerequisite below has an approved decision from its owner. Ordinary bank transfers are not automated marketplace settlement.</div>
+          <button class="btn btn-sm" disabled><i data-icon="lock" class="ic-sm"></i> Activate marketplace</button>
+        </div>
+      </div>
+      <div class="row-between" style="padding:4px 20px 10px"><b>Prerequisites · 1 of 9 decided</b><div class="meter" style="width:220px"><span style="width:11%"></span></div></div>
+      <div id="mp-list" style="border-top:1px solid var(--line-2)"></div>
+      <div class="card-body locked" style="border-top:1px solid var(--line-2)">
+        <div class="row-between mb-8"><h4>Settlement statement (preview of Phase 2 design)</h4><span class="badge"><i data-icon="lock"></i> Not active</span></div>
+        <div class="lk-body"><table class="table compact" style="border:1px solid var(--line);border-radius:var(--r)">
+          <thead><tr><th>Component</th><th>Basis & version</th><th class="r">Amount</th></tr></thead>
+          <tbody>
+            <tr><td>Eligible delivered sales</td><td class="small">Delivered + 10-day return window closed</td><td class="r">₹4,82,300</td></tr>
+            <tr><td>Refunds</td><td class="small">Allocated line amounts</td><td class="r">−₹18,990</td></tr>
+            <tr><td>Commission</td><td class="small">Category rate card v1 (6–9%)</td><td class="r">−₹36,170</td></tr>
+            <tr><td>GST on commission & TCS</td><td class="small">To be defined by accountant</td><td class="r">−₹—</td></tr>
+            <tr><td>Logistics deductions</td><td class="small">Per-shipment rate card</td><td class="r">−₹9,400</td></tr>
+            <tr><td>Return reserve held</td><td class="small">5% of eligible sales, 30 days</td><td class="r">−₹24,115</td></tr>
+            <tr><td class="strong">Seller payable</td><td class="small">Maker–checker before payout</td><td class="r strong">₹3,93,625</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Vendor drawer -->
+  <div class="drawer" id="d-vendor"><div class="drawer-card wide">
+    <div class="drawer-head"><div id="dv-head" class="grow"></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="drawer-body" id="dv-body"></div>
+    <div class="drawer-foot" id="dv-foot"></div>
+  </div></div>
+
+  <!-- Decision modal for submissions -->
+  <div class="modal" id="m-vsdec"><div class="modal-card">
+    <div class="modal-head"><h3 id="vsd-title">Decision</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-body col gap-12">
+      <div class="seg" id="vsd-seg"><button data-d="approve" class="active">Approve</button><button data-d="changes">Request changes</button><button data-d="reject">Reject</button></div>
+      <div class="field"><label class="req" for="vsd-reason">Reason / comments to vendor</label><textarea class="textarea" id="vsd-reason" placeholder="e.g. Warranty change accepted — storefront text updates on publication; existing orders keep their original warranty."></textarea><span class="err hidden" id="vsd-err">A reason is required.</span></div>
+      <label class="check small"><input type="checkbox" checked> Keep the current live version until the vendor resubmits</label>
+    </div>
+    <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-primary" id="vsd-go">Submit</button></div>
+  </div></div>
+
+  <!-- Policy modal -->
+  <div class="modal" id="m-policy"><div class="modal-card lg">
+    <div class="modal-head"><div><h3>Review policy · vendor data</h3><div class="small muted">Small approval matrix — the owner doesn't approve routine stock refreshes</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-body">
+      <table class="table compact" style="border:1px solid var(--line);border-radius:var(--r)">
+        <thead><tr><th>Change type</th><th>Handling</th><th>Reviewer</th></tr></thead>
+        <tbody>
+          <tr><td>New vendor</td><td>Explicit review · categories, locations, terms version</td><td>Owner / Operations admin</td></tr>
+          <tr><td>New product</td><td>Validation + explicit review before publication</td><td>Catalog specialist</td></tr>
+          <tr><td>Sensitive edit (brand, condition, warranty, tax class, payout account)</td><td>Pending version · live stays unchanged</td><td>Catalog lead · Finance for tax/payout</td></tr>
+          <tr><td>Price outside ±15% of 30-day median</td><td>Held as outlier</td><td>Buyer</td></tr>
+          <tr><td>Routine stock / lead-time refresh (trusted vendor)</td><td>Auto-accepted within validated bounds</td><td>— (audited)</td></tr>
+          <tr><td>Safety or counterfeit concern</td><td>Immediate suspension of offer</td><td>Operations admin</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="modal-foot"><button class="btn" data-close>Close</button></div>
+  </div></div>
+
+  <!-- Invite modal -->
+  <div class="modal" id="m-invite"><div class="modal-card">
+    <div class="modal-head"><h3>Invite a vendor</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-body col gap-12">
+      <p class="small subtle">Invited vendors still go through verification and approval. An invitation creates an applicant, not an active vendor.</p>
+      <div class="form-grid"><div class="field"><label class="req" for="vi-name">Business name</label><input class="input" id="vi-name"></div><div class="field"><label class="req" for="vi-mail">Contact email</label><input class="input" id="vi-mail" type="email"></div>
+      <div class="field full"><label for="vi-model">Proposed model</label><select class="select" id="vi-model"><option>Supplier</option><option>Supplier fulfilment (pilot — capacity full)</option><option disabled>Marketplace seller (Phase 2)</option></select></div></div>
+    </div>
+    <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-primary" data-close data-toast="Invitation sent · link valid 7 days">Send invitation</button></div>
+  </div></div>
+</main>
+<script src="assets/tradex.js"></script>
+<script>
+TX.ready(() => {
+  const $ = TX.$, $$ = TX.$$, ic = TX.icon, fmt = TX.fmt;
+  document.addEventListener("click", (e) => { const g = e.target.closest("[data-goto]"); if (g) { TX.activateTab(g.dataset.goto); $("#tabs-main").scrollIntoView({ behavior: "smooth" }); onTab(g.dataset.goto); } });
+
+  /* ---------------- Vendor data (TX.vendors + page extras) ---------------- */
+  const EXTRA = {
+    "V-014": { cats: ["Laptops", "Components", "Storage", "Monitors", "Networking"], locs: "Central Warehouse", feed: ["API", 0.1, 6, "6 min ago"], offers: 412, pending: 1, pos: 3, terms: "v2.1", contact: "Srinivas R.", since: "Jan 2026", fill: 97.1, resp: "2.1 h", disp: "—", ret: "0.6%", fpa: "92%", ontime: "99.6%" },
+    "V-022": { cats: ["Laptops · refurb", "Desktops · refurb", "Monitors · refurb"], locs: "Central Warehouse", feed: ["Portal CSV", 3.2, 24, "3 h ago"], offers: 146, pending: 2, pos: 2, terms: "v2.1", contact: "Suresh Babu", since: "Feb 2026", fill: 91.4, resp: "5.8 h", disp: "—", ret: "2.9%", fpa: "71%", ontime: "96.0%" },
+    "V-031": { cats: ["Cameras", "Lenses"], locs: "Central Warehouse, SP Road", feed: ["SFTP CSV", 5.2, 6, "5 h 10 min ago"], offers: 88, pending: 1, pos: 1, terms: "v2.1", contact: "Nikhil Shah", since: "Mar 2026", fill: 94.8, resp: "3.4 h", disp: "—", ret: "1.1%", fpa: "84%", ontime: "93.5%" },
+    "V-037": { cats: ["Networking", "Accessories"], locs: "Ships direct · KA & TS (pilot)", feed: ["API", 26.5, 12, "26 h ago"], offers: 14, pending: 0, pos: 0, terms: "v2.1 + pilot addendum", contact: "Kiran Reddy", since: "Aug 2026", fill: 88.2, resp: "7.9 h", disp: "86% < 24 h", ret: "1.8%", fpa: "80%", ontime: "78.4%" },
+    "V-041": { cats: ["Phones", "Tablets", "Wearables"], locs: "—", feed: null, offers: 0, pending: 0, pos: 0, terms: "—", contact: "Rohit Jain", since: "Applied 19 Sep" },
+  };
+  const VENDORS = [...TX.vendors.map((v) => ({ ...v, ...EXTRA[v.id] })),
+    { id: "V-009", name: "Apex Peripherals", model: "Supplier", city: "New Delhi", status: "Suspended", score: 62, cats: ["Accessories", "Audio"], locs: "Central Warehouse", feed: ["Portal CSV", 0, 24, "suspended"], offers: 0, pending: 0, pos: 0, terms: "v2.0", contact: "Aman Gupta", since: "Jan 2026", fill: 74.0, resp: "19 h", disp: "—", ret: "6.2%", fpa: "55%", ontime: "61.0%", susp: "Suspended 12 Sep · product-safety complaint on 2 chargers under review" }];
+  const modelBadge = (m) => m.startsWith("Marketplace") ? `<span class="badge">${ic("lock")} Marketplace · Phase 2</span>` : m.includes("pilot") ? `<span class="badge b-accent">Supplier fulfilment · pilot</span>` : `<span class="badge b-vendor">${m}</span>`;
+  const statusOf = (v) => ({ Active: "s-ok", Pilot: "s-info", Applied: "s-muted", Suspended: "s-bad" }[v.status]);
+  const feedState = (f) => !f ? ["s-muted", "No feed"] : f[3] === "suspended" ? ["s-bad", "Suspended"] : f[1] > f[2] * 3 ? ["s-bad", "Suspended"] : f[1] > f[2] ? ["s-warn", "Confirm before promise"] : f[1] > f[2] * 0.8 ? ["s-warn", "Near deadline"] : ["s-ok", "Fresh"];
+  const renderV = () => {
+    const q = $("#v-q").value.toLowerCase(), m = ($("#v-model .active") || {}).dataset?.m || "all";
+    $("#v-body").innerHTML = VENDORS.filter((v) => (m === "all" || (m === "pilot" ? v.model.includes("pilot") : m === "Supplier" ? v.model.startsWith("Supplier") && !v.model.includes("pilot") : v.model.startsWith(m))) && (v.name + v.city + v.cats.join(" ")).toLowerCase().includes(q)).map((v) => {
+      const fs = feedState(v.feed);
+      return `<tr data-vendor="${v.id}" style="cursor:pointer">
+        <td><div class="row"><span class="avatar sm sq" style="background:${v.status === "Suspended" ? "#98a2b3" : "#0e9f8a"}">${v.name.split(" ").map((w) => w[0]).slice(0, 2).join("")}</span><div><div class="cell-main nowrap">${v.name}</div><div class="cell-sub">${v.id} · ${v.city}</div></div></div></td>
+        <td>${modelBadge(v.model)}</td>
+        <td><span class="status ${statusOf(v)}">${v.status === "Applied" ? "Applicant" : v.status}</span><div class="cell-sub">terms ${v.terms.split(" ")[0]}</div></td>
+        <td><div class="row wrap gap-4" style="max-width:220px">${v.cats.slice(0, 2).map((c) => `<span class="badge">${c}</span>`).join("")}${v.cats.length > 2 ? `<span class="badge b-outline">+${v.cats.length - 2}</span>` : ""}</div></td>
+        <td>${v.feed ? `<span class="status ${fs[0]}">${fs[1]}</span><div class="cell-sub">${v.feed[3] === "suspended" ? "feed disabled" : v.feed[3] + " · deadline " + v.feed[2] + " h"}</div>` : '<span class="muted small">—</span>'}</td>
+        <td class="r">${v.offers || "—"}</td><td class="r">${v.pending ? `<span class="badge b-warn">${v.pending}</span>` : "—"}</td>
+        <td>${v.score ? `<div class="row gap-8"><div class="meter thin ${v.score >= 90 ? "m-ok" : v.score >= 75 ? "" : "m-bad"}" style="width:48px"><span style="width:${v.score}%"></span></div><b class="small">${v.score}</b></div>` : '<span class="muted small">Not rated</span>'}</td>
+        </tr>`; }).join("") || `<tr><td colspan="8"><div class="empty">${ic("building")}<h4>No vendors match</h4></div></td></tr>`;
+  };
+  renderV();
+  $("#v-q").addEventListener("input", renderV);
+  $("#v-model").addEventListener("click", (e) => { if (e.target.closest("button")) setTimeout(renderV); });
+
+  /* ---------------- Vendor drawer ---------------- */
+  const openVendor = (id) => {
+    const v = VENDORS.find((x) => x.id === id); const fs = feedState(v.feed);
+    $("#dv-head").innerHTML = `<div class="row gap-12"><span class="avatar lg sq" style="background:${v.status === "Suspended" ? "#98a2b3" : "#0e9f8a"}">${v.name.split(" ").map((w) => w[0]).slice(0, 2).join("")}</span><div><div class="row gap-8"><h3>${v.name}</h3>${modelBadge(v.model)}<span class="status ${statusOf(v)}">${v.status === "Applied" ? "Applicant" : v.status}</span></div><div class="small muted mt-4">${v.id} · ${v.city} · contact ${v.contact} · since ${v.since}</div></div></div>`;
+    $("#dv-body").innerHTML = `
+      ${v.susp ? `<div class="callout c-bad mb-16 small">${ic("alert-octagon")}<div><b>${v.susp}.</b> Live offers withdrawn; the vendor can't submit changes. POs, GRNs, returns and statements remain visible to authorised staff.</div></div>` : ""}
+      ${v.status === "Applied" ? `<div class="callout c-warn mb-16 small">${ic("lock")}<div>Applicant for the marketplace model (Phase 2). No catalog, stock or order access.</div></div>` : ""}
+      ${v.feed && fs[0] !== "s-ok" && !v.susp ? `<div class="callout c-warn mb-16 small">${ic("clock")}<div><b>Feed ${fs[1].toLowerCase()}:</b> last update ${v.feed[3]} (deadline ${v.feed[2]} h). ${fs[1] === "Confirm before promise" ? v.offers + " offers now require confirmation before a delivery date is promised." : "Reminder scheduled."}</div></div>` : ""}
+      <div class="grid g-2 mb-16">
+        <div class="panel"><div class="upper muted mb-8">Approval record</div><dl class="kv"><dt>Decision</dt><dd>${v.status === "Applied" ? "Pending" : "Approved"} · ${v.status === "Applied" ? "—" : "Rajesh Menon"}</dd><dt>Review date</dt><dd>${v.status === "Applied" ? "—" : v.since}</dd><dt>Terms version</dt><dd>${v.terms}</dd><dt>Categories</dt><dd>${v.cats.join(", ")}</dd><dt>Locations</dt><dd>${v.locs}</dd></dl></div>
+        <div class="panel"><div class="upper muted mb-8">Data the vendor can see</div><div class="small col gap-6">
+          <span class="row gap-6 text-ok">${ic("check", "ic-sm")} Own products, submissions & validation errors</span>
+          <span class="row gap-6 text-ok">${ic("check", "ic-sm")} Own POs, GRN results & supplier RMAs</span>
+          <span class="row gap-6 text-ok">${ic("check", "ic-sm")} Own availability feed status</span>
+          ${v.model.includes("pilot") ? `<span class="row gap-6 text-warn">${ic("alert", "ic-sm")} Assigned shipments: name, phone & address only</span>` : ""}
+          <span class="row gap-6 muted">${ic("x", "ic-sm")} Retail prices, margins, other vendors' costs</span>
+          <span class="row gap-6 muted">${ic("x", "ic-sm")} Customer identities & full orders</span></div></div>
+      </div>
+      ${v.fill ? `<div class="grid g-4 mb-16"><div class="kpi"><div class="k-label">Fill rate</div><div class="k-value" style="font-size:20px">${v.fill}%</div></div><div class="kpi"><div class="k-label">Response</div><div class="k-value" style="font-size:20px">${v.resp}</div></div><div class="kpi"><div class="k-label">Return / defect</div><div class="k-value" style="font-size:20px">${v.ret}</div></div><div class="kpi"><div class="k-label">Score</div><div class="k-value" style="font-size:20px">${v.score}</div></div></div>` : ""}
+      <h4 class="mb-8">Recent activity</h4>
+      <table class="table compact" style="border:1px solid var(--line);border-radius:var(--r)"><thead><tr><th>Reference</th><th>What</th><th>When</th><th>Status</th></tr></thead><tbody>
+        ${v.status === "Applied" ? `<tr><td class="mono">APP-V041</td><td>Marketplace seller application</td><td>19 Sep</td><td><span class="status s-muted">Blocked · Phase 2</span></td></tr>` : `
+        <tr><td class="mono">PO-2026-01${80 + v.id.slice(-1) * 1}</td><td>Purchase order · ${v.cats[0]}</td><td>24 Sep</td><td><span class="status s-info">Confirmed by vendor</span></td></tr>
+        <tr><td class="mono">GRN-04${30 + v.id.slice(-1) * 1}</td><td>Goods receipt · 2 units to QC</td><td>21 Sep</td><td><span class="status s-ok">Received</span></td></tr>
+        <tr><td class="mono">VS-02${20 + v.id.slice(-1) * 1}</td><td>Product submission</td><td>20 Sep</td><td><span class="status s-ok">Approved · published</span></td></tr>`}
+      </tbody></table>`;
+    $("#dv-foot").innerHTML = v.status === "Suspended" ? `<button class="btn" data-close>Close</button><button class="btn" data-toast="Reinstatement request created · needs Owner approval">Request reinstatement</button>`
+      : `<button class="btn" data-close>Close</button><button class="btn" data-toast="Message sent via vendor portal">${ic("mail", "ic-sm")} Message</button><button class="btn" data-toast="Permission change drafted · needs approval">Edit permissions</button><button class="btn btn-danger" data-toast="Suspension requires a reason · opens decision form">Suspend…</button>`;
+    TX.open("d-vendor");
+  };
+  document.addEventListener("click", (e) => { const r = e.target.closest("tr[data-vendor]"); if (r) openVendor(r.dataset.vendor); });
+
+  /* ---------------- Applications ---------------- */
+  $$("[data-apk]").forEach((p) => p.addEventListener("click", () => { $$("[data-apk]").forEach((x) => x.classList.toggle("active", x === p)); $$("[data-apd]").forEach((d) => d.classList.toggle("hidden", d.dataset.apd !== p.dataset.apk)); }));
+  $$("[data-vdec]").forEach((b) => b.addEventListener("click", () => {
+    const r = $("#lc-reason"); if (!r.value.trim()) { r.classList.add("is-error"); $("#lc-err").classList.remove("hidden"); r.focus(); return; }
+    r.classList.remove("is-error"); $("#lc-err").classList.add("hidden");
+    const st = { approve: ["s-ok", "Approved · supplier"], info: ["s-warn", "Info requested"], reject: ["s-bad", "Rejected"] }[b.dataset.vdec];
+    $("[data-apk=lens] .status").className = "status " + st[0]; $("[data-apk=lens] .status").textContent = st[1];
+    TX.toast({ approve: "LensCraft Optics approved as supplier · Lenses & accessories · WH-BLR · terms v2.1 · portal access sent", info: "Information requested · applicant notified", reject: "Application rejected · reasons sent to applicant" }[b.dataset.vdec]);
+  }));
+
+  /* ---------------- Submissions ---------------- */
+  const SUBS = [
+    { id: "VS-0231", v: "RenewTech Refurbishers", what: "Edit · warranty terms on 4 live SKUs", age: "20 h", st: ["s-warn", "Sensitive edit"], pid: "lap-01" },
+    { id: "VS-0229", v: "CamWorld Imports", what: "New product · Canon RF 50 mm f/1.8 STM", age: "9 h", st: ["s-bad", "3 validation errors"], pid: "lens-03" },
+    { id: "VS-0227", v: "Prime IT Distributors", what: "Cost update · 6 SKUs", age: "4 h", st: ["s-warn", "Price outlier held"], pid: "gpu-01" },
+    { id: "VS-0224", v: "NetCore Solutions", what: "Availability · 214 rows", age: "1 d", st: ["s-ok", "Auto-accepted"], pid: "net-02" },
+    { id: "VS-0218", v: "RenewTech Refurbishers", what: "New product · ThinkPad T14 Gen 2 (Grade B)", age: "2 d", st: ["s-muted", "Returned to vendor"], pid: "lap-02" },
+  ];
+  let curSub = "VS-0231";
+  const flag = (t) => `<span class="flag">${ic("flag")} ${t}</span>`;
+  const DETAIL = {
+    "VS-0231": () => { const p = TX.byId("lap-01"); return `
+      <div class="callout c-info mb-16 small">${ic("layers")}<div><b>Pending version v6 — live listing v5 is unchanged</b> and keeps selling with its current warranty until this is approved. If approved, only units received after approval carry the new terms; existing orders keep their original warranty.</div></div>
+      <div class="row wrap gap-6 mb-16"><span class="small muted">Sensitive fields:</span>${flag("Warranty")}${flag("Warranty provider")}${flag("Condition detail")}<span class="badge b-ok">22 checks passed</span><span class="badge b-warn">1 warning</span><span class="badge">0 errors</span></div>
+      <div class="diff mb-16">
+        <div class="dh">Field</div><div class="dh">Live · v5</div><div class="dh">Submitted · v6</div>
+        <div class="same">Title</div><div class="same">${p.title}</div><div class="same">unchanged</div>
+        <div class="same">Brand · model</div><div class="same">Dell · Latitude 5420</div><div class="same">unchanged</div>
+        <div class="same">Condition</div><div class="same">${TX.conditions[p.cond].label}</div><div class="same">unchanged</div>
+        <div class="same flagged">Warranty</div><div class="old">6 months</div><div class="new">3 months</div>
+        <div class="same flagged">Warranty provider</div><div class="old">Tradex (in-house)</div><div class="new">RenewTech Refurbishers</div>
+        <div class="same flagged">Battery health (min)</div><div class="old">≥ 85%</div><div class="new">≥ 80%</div>
+        <div class="same">Supplier cost (ex-GST)</div><div class="old">₹26,500</div><div class="new">₹25,200 (−4.9%)</div>
+        <div class="same">HSN · GST</div><div class="same">8471 30 · 18%</div><div class="same">unchanged</div>
+        <div class="same">Images</div><div class="same">6 images</div><div class="new">8 images (+2 keyboard close-ups)</div>
+        <div class="same" style="border-bottom:0">Applies to SKUs</div><div class="same" style="border-bottom:0">—</div><div class="same" style="border-bottom:0">LAP01-RA, LAP02-RB, LAP08-RA, PC04-RA</div>
+      </div>
+      <div class="panel small mb-16"><b>Validation warning:</b> customer-facing warranty text changes on 4 live SKUs · product pages, invoices and the warranty policy snippet will update on publication.</div>`; },
+    "VS-0229": () => `
+      <div class="callout c-bad mb-16 small">${ic("x-circle")}<div><b>Failed validation — can't be approved yet.</b> The vendor sees these errors in the portal. New products are never published until corrected and reviewed.</div></div>
+      <div class="row wrap gap-6 mb-16"><span class="small muted">Sensitive fields:</span>${flag("Brand")}${flag("Tax classification")}<span class="badge b-ok">17 passed</span><span class="badge b-bad">3 errors</span></div>
+      <div class="panel mb-16" style="padding:2px 14px">
+        <div class="vrow"><span class="ci bad">${ic("x")}</span><div><b>Warranty provider missing</b><div class="small muted">Required for every product · choose Canon India / Tradex / vendor</div></div><span class="mono small">warranty.provider</span></div>
+        <div class="vrow"><span class="ci bad">${ic("x")}</span><div><b>HSN “8529” not valid for lenses</b><div class="small muted">Expected 9002 11 00 (objective lenses) · GST rate must be confirmed by Finance</div></div><span class="mono small">tax.hsn</span></div>
+        <div class="vrow"><span class="ci bad">${ic("x")}</span><div><b>Image 3 is 640 × 480</b><div class="small muted">Minimum 1000 px on the long edge · rights confirmation ticked</div></div><span class="mono small">media[2]</span></div>
+        <div class="vrow"><span class="ci warn">${ic("alert")}</span><div><b>Brand needs authorisation evidence</b><div class="small muted">CamWorld's Canon authorisation expires 31 Oct 2026</div></div><span class="mono small">brand</span></div>
+      </div>
+      <div class="diff mb-16">
+        <div class="dh">Field</div><div class="dh">Live</div><div class="dh">Submitted · v1</div>
+        <div class="same">Title</div><div class="same muted">— new product</div><div class="new">Canon RF 50 mm f/1.8 STM Lens</div>
+        <div class="same flagged">Brand</div><div class="same muted">—</div><div class="new">Canon</div>
+        <div class="same">Condition</div><div class="same muted">—</div><div class="new">New</div>
+        <div class="same flagged">HSN · GST</div><div class="same muted">—</div><div class="new">8529 · 18% ⚠</div>
+        <div class="same">Warranty</div><div class="same muted">—</div><div class="new">1 year · provider missing ⚠</div>
+        <div class="same" style="border-bottom:0">Supplier cost</div><div class="same muted" style="border-bottom:0">—</div><div class="new" style="border-bottom:0">₹14,200 ex-GST</div>
+      </div>`,
+    "VS-0227": () => { const rows = [["gpu-01", 38.0, true], ["mb-01", 3.1], ["cpu-01", -2.4], ["mon-03", 1.2], ["net-01", 0.8], ["ssd-03", -4.5]];
+      return `
+      <div class="callout c-warn mb-16 small">${ic("alert")}<div><b>1 of 6 lines held as a price outlier</b> (> ±15% vs 30-day median). The other 5 are within bounds and were accepted as supplier cost only — <b>retail and dealer prices do not change automatically</b>; they appear as cost signals in Pricing.</div></div>
+      <div class="row wrap gap-6 mb-16"><span class="small muted">Sensitive fields:</span>${flag("Price outlier")}</div>
+      <div class="table-wrap mb-16" style="border:1px solid var(--line);border-radius:var(--r)"><table class="table compact"><thead><tr><th>Product</th><th class="r">Current cost</th><th class="r">Submitted</th><th class="r">Change</th><th>Result</th></tr></thead><tbody>
+      ${rows.map(([id, pct, out]) => { const p = TX.byId(id); const c = Math.round(p.dealer * 0.9); const n = Math.round(c * (1 + pct / 100));
+        return `<tr><td><div class="cell-main truncate" style="max-width:280px">${p.title}</div><div class="cell-sub mono">${p.sku}</div></td><td class="r">${fmt(c)}</td><td class="r strong">${fmt(n)}</td><td class="r ${out ? "text-bad strong" : ""}">${pct > 0 ? "+" : ""}${pct}%</td><td>${out ? flag("Outlier · held") : '<span class="status s-ok">Accepted · cost only</span>'}</td></tr>`; }).join("")}
+      </tbody></table></div>`; },
+    "VS-0224": () => `
+      <div class="callout c-ok mb-16 small">${ic("check-circle")}<div><b>Auto-accepted within validated bounds</b> — routine availability refresh from a trusted vendor (quantity change ≤ 50%, known SKU mappings, no sensitive fields). No reviewer needed; the run is audited.</div></div>
+      <div class="grid g-4 mb-16"><div class="panel"><div class="small muted">Rows</div><b style="font-size:18px">214</b></div><div class="panel"><div class="small muted">Accepted</div><b style="font-size:18px" class="text-ok">202</b></div><div class="panel"><div class="small muted">Rejected rows</div><b style="font-size:18px" class="text-bad">12</b></div><div class="panel"><div class="small muted">Tradex stock created</div><b style="font-size:18px">0</b></div></div>
+      <div class="panel small mb-16">12 rows rejected: unknown vendor SKU codes (e.g. <span class="mono">NC-AX55-B</span>) — vendor asked to map them in the portal. Supplier availability is shown as “ships from partner” and never counted as Tradex stock.</div>`,
+    "VS-0218": () => `
+      <div class="callout c-info mb-16 small">${ic("undo")}<div><b>Returned to vendor 24 Sep</b> — “Warranty provider missing; add battery health and 3 keyboard photos.” Waiting for RenewTech to resubmit. SLA paused while with vendor.</div></div>
+      <ul class="timeline"><li class="done"><span class="t-dot">${ic("check")}</span><div class="t-title">Submitted by Suresh Babu</div><div class="t-meta">23 Sep 17:40</div></li><li class="warn"><span class="t-dot">${ic("alert")}</span><div class="t-title">Validation failed · 1 error</div><div class="t-meta">23 Sep 17:40 · automatic</div></li><li class="current"><span class="t-dot">${ic("clock")}</span><div class="t-title">Changes requested by Sneha Pillai</div><div class="t-meta">24 Sep 10:02 · awaiting vendor</div></li></ul>`,
+  };
+  const renderSubs = () => {
+    $("#vs-list").innerHTML = SUBS.map((s) => `<div class="pick ${s.id === curSub ? "active" : ""}" data-sub="${s.id}">${TX.ph(TX.byId(s.pid).img, "thumb")}<div class="grow"><div class="row-between"><span class="p-t mono">${s.id}</span><span class="small muted">${s.age}</span></div><div class="p-s">${s.v}</div><div class="small mt-4">${s.what}</div><div class="mt-4"><span class="status ${s.st[0]}">${s.st[1]}</span></div></div></div>`).join("");
+    const s = SUBS.find((x) => x.id === curSub); const review = !["VS-0224", "VS-0218"].includes(s.id); const failed = s.id === "VS-0229";
+    $("#vs-detail").innerHTML = `<div style="padding:20px">
+      <div class="row-between mb-16" style="align-items:flex-start"><div><div class="row gap-8"><h2 style="font-size:19px" class="mono">${s.id}</h2><span class="status ${s.st[0]}">${s.st[1]}</span></div><div class="small muted mt-4">${s.v} · ${s.what} · submitted ${s.age} ago · reviewer Sneha Pillai (Catalog)</div></div>
+      ${review ? `<div class="row gap-8"><button class="btn btn-sm btn-danger" data-vsd="reject">Reject</button><button class="btn btn-sm" data-vsd="changes">Request changes</button><button class="btn btn-sm btn-ok" data-vsd="approve" ${failed ? "disabled" : ""}>${ic("check", "ic-sm")} Approve${s.id === "VS-0227" ? " outlier" : ""}</button></div>` : ""}</div>
+      ${DETAIL[s.id]()}
+      ${review ? `<p class="small muted">${failed ? "Approve stays disabled until validation passes." : "Approving publishes the new version at the next catalog sync; the decision, reason and diff are kept in the audit log."}</p>` : ""}</div>`;
+  };
+  $("#vs-list").addEventListener("click", (e) => { const p = e.target.closest("[data-sub]"); if (p) { curSub = p.dataset.sub; renderSubs(); } });
+  $("#vs-detail").addEventListener("click", (e) => { const b = e.target.closest("[data-vsd]"); if (!b) return; $$("#vsd-seg button").forEach((x) => x.classList.toggle("active", x.dataset.d === b.dataset.vsd)); $("#vsd-title").textContent = curSub + " · decision"; TX.open("m-vsdec"); });
+  $("#vsd-go").addEventListener("click", () => {
+    const r = $("#vsd-reason"); if (!r.value.trim()) { r.classList.add("is-error"); $("#vsd-err").classList.remove("hidden"); r.focus(); return; }
+    r.classList.remove("is-error"); $("#vsd-err").classList.add("hidden"); TX.close(r); r.value = "";
+    const d = ($("#vsd-seg .active") || {}).dataset?.d || "approve"; const s = SUBS.find((x) => x.id === curSub);
+    s.st = { approve: ["s-ok", "Approved"], changes: ["s-muted", "Returned to vendor"], reject: ["s-bad", "Rejected"] }[d]; renderSubs();
+    TX.toast({ approve: `${curSub} approved · new version publishes at next sync`, changes: `${curSub} returned to vendor with comments · live version unchanged`, reject: `${curSub} rejected · reason sent to vendor` }[d]);
+  });
+  renderSubs();
+
+  /* ---------------- Freshness ---------------- */
+  $("#f-body").innerHTML = VENDORS.filter((v) => v.feed).map((v) => {
+    const [src, age, dl, txt] = v.feed; const fs = feedState(v.feed); const susp = txt === "suspended";
+    const pct = Math.min(100, (age / (dl * 3)) * 100); const col = fs[0] === "s-ok" ? "var(--ok)" : fs[0] === "s-warn" ? "var(--warn)" : "var(--bad)";
+    return `<tr><td><div class="cell-main nowrap">${v.name}</div><div class="cell-sub">${v.id} · ${src}</div></td><td class="r">${susp ? "0" : v.offers}</td>
+      <td class="small">${susp ? "Disabled 12 Sep" : txt}</td>
+      <td>${susp ? '<span class="small muted">—</span>' : `<div class="row gap-8"><div class="fresh-bar" aria-label="${age} h of ${dl} h deadline"><span style="width:${pct}%;background:${col}"></span><i style="left:33.3%" title="deadline"></i></div><span class="small nowrap ${age > dl ? "text-bad strong" : ""}">${age < 1 ? Math.round(age * 60) + " min" : age + " h"} / ${dl} h</span></div>`}</td>
+      <td><span class="status ${susp ? "s-bad" : fs[0]}">${susp ? "Suspended (vendor)" : fs[1]}</span></td>
+      <td class="small">${susp ? "—" : age > dl ? `<span class="text-bad">Timeout ×3</span>` : "OK · 0 rejected"}</td>
+      <td class="r">${susp ? "" : age > dl ? `<div class="row-actions"><button class="btn btn-xs" data-toast="Update requested from ${v.contact} · portal + email">Request</button><button class="btn btn-xs btn-danger" data-toast="${v.offers} offers suspended now · audit logged">Suspend</button></div>` : `<button class="btn btn-xs btn-ghost" data-toast="Feed log opened">Log</button>`}</td></tr>`; }).join("");
+
+  /* ---------------- Performance ---------------- */
+  const perf = VENDORS.filter((v) => v.fill);
+  $("#p-body").innerHTML = perf.map((v) => `<tr><td class="cell-main nowrap">${v.name}</td><td class="small">${v.model}</td>
+    <td class="r ${v.fill < 85 ? "text-bad" : ""}">${v.fill}%</td><td class="r">${v.resp}</td><td class="r small">${v.disp}</td><td class="r ${parseFloat(v.ret) > 3 ? "text-bad" : ""}">${v.ret}</td><td class="r">${v.fpa}</td><td class="r ${parseFloat(v.ontime) < 90 ? "text-warn" : ""}">${v.ontime}</td></tr>`).join("");
+  let chartDone = false;
+  const drawChart = () => { if (chartDone || !$("#ch-score").offsetWidth) return; chartDone = true;
+    TX.charts.hbar($("#ch-score"), { title: "Vendor performance score", seriesName: "Score (0–100)", labelHeader: "Vendor", labelWidth: 150, format: (v) => String(v),
+      items: perf.map((v) => ({ label: v.name.replace(" Distributors", "").replace(" Refurbishers", "").replace(" Solutions", ""), value: v.score, color: v.score >= 90 ? "var(--series-3)" : v.score >= 75 ? "var(--series-1)" : "var(--st-critical)" })).sort((a, b) => b.value - a.value) }); };
+  document.addEventListener("click", (e) => { const b = e.target.closest("[data-table-toggle]"); if (b) TX.charts.toggleTable($("#" + b.dataset.tableToggle)); });
+  const onTab = (id) => { if (id === "performance") setTimeout(drawChart, 0); };
+  document.addEventListener("click", (e) => { const t = e.target.closest(".tab[data-tab]"); if (t) onTab(t.dataset.tab); });
+  drawChart();
+
+  /* ---------------- Marketplace prerequisites ---------------- */
+  const MP = [
+    ["Seller of record & customer invoice issuer", "Business / legal", ["s-ok", "Decided · draft terms"]],
+    ["Collection & settlement with the payment provider", "Finance / provider", ["s-warn", "Provider support unconfirmed"]],
+    ["Commission & fee basis, taxes, effective dates", "Finance", ["s-muted", "Not started"]],
+    ["Shipping responsibility & serviceability promises", "Operations", ["s-warn", "In discussion"]],
+    ["Refund funding, return windows, warranty & disputes", "Business / legal", ["s-muted", "Not started"]],
+    ["Settlement holds, reserves, chargebacks, negative balances", "Finance", ["s-muted", "Not started"]],
+    ["Seller suspension effects on orders & money owed", "Operations / legal", ["s-muted", "Not started"]],
+    ["Customer-facing seller identity & offer selection", "Business", ["s-muted", "Not started"]],
+    ["Marketplace tax (TCS / GSTR-8) & consumer rules review", "Accountant / legal", ["s-muted", "Not started"]],
+  ];
+  $("#mp-list").innerHTML = MP.map((m, i) => `<div class="prereq"><span class="n">${m[2][0] === "s-ok" ? ic("check", "ic-sm") : i + 1}</span><div><b>${m[0]}</b></div><div class="small muted">Owner: ${m[1]}</div><div><span class="status ${m[2][0]}">${m[2][1]}</span></div></div>`).join("");
+
+  if (location.hash === "#d-vendor") openVendor("V-037");
+  if (location.hash === "#performance") setTimeout(drawChart, 50);
+});
+</script>
+</body>
+</html>

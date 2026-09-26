@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign in, register or apply · Tradex</title>
+  <link rel="stylesheet" href="assets/tradex.css">
+  <style>
+    .auth { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); margin-top: 16px; background: #fff; border: 1px solid var(--line); border-radius: var(--r-xl); overflow: clip; min-height: 780px; box-shadow: var(--sh-1); }
+    .auth-art { background: var(--ink-900); position: relative; }
+    .art-card { position: sticky; top: 68px; height: calc(100vh - 90px); min-height: 620px; max-height: 860px; overflow: hidden; color: #fff; display: flex; flex-direction: column; justify-content: space-between; padding: 36px; }
+    .art-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity .35s; }
+    .art-card::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(7,12,24,.25) 0%, rgba(7,12,24,.35) 40%, rgba(7,12,24,.92) 100%); }
+    .art-card > *:not(img) { position: relative; z-index: 1; }
+    .art-card h2 { color: #fff; font-size: 30px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.12; }
+    .art-card p { color: #d5dcec; margin-top: 10px; font-size: 14.5px; max-width: 440px; }
+    .art-card ul { list-style: none; padding: 0; margin: 18px 0 0; display: flex; flex-direction: column; gap: 10px; }
+    .art-card li { display: flex; gap: 10px; align-items: flex-start; font-size: 13.5px; color: #e6ebf5; }
+    .art-card li .ic { color: #7ee2a8; margin-top: 1px; }
+    .art-top { display: flex; justify-content: space-between; align-items: center; }
+    .art-top .badge { background: rgba(255,255,255,.14); color: #fff; backdrop-filter: blur(6px); height: 26px; }
+    .art-foot { display: flex; gap: 18px; margin-top: 22px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,.15); font-size: 12px; color: #c3cde0; }
+    .art-foot b { display: block; color: #fff; font-size: 16px; }
+    .auth-main { padding: 32px 44px 40px; min-width: 0; }
+    .auth-main h1 { font-size: 26px; }
+    .auth-tabs { margin-top: 18px; background: var(--bg-2); padding: 4px; border-radius: 999px; display: inline-flex; }
+    .auth-tabs .tab { padding: 7px 16px; }
+    .panel-inner { margin-top: 24px; max-width: 620px; }
+    .sub-panel { display: none; } .sub-panel.active { display: block; }
+    .otp { display: flex; gap: 8px; }
+    .otp input { width: 48px; height: 52px; text-align: center; font-size: 20px; font-weight: 700; border: 1px solid var(--line); border-radius: var(--r-sm); }
+    .otp input:focus { outline: none; border-color: var(--brand); box-shadow: var(--ring); }
+    .otp.err input { border-color: var(--bad); background: #fffafa; }
+    .or { display: flex; align-items: center; gap: 12px; color: var(--tx-4); font-size: 12px; margin: 18px 0; }
+    .or::before, .or::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+    .fsec { border-top: 1px solid var(--line-2); padding-top: 20px; margin-top: 22px; }
+    .fsec h4 { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+    .fsec h4 .n { width: 24px; height: 24px; border-radius: 50%; background: var(--ink-900); color: #fff; font-size: 12px; display: grid; place-items: center; }
+    .verify-card { border: 1px solid #bde8cc; background: var(--ok-50); border-radius: var(--r); padding: 12px 14px; font-size: 12.5px; color: #05603a; }
+    .verify-card .kv { font-size: 12.5px; grid-template-columns: 130px 1fr; gap: 3px 12px; }
+    .verify-card .kv dt { color: #3b7a5a; }
+    .doc { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--r-sm); font-size: 13px; }
+    .doc + .doc { margin-top: 8px; }
+    .doc .di { width: 34px; height: 34px; border-radius: var(--r-sm); display: grid; place-items: center; background: var(--bg-2); color: var(--tx-2); flex: none; }
+    .doc.ok .di { background: var(--ok-50); color: var(--ok-tx); }
+    .doc.bad { border-color: #f6c9c6; background: #fffafa; }
+    .doc.bad .di { background: var(--bad-50); color: var(--bad-tx); }
+    .doc.todo { border-style: dashed; }
+    .model { position: relative; display: flex; gap: 12px; padding: 14px 16px; border: 1.5px solid var(--line); border-radius: var(--r); background: #fff; cursor: pointer; text-align: left; width: 100%; }
+    .model + .model { margin-top: 10px; }
+    .model:hover { border-color: var(--brand-200); }
+    .model.sel { border-color: var(--vendor); box-shadow: 0 0 0 3px rgba(14,159,138,.18); }
+    .model .mi { width: 40px; height: 40px; border-radius: var(--r); background: var(--vendor-50); color: #07695b; display: grid; place-items: center; flex: none; }
+    .model b { font-size: 14px; }
+    .model p { font-size: 12.5px; color: var(--tx-3); margin-top: 3px; }
+    .model .radio { position: absolute; top: 14px; right: 14px; width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--line); }
+    .model.sel .radio { border: 5px solid var(--vendor); }
+    .strength { display: flex; gap: 4px; margin-top: 6px; }
+    .strength span { flex: 1; height: 4px; border-radius: 2px; background: var(--line); }
+    .strength span.on { background: var(--ok); }
+    .status-card { border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; }
+    .status-card .sc-head { padding: 20px; background: linear-gradient(120deg, #fff6e5, #fffbf2); border-bottom: 1px solid #f8dca6; display: flex; gap: 14px; align-items: center; }
+    .status-card .sc-head .big { width: 48px; height: 48px; border-radius: 50%; background: var(--warn); color: #fff; display: grid; place-items: center; flex: none; }
+    .status-card .sc-body { padding: 20px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  </style>
+</head>
+<body data-app="store" data-page="login">
+<main>
+  <div class="container">
+    <div class="crumbs mt-16"><a href="store-home.html">Home</a><i data-icon="chevron-right"></i><span id="crumb-now">Sign in</span></div>
+
+    <div class="auth" data-tabset id="auth">
+      <!-- Photo panel (changes with the tab) -->
+      <aside class="auth-art" aria-hidden="true">
+        <div class="art-card" data-anno="1A · R01 Split layout · panel copy per journey">
+          <img id="art-img" src="assets/img/hero-desk-min.jpg" alt="">
+          <div class="art-top"><span class="badge" id="art-kicker"><i data-icon="user"></i> Your Tradex account</span></div>
+          <div>
+            <h2 id="art-h">Welcome back to Tradex</h2>
+            <p id="art-p">Track orders, download GST invoices, and claim returns or warranty by serial number — all in one place.</p>
+            <ul id="art-list"></ul>
+            <div class="art-foot" id="art-foot"></div>
+          </div>
+        </div>
+      </aside>
+
+      <section class="auth-main">
+        <h1 id="auth-title">Sign in or create an account</h1>
+        <p class="muted mt-4" id="auth-sub">Use your mobile number or email. Business buyers and suppliers can apply here too.</p>
+        <div class="tabs pills auth-tabs" role="tablist">
+          <button class="tab active" data-tab="signin">Sign in</button>
+          <button class="tab" data-tab="register">Create account</button>
+          <button class="tab" data-tab="dealer">Apply as dealer</button>
+          <button class="tab" data-tab="vendor">Sell with Tradex</button>
+        </div>
+
+        <!-- ======================= SIGN IN ======================= -->
+        <div class="tab-panel active" data-panel="signin">
+          <div class="panel-inner">
+            <div class="seg" id="si-seg"><button class="active" data-sp="otp">Mobile · one-time code</button><button data-sp="pwd">Email & password</button></div>
+
+            <div class="sub-panel active mt-16" data-sub="otp" data-anno="1A · Phone OTP sign-in with rate limits">
+              <div id="otp-step1" class="col gap-12">
+                <div class="field"><label for="si-ph">Mobile number</label><div class="input-group"><span class="addon">🇮🇳 +91</span><input class="input" id="si-ph" value="98450 12321" inputmode="numeric" autocomplete="tel"></div></div>
+                <button class="btn btn-primary btn-lg btn-block" id="send-otp">Send 6-digit code</button>
+              </div>
+              <div id="otp-step2" class="col gap-12 hidden">
+                <div class="row-between"><div><b>Enter the code</b><div class="small muted">Sent by SMS to +91 98450 •••21 · <button class="link-btn small" id="chg-ph">Change</button></div></div><span class="small muted" id="otp-timer">Resend in 0:28</span></div>
+                <div class="otp" id="otp"><input maxlength="1" aria-label="Digit 1"><input maxlength="1" aria-label="Digit 2"><input maxlength="1" aria-label="Digit 3"><input maxlength="1" aria-label="Digit 4"><input maxlength="1" aria-label="Digit 5"><input maxlength="1" aria-label="Digit 6"></div>
+                <div id="otp-msg" class="small muted">Prototype: any 6 digits work except 000000 (shows the error state).</div>
+                <button class="btn btn-primary btn-lg btn-block" id="verify-otp">Verify & sign in</button>
+                <label class="check small"><input type="checkbox" checked> Keep me signed in on this device (30 days)</label>
+              </div>
+            </div>
+
+            <div class="sub-panel mt-16" data-sub="pwd">
+              <div class="col gap-12">
+                <div class="field"><label for="si-em">Email</label><input class="input" id="si-em" value="priya.nair@example.com" autocomplete="email"></div>
+                <div class="field"><div class="row-between"><label for="si-pw">Password</label><button class="link-btn small" data-open="m-forgot">Forgot password?</button></div>
+                  <div class="input-group"><input class="input" id="si-pw" type="password" value="correct-horse-42" autocomplete="current-password"><button class="btn btn-ghost btn-sm" type="button" id="pw-show" style="height:auto;border-radius:0">Show</button></div></div>
+                <div class="callout c-bad small hidden" id="pw-err"><i data-icon="alert"></i><div>Email or password is incorrect. 3 attempts left before sign-in pauses for 15 minutes.</div></div>
+                <label class="check small"><input type="checkbox"> Keep me signed in on this device</label>
+                <button class="btn btn-primary btn-lg btn-block" id="pw-go">Sign in</button>
+                <p class="tiny muted">If 2-step verification is on, we'll also send a code to your phone.</p>
+              </div>
+            </div>
+
+            <div class="or">or</div>
+            <div class="callout c-info" data-anno="1A · §6.5 Guest checkout with secure order-access link"><i data-icon="package"></i><div class="grow"><strong>Continue as a guest — no account needed to buy.</strong> After checkout we send a secure order link by SMS and email. To open your order later, just verify with a one-time code sent to the same phone. <div class="row gap-8 mt-8"><a class="btn btn-sm" href="store-cart.html">Continue to cart</a><a class="btn btn-sm btn-ghost" href="store-order.html">Track an order</a></div></div></div>
+            <div class="grid g-2 mt-16">
+              <div class="panel small"><b>Approved dealer?</b><p class="muted mt-4">Sign in with the phone or email registered to your business. Dealer prices appear automatically once signed in.</p></div>
+              <div class="panel small"><b>Supplier or vendor?</b><p class="muted mt-4">Use the <a href="vendor-dashboard.html">vendor portal login</a>. Store accounts can't access vendor tools.</p></div>
+            </div>
+            <p class="tiny muted mt-16">By continuing you agree to our <a href="store-help.html#terms">Terms of use</a> and acknowledge the <a href="store-help.html#privacy">Privacy notice</a>. We will never ask for your OTP by phone or WhatsApp.</p>
+          </div>
+        </div>
+
+        <!-- ======================= REGISTER ======================= -->
+        <div class="tab-panel" data-panel="register">
+          <div class="panel-inner" data-anno="1A · Registration with separate, unticked marketing consent (R11)">
+            <div class="form-grid">
+              <div class="field"><label for="r-fn" class="req">First name</label><input class="input" id="r-fn" value="Rohan"></div>
+              <div class="field"><label for="r-ln">Last name</label><input class="input" id="r-ln" value="Shetty"></div>
+              <div class="field full"><label for="r-ph" class="req">Mobile number</label><div class="row gap-8"><div class="input-group grow"><span class="addon">+91</span><input class="input" id="r-ph" value="99001 45872"></div><span class="badge b-ok"><i data-icon="check"></i> Verified by code</span></div></div>
+              <div class="field full"><label for="r-em">Email <span class="muted">(for invoices)</span></label><input class="input is-error" id="r-em" value="priya.nair@example.com"><span class="err">This email already has a Tradex account. <a href="#signin" data-go="signin">Sign in</a> or use another email.</span></div>
+              <div class="field full"><label for="r-pw">Password <span class="muted">(optional — you can always sign in with a code)</span></label><input class="input" id="r-pw" type="password" value="bluebird-lamp-73">
+                <div class="strength" aria-label="Password strength: strong"><span class="on"></span><span class="on"></span><span class="on"></span><span></span></div><span class="hint">Strong · at least 10 characters, not a common password</span></div>
+            </div>
+            <div class="fsec">
+              <h4>How should we contact you?</h4>
+              <div class="col gap-12">
+                <label class="check"><input type="checkbox" checked> <span>Order, delivery and return updates on <b>WhatsApp</b> <span class="muted small">— service messages only</span></span></label>
+                <label class="check"><input type="checkbox"> <span>Offers, restock and price-drop alerts by email and WhatsApp <span class="muted small">— optional, withdraw any time</span></span></label>
+                <label class="check"><input type="checkbox" checked> <span class="req">I agree to the <a href="store-help.html#terms">Terms of use</a> and have read the <a href="store-help.html#privacy">Privacy notice v2026.2</a></span></label>
+              </div>
+            </div>
+            <div class="row gap-12 mt-24"><button class="btn btn-primary btn-lg" data-toast="Account created · welcome, Rohan!">Create account</button><span class="small muted">Buying for a business? <a href="#dealer" data-go="dealer">Apply as a dealer</a></span></div>
+          </div>
+        </div>
+
+        <!-- ======================= DEALER APPLICATION ======================= -->
+        <div class="tab-panel" data-panel="dealer">
+          <div class="panel-inner" id="dealer-form">
+            <div class="callout c-brand" data-anno="1A · R03 §8.3 Applicant ≠ approved dealer · GSTIN verified not trusted"><i data-icon="briefcase"></i><div><strong>Dealer prices unlock only after approval.</strong> We verify your GSTIN with the GST portal and check your documents — a typed number alone isn't trusted. Most applications are decided in 1–2 working days.</div></div>
+
+            <div class="fsec">
+              <h4><span class="n">1</span> Business details</h4>
+              <div class="form-grid">
+                <div class="field full"><label for="d-gst" class="req">GSTIN</label>
+                  <div class="row gap-8"><input class="input mono grow" id="d-gst" value="29AAJFB7781M1Z3" maxlength="15" style="text-transform:uppercase"><button class="btn" id="gst-verify"><i data-icon="shield"></i> Verify</button></div>
+                  <div id="gst-res" class="mt-8"></div>
+                  <span class="tiny muted">Prototype: try <span class="mono">29AAACX0000A1Z5</span> (cancelled) or a malformed number.</span></div>
+                <div class="field"><label for="d-legal" class="req">Legal name <span class="muted">(as per GST)</span></label><input class="input" id="d-legal" value="BYTE POINT SOLUTIONS" readonly></div>
+                <div class="field"><label for="d-trade">Trade name</label><input class="input" id="d-trade" value="Byte Point Computers"></div>
+                <div class="field"><label for="d-pan" class="req">PAN</label><input class="input mono" id="d-pan" value="AAJFB7781M"><span class="hint text-ok" id="pan-hint">✓ Matches the PAN inside your GSTIN</span></div>
+                <div class="field"><label for="d-type" class="req">Trade type</label><select class="select" id="d-type"><option>Retailer / reseller</option><option>System integrator</option><option>Corporate / institution (own use)</option><option>Service centre</option><option>E-commerce seller</option><option>Other</option></select></div>
+                <div class="field"><label for="d-vol" class="req">Expected monthly purchases</label><select class="select" id="d-vol"><option>Under ₹1 lakh</option><option selected>₹1–5 lakh</option><option>₹5–20 lakh</option><option>Above ₹20 lakh</option></select></div>
+                <div class="field"><label for="d-yr">In business since</label><input class="input" id="d-yr" value="2019"></div>
+                <div class="field full"><label>Categories you buy most</label><div class="chips"><span class="chip active" data-toggle>Laptops</span><span class="chip active" data-toggle>Storage & memory</span><span class="chip active" data-toggle>Keyboards & mice</span><span class="chip" data-toggle>Components</span><span class="chip" data-toggle>Monitors</span><span class="chip" data-toggle>Networking</span><span class="chip" data-toggle>Printers</span><span class="chip" data-toggle>Cameras</span><span class="chip" data-toggle>Refurbished lots</span></div></div>
+              </div>
+            </div>
+
+            <div class="fsec">
+              <h4><span class="n">2</span> Address</h4>
+              <div class="form-grid">
+                <div class="field full"><label for="d-reg">Registered address <span class="muted">(from GST record)</span></label><textarea class="textarea" id="d-reg" readonly style="min-height:64px">No. 14, 1st Floor, Koppikar Road, Hubballi, Dharwad, Karnataka 580020</textarea></div>
+                <div class="field full"><label class="check"><input type="checkbox" checked> Deliver to the registered address</label></div>
+                <div class="field"><label for="d-pin">Delivery PIN code</label><input class="input" id="d-pin" value="580020"><span class="hint text-ok">✓ Serviceable · 2–3 days from Central Warehouse</span></div>
+                <div class="field"><label for="d-pick">Or collect from</label><select class="select" id="d-pick"><option>— Deliver to me —</option><option>Mysuru branch</option><option>SP Road, Bengaluru</option></select></div>
+              </div>
+            </div>
+
+            <div class="fsec">
+              <h4><span class="n">3</span> Contact person</h4>
+              <div class="form-grid">
+                <div class="field"><label for="d-cn" class="req">Full name</label><input class="input" id="d-cn" value="Ramya S"></div>
+                <div class="field"><label for="d-cd">Designation</label><input class="input" id="d-cd" value="Proprietor / Partner"></div>
+                <div class="field"><label for="d-cp" class="req">Mobile</label><div class="input-group"><span class="addon">+91</span><input class="input" id="d-cp" value="94481 20715"></div><span class="hint">Becomes the owner login of the business account</span></div>
+                <div class="field"><label for="d-ce" class="req">Email</label><input class="input" id="d-ce" value="ramya@bytepoint.example"></div>
+              </div>
+            </div>
+
+            <div class="fsec" data-anno="1A · Document upload with validation errors">
+              <h4><span class="n">4</span> Documents</h4>
+              <div class="doc ok"><span class="di"><i data-icon="file"></i></span><div class="grow"><b>GST registration certificate</b><div class="small muted">gst-reg-certificate.pdf · 412 KB · uploaded</div></div><span class="status s-ok">Uploaded</span></div>
+              <div class="doc bad"><span class="di"><i data-icon="image"></i></span><div class="grow"><b>Shop & establishment / trade licence</b><div class="small text-bad">trade-licence.jpg — image too blurry to read (under 600 px). Please re-upload a clear scan or PDF.</div></div><button class="btn btn-sm" data-toast="Choose a file to replace trade-licence.jpg">Replace</button></div>
+              <div class="doc todo"><span class="di"><i data-icon="upload"></i></span><div class="grow"><b>Photo of shop front with signboard</b> <span class="muted small">(optional — speeds up review)</span><div class="small muted">JPG, PNG or PDF · max 10 MB</div></div><button class="btn btn-sm" data-toast="File picker opened">Upload</button></div>
+              <p class="tiny muted mt-8">Bank details aren't needed — dealer orders are prepaid. Documents are stored privately and used only for verification.</p>
+            </div>
+
+            <div class="fsec">
+              <label class="check"><input type="checkbox" checked> <span class="req">I agree to the <a href="store-help.html#terms">Dealer terms v2026.1</a>, confirm the information is accurate, and will keep dealer prices confidential.</span></label>
+              <div class="row gap-12 mt-16"><button class="btn btn-accent btn-lg" id="dealer-submit"><i data-icon="send"></i> Submit application</button><span class="small muted">You can save and finish later — we keep drafts for 30 days.</span></div>
+            </div>
+          </div>
+
+          <div class="panel-inner hidden" id="dealer-done">
+            <div class="status-card" data-anno="1A · Application status: Pending review (1–2 working days)">
+              <div class="sc-head"><span class="big"><i data-icon="clock" class="ic-lg"></i></span><div><div class="upper" style="color:var(--warn-tx)">Application DA-0318 · submitted 27 Sep, 11:52</div><h2 class="mt-4">Pending review — 1–2 working days</h2><p class="small subtle mt-4">Byte Point Solutions · GSTIN 29AAJFB7781M1Z3</p></div></div>
+              <div class="sc-body col gap-16">
+                <div class="stepper">
+                  <div class="step done"><span class="dot"><i data-icon="check" class="ic-sm"></i></span> Submitted</div>
+                  <div class="step done"><span class="dot"><i data-icon="check" class="ic-sm"></i></span> GSTIN verified</div>
+                  <div class="step current"><span class="dot">3</span> Document review</div>
+                  <div class="step"><span class="dot">4</span> Decision</div>
+                </div>
+                <div class="callout c-warn small"><i data-icon="alert"></i><div><strong>One document needs attention:</strong> the trade licence image was too blurry. Re-upload it to avoid a delay — we'll email you a link.</div></div>
+                <ul class="small subtle" style="margin:0;padding-left:18px;line-height:1.8">
+                  <li>We'll email and WhatsApp Ramya S at +91 94481 •••15 when a decision is made.</li>
+                  <li>Until approval you can buy at public prices with a GST invoice.</li>
+                  <li>If approved, your private price list and quick order unlock when you sign in.</li>
+                </ul>
+                <div class="row gap-8"><a class="btn btn-primary" href="store-dealer.html">Check status in Dealer zone</a><a class="btn" href="store-home.html">Continue shopping</a></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ======================= VENDOR APPLICATION ======================= -->
+        <div class="tab-panel" data-panel="vendor">
+          <div class="panel-inner" id="vendor-form">
+            <div class="callout c-info" data-anno="1B · R05 §11.1 Applicant ≠ activated seller · Tradex approves"><i data-icon="building"></i><div><strong>Applying isn't the same as selling.</strong> Tradex reviews every application. If approved, you get vendor-portal access for the categories we agree — and nothing you submit appears on the website until our team has reviewed it.</div></div>
+
+            <div class="fsec">
+              <h4><span class="n">1</span> How do you want to work with us?</h4>
+              <div id="models" data-anno="1B · R05 Three vendor models · marketplace = Phase 2">
+                <button class="model sel" data-m="supply"><span class="mi"><i data-icon="package"></i></span><div><div class="row gap-8"><b>Supply stock to Tradex</b><span class="badge b-ok">Open now</span></div><p>We buy from you with purchase orders. You share products and availability through the vendor portal; Tradex sells, invoices and supports the customer.</p></div><span class="radio"></span></button>
+                <button class="model" data-m="pilot"><span class="mi"><i data-icon="truck"></i></span><div><div class="row gap-8"><b>Supplier-fulfilment pilot</b><span class="badge b-warn">Pilot · limited seats</span></div><p>Tradex sells; you ship directly to the customer. You must confirm each order within 4 working hours and upload shipment evidence. By invitation after a trial period.</p></div><span class="radio"></span></button>
+                <button class="model" data-m="market"><span class="mi"><i data-icon="store"></i></span><div><div class="row gap-8"><b>Marketplace seller</b><span class="badge b-outline">Phase 2 · waitlist</span></div><p>Sell under your own name with commissions and settlements. Not open yet — join the waitlist and we'll contact you when it launches.</p></div><span class="radio"></span></button>
+              </div>
+            </div>
+
+            <div id="vendor-full">
+              <div class="fsec">
+                <h4><span class="n">2</span> Business information</h4>
+                <div class="form-grid">
+                  <div class="field"><label for="v-legal" class="req">Legal business name</label><input class="input" id="v-legal" value="Deccan Refurb Hub Pvt Ltd"></div>
+                  <div class="field"><label for="v-type" class="req">Business type</label><select class="select" id="v-type"><option>Distributor</option><option>Brand / authorised distributor</option><option selected>Refurbisher</option><option>Importer</option><option>Retailer with surplus stock</option></select></div>
+                  <div class="field"><label for="v-gst" class="req">GSTIN</label><div class="row gap-8"><input class="input mono grow" id="v-gst" value="29AAFCD5521Q1ZK"><span class="badge b-ok"><i data-icon="check"></i> Active</span></div></div>
+                  <div class="field"><label for="v-pan" class="req">PAN</label><input class="input mono" id="v-pan" value="AAFCD5521Q"></div>
+                  <div class="field"><label for="v-wh" class="req">Warehouse / dispatch location</label><input class="input" id="v-wh" value="Peenya Industrial Area, Bengaluru 560058"></div>
+                  <div class="field"><label for="v-yr">Years in business</label><select class="select" id="v-yr"><option>Under 1 year</option><option>1–3 years</option><option selected>3–10 years</option><option>10+ years</option></select></div>
+                  <div class="field full"><label>Categories you can supply</label><div class="chips"><span class="chip active" data-toggle>Laptops</span><span class="chip active" data-toggle>Desktops</span><span class="chip active" data-toggle>Monitors</span><span class="chip" data-toggle>Components</span><span class="chip" data-toggle>Storage</span><span class="chip" data-toggle>Cameras & lenses</span><span class="chip" data-toggle>Printers</span><span class="chip" data-toggle>Networking</span></div></div>
+                  <div class="field"><label for="v-sku">Approx. active SKUs</label><select class="select" id="v-sku"><option>Under 50</option><option selected>50–500</option><option>500+</option></select></div>
+                  <div class="field"><label for="v-feed">How can you share product data?</label><select class="select" id="v-feed"><option>Excel / CSV using Tradex template</option><option>API / automated feed</option><option>Manual entry in portal</option></select></div>
+                </div>
+              </div>
+
+              <div class="fsec">
+                <h4><span class="n">3</span> Contact</h4>
+                <div class="form-grid">
+                  <div class="field"><label for="v-cn" class="req">Contact person</label><input class="input" id="v-cn" value="Naveen Kulkarni"></div>
+                  <div class="field"><label for="v-cm" class="req">Mobile</label><div class="input-group"><span class="addon">+91</span><input class="input" id="v-cm" value="98807 33412"></div></div>
+                  <div class="field full"><label for="v-ce" class="req">Work email</label><input class="input" id="v-ce" value="naveen@deccanrefurb.example"></div>
+                </div>
+              </div>
+
+              <div class="fsec">
+                <h4><span class="n">4</span> Documents</h4>
+                <div class="doc ok"><span class="di"><i data-icon="file"></i></span><div class="grow"><b>GST certificate</b><div class="small muted">gst-deccan.pdf · 388 KB</div></div><span class="status s-ok">Uploaded</span></div>
+                <div class="doc ok"><span class="di"><i data-icon="file"></i></span><div class="grow"><b>PAN card (company)</b><div class="small muted">pan.pdf · 120 KB</div></div><span class="status s-ok">Uploaded</span></div>
+                <div class="doc todo"><span class="di"><i data-icon="upload"></i></span><div class="grow"><b>Refurbishment & data-wipe process</b> <span class="req small"></span><div class="small muted">Required for refurbishers · how you grade, test and erase data</div></div><button class="btn btn-sm" data-toast="File picker opened">Upload</button></div>
+                <div class="doc todo"><span class="di"><i data-icon="upload"></i></span><div class="grow"><b>Brand authorisation / sourcing proof</b> <span class="muted small">(optional)</span><div class="small muted">Distributor letters or purchase invoices for the brands you supply</div></div><button class="btn btn-sm" data-toast="File picker opened">Upload</button></div>
+                <div class="callout c-brand small mt-12" data-anno="1B · R05 §11.5 Bank details only after approval · maker-checker"><i data-icon="lock"></i><div><strong>We don't ask for bank details now.</strong> After approval you add payout details inside the vendor portal, where they're verified with a ₹1 test transfer and approved by a second Tradex staff member before use.</div></div>
+              </div>
+            </div>
+
+            <div class="callout c-warn hidden mt-16" id="wait-note"><i data-icon="clock"></i><div><strong>Marketplace selling isn't open yet (planned for Phase 2).</strong> Leave your details and categories — we'll invite waitlisted sellers first. Want to start sooner? Choose “Supply stock to Tradex”.</div></div>
+
+            <div class="fsec">
+              <label class="check"><input type="checkbox" checked> <span class="req">I confirm these details are accurate and agree to the <a href="store-help.html#terms">Supplier terms v2026.1</a>.</span></label>
+              <div class="row gap-12 mt-16"><button class="btn btn-lg" id="vendor-submit" style="--b-bg:var(--vendor);--b-fg:#fff;--b-bd:var(--vendor)"><i data-icon="send"></i> <span>Submit application</span></button><a class="small" href="vendor-dashboard.html">Already approved? Vendor portal login →</a></div>
+            </div>
+          </div>
+
+          <div class="panel-inner hidden" id="vendor-done">
+            <div class="status-card">
+              <div class="sc-head" style="background:linear-gradient(120deg,#e6f7f4,#f3fbf9);border-color:#b7e6dc"><span class="big" style="background:var(--vendor)"><i data-icon="building" class="ic-lg"></i></span><div><div class="upper" style="color:#07695b">Application VA-0047 · received 27 Sep, 11:58</div><h2 class="mt-4">Under review — you're not a seller yet</h2><p class="small subtle mt-4">Deccan Refurb Hub Pvt Ltd · Supply stock to Tradex</p></div></div>
+              <div class="sc-body col gap-16">
+                <div class="stepper">
+                  <div class="step done"><span class="dot"><i data-icon="check" class="ic-sm"></i></span> Received</div>
+                  <div class="step current"><span class="dot">2</span> Verification</div>
+                  <div class="step"><span class="dot">3</span> Commercial review</div>
+                  <div class="step"><span class="dot">4</span> Decision</div>
+                </div>
+                <ul class="small subtle" style="margin:0;padding-left:18px;line-height:1.8">
+                  <li>Typical review time: 3–5 working days. We may ask for a sample unit or a call.</li>
+                  <li>If approved, you'll receive a vendor-portal invitation for your approved categories only.</li>
+                  <li>Your first product submissions go through review before anything is published.</li>
+                  <li>Payout/bank details are added only after approval, with a second-person check.</li>
+                </ul>
+                <div class="row gap-8"><a class="btn" href="store-home.html">Back to store</a><a class="btn btn-ghost" href="store-help.html">Questions? Contact us</a></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="modal" id="m-forgot"><div class="modal-card">
+    <div class="modal-head"><h3>Reset your password</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-body col gap-12">
+      <p class="small subtle">Enter your email or mobile. If it matches an account, we'll send a reset link or code — we don't reveal whether an account exists.</p>
+      <div class="field"><label for="fp">Email or mobile</label><input class="input" id="fp" value="priya.nair@example.com"></div>
+    </div>
+    <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-primary" data-close data-toast="If an account exists, a reset link is on its way">Send reset link</button></div>
+  </div></div>
+</main>
+<script src="assets/tradex.js"></script>
+<script>
+TX.ready(() => {
+  const $ = TX.$, $$ = TX.$$, ic = TX.icon;
+  const pv = TX.param("view"); if (["guest", "consumer", "dealer"].includes(pv)) TX.setView(pv);
+
+  /* ---------- Photo panel & headings per tab ---------- */
+  const ART = {
+    signin: { img: "hero-desk-min", kicker: ["user", "Your Tradex account"], h: "Welcome back to Tradex", p: "Track orders, download GST invoices and claim returns or warranty by serial number — all in one place.", crumb: "Sign in",
+      li: ["Every order shows payment, delivery and refund status separately", "Warranty records for each device you bought", "Price-drop and back-in-stock alerts on your wishlist"], foot: [["4", "stores & warehouse"], ["10-day", "returns on refurbished"], ["9–9", "help, every day"]],
+      title: "Sign in or create an account", sub: "Use your mobile number or email. Business buyers and suppliers can apply here too." },
+    register: { img: "hero-laptop-glow", kicker: ["sparkles", "New to Tradex"], h: "Create your account in a minute", p: "Faster checkout with saved addresses, wishlist alerts and a record of every warranty.", crumb: "Create account",
+      li: ["Sign in with a one-time code — password optional", "Marketing messages only if you opt in", "Download or delete your data any time"], foot: [["42-point", "refurb inspection"], ["UPI · cards", "EMI available"], ["Free", "delivery over ₹999"]],
+      title: "Create your Tradex account", sub: "It's free. You can still check out as a guest if you prefer." },
+    dealer: { img: "hero-desk", kicker: ["briefcase", "Tradex for Business"], h: "Dealer pricing for your business", p: "Private price list, 5+ and 10+ quantity tiers, quick order by SKU and GST invoices with your GSTIN.", crumb: "Apply as dealer",
+      li: ["GSTIN verified with the GST portal", "Decision in 1–2 working days, with reasons", "Prepaid orders by default · credit on request later"], foot: [["5+ · 10+", "quantity tiers"], ["1–2 days", "approval"], ["GST", "invoices & IRN"]],
+      title: "Apply for dealer pricing", sub: "For retailers, integrators, service centres and companies with an active GST registration." },
+    vendor: { img: "banner-parts", kicker: ["building", "Sell with Tradex"], h: "Supply to 4 locations and our online store", p: "Share your catalogue and availability through the Tradex vendor portal. Every listing is reviewed before it goes live.", crumb: "Sell with Tradex",
+      li: ["Purchase orders, availability and returns in one portal", "You only ever see your own products and orders", "Bank details added after approval, with a second-person check"], foot: [["Supply", "open now"], ["Fulfilment", "pilot"], ["Marketplace", "Phase 2"]],
+      title: "Sell with Tradex", sub: "Apply as a supplier. Approval by Tradex is required before you can list or sell anything." },
+  };
+  const setArt = (id) => {
+    const a = ART[id]; if (!a) return;
+    const img = $("#art-img"); img.style.opacity = 0; setTimeout(() => { img.src = `assets/img/${a.img}.jpg`; img.style.opacity = 1; }, 150);
+    $("#art-kicker").innerHTML = `${ic(a.kicker[0], "ic-sm")} ${a.kicker[1]}`;
+    $("#art-h").textContent = a.h; $("#art-p").textContent = a.p; $("#crumb-now").textContent = a.crumb;
+    $("#art-list").innerHTML = a.li.map((t) => `<li>${ic("check-circle")}<span>${t}</span></li>`).join("");
+    $("#art-foot").innerHTML = a.foot.map(([b, s]) => `<div><b>${b}</b>${s}</div>`).join("");
+    $("#auth-title").textContent = a.title; $("#auth-sub").textContent = a.sub;
+    document.title = `${a.crumb} · Tradex`;
+  };
+  const go = (id) => { TX.activateTab(id); setArt(id); history.replaceState(null, "", "#" + id); };
+  document.addEventListener("click", (e) => {
+    const t = e.target.closest(".auth-tabs .tab"); if (t) { setArt(t.dataset.tab); history.replaceState(null, "", "#" + t.dataset.tab); }
+    const g = e.target.closest("[data-go]"); if (g) { e.preventDefault(); go(g.dataset.go); window.scrollTo({ top: 0, behavior: "smooth" }); }
+  });
+  window.addEventListener("hashchange", () => { const h = location.hash.slice(1); if (ART[h]) { TX.activateTab(h); setArt(h); } });
+  const h0 = location.hash.slice(1); setArt(ART[h0] ? h0 : "signin");
+
+  /* ---------- Sign in ---------- */
+  $$("#si-seg button").forEach((b) => b.addEventListener("click", () => $$("[data-sub]").forEach((p) => p.classList.toggle("active", p.dataset.sub === b.dataset.sp))));
+  let timer;
+  $("#send-otp").addEventListener("click", () => {
+    $("#otp-step1").classList.add("hidden"); $("#otp-step2").classList.remove("hidden"); $("#otp input").focus();
+    let s = 28; clearInterval(timer); timer = setInterval(() => { s--; $("#otp-timer").innerHTML = s > 0 ? `Resend in 0:${String(s).padStart(2, "0")}` : `<button class="link-btn small">Resend code</button>`; if (s <= 0) clearInterval(timer); }, 1000);
+    TX.toast("Code sent to +91 98450 •••21");
+  });
+  $("#chg-ph").addEventListener("click", () => { $("#otp-step2").classList.add("hidden"); $("#otp-step1").classList.remove("hidden"); });
+  const boxes = $$("#otp input");
+  boxes.forEach((b, i) => { b.addEventListener("input", () => { b.value = b.value.replace(/\D/g, ""); if (b.value && boxes[i + 1]) boxes[i + 1].focus(); }); b.addEventListener("keydown", (e) => { if (e.key === "Backspace" && !b.value && boxes[i - 1]) boxes[i - 1].focus(); }); });
+  let tries = 3;
+  $("#verify-otp").addEventListener("click", () => {
+    const code = boxes.map((b) => b.value).join("");
+    if (code.length < 6) { $("#otp-msg").innerHTML = `<span class="text-bad">Enter all 6 digits.</span>`; return; }
+    if (code === "000000") { tries--; $("#otp").classList.add("err"); $("#otp-msg").innerHTML = `<span class="text-bad">${ic("x-circle", "ic-sm")} Incorrect code — ${tries} attempt${tries === 1 ? "" : "s"} left. After that, sign-in pauses for 15 minutes.</span>`; return; }
+    $("#otp").classList.remove("err"); TX.setView("consumer"); TX.toast("Signed in · welcome back, Priya"); setTimeout(() => (location.href = "store-account.html"), 700);
+  });
+  $("#pw-show").addEventListener("click", () => { const i = $("#si-pw"); i.type = i.type === "password" ? "text" : "password"; $("#pw-show").textContent = i.type === "password" ? "Show" : "Hide"; });
+  let pwTry = 0;
+  $("#pw-go").addEventListener("click", () => { pwTry++; if (pwTry === 1) { $("#pw-err").classList.remove("hidden"); return; } TX.setView("consumer"); TX.toast("Signed in"); setTimeout(() => (location.href = "store-account.html"), 700); });
+
+  /* ---------- Dealer: GSTIN verification (typed ≠ trusted) ---------- */
+  const GST_RE = /^\d{2}[A-Z]{5}\d{4}[A-Z][1-9A-Z]Z[0-9A-Z]$/;
+  const verifyGst = () => {
+    const v = $("#d-gst").value.trim().toUpperCase(); $("#d-gst").value = v;
+    const inp = $("#d-gst"); inp.classList.remove("is-error", "is-ok");
+    if (!GST_RE.test(v)) { inp.classList.add("is-error"); $("#gst-res").innerHTML = `<div class="callout c-bad small">${ic("x-circle")}<div><strong>This doesn't look like a valid GSTIN.</strong> It should be 15 characters: 2-digit state code, 10-character PAN, entity number, “Z”, and a check character.</div></div>`; return; }
+    if (v === "29AAACX0000A1Z5") { inp.classList.add("is-error"); $("#gst-res").innerHTML = `<div class="callout c-bad small">${ic("alert-octagon")}<div><strong>Registration cancelled on the GST portal (effective 31 Mar 2025).</strong> Dealer pricing needs an active GSTIN. If this is wrong, contact us with your GST restoration order.</div></div>`; return; }
+    inp.classList.add("is-ok");
+    $("#d-pan").value = v.slice(2, 12);
+    $("#gst-res").innerHTML = `<div class="verify-card"><div class="row gap-8 mb-8"><b>${ic("check-circle", "ic-sm")} Verified with the GST portal · 27 Sep, 11:49</b></div><dl class="kv"><dt>Legal name</dt><dd>BYTE POINT SOLUTIONS</dd><dt>Status</dt><dd>Active · Regular taxpayer</dd><dt>Constitution</dt><dd>Partnership</dd><dt>State</dt><dd>Karnataka (29) · registered 12 Jun 2019</dd></dl></div>`;
+  };
+  $("#gst-verify").addEventListener("click", verifyGst);
+  verifyGst();
+  $("#dealer-submit").addEventListener("click", () => { $("#dealer-form").classList.add("hidden"); $("#dealer-done").classList.remove("hidden"); TX.toast("Application DA-0318 submitted"); window.scrollTo({ top: 0, behavior: "smooth" }); });
+
+  /* ---------- Vendor: model choice ---------- */
+  $$("#models .model").forEach((m) => m.addEventListener("click", () => {
+    $$("#models .model").forEach((x) => x.classList.toggle("sel", x === m));
+    const market = m.dataset.m === "market";
+    $("#wait-note").classList.toggle("hidden", !market); $("#vendor-full").classList.toggle("hidden", market);
+    $("#vendor-submit span").textContent = market ? "Join the waitlist" : "Submit application";
+  }));
+  $("#vendor-submit").addEventListener("click", () => {
+    if ($("#models .model.sel").dataset.m === "market") { TX.toast("You're on the marketplace waitlist · we'll email you before launch"); return; }
+    $("#vendor-form").classList.add("hidden"); $("#vendor-done").classList.remove("hidden"); TX.toast("Application VA-0047 received"); window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+  if (TX.param("done") === "dealer") $("#dealer-submit").click();
+  if (TX.param("done") === "vendor") $("#vendor-submit").click();
+});
+</script>
+</body>
+</html>

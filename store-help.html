@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Help centre & policies · Tradex</title>
+  <link rel="stylesheet" href="assets/tradex.css">
+  <style>
+    .help-hero { position: relative; overflow: hidden; margin-top: 16px; border-radius: var(--r-xl); background: radial-gradient(90% 140% at 90% 10%, #3558ff 0%, #1a2a8a 45%, #0b1220 100%); color: #fff; padding: 36px 44px; display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 36px; align-items: center; }
+    .help-hero h1 { font-size: 34px; font-weight: 800; letter-spacing: -0.02em; color: #fff; }
+    .help-hero p { color: #c8d3f5; margin-top: 6px; }
+    .hsearch { position: relative; margin-top: 20px; }
+    .hsearch .input { height: 52px; font-size: 15px; padding-left: 46px; border: 0; border-radius: var(--r); box-shadow: 0 8px 24px rgba(0,0,0,.2); }
+    .hsearch > .ic { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--tx-3); width: 20px; height: 20px; z-index: 1; }
+    .hsearch .btn { position: absolute; right: 6px; top: 6px; height: 40px; }
+    .pop { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; align-items: center; font-size: 12.5px; color: #c8d3f5; }
+    .pop .chip { background: rgba(255,255,255,.1); border-color: rgba(255,255,255,.2); color: #fff; height: 28px; }
+    .pop .chip:hover { background: rgba(255,255,255,.2); }
+    .live { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.14); border-radius: var(--r-lg); padding: 18px; }
+    .live .row-between + .row-between { margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,.1); }
+    .live .lab { font-size: 13px; color: #dfe5f1; display: flex; align-items: center; gap: 8px; }
+    .dotst { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 650; }
+    .dotst::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #3ddc84; }
+    .dotst.off { color: #ffcf70; } .dotst.off::before { background: #f5a524; }
+    .dotst.on { color: #7ee2a8; }
+    .topics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+    .topic { display: flex; gap: 12px; align-items: flex-start; padding: 16px; background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); color: var(--tx-1); text-decoration: none !important; transition: box-shadow .15s, transform .15s; }
+    .topic:hover { box-shadow: var(--sh-2); transform: translateY(-2px); }
+    .topic .ti { width: 40px; height: 40px; border-radius: var(--r); display: grid; place-items: center; background: var(--brand-50); color: var(--brand); flex: none; }
+    .topic b { display: block; font-size: 14px; }
+    .topic span { font-size: 12.5px; color: var(--tx-3); }
+    details.faq { background: #fff; border: 1px solid var(--line); border-radius: var(--r); padding: 0 16px; }
+    details.faq + details.faq { margin-top: 8px; }
+    details.faq summary { cursor: pointer; list-style: none; padding: 13px 0; font-weight: 600; font-size: 13.5px; display: flex; justify-content: space-between; gap: 12px; align-items: center; }
+    details.faq summary::-webkit-details-marker { display: none; }
+    details.faq summary::after { content: "+"; font-size: 18px; color: var(--tx-3); font-weight: 500; }
+    details.faq[open] summary::after { content: "–"; }
+    details.faq .ans { padding: 0 0 14px; color: var(--tx-2); font-size: 13.5px; }
+    details.faq .ans a { font-weight: 600; }
+    .faq-group h4 { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--tx-3); margin: 18px 0 8px; }
+    .faq-group:first-child h4 { margin-top: 0; }
+    .contact-card { background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); padding: 18px; display: flex; flex-direction: column; gap: 10px; }
+    .contact-card .ci { width: 42px; height: 42px; border-radius: var(--r); display: grid; place-items: center; }
+    .contact-card b { font-size: 15px; }
+    .contact-card .meta { font-size: 12.5px; color: var(--tx-3); }
+    .contact-card .btn { margin-top: auto; }
+    .pol { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 28px; align-items: start; }
+    .toc { position: sticky; top: 88px; }
+    .toc a { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: var(--r-sm); color: var(--tx-2); font-weight: 550; font-size: 13.5px; text-decoration: none; }
+    .toc a .ic { width: 16px; height: 16px; color: var(--tx-3); }
+    .toc a:hover { background: #fff; }
+    .toc a.on { background: var(--brand-50); color: var(--brand-700); }
+    .toc a.on .ic { color: var(--brand); }
+    .psec { scroll-margin-top: 88px; background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); padding: 26px 28px; }
+    .psec + .psec { margin-top: 16px; }
+    .psec > h2 { display: flex; align-items: center; gap: 10px; font-size: 21px; }
+    .psec > h2 .ic { color: var(--brand); width: 22px; height: 22px; }
+    .psec > .lead { color: var(--tx-2); margin-top: 6px; max-width: 820px; }
+    .psec h3 { margin: 22px 0 10px; font-size: 15px; }
+    .psec ul.clean { margin: 0; padding-left: 18px; line-height: 1.75; font-size: 13.5px; color: var(--tx-2); }
+    .pver { display: inline-flex; gap: 6px; align-items: center; font-size: 12px; color: var(--tx-3); margin-top: 8px; }
+    .gtable th, .gtable td { vertical-align: top; font-size: 12.5px; }
+    .gtable td:first-child { white-space: nowrap; }
+    .gtable tbody td { line-height: 1.5; }
+    .flowline { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; }
+    .flowline > div { background: var(--bg); border: 1px solid var(--line-2); border-radius: var(--r); padding: 12px; font-size: 12px; color: var(--tx-2); position: relative; }
+    .flowline b { display: block; font-size: 12.5px; color: var(--tx-1); margin-bottom: 2px; }
+    .flowline .n { font-size: 11px; font-weight: 700; color: var(--brand); }
+    .storecard { background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; display: flex; flex-direction: column; }
+    .storecard .ph { border-radius: 0; aspect-ratio: 16 / 9; }
+    .storecard .sb { padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; font-size: 12.5px; flex: 1; }
+    .storecard .hours { display: grid; grid-template-columns: auto 1fr; gap: 1px 10px; color: var(--tx-2); }
+    .storecard .svc { display: flex; flex-wrap: wrap; gap: 4px; }
+    .grv { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; }
+    .chat-mini { background: #f7f8fb; border: 1px solid var(--line); border-radius: var(--r-lg); padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+    .after-only { display: none !important; }
+    body.after-hours .after-only { display: flex !important; }
+    body.after-hours .open-only { display: none !important; }
+    .pin-res { margin-top: 10px; }
+    .live .seg { background: rgba(255,255,255,.1); }
+    .live .seg button { color: #dfe5f1; }
+    .live .seg button.active { color: var(--tx-1); }
+    .psec .kv { align-content: start; }
+    .gtable td:nth-child(2) { min-width: 170px; }
+  </style>
+</head>
+<body data-app="store" data-page="help">
+<main>
+  <div class="container">
+    <div class="crumbs mt-16"><a href="store-home.html">Home</a><i data-icon="chevron-right"></i><span>Help centre</span></div>
+
+    <!-- Hero: search + live support status -->
+    <section class="help-hero" data-anno="1A · R11 Help: search, guided FAQ, support hours (no AI in Phase 1)">
+      <div>
+        <h1>How can we help, Priya?</h1>
+        <p>Search answers, check a policy, or reach a person. Have your order number (e.g. TXO-10482) handy.</p>
+        <div class="hsearch">
+          <i data-icon="search"></i>
+          <input class="input" id="hq" placeholder="Search e.g. “refund status”, “Grade B battery”, “COD limit”" aria-label="Search help">
+          <button class="btn btn-accent" id="hq-go">Search</button>
+        </div>
+        <div class="pop">Popular:
+          <button class="chip" data-q="refund">Refund status</button><button class="chip" data-q="track">Track order</button><button class="chip" data-q="grade">What Grade A means</button><button class="chip" data-q="COD">Cash on delivery</button><button class="chip" data-q="invoice">GST invoice</button><button class="chip" data-q="warranty">Warranty claim</button>
+        </div>
+      </div>
+      <div class="live">
+        <div class="row-between"><b>Support right now</b><div class="seg" id="hours-seg"><button class="active" data-h="open">Open</button><button data-h="closed">After hours</button></div></div>
+        <div class="row-between"><span class="lab"><i data-icon="chat" class="ic-sm"></i> Chat with a person</span><span class="dotst on open-only">Open · ~4 min wait</span><span class="dotst off after-only">Closed · opens 9 AM</span></div>
+        <div class="row-between"><span class="lab"><i data-icon="whatsapp" class="ic-sm"></i> WhatsApp</span><span class="dotst on open-only">Replying now</span><span class="dotst off after-only">Replies from 9 AM</span></div>
+        <div class="row-between"><span class="lab"><i data-icon="phone" class="ic-sm"></i> Phone</span><span class="dotst on open-only">Open till 7 PM</span><span class="dotst off after-only">Closed · Mon 10 AM</span></div>
+        <div class="row-between"><span class="lab"><i data-icon="help" class="ic-sm"></i> Guided help & order tracking</span><span class="dotst on">Available 24×7</span></div>
+      </div>
+    </section>
+
+    <!-- Topic cards -->
+    <section class="section">
+      <div class="topics">
+        <a class="topic" href="#faq" data-faq="orders"><span class="ti"><i data-icon="package"></i></span><div><b>Orders & tracking</b><span>Status, split shipments, cancellations</span></div></a>
+        <a class="topic" href="#faq" data-faq="payments"><span class="ti"><i data-icon="wallet"></i></span><div><b>Payments & refunds</b><span>UPI, cards, EMI, refund timelines</span></div></a>
+        <a class="topic" href="#returns"><span class="ti"><i data-icon="undo"></i></span><div><b>Returns & replacements</b><span>7 days · 10 days refurbished</span></div></a>
+        <a class="topic" href="#warranty"><span class="ti"><i data-icon="shield"></i></span><div><b>Warranty & repairs</b><span>Brand vs Tradex warranty, RMA</span></div></a>
+        <a class="topic" href="#grades"><span class="ti"><i data-icon="award"></i></span><div><b>Refurbished grades</b><span>What Open box, A, B, Used mean</span></div></a>
+        <a class="topic" href="#shipping"><span class="ti"><i data-icon="truck"></i></span><div><b>Shipping & delivery</b><span>Timelines, charges, COD rules</span></div></a>
+        <a class="topic" href="store-dealer.html"><span class="ti" style="background:var(--vendor-50);color:#07695b"><i data-icon="briefcase"></i></span><div><b>Dealer accounts</b><span>Apply, tiers, quick order</span></div></a>
+        <a class="topic" href="#privacy"><span class="ti"><i data-icon="lock"></i></span><div><b>Account & privacy</b><span>Sign-in, data, messages</span></div></a>
+      </div>
+    </section>
+
+    <!-- FAQ + contact -->
+    <section class="section grid" style="grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 20px" id="faq">
+      <div data-anno="1A · §13.4 FAQ answers are versioned, approved content">
+        <div class="section-head"><div><h2>Frequently asked questions</h2><p id="faq-meta">Answers approved by Tradex support · content v2026.9 · updated 20 Sep 2026</p></div>
+          <div class="seg" id="faq-seg"><button class="active" data-g="all">All</button><button data-g="orders">Orders</button><button data-g="payments">Payments</button><button data-g="returns">Returns</button><button data-g="refurb">Refurbished</button></div></div>
+        <div id="faq-list">
+          <div class="faq-group" data-g="orders"><h4>Orders & tracking</h4>
+            <details class="faq" open><summary>Why does my order show “paid” but not “dispatched”?</summary><div class="ans">Payment, packing and delivery are tracked separately. After payment is confirmed we pick, test (for refurbished units) and pack your item — usually the same day if paid before 2 PM. You'll get a message with the courier tracking number at dispatch. <a href="store-order.html">Track your order</a></div></details>
+            <details class="faq"><summary>My order arrived in two parts. Is something missing?</summary><div class="ans">Items stocked at different locations may ship separately. Each shipment has its own tracking number and invoice. Your order page shows “1 of 2 shipments dispatched” until everything is on its way.</div></details>
+            <details class="faq"><summary>Can I cancel an order?</summary><div class="ans">Yes, until it's packed. Open the order and choose <b>Cancel</b>; the refund starts immediately. After dispatch, refuse the delivery or request a return once it arrives.</div></details>
+            <details class="faq"><summary>Why was my order cancelled by Tradex?</summary><div class="ans">Rarely, a unit fails our pre-dispatch check or the last unit sells in a store at the same moment. We cancel only that item, tell you why, and refund in full — we never substitute a different condition or configuration without asking.</div></details>
+          </div>
+          <div class="faq-group" data-g="payments"><h4>Payments & refunds</h4>
+            <details class="faq"><summary>My payment was deducted but the order says “awaiting payment”.</summary><div class="ans">Some UPI and net-banking payments take a few minutes to confirm. Don't pay again. We check with the bank automatically; if it isn't confirmed within 30 minutes, any deducted amount is refunded by your bank in 5–7 working days.</div></details>
+            <details class="faq"><summary>How long do refunds take?</summary><div class="ans">After the returned item passes inspection: UPI 1–3 working days, cards and net banking 5–7 working days, cash-on-delivery orders by bank transfer (NEFT) within 3 working days of receiving your account details. You'll receive a credit note for every refund.</div></details>
+            <details class="faq"><summary>Is no-cost EMI available?</summary><div class="ans">On most items above ₹10,000 with major credit cards and selected debit cards (3, 6 or 9 months). The bank's interest is given to you as an upfront discount; the bank may charge GST on that interest.</div></details>
+            <details class="faq"><summary>Can I get a GST invoice with my business GSTIN?</summary><div class="ans">Yes — add your GSTIN at checkout before paying; it can't be added after the invoice is issued. Regular business buyers should <a href="store-dealer.html">apply for a dealer account</a>.</div></details>
+          </div>
+          <div class="faq-group" data-g="returns"><h4>Returns & warranty</h4>
+            <details class="faq"><summary>How do I return or replace an item?</summary><div class="ans">Go to <a href="store-returns.html">Returns & warranty</a>, choose the item and reason, and book a free pickup or drop it at a store. Serial-numbered items are matched to the exact unit we sold you.</div></details>
+            <details class="faq"><summary>Why isn't my refund issued as soon as the courier collects the item?</summary><div class="ans">Returned items first go to a separate quarantine area and are inspected (usually within 2 working days of arrival). This confirms it's the same unit and condition, and protects your data. Then the refund is released.</div></details>
+            <details class="faq"><summary>Who do I contact for a warranty repair?</summary><div class="ans">Start with us for anything bought from Tradex. For Tradex (seller) warranty we repair or replace ourselves; for manufacturer warranty we guide you to the brand's service centre or send it on your behalf. See <a href="#warranty">warranty explained</a>.</div></details>
+          </div>
+          <div class="faq-group" data-g="refurb"><h4>Refurbished & used</h4>
+            <details class="faq"><summary>What's the difference between Grade A and Grade B?</summary><div class="ans">Both pass the same 42-point functional inspection. Grade A shows minimal signs of use and has battery health of at least 85%; Grade B has light visible wear and at least 75% battery health. See the <a href="#grades">full grading standard</a>.</div></details>
+            <details class="faq"><summary>Will I receive the exact unit in the photos?</summary><div class="ans">For listings marked “Unit photos”, yes — the photos, serial (partly masked) and inspection report belong to that unit. If it sells before you check out, we show you the next unit's own report before you pay.</div></details>
+            <details class="faq"><summary>Is my data safe on refurbished devices?</summary><div class="ans">Every storage device is wiped with a certified erasure tool before resale, and a wipe certificate is linked to the unit. Returned devices are wiped again before they're resold.</div></details>
+          </div>
+        </div>
+        <div class="card empty hidden" id="faq-empty"><i data-icon="search"></i><h4>No answers for “<span id="faq-q"></span>”</h4><p>Try other words, or ask a person — we're happy to help.</p><div class="row gap-8 mt-12" style="justify-content:center"><button class="btn btn-sm btn-primary" data-chat-open>Chat with us</button><button class="btn btn-sm" id="faq-clear">Clear search</button></div></div>
+      </div>
+
+      <div class="col gap-16" id="contact" data-anno="1A/1B · R11 Contact channels, hours & human handoff">
+        <div class="section-head" style="margin-bottom:0"><div><h2>Contact us</h2><p>We verify your phone before sharing order details.</p></div></div>
+        <div class="callout c-warn after-only"><i data-icon="clock"></i><div><strong>We're closed right now (it's 22:40).</strong> Leave a message and we'll reply after 9 AM — your reference will be <b>SUP-7745</b>. Guided help and order tracking still work.</div></div>
+        <div class="grid g-2">
+          <div class="contact-card"><span class="ci" style="background:var(--brand-50);color:var(--brand)"><i data-icon="chat"></i></span><b>Chat</b><div class="meta">Guided help 24×7 · people 9 AM–9 PM daily</div><span class="status s-ok open-only">~4 min wait</span><span class="status s-warn after-only">Leave a message</span><button class="btn btn-primary btn-sm" data-chat-open>Start chat</button></div>
+          <div class="contact-card"><span class="ci" style="background:#e3f7ec;color:#1faa59"><i data-icon="whatsapp"></i></span><b>WhatsApp</b><div class="meta">+91 80 4000 1234 · 9 AM–9 PM daily</div><span class="status s-ok open-only">Replying now</span><span class="status s-warn after-only">Auto-reply · answered from 9 AM</span><button class="btn btn-wa btn-sm" data-wa>Open WhatsApp</button></div>
+          <div class="contact-card"><span class="ci" style="background:var(--accent-50);color:#b24a00"><i data-icon="phone"></i></span><b>Phone</b><div class="meta">080 4000 1234 · Mon–Sat 10 AM–7 PM</div><span class="status s-ok open-only">Open · short queue</span><span class="status s-muted after-only">Closed</span><button class="btn btn-sm" data-toast="Call-back requested for +91 •••21 · within 2 working hours">Request a call-back</button></div>
+          <div class="contact-card"><span class="ci" style="background:var(--bg-2);color:var(--tx-2)"><i data-icon="mail"></i></span><b>Email</b><div class="meta">care@tradex.example · reply within 1 working day</div><span class="status s-info">Always open</span><button class="btn btn-sm" data-toast="Email form opened">Write to us</button></div>
+        </div>
+        <div class="chat-mini">
+          <div class="row-between"><b class="small">How chat hands over to a person</b><span class="badge b-outline">Example</span></div>
+          <div class="msg bot">Which order is this about? I can see TXO-10482 and TXO-10466.</div>
+          <div class="msg me">The laptop box was damaged when it arrived</div>
+          <div class="msg bot">Sorry about that. Damage claims need a person — I'm passing this chat and your photos to our team.</div>
+          <div class="msg sys">Karthik R (Support) joined · reference SUP-7731</div>
+        </div>
+        <p class="small muted">Tradex will never ask for your OTP, card PIN or UPI PIN. Report suspicious calls to <a href="#grievance">our grievance officer</a>.</p>
+      </div>
+    </section>
+
+    <!-- Policies with sticky table of contents -->
+    <section class="section">
+      <div class="section-head"><div><h2>Policies & guides</h2><p>Each policy is versioned. Your order always follows the version in force when you placed it.</p></div></div>
+      <div class="pol">
+        <nav class="toc card" style="padding:8px" aria-label="Policies">
+          <a href="#grades"><i data-icon="award"></i> Condition grades</a>
+          <a href="#warranty"><i data-icon="shield"></i> Warranty & RMA</a>
+          <a href="#shipping"><i data-icon="truck"></i> Shipping & delivery</a>
+          <a href="#returns"><i data-icon="undo"></i> Returns & refunds</a>
+          <a href="#terms"><i data-icon="file"></i> Terms of use</a>
+          <a href="#privacy"><i data-icon="lock"></i> Privacy notice</a>
+          <a href="#grievance"><i data-icon="flag"></i> Grievance officer</a>
+          <a href="#stores"><i data-icon="store"></i> Stores & hours</a>
+        </nav>
+
+        <div>
+          <!-- GRADES -->
+          <article class="psec" id="grades" data-anno="1A · R19 §6.6 Client-approved grade rubric">
+            <h2><i data-icon="award"></i> Refurbished & used condition grades</h2>
+            <p class="lead">Every pre-owned unit passes the same 42-point functional inspection. The grade describes how it looks, the minimum battery health, what's in the box, and the warranty you get.</p>
+            <div class="pver"><i data-icon="history" class="ic-sm"></i> Grading standard v3.1 · effective 1 Jul 2026 · approved by Tradex quality team</div>
+            <div class="table-wrap mt-16"><table class="table gtable">
+              <thead><tr><th>Grade</th><th>Cosmetic</th><th>Functional</th><th>Battery health*</th><th>Accessories & box</th><th>Warranty</th><th>Returns</th></tr></thead>
+              <tbody>
+                <tr><td><span class="cond openbox">Open box</span></td><td>Unused. Packaging opened or damaged; may have display/demo stickers.</td><td>100% working, tested on arrival</td><td>≥ 95% (practically new)</td><td>All original accessories · original box (may be worn)</td><td><b>Manufacturer</b> warranty (from original activation date if shown)</td><td>7 days</td></tr>
+                <tr><td><span class="cond refurb">Grade A</span></td><td>Minimal signs of use; no marks visible from 30 cm. Screen has no scratches.</td><td>42-point inspection passed · no known defects</td><td>≥ 85% of design capacity</td><td>Compatible charger (original or certified) · Tradex box</td><td><b>Tradex</b> 6 months (seller warranty)</td><td>10 days</td></tr>
+                <tr><td><span class="cond refurb">Grade B</span></td><td>Light visible wear: small scratches or scuffs on the body. Screen may have faint marks not visible when on.</td><td>42-point inspection passed · no functional defects</td><td>≥ 75%</td><td>Compatible charger · Tradex box</td><td><b>Tradex</b> 6 months</td><td>10 days</td></tr>
+                <tr><td><span class="cond used">Used · Good</span></td><td>Clear signs of use. Every mark over 5 mm is photographed and described on the listing.</td><td>Fully working · known limitations listed (e.g. one USB port loose)</td><td>≥ 70% or stated</td><td>As listed — may be body only</td><td><b>Tradex</b> 3 months</td><td>10 days</td></tr>
+                <tr><td><span class="badge b-outline">Not sold</span></td><td colspan="6" class="muted">Units that fail inspection, have cracked screens, liquid damage, locked firmware (iCloud/BIOS) or can't be securely wiped are never sold as refurbished. They're returned to the supplier or recycled.</td></tr>
+              </tbody>
+            </table></div>
+            <div class="grid g-3 mt-16">
+              <div class="panel small"><b>Every unit also shows</b><p class="muted mt-4">Its own photos, masked serial, inspection date & technician, battery cycle count, and known defects.</p></div>
+              <div class="panel small"><b>Keyboard & OS</b><p class="muted mt-4">Keyboard layout (US/UK) is stated. Windows/macOS is a genuine licence, reinstalled clean; Office is not included unless listed.</p></div>
+              <div class="panel small"><b>Secure data wipe</b><p class="muted mt-4">Storage is erased with certified software (NIST 800-88 method). The wipe certificate is linked to the serial.</p></div>
+            </div>
+            <p class="tiny muted mt-12">*Battery applies to laptops, phones, tablets, watches and headphones. Cameras list shutter count instead.</p>
+          </article>
+
+          <!-- WARRANTY -->
+          <article class="psec" id="warranty" data-anno="1A · R19 Warranty provider shown clearly · never implied manufacturer">
+            <h2><i data-icon="shield"></i> Warranty explained</h2>
+            <p class="lead">Every product page shows <b>who</b> provides the warranty. A manufacturer warranty is honoured by the brand; a Tradex warranty is our own promise as the seller.</p>
+            <div class="grid g-2 mt-16">
+              <div class="card card-pad col gap-8"><div class="row gap-8"><span class="badge b-info">Manufacturer warranty</span></div><b>New and open-box products</b><ul class="clean"><li>Provided by the brand (e.g. Dell, Sony, Canon) — 1 to 3 years</li><li>Repairs at the brand's authorised service centre</li><li>Needs your GST invoice — download it from your account</li><li>We help you raise the claim, or send it on your behalf from any Tradex store</li></ul></div>
+              <div class="card card-pad col gap-8"><div class="row gap-8"><span class="badge b-brand">Tradex warranty</span></div><b>Refurbished, used and Tradex builds</b><ul class="clean"><li>Provided by Tradex Electronics — 3 or 6 months; 3 years on Tradex custom builds</li><li>Repaired at our SP Road service desk, or replaced with an equal unit</li><li>Covers hardware faults in normal use</li><li>Warranty travels with the serial — replacement units keep the remaining period</li></ul></div>
+            </div>
+            <h3>Durations at a glance</h3>
+            <div class="table-wrap"><table class="table compact">
+              <thead><tr><th>Condition</th><th>Provider</th><th>Typical duration</th><th>Where it's serviced</th></tr></thead>
+              <tbody>
+                <tr><td><span class="cond new">New</span></td><td>Manufacturer</td><td>1–3 years (shown per product)</td><td>Brand service centre · we assist</td></tr>
+                <tr><td><span class="cond openbox">Open box</span></td><td>Manufacturer</td><td>Remaining brand warranty</td><td>Brand service centre · we assist</td></tr>
+                <tr><td><span class="cond refurb">Refurbished A / B</span></td><td>Tradex</td><td>6 months</td><td>Tradex service desk</td></tr>
+                <tr><td><span class="cond used">Used · Good</span></td><td>Tradex</td><td>3 months</td><td>Tradex service desk</td></tr>
+                <tr><td><span class="cond new">Tradex builds</span></td><td>Tradex (parts: brands)</td><td>3 years build warranty</td><td>Tradex build team</td></tr>
+              </tbody>
+            </table></div>
+            <h3>Not covered</h3>
+            <p class="small subtle">Physical or liquid damage, tampering or unauthorised repair, software/virus issues, consumables (batteries beyond the stated health after 6 months, printer ink), and cosmetic wear already described at sale.</p>
+            <h3>How to claim (RMA)</h3>
+            <div class="flowline">
+              <div><span class="n">1</span><b>Request</b>Choose the item & describe the fault</div>
+              <div><span class="n">2</span><b>Review</b>We match serial & invoice (1 working day)</div>
+              <div><span class="n">3</span><b>Authorise</b>You get an RMA number & pickup</div>
+              <div><span class="n">4</span><b>Pickup / drop</b>Free pickup or any store</div>
+              <div><span class="n">5</span><b>Received</b>Kept in quarantine, logged</div>
+              <div><span class="n">6</span><b>Inspect / repair</b>Diagnosis; quote first if not covered</div>
+              <div><span class="n">7</span><b>Resolved</b>Repaired, replaced or refunded</div>
+            </div>
+            <div class="row gap-8 mt-16"><a class="btn btn-primary" href="store-returns.html?type=warranty"><i data-icon="shield"></i> Start a warranty claim</a><a class="btn" href="store-account.html#devices">See my devices & expiry dates</a></div>
+          </article>
+
+          <!-- SHIPPING -->
+          <article class="psec" id="shipping" data-anno="1A · §6.5 Serviceability before payment · COD rules">
+            <h2><i data-icon="truck"></i> Shipping & delivery</h2>
+            <p class="lead">Orders paid before 2 PM (Mon–Sat) are dispatched the same day from the location that has your item. Delivery dates are shown before you pay.</p>
+            <div class="grid mt-16" style="grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr)">
+              <div class="table-wrap"><table class="table compact">
+                <thead><tr><th>Where</th><th>Delivery time</th><th class="r">Charges</th></tr></thead>
+                <tbody>
+                  <tr><td>Bengaluru & Mysuru city</td><td>Same day (order by 12 PM) or next day</td><td class="r">Free over ₹999 · else ₹49</td></tr>
+                  <tr><td>Rest of Karnataka</td><td>2–3 working days</td><td class="r">Free over ₹999 · else ₹79</td></tr>
+                  <tr><td>Metro cities (Chennai, Hyderabad, Mumbai, Delhi NCR, Pune, Kolkata)</td><td>2–4 working days</td><td class="r">Free over ₹999 · else ₹79</td></tr>
+                  <tr><td>Rest of India</td><td>4–7 working days</td><td class="r">Free over ₹999 · else ₹99</td></tr>
+                  <tr><td>North-East, J&K, islands</td><td>6–10 working days · laptops by air only</td><td class="r">₹149</td></tr>
+                  <tr><td>Partner-stock items</td><td>+4–6 days (shown on product)</td><td class="r">As above</td></tr>
+                </tbody>
+              </table></div>
+              <div class="card card-pad col gap-8" style="background:var(--bg)">
+                <b>Check your PIN code</b>
+                <div class="row gap-8"><input class="input" id="pin" value="571105" aria-label="PIN code" style="max-width:160px"><button class="btn btn-primary" id="pin-go">Check</button></div>
+                <div class="pin-res" id="pin-res"></div>
+                <p class="tiny muted">Laptops, cameras and items above ₹50,000 ship insured and need an OTP at delivery.</p>
+              </div>
+            </div>
+            <h3>Cash on delivery (COD)</h3>
+            <ul class="clean">
+              <li>Available for orders from <b>₹500 to ₹50,000</b> at serviceable PIN codes. A ₹49 COD fee applies.</li>
+              <li>Not available for dealer orders, custom builds, pre-orders or partner-stock items.</li>
+              <li>We confirm COD orders by a one-time code to your phone before dispatch.</li>
+              <li>If COD deliveries are refused twice without reason, COD is paused on the account for 90 days.</li>
+            </ul>
+            <h3>If delivery fails</h3>
+            <p class="small subtle">The courier tries 3 times. After that the parcel returns to us (“return to origin”) and we refund prepaid orders in full once it's back — usually within 7 days. Opened, damaged or tampered parcels: refuse delivery and tell us within 48 hours with photos.</p>
+          </article>
+
+          <!-- RETURNS -->
+          <article class="psec" id="returns" data-anno="1A · R19 Versioned returns policy · quarantine before refund">
+            <h2><i data-icon="undo"></i> Returns & refunds</h2>
+            <p class="lead">Changed your mind or something's wrong? Most items can be returned or replaced — free pickup at serviceable PIN codes, or drop off at any Tradex store.</p>
+            <div class="pver"><i data-icon="history" class="ic-sm"></i> Returns policy v2026.3 · effective 1 Sep 2026 · previous: v2026.2 (1 Apr – 31 Aug 2026) · <button class="link-btn small" data-toast="Version history opened">compare versions</button></div>
+            <div class="table-wrap mt-16"><table class="table compact">
+              <thead><tr><th>Condition</th><th>Return window</th><th>Dead on arrival</th><th>Replacement</th><th>Refund to</th></tr></thead>
+              <tbody>
+                <tr><td><span class="cond new">New</span> <span class="cond openbox">Open box</span></td><td>7 days from delivery</td><td>Report within 48 h</td><td>Same model, if in stock</td><td>Original payment method</td></tr>
+                <tr><td><span class="cond refurb">Refurbished</span> <span class="cond used">Used</span></td><td>10 days from delivery</td><td>Report within 48 h</td><td>Equal or better graded unit</td><td>Original payment method</td></tr>
+                <tr><td>Dealer orders</td><td>7 days · bulk RMA available</td><td>Report within 48 h</td><td>Yes</td><td>Original payment · credit note</td></tr>
+              </tbody>
+            </table></div>
+            <div class="grid g-2 mt-16">
+              <div><h3 style="margin-top:0">Can't be returned</h3><ul class="clean"><li>Opened software, activated licences and gift cards</li><li>Consumables once opened (ink, toner, thermal paste)</li><li>Custom-built PCs — unless faulty</li><li>Items with physical, liquid or tamper damage</li><li>Items missing serial labels or with a different serial</li></ul></div>
+              <div><h3 style="margin-top:0">Refund timelines (after inspection)</h3><ul class="clean"><li>UPI: 1–3 working days</li><li>Credit/debit cards, net banking: 5–7 working days</li><li>EMI: cancelled with your bank; interest discount reversed</li><li>COD: bank transfer (NEFT) within 3 working days</li></ul></div>
+            </div>
+            <div class="callout c-brand mt-16"><i data-icon="lock"></i><div><strong>Why refunds wait for inspection.</strong> Returned items go into a separate quarantine area — they're never put straight back on sale. A technician checks the serial, condition and fault within 2 working days of arrival; refund and resale are separate decisions. Storage devices are securely wiped.</div></div>
+            <div class="row gap-8 mt-16"><a class="btn btn-primary" href="store-returns.html"><i data-icon="undo"></i> Start a return</a><a class="btn" href="store-account.html#returns">My requests</a></div>
+          </article>
+
+          <!-- TERMS -->
+          <article class="psec" id="terms">
+            <h2><i data-icon="file"></i> Terms of use (summary)</h2>
+            <div class="pver"><i data-icon="history" class="ic-sm"></i> Terms v2026.1 · effective 1 Mar 2026 · <button class="link-btn small" data-toast="Full terms PDF downloaded">Download full terms (PDF)</button></div>
+            <div class="grid g-2 mt-16">
+              <dl class="kv"><dt>Seller</dt><dd>Tradex Electronics Pvt Ltd</dd><dt>CIN</dt><dd class="mono">U52390KA2019PTC123456</dd><dt>GSTIN</dt><dd class="mono">29AAHCT4471K1Z2</dd><dt>Registered office</dt><dd>No. 42, SP Road, Bengaluru 560002</dd><dt>Contact</dt><dd>care@tradex.example · 080 4000 1234</dd></dl>
+              <ul class="clean">
+                <li>Prices include GST for consumers; dealer prices are shown ex-GST and are confidential.</li>
+                <li>An order is accepted when payment is confirmed and stock is reserved; we may cancel with a full refund if a unit fails pre-dispatch checks.</li>
+                <li>Obvious pricing errors: we'll contact you before dispatch and cancel with a full refund if you prefer.</li>
+                <li>Condition, warranty provider and return window shown at purchase are kept with your order.</li>
+                <li>Disputes: Indian law; courts at Bengaluru — without affecting your consumer rights.</li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- PRIVACY -->
+          <article class="psec" id="privacy" data-anno="1A · DPDP Act: notice, purposes, retention, rights">
+            <h2><i data-icon="lock"></i> Privacy notice (summary)</h2>
+            <div class="pver"><i data-icon="history" class="ic-sm"></i> Privacy notice v2026.2 · effective 1 Aug 2026 · Digital Personal Data Protection Act, 2023</div>
+            <div class="grid g-2 mt-16">
+              <div><h3 style="margin-top:0">What we collect & why</h3><ul class="clean"><li>Name, phone, email, addresses — to deliver, invoice and support orders</li><li>Order, payment reference and device serials — for warranty and tax records</li><li>Messages you send us — to resolve your request</li><li>Marketing — only with your separate consent, withdrawable any time</li><li>We never store card numbers; payments are handled by our payment provider</li></ul></div>
+              <div><h3 style="margin-top:0">How long we keep it</h3>
+                <table class="table compact"><tbody>
+                  <tr><td>Tax invoices & credit notes</td><td class="r">8 years (GST law)</td></tr>
+                  <tr><td>Warranty & serial records</td><td class="r">Until warranty ends + 1 year</td></tr>
+                  <tr><td>Chat & support messages</td><td class="r">2 years</td></tr>
+                  <tr><td>Marketing consent records</td><td class="r">While active + 3 years</td></tr>
+                  <tr><td>Dealer/vendor KYC documents</td><td class="r">Relationship + 8 years</td></tr>
+                </tbody></table></div>
+            </div>
+            <h3>Your rights</h3>
+            <p class="small subtle">Access a copy of your data, correct it, withdraw consent, request erasure (except records we must keep by law), nominate someone to act for you, and raise a grievance. Manage these in <a href="store-account.html#privacy">Account → Privacy & messages</a>. Data we share: couriers (delivery details), payment provider (payment reference), WhatsApp Business provider (messages you choose to send there) — never sold.</p>
+          </article>
+
+          <!-- GRIEVANCE -->
+          <article class="psec" id="grievance" data-anno="1A · Grievance officer (Consumer Protection (E-Commerce) Rules, 2020)">
+            <h2><i data-icon="flag"></i> Grievance officer</h2>
+            <p class="lead">Not happy with how a complaint was handled? Our grievance officer acknowledges every complaint within <b>48 hours</b> and resolves it within <b>one month</b>.</p>
+            <div class="grv mt-16">
+              <div class="card card-pad col gap-12">
+                <div class="row gap-12"><div class="avatar lg" style="background:#7c3aed">KH</div><div><b style="font-size:15px">Ms. Kavya Hegde</b><div class="small muted">Grievance Officer & Data Protection contact</div></div></div>
+                <dl class="kv"><dt>Company</dt><dd>Tradex Electronics Pvt Ltd</dd><dt>Address</dt><dd>No. 42, 2nd Floor, SP Road, Bengaluru, Karnataka 560002</dd><dt>Email</dt><dd>grievance@tradex.example</dd><dt>Phone</dt><dd>080 4000 1299 · Mon–Fri, 10 AM–6 PM</dd><dt>Response</dt><dd>Acknowledged in 48 h · resolved within 1 month</dd></dl>
+                <p class="tiny muted">Still unresolved? You can contact the National Consumer Helpline: 1915 or consumerhelpline.gov.in.</p>
+              </div>
+              <div class="card card-pad col gap-12">
+                <b>Raise a grievance</b>
+                <div class="form-grid">
+                  <div class="field"><label for="g-ord">Order / request no.</label><input class="input" id="g-ord" placeholder="TXO-… or RMA-…"></div>
+                  <div class="field"><label for="g-cat">About</label><select class="select" id="g-cat"><option>Refund or return</option><option>Warranty decision</option><option>Delivery</option><option>Privacy / my data</option><option>Staff conduct</option><option>Other</option></select></div>
+                  <div class="field full"><label for="g-d">What happened?</label><textarea class="textarea" id="g-d" style="min-height:74px" placeholder="Include dates and any reference numbers"></textarea></div>
+                </div>
+                <div class="row-between"><span class="small muted"><i data-icon="paperclip" class="ic-sm"></i> Attach files (optional)</span><button class="btn btn-primary" data-toast="Grievance GRV-0112 registered · acknowledgement sent by email">Submit grievance</button></div>
+              </div>
+            </div>
+          </article>
+
+          <!-- STORES -->
+          <article class="psec" id="stores" data-anno="1A · R14 Branches + warehouse · one stock authority">
+            <h2><i data-icon="store"></i> Stores & hours</h2>
+            <p class="lead">Buy, pick up online orders, drop returns or get warranty help at any branch. In-store stock comes from the same system as the website.</p>
+            <div class="grid g-4 mt-16">
+              <div class="storecard"><div data-ph="pc-setup-white"></div><div class="sb"><b style="font-size:14px">SP Road, Bengaluru</b><span class="muted">No. 42, SP Road, Bengaluru 560002 · 080 4000 1201</span><span class="status s-ok open-only">Open now · till 8:30 PM</span><span class="status s-muted after-only">Closed · opens 10 AM</span><div class="hours"><span>Mon–Sat</span><span>10 AM – 8:30 PM</span><span>Sun</span><span>Closed</span></div><div class="svc"><span class="badge">Pickup</span><span class="badge">Returns</span><span class="badge b-brand">Service desk</span></div></div></div>
+              <div class="storecard"><div data-ph="banner-workspace"></div><div class="sb"><b style="font-size:14px">Koramangala, Bengaluru</b><span class="muted">80 Feet Rd, 4th Block, 560034 · 080 4000 1202</span><span class="status s-ok open-only">Open now · till 9 PM</span><span class="status s-muted after-only">Closed · opens 11 AM</span><div class="hours"><span>Mon–Sun</span><span>11 AM – 9 PM</span></div><div class="svc"><span class="badge">Pickup</span><span class="badge">Returns</span><span class="badge b-accent">Demo zone</span></div></div></div>
+              <div class="storecard"><div data-ph="mon-setup"></div><div class="sb"><b style="font-size:14px">Mysuru</b><span class="muted">Sayyaji Rao Rd, Devaraja Mohalla, 570001 · 0821 400 1203</span><span class="status s-warn open-only">Closes in 45 min</span><span class="status s-muted after-only">Closed · opens 10 AM</span><div class="hours"><span>Mon–Sat</span><span>10 AM – 8 PM</span><span>Sun</span><span>11 AM – 5 PM</span></div><div class="svc"><span class="badge">Pickup</span><span class="badge">Returns</span><span class="badge b-brand">Service desk</span></div></div></div>
+              <div class="storecard"><div data-ph="banner-parts"></div><div class="sb"><b style="font-size:14px">Central Warehouse</b><span class="muted">Peenya Industrial Area, Bengaluru 560058</span><span class="status s-info">No walk-in counter</span><div class="hours"><span>Dispatch</span><span>Mon–Sat, 9 AM – 7 PM</span><span>Dealers</span><span>Collection by appointment</span></div><div class="svc"><span class="badge b-vendor">Dealer collection</span><span class="badge">Returns processing</span></div></div></div>
+            </div>
+            <p class="small muted mt-12">Holiday hours: all stores closed on 2 Oct (Gandhi Jayanti). Online orders placed that day ship on 3 Oct.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+<script src="assets/tradex.js"></script>
+<script>
+TX.ready(() => {
+  const $ = TX.$, $$ = TX.$$, ic = TX.icon;
+  const pv = TX.param("view"); if (["guest", "consumer", "dealer"].includes(pv)) TX.setView(pv);
+  if (TX.view === "guest") $(".help-hero h1").textContent = "How can we help?";
+  if (TX.view === "dealer") $(".help-hero h1").textContent = "How can we help, Arun?";
+
+  /* ---------- Support hours state ---------- */
+  const setHours = (closed) => { document.body.classList.toggle("after-hours", closed); $$("#hours-seg button").forEach((b) => b.classList.toggle("active", (b.dataset.h === "closed") === closed)); };
+  $$("#hours-seg button").forEach((b) => b.addEventListener("click", () => setHours(b.dataset.h === "closed")));
+  if (TX.param("hours") === "closed") setHours(true);
+
+  /* ---------- FAQ search & groups ---------- */
+  let group = "all";
+  const applyFaq = () => {
+    const q = $("#hq").value.trim().toLowerCase(); let n = 0;
+    $$(".faq-group").forEach((g) => {
+      let gn = 0;
+      $$("details", g).forEach((d) => { const hit = !q || d.textContent.toLowerCase().includes(q); const show = hit && (group === "all" || g.dataset.g === group); d.classList.toggle("hidden", !show); if (show) { gn++; if (q) d.open = true; } });
+      g.classList.toggle("hidden", gn === 0); n += gn;
+    });
+    $("#faq-empty").classList.toggle("hidden", n > 0); $("#faq-q").textContent = $("#hq").value;
+    $("#faq-meta").textContent = q ? `${n} answer${n === 1 ? "" : "s"} for “${$("#hq").value}”` : "Answers approved by Tradex support · content v2026.9 · updated 20 Sep 2026";
+  };
+  const search = () => { applyFaq(); window.scrollTo({ top: $("#faq").getBoundingClientRect().top + window.scrollY - 90, behavior: "smooth" }); };
+  $("#hq").addEventListener("input", applyFaq);
+  $("#hq").addEventListener("keydown", (e) => { if (e.key === "Enter") search(); });
+  $("#hq-go").addEventListener("click", search);
+  $$("[data-q]").forEach((c) => c.addEventListener("click", () => { $("#hq").value = c.dataset.q; search(); }));
+  $("#faq-clear").addEventListener("click", () => { $("#hq").value = ""; applyFaq(); });
+  $$("#faq-seg button").forEach((b) => b.addEventListener("click", () => { group = b.dataset.g; applyFaq(); }));
+  $$("[data-faq]").forEach((a) => a.addEventListener("click", () => { group = a.dataset.faq; $$("#faq-seg button").forEach((b) => b.classList.toggle("active", b.dataset.g === group)); applyFaq(); }));
+  document.addEventListener("click", (e) => { if (e.target.closest("[data-chat-open]") && !e.target.closest(".helpfab")) $(".helpfab").classList.add("open"); });
+
+  /* ---------- PIN serviceability ---------- */
+  const checkPin = () => {
+    const v = $("#pin").value.trim(); let h;
+    if (!/^\d{6}$/.test(v)) h = `<div class="callout c-bad small">${ic("x-circle")}<div>Enter a 6-digit PIN code.</div></div>`;
+    else if (/^56|^570/.test(v)) h = `<div class="callout c-ok small">${ic("check-circle")}<div><b>${v} · serviceable.</b> Next-day delivery · COD available · free return pickup.</div></div>`;
+    else if (/^5[78]/.test(v)) h = `<div class="callout c-warn small">${ic("alert")}<div><b>${v} · serviceable in 3–5 days.</b> COD and return pickup aren't available here — drop returns at our Mysuru store.</div></div>`;
+    else if (/^79|^18|^19/.test(v)) h = `<div class="callout c-warn small">${ic("alert")}<div><b>${v} · limited service.</b> 6–10 days, prepaid only. Laptops ship by air.</div></div>`;
+    else if (/^99/.test(v)) h = `<div class="callout c-bad small">${ic("x-circle")}<div><b>${v} · not serviceable yet.</b> Try a nearby PIN or collect from a store.</div></div>`;
+    else h = `<div class="callout c-ok small">${ic("check-circle")}<div><b>${v} · serviceable.</b> 2–7 days · COD available up to ₹50,000.</div></div>`;
+    $("#pin-res").innerHTML = h;
+  };
+  $("#pin-go").addEventListener("click", checkPin); $("#pin").addEventListener("keydown", (e) => { if (e.key === "Enter") checkPin(); }); checkPin();
+
+  /* ---------- Table of contents highlight ---------- */
+  const links = $$(".toc a");
+  const io = new IntersectionObserver((ents) => { ents.forEach((en) => { if (en.isIntersecting) links.forEach((a) => a.classList.toggle("on", a.getAttribute("href") === "#" + en.target.id)); }); }, { rootMargin: "-90px 0px -60% 0px" });
+  $$(".psec").forEach((s) => io.observe(s));
+  const h = location.hash.slice(1); if (h) { const t = document.getElementById(h); if (t) setTimeout(() => window.scrollTo({ top: t.getBoundingClientRect().top + window.scrollY - 84 }), 60); links.forEach((a) => a.classList.toggle("on", a.getAttribute("href") === "#" + h)); }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,750 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Product · Tradex</title>
+  <link rel="stylesheet" href="assets/tradex.css">
+  <style>
+    .pd-bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 16px; }
+    .pd-top { display: grid; grid-template-columns: 460px minmax(0, 1fr) 316px; gap: 28px; margin-top: 14px; align-items: start; }
+    .gal { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 12px; position: sticky; top: 84px; }
+    .gal .thumbs { display: flex; flex-direction: column; gap: 8px; }
+    .gal .thumbs button { padding: 0; border: 2px solid var(--line); border-radius: 9px; background: #fff; overflow: hidden; }
+    .gal .thumbs button.on { border-color: var(--brand); box-shadow: var(--ring); }
+    .gal .thumbs .ph { width: 60px; height: 60px; aspect-ratio: auto; border-radius: 0; }
+    .gal .thumbs .t-lab { font-size: 10px; color: var(--tx-3); text-align: center; line-height: 1.2; margin-top: 4px; }
+    .gal .main { position: relative; }
+    .gal .main .ph { aspect-ratio: 1 / 1; border-radius: var(--r-lg); border: 1px solid var(--line); }
+    .gal .main .g-flags { position: absolute; top: 12px; left: 12px; display: flex; gap: 6px; z-index: 2; }
+    .gal .main .g-cap { position: absolute; left: 12px; bottom: 12px; right: 12px; z-index: 2; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .gal .main .g-cap span { background: rgba(7,12,24,.72); color: #fff; font-size: 11.5px; font-weight: 600; padding: 4px 9px; border-radius: 999px; display: inline-flex; gap: 6px; align-items: center; }
+    .gal .g-actions { display: flex; gap: 8px; margin-top: 12px; }
+    .gal .g-actions .btn { flex: 1; }
+    .pd-info h1 { font-size: 23px; line-height: 1.3; letter-spacing: -0.015em; }
+    .pd-brand { font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+    .pd-rating { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--tx-2); flex-wrap: wrap; }
+    .pd-ids { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--tx-3); }
+    .pd-ids b { color: var(--tx-2); font-weight: 600; }
+    .grade-box { display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; border-radius: var(--r); border: 1px solid var(--line); background: #fff; }
+    .grade-box.refurb { background: #f6f3ff; border-color: #e2dafe; }
+    .grade-box.used { background: #fff7ed; border-color: #fbd9b5; }
+    .grade-box.openbox { background: #eef8fd; border-color: #c4e6f6; }
+    .grade-box.new { background: var(--ok-50); border-color: #bde8cc; }
+    .offers { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+    .offer { border: 1.5px solid var(--line); border-radius: var(--r); padding: 9px 10px; background: #fff; text-align: left; display: flex; flex-direction: column; gap: 3px; font-size: 12px; color: var(--tx-2); }
+    .offer.on { border-color: var(--brand); box-shadow: var(--ring); }
+    .offer.off { background: #fafbfc; color: var(--tx-4); border-style: dashed; }
+    .offer .cond { align-self: flex-start; height: 19px; font-size: 10.5px; }
+    .offer.off .cond { opacity: .55; }
+    .offer b { font-size: 14px; color: var(--tx-1); }
+    .offer.off b { color: var(--tx-4); text-decoration: line-through; }
+    .keyspecs { margin: 0; padding-left: 18px; font-size: 13.5px; line-height: 1.65; color: var(--tx-1); }
+    .bank-offers { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .bank-offers > div { border: 1px solid var(--line); border-radius: var(--r); padding: 10px 12px; font-size: 12px; background: #fff; color: var(--tx-2); }
+    .bank-offers b { display: flex; align-items: center; gap: 6px; color: var(--tx-1); font-size: 12.5px; margin-bottom: 2px; }
+    .bb-stock span { display: inline-flex; align-items: center; gap: 6px; font-weight: 650; }
+    .spec-table { font-variant-numeric: normal; }
+    .spec-table th, .spec-table td { padding: 8px 14px; }
+    .pol-card .kv dd { font-weight: 500; color: var(--tx-1); }
+    .tier-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+    .tier-table th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--tx-3); font-weight: 650; padding: 6px 8px; border-bottom: 1px solid var(--line); }
+    .tier-table td { padding: 7px 8px; border-bottom: 1px solid var(--line-2); }
+    .tier-table tr.cur td { background: var(--vendor-50); font-weight: 650; }
+    .tier-table td.r, .tier-table th.r { text-align: right; }
+    .buybox { position: sticky; top: 84px; }
+    .buybox .card-body { display: flex; flex-direction: column; gap: 12px; padding: 18px; }
+    .bb-line { display: flex; gap: 9px; align-items: flex-start; font-size: 13px; color: var(--tx-2); }
+    .bb-line .ic { width: 16px; height: 16px; margin-top: 2px; flex: none; color: var(--tx-3); }
+    .bb-line b { color: var(--tx-1); }
+    .pin-res { font-size: 12.5px; display: flex; flex-direction: column; gap: 5px; }
+    .pin-res div { display: flex; gap: 7px; align-items: flex-start; }
+    .pin-res .ic { width: 14px; height: 14px; margin-top: 2px; flex: none; }
+    .stores { display: flex; flex-direction: column; gap: 0; }
+    .stores .st { display: grid; grid-template-columns: 1fr auto; gap: 4px 8px; padding: 8px 0; border-bottom: 1px solid var(--line-2); font-size: 12.5px; }
+    .stores .st:last-child { border-bottom: 0; }
+    .stores .st .muted { grid-column: 1 / -1; font-size: 11.5px; }
+    .insp-grid { display: grid; grid-template-columns: 1.05fr 1fr 1.25fr; gap: 0; }
+    .insp-grid > div { padding: 20px; border-right: 1px solid var(--line-2); }
+    .insp-grid > div:last-child { border-right: 0; }
+    .big-n { font-size: 34px; font-weight: 750; letter-spacing: -0.02em; line-height: 1; }
+    .chk-row { display: grid; grid-template-columns: 1fr 70px 44px; gap: 10px; align-items: center; font-size: 12.5px; padding: 4px 0; }
+    .chk-row .tnum { text-align: right; font-weight: 650; }
+    .defect { display: grid; grid-template-columns: 56px 1fr; gap: 10px; align-items: center; padding: 8px; border: 1px solid #fbd9b5; background: #fffaf3; border-radius: var(--r); font-size: 12.5px; }
+    .defect .ph { width: 56px; height: 56px; aspect-ratio: auto; border-radius: 6px; }
+    .ok-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; font-size: 12.5px; }
+    .ok-list li { display: flex; gap: 7px; align-items: flex-start; }
+    .ok-list .ic { width: 14px; height: 14px; margin-top: 2px; flex: none; color: var(--ok); }
+    .pol-card { display: flex; flex-direction: column; gap: 10px; }
+    .pol-card .ttl { display: flex; gap: 10px; align-items: center; }
+    .pol-card .ttl .ti { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; background: var(--brand-50); color: var(--brand); flex: none; }
+    .fbt { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 24px; align-items: center; }
+    .fbt-items { display: flex; align-items: stretch; gap: 12px; }
+    .fbt-plus { align-self: center; }
+    .fbt-item { flex: 1; min-width: 0; border: 1px solid var(--line); border-radius: var(--r); padding: 10px; display: flex; flex-direction: column; gap: 6px; font-size: 12.5px; background: #fff; }
+    .fbt-item .ph { aspect-ratio: 16 / 10; }
+    .fbt-item.off { opacity: .45; }
+    .fbt-plus { font-size: 22px; color: var(--tx-4); font-weight: 300; }
+    .acc-row { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto auto; gap: 14px; align-items: center; padding: 12px 20px; border-bottom: 1px solid var(--line-2); }
+    .acc-row:last-child { border-bottom: 0; }
+    .acc-row .ph { width: 56px; height: 56px; aspect-ratio: auto; }
+    .dist { display: grid; grid-template-columns: 34px 1fr 44px; gap: 10px; align-items: center; font-size: 12.5px; padding: 3px 0; }
+    .dist .meter { height: 8px; }
+    .dist .meter > span { background: #f5a524; }
+    .dist .meter { background: #f1f2f5; }
+    .review { padding: 16px 0; border-bottom: 1px solid var(--line-2); }
+    .review:last-child { border-bottom: 0; }
+    .reply { margin-top: 10px; padding: 10px 12px; border-left: 3px solid var(--brand); background: var(--brand-50); border-radius: 0 var(--r-sm) var(--r-sm) 0; font-size: 12.5px; }
+    .qa { padding: 14px 0; border-bottom: 1px solid var(--line-2); display: grid; grid-template-columns: 70px 1fr; gap: 6px 12px; font-size: 13.5px; }
+    .qa:last-child { border-bottom: 0; }
+    .qa .k { font-weight: 700; color: var(--tx-3); font-size: 12px; padding-top: 2px; }
+    .chk-table td:last-child { width: 130px; }
+    .wa-bubble { background: #dcf8c6; border-radius: 10px 10px 2px 10px; padding: 10px 12px; font-size: 13px; line-height: 1.5; margin-left: 40px; box-shadow: 0 1px 1px rgba(0,0,0,.08); }
+    .wa-screen { background: #efe7de; border-radius: var(--r); padding: 16px; }
+    .spec-missing { color: var(--tx-4); font-style: italic; display: inline-flex; align-items: center; gap: 5px; }
+    .ph-contain img { object-fit: contain; }
+  </style>
+</head>
+<body data-app="store" data-page="product">
+<main>
+  <div class="container" id="pd-root">
+    <div class="pd-bar">
+      <nav class="crumbs" id="crumbs" aria-label="Breadcrumb"></nav>
+      <div class="row gap-8">
+        <span class="small muted">Page state</span>
+        <div class="seg" id="state-seg">
+          <button data-state="normal">Normal</button>
+          <button data-state="oos">Variant unavailable</button>
+          <button data-state="price">Price changed</button>
+          <button data-state="confirm">Supplier confirmation</button>
+        </div>
+      </div>
+    </div>
+    <div id="state-banner"></div>
+    <section class="pd-top" id="pd-top"></section>
+    <section id="insp-sec"></section>
+    <section class="grid g-3 mt-24" id="policy-row"></section>
+    <section class="section" id="fbt-sec"></section>
+    <section class="section" id="tabs-sec"></section>
+    <section class="section" id="acc-sec"></section>
+    <section class="section" id="similar-sec"></section>
+  </div>
+</main>
+
+<!-- WhatsApp click-to-chat preview -->
+<div class="modal" id="m-wa"><div class="modal-card">
+  <div class="modal-head"><h3 class="row gap-8"><i data-icon="whatsapp" class="text-ok"></i> Ask about this product on WhatsApp</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+  <div class="modal-body col gap-16">
+    <p class="small subtle">We'll open WhatsApp with this message pre-filled so our team knows exactly which item and unit you mean. Chat hours 9 AM–9 PM · typical reply 5 min.</p>
+    <div class="wa-screen"><div class="wa-bubble" id="wa-text"></div></div>
+    <div class="callout c-info small"><i data-icon="info"></i><div>Prices mentioned in chat are re-confirmed by our system before you pay — you'll get a secure checkout link with the live price and stock. Chat alone doesn't create an order.</div></div>
+  </div>
+  <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-wa" data-wa data-close><i data-icon="whatsapp"></i> Open WhatsApp</button></div>
+</div></div>
+
+<!-- Ask a question -->
+<div class="modal" id="m-ask"><div class="modal-card">
+  <div class="modal-head"><h3>Ask a question</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+  <div class="modal-body col gap-16">
+    <div class="field"><label for="ask-q">Your question</label><textarea class="textarea" id="ask-q" placeholder="e.g. Will a 32 GB RAM kit work in this model?"></textarea><span class="hint">Answered by a Tradex product specialist, usually within 1 working day. Don't include phone numbers or order details.</span></div>
+    <label class="check"><input type="checkbox" checked> Notify me by email when answered</label>
+  </div>
+  <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-primary" data-close data-toast="Question submitted · it will appear after review">Submit question</button></div>
+</div></div>
+
+<script src="assets/tradex.js"></script>
+<script>
+TX.ready(() => {
+  const $ = TX.$, $$ = TX.$$, ic = TX.icon, fmt = TX.fmt, esc = TX.esc;
+  const as = TX.param("as"); if (["guest", "consumer", "dealer"].includes(as)) TX.setView(as);
+  const id = TX.param("id") || "lap-01";
+  const p = TX.products.find((x) => x.id === id);
+  const root = $("#pd-root");
+
+  /* ---------------- Not found ---------------- */
+  if (!p) {
+    document.title = "Product not found · Tradex";
+    root.innerHTML = `<div class="card empty mt-24" style="padding:56px"><i data-icon="package"></i><h4 style="font-size:18px">We couldn't find that product</h4><p>“${esc(id)}” may have been discontinued or the link is incorrect. Unavailable products are never shown with a stale price.</p>
+      <div class="row mt-16" style="justify-content:center"><a class="btn btn-primary" href="store-listing.html">Browse all products</a><a class="btn" href="store-listing.html?q=${encodeURIComponent(id)}">Search for “${esc(id)}”</a></div></div>
+      <section class="section"><div class="section-head"><h2>Popular right now</h2></div><div class="pgrid cols-5" data-products="lap-01,lap-04,ssd-01,mon-01,hp-01"></div></section>`;
+    TX.hydrate(root);
+    return;
+  }
+
+  /* ---------------- Derived product facts ---------------- */
+  const idx = TX.products.indexOf(p);
+  const catObj = TX.categories.find((c) => c.id === p.cat) || { name: p.cat, id: p.cat };
+  const isUnit = /refurb|used/.test(p.cond);
+  const hasReport = isUnit || p.cond === "openbox";
+  const unitId = "U-000" + (812 + idx);
+  const partner = p.stock === "supplier";
+  const tradexWarranty = /Tradex/.test(p.warranty);
+  const warrMonths = (p.warranty.match(/(\d+)-month/) || [])[1];
+  const warrProvider = tradexWarranty ? "Tradex Electronics Pvt Ltd (seller warranty)" : `${p.brand} India (manufacturer warranty)`;
+  const policyV = tradexWarranty ? (warrMonths === "3" ? "WP-TRX-03M v3.2" : /build/.test(p.warranty) ? "WP-TRX-BUILD v1.4" : "WP-TRX-06M v3.2") : `Brand terms · recorded as BW-${p.brand.slice(0, 3).toUpperCase()}-2026`;
+  const returnDays = isUnit ? 10 : 7;
+  const retPolicyV = isUnit ? "RP-REFURB-10D v2.1" : p.cond === "openbox" ? "RP-OPENBOX-7D v2.1" : "RP-STD-7D v2.1";
+  const model = (p.title.match(/(Latitude \d+|ThinkPad \w+ Gen \d|MacBook Air|MacBook Pro|TUF Gaming F15|Pavilion 15|Zenbook Pro 14 Duo|Yoga Book 9i|EOS [\w ]+?(?= |$)|Alpha a7 III|X-T30 II|RX100 VII)/) || [p.title.split(" ").slice(1, 4).join(" ")])[0];
+  const serialMask = (p.brand === "Dell" ? "Service tag ••••7Q3" : p.brand === "Apple" ? "S/N C02••••••Q6L" : p.brand === "Lenovo" ? "S/N PF3••••K" : "S/N ••••••" + (1000 + idx * 37).toString(36).toUpperCase());
+  const batt = p.cond === "openbox" ? 100 : { "lap-01": 91, "lap-02": 84, "lap-08": 89, "phn-01": 90, "hp-02": 93, "tab-02": 82 }[p.id] || (p.cond === "refurb-a" ? 88 : p.cond === "refurb-b" ? 79 : 76);
+  const cycles = p.cond === "openbox" ? "3 cycles" : p.brand === "Apple" ? "212 cycles" : "cycle count 187";
+  const hasBattery = ["laptops", "mobile"].includes(p.cat) || p.id === "hp-02";
+  const disc = Math.round((1 - p.price / p.mrp) * 100);
+  const DATES = ["Mon, 28 Sep", "Tue, 29 Sep", "Wed, 30 Sep", "Thu, 1 Oct", "Fri, 2 Oct", "Sat, 3 Oct", "Mon, 5 Oct", "Tue, 6 Oct", "Wed, 7 Oct"];
+  const dIdx = Math.max(0, DATES.indexOf(p.delivery));
+  const GRADE = {
+    new: ["Brand-new, sealed box", "Factory-sealed with all original accessories. Warranty starts on your invoice date."],
+    openbox: ["Unused — box opened", "Opened for display or returned unused within 7 days. All accessories present, fully tested, full manufacturer warranty."],
+    "refurb-a": ["Minimal signs of use", "No marks visible from 30 cm. Battery ≥ 85% of design capacity. Passed our 42-point inspection. Any wear is photographed below."],
+    "refurb-b": ["Light visible wear", "Small scratches or scuffs on lid or base that don't affect use. Fully functional. Battery ≥ 75%. Every mark is photographed."],
+    used: ["Pre-owned, tested & working", "Cosmetic wear described and photographed. Functional checks passed. Shorter warranty than refurbished grades."],
+  }[p.cond];
+
+  /* ---------------- Category attribute templates (R07) ---------------- */
+  const LAP = {
+    "lap-01": ["Intel Core i5-1145G7 (4 cores, up to 4.4 GHz, vPro)", "Intel Iris Xe", "16 GB DDR4 3200 MHz (2 × 8 GB, upgradable to 64 GB)", '14" FHD (1920×1080) IPS anti-glare, 250 nits', "512 GB PCIe NVMe SSD", "2× Thunderbolt 4 (USB-C), 2× USB-A 3.2, HDMI 2.0, RJ-45, microSD, 3.5 mm", "Wi-Fi 6 AX201, Bluetooth 5.1", "720p HD with privacy shutter", "1.36 kg", "63 Wh 4-cell", "US English, backlit", "Grey", "Windows 11 Pro (genuine digital licence)", "Latitude 5420"],
+    "lap-02": ["AMD Ryzen 5 PRO 5650U (6 cores, up to 4.2 GHz)", "AMD Radeon integrated", "16 GB DDR4 3200 MHz (8 GB soldered + 8 GB SODIMM)", '14" FHD (1920×1080) IPS, 300 nits', "256 GB PCIe NVMe SSD", "2× USB-C, 2× USB-A, HDMI 2.0, RJ-45, 3.5 mm", "Wi-Fi 6, Bluetooth 5.2", "720p with ThinkShutter", "1.47 kg", "50 Wh", "US English, backlit, TrackPoint", "Black", "Windows 11 Pro (genuine digital licence)", "ThinkPad T14 Gen 2 (20XK)"],
+    "lap-03": ["Apple M2 (8-core CPU)", "Apple 8-core GPU", "8 GB unified memory", '13.6" Liquid Retina (2560×1664), 500 nits', "256 GB SSD", "2× Thunderbolt / USB 4, MagSafe 3, 3.5 mm", "Wi-Fi 6, Bluetooth 5.3", "1080p FaceTime HD", "1.24 kg", "52.6 Wh · up to 18 h", "Backlit Magic Keyboard with Touch ID", "Midnight", "macOS Sequoia", "MLY33HN/A"],
+    "lap-04": ["Intel Core i7-12700H (14 cores, up to 4.7 GHz)", "NVIDIA GeForce RTX 3050 4 GB", "16 GB DDR4 3200 MHz (upgradable to 32 GB)", '15.6" FHD 144 Hz IPS-level', "512 GB PCIe 4.0 NVMe SSD", "Thunderbolt 4, 2× USB-A, HDMI 2.0b, RJ-45, 3.5 mm", "Wi-Fi 6, Bluetooth 5.2", "720p HD", "2.2 kg", "90 Wh", "RGB backlit", "Mecha Grey", "Windows 11 Home", "FX507ZC"],
+    "lap-05": ["Intel Core i5-1335U (10 cores, up to 4.6 GHz)", "Intel Iris Xe", "16 GB DDR4 3200 MHz", '15.6" FHD IPS micro-edge, 250 nits', "512 GB PCIe NVMe SSD", "USB-C, 2× USB-A, HDMI 2.1, 3.5 mm", "Wi-Fi 6, Bluetooth 5.3", "720p HD", "1.74 kg", "41 Wh, fast charge", "Backlit", "Natural Silver", "Windows 11 Home + Office Home & Student 2021", "15-eg3xxx"],
+    "lap-06": ["Intel Core i9-13900H (14 cores, up to 5.4 GHz)", "NVIDIA GeForce RTX 4060 8 GB", "32 GB LPDDR5 4800 MHz (soldered)", '14.5" 2.8K OLED 120 Hz touch + 12.7" ScreenPad Plus', "1 TB PCIe 4.0 NVMe SSD", "2× Thunderbolt 4, USB-A, HDMI 2.1, SD Express 7.0", "Wi-Fi 6E, Bluetooth 5.2", "1080p IR", "1.75 kg", "76 Wh", "Backlit", "Tech Black", "Windows 11 Home", "UX8402VV"],
+    "lap-07": ["Intel Core i7-1355U (10 cores, up to 5.0 GHz)", "Intel Iris Xe", "16 GB LPDDR5x", 'Dual 13.3" 2.8K OLED touch displays', "1 TB PCIe NVMe SSD", "3× Thunderbolt 4", "Wi-Fi 6E, Bluetooth 5.2", "5 MP IR", "1.34 kg", null, "Detachable Bluetooth keyboard", "Tidal Teal", "Windows 11 Home", "Yoga Book 9 13IRU8"],
+    "lap-08": ["Apple M1 Pro (10-core CPU)", "Apple 16-core GPU", "16 GB unified memory", '14.2" Liquid Retina XDR (3024×1964), 120 Hz ProMotion', "512 GB SSD", "3× Thunderbolt 4, HDMI, SDXC, MagSafe 3, 3.5 mm", "Wi-Fi 6, Bluetooth 5.0", "1080p FaceTime HD", "1.6 kg", "70 Wh", "Backlit Magic Keyboard with Touch ID", "Space Grey", "macOS Sequoia", "MKGP3HN/A"],
+  };
+  const CAM = {
+    "cam-01": ["Full-frame CMOS", "26.2 MP", "DIGIC 7", "Canon EF", "Body only", "Full HD 1080p60 · 4K time-lapse", "Lens-based IS", "Optical pentaprism, 98%", '3" vari-angle touchscreen', "765 g", "≈ 1,200 shots (CIPA)", "18,420 (this unit)"],
+    "cam-02": ["Full-frame BSI CMOS", "24.2 MP", "BIONZ X", "Sony E", "FE 28-70 mm f/3.5-5.6 OSS", "4K 30p · Full HD 120p", "5-axis in-body (5 stops)", "2.36M-dot OLED EVF", '3" tilting touchscreen', "650 g", "≈ 710 shots (CIPA)", null],
+    "cam-03": ["APS-C CMOS", "24.2 MP", "DIGIC 6", "Canon EF / EF-S", "EF-S 18-135 mm IS USM", "Full HD 1080p60", "Lens-based IS", "Optical pentaprism, 100%", '3" vari-angle touchscreen', "730 g", "≈ 960 shots (CIPA)", "41,300 (this unit)"],
+    "cam-04": ["APS-C CMOS", "24.1 MP", "DIGIC 4+", "Canon EF / EF-S", "EF-S 18-55 mm", "Full HD 1080p30", "Lens-based", "Optical pentamirror, 95%", '3" fixed LCD', "475 g", "≈ 500 shots (CIPA)", null],
+    "cam-05": ["APS-C X-Trans CMOS 4", "26.1 MP", "X-Processor 4", "Fujifilm X", "XF 18-55 mm f/2.8-4 R LM OIS", "4K 30p · Full HD 240p", "Lens OIS", "2.36M-dot OLED EVF", '3" tilting touchscreen', "378 g", "≈ 390 shots (CIPA)", null],
+    "cam-06": ['1.0" stacked CMOS', "20.1 MP", "BIONZ X", "Fixed lens", "Built-in 24-200 mm f/2.8-4.5", "4K 30p · 960 fps HFR", "Optical SteadyShot", "Pop-up OLED EVF", '3" tilting touchscreen', "302 g", "≈ 260 shots (CIPA)", "2,140 (this unit)"],
+  };
+  const LENS = {
+    "lens-01": ["Canon EF", "16-35 mm", "f/4 constant", "Ultra-wide zoom", "4-stop Image Stabilizer", "Yes (dust & drip)", "77 mm", "615 g", "Full-frame"],
+    "lens-02": ["Canon EF", "24-105 mm", "f/4 constant", "Standard zoom", "4-stop Image Stabilizer", "Yes (dust & drip)", "77 mm", "795 g", "Full-frame"],
+    "lens-03": ["Fujifilm X", "18-55 mm", "f/2.8-4", "Standard zoom", "OIS (4 stops)", "No", "58 mm", "310 g", "APS-C"],
+  };
+  const HSN = { laptops: "8471 30", desktops: "8471 41", monitors: "8528 52", components: "8473 30", storage: "8523 51", cameras: "8525 89", lenses: "9002 11", accessories: "8471 60", audio: "8518 30", networking: "8517 62", printers: "8443 31", mobile: "8517 13" };
+  function specGroups() {
+    const idRows = [["Model number", model], ["Tradex SKU", p.sku], ["HSN code", HSN[p.cat] || "—"], ["Condition", TX.conditions[p.cond].label], ["Warranty", `${p.warranty} · provider: ${warrProvider}`]];
+    if (LAP[p.id]) {
+      const v = LAP[p.id];
+      return [["Processor & memory", [["Processor", v[0]], ["Graphics", v[1]], ["Memory (RAM)", v[2]]]], ["Display", [["Display", v[3]]]], ["Storage", [["Storage", v[4]]]],
+        ["Connectivity", [["Ports", v[5]], ["Wireless", v[6]], ["Webcam", v[7]]]], ["Physical", [["Weight", v[8]], ["Battery", v[9] && isUnit && hasBattery ? `${v[9]} · this unit's health ${batt}%` : v[9]], ["Keyboard", v[10]], ["Colour", v[11]]]],
+        ["Software", [["Operating system", v[12]]]], ["Identifiers", idRows.map((r, i) => (i === 0 ? ["Model number", v[13]] : r))]];
+    }
+    if (CAM[p.id]) {
+      const v = CAM[p.id];
+      return [["Sensor & imaging", [["Sensor", v[0]], ["Effective resolution", v[1]], ["Image processor", v[2]]]], ["Lens", [["Lens mount", v[3]], ["Lens in the box", v[4]]]], ["Video", [["Video recording", v[5]]]],
+        ["Body", [["Stabilisation", v[6]], ["Viewfinder", v[7]], ["Rear screen", v[8]], ["Weight (with battery)", v[9]], ["Battery life", v[10]]]], ["Condition data", [["Shutter count", v[11] || (p.cond === "new" ? "New (0)" : null)]]], ["Identifiers", idRows]];
+    }
+    if (LENS[p.id]) {
+      const v = LENS[p.id];
+      return [["Optics", [["Lens mount", v[0]], ["Focal length", v[1]], ["Maximum aperture", v[2]], ["Lens type", v[3]], ["Format coverage", v[8]]]], ["Build", [["Stabilisation", v[4]], ["Weather sealing", v[5]], ["Filter thread", v[6]], ["Weight", v[7]]]], ["Identifiers", idRows]];
+    }
+    return [["Overview", [["Brand", p.brand], ["Product", p.title], ...p.specs.split(" · ").map((s, i) => [i === 0 ? "Key specification" : "", s])]], ["In the box", [["Contents", boxContents()]]], ["Identifiers", idRows]];
+  }
+  function boxContents() {
+    if (p.cat === "laptops") return isUnit ? (p.brand === "Apple" ? "Laptop, Apple USB-C power adapter & cable (original), Tradex protective packaging" : "Laptop, 65 W USB-C charger (original), power cord, Tradex protective packaging") : "Laptop, charger, power cord, documentation (original box)";
+    if (p.cat === "cameras") return "Camera body, battery, charger, strap, body cap" + (/Body/.test(p.title) ? "" : ", kit lens with caps");
+    if (p.cat === "lenses") return "Lens, front & rear caps" + (isUnit ? ", hood (original)" : ", hood, pouch");
+    return "Product, original accessories and documentation";
+  }
+
+  /* ---------------- Pricing helpers (R03/R04) ---------------- */
+  const dealerUnit = (q) => (q >= 10 ? p.tiers[1].p : q >= 5 ? p.tiers[0].p : p.dealer);
+  const maxQty = partner ? 10 : Math.max(1, p.qty);
+  let qty = 1;
+  let state = TX.param("state") || "normal";
+  if (!["normal", "oos", "price", "confirm"].includes(state)) state = "normal";
+
+  /* ---------------- Recently viewed ---------------- */
+  const recent = TX.store.get("recent", ["lap-03", "mon-03", "kb-01", "hub-02", "cam-web", "net-01"]).filter((x) => x !== p.id);
+  TX.store.set("recent", [p.id, ...recent].slice(0, 10));
+  document.title = `${p.title} · Tradex`;
+
+  /* ---------------- Crumbs ---------------- */
+  $("#crumbs").innerHTML = [`<a href="store-home.html">Home</a>`, `<a href="store-listing.html?cat=${p.cat}">${catObj.name}</a>`, `<a href="store-listing.html?cat=${p.cat}&brand=${encodeURIComponent(p.brand.toLowerCase())}">${p.brand}</a>`, `<span class="truncate" style="max-width:420px">${esc(p.title)}</span>`].join(ic("chevron-right"));
+
+  /* ---------------- Offers for this model (condition variants) ---------------- */
+  function offers() {
+    const r10 = (n) => Math.round(n / 10) * 10 - 10;
+    const alt = {
+      new: [["openbox", r10(p.price * 0.88), "low"], ["refurb-a", r10(p.price * 0.72), "out"]],
+      openbox: [["new", r10(p.price * 1.12), "in"], ["refurb-a", r10(p.price * 0.84), "out"]],
+      "refurb-a": [["refurb-b", r10(p.price * 0.9), "in"], ["used", r10(p.price * 0.8), "out"]],
+      "refurb-b": [["refurb-a", r10(p.price * 1.12), state === "oos" ? "out" : "in"], ["used", r10(p.price * 0.88), "out"]],
+      used: [["refurb-b", r10(p.price * 1.15), "in"], ["refurb-a", r10(p.price * 1.28), "out"]],
+    }[p.cond];
+    if (p.id === "lap-02") alt[0] = ["refurb-a", 36990, "out", "512 GB"]; // same variant the listing shows as out of stock
+    return [[p.cond, p.price, p.stock, null, true], ...alt];
+  }
+  function offersHTML() {
+    return `<div class="offers">${offers().map(([c, pr, st, cfg, cur]) => {
+      const off = st === "out";
+      const label = TX.conditions[c].label.replace("Refurbished · ", "Refurb ");
+      const shownPrice = TX.view === "dealer" ? Math.round((pr * 0.93) / 1.18 / 10) * 10 : pr;
+      return `<button class="offer ${cur ? "on" : ""} ${off ? "off" : ""}" ${cur ? 'aria-current="true"' : ""} ${!cur ? `data-toast="${off ? "Out of stock · we'll notify you when a " + label + " unit is inspected and listed" : label + " offer has its own unit, photos & inspection report"}" data-toast-icon="${off ? "bell" : "info"}"` : ""}>
+        <span class="cond ${TX.conditions[c].cls}">${label}</span>${cfg ? `<span>${cfg} SSD</span>` : ""}
+        <b>${fmt(shownPrice)}${TX.view === "dealer" ? '<span class="tiny muted" style="font-weight:500"> +GST</span>' : ""}</b>
+        <span>${cur ? "Selected" : off ? "Out of stock · notify me" : st === "low" ? "Few left" : "In stock"}</span></button>`;
+    }).join("")}</div>`;
+  }
+
+  /* ---------------- Top: gallery · info · buy box ---------------- */
+  const gallery = p.gallery.slice(0, 5);
+  const galExtra = isUnit && p.cat === "laptops" && gallery.length < 3 ? ["lap-open"] : [];
+  const gal = gallery.concat(galExtra);
+  function topHTML() {
+    const dealerTiers = [[1, 4, p.dealer], [5, 9, p.tiers[0].p], [10, null, p.tiers[1].p]];
+    return `
+    <div class="gal">
+      <div class="thumbs">${gal.map((g, i) => `<div><button class="${i === 0 ? "on" : ""}" data-gal="${g}" aria-label="Photo ${i + 1}">${TX.ph(g)}</button></div>`).join("")}</div>
+      <div>
+        <div class="main"><div class="g-flags">${TX.condBadge(p.cond)}${p.badge ? `<span class="badge b-accent sq">${p.badge}</span>` : ""}</div>
+          <div id="gal-main">${TX.ph(gal[0], "", esc(p.title))}</div>
+          <div class="g-cap">${isUnit ? `<span>${ic("camera", "ic-sm")} Actual photos of unit ${unitId} · 22 Sep</span>` : `<span>${ic("image", "ic-sm")} ${gal.length} photo${gal.length > 1 ? "s" : ""}</span>`}</div>
+        </div>
+        <div class="g-actions">
+          <button class="btn btn-sm" data-fav="${p.id}">${ic("heart", "ic-sm")} Wishlist</button>
+          <label class="btn btn-sm"><input type="checkbox" data-compare="${p.id}" ${TX.store.get("compare", []).includes(p.id) ? "checked" : ""} style="accent-color:var(--brand)"> Compare</label>
+          <button class="btn btn-sm" data-toast="Link copied · tradex.in/p/${p.id}">${ic("link", "ic-sm")} Share</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="pd-info col gap-16">
+      <div>
+        <a class="pd-brand" href="store-listing.html?brand=${encodeURIComponent(p.brand.toLowerCase())}">Visit the ${p.brand} store</a>
+        <h1 class="mt-4">${esc(p.title)}</h1>
+        <div class="pd-rating mt-8">${TX.stars(p.rating)} <b style="color:var(--tx-1)">${p.rating}</b> <a href="#reviews" data-go-tab="reviews">${TX.num(p.reviews)} verified ratings</a> <span class="muted">·</span> <a href="#qa" data-go-tab="qa">14 answered questions</a></div>
+        <div class="pd-ids mt-8"><span>SKU <b class="mono">${p.sku}</b></span><span>Model <b>${esc(model)}</b></span>${isUnit ? `<span>Unit <b class="mono">${unitId}</b></span>` : ""}</div>
+      </div>
+
+      <div class="grade-box ${TX.conditions[p.cond].cls}" data-anno="1A · R19 Condition = text + colour + plain-language meaning">
+        ${TX.condBadge(p.cond)}
+        <div class="small"><b>${GRADE[0]}.</b> ${GRADE[1]} <a href="store-help.html#grades">How we grade</a></div>
+      </div>
+
+      <div data-anno="1A · R03 One price engine: consumer incl. GST / dealer excl. GST">
+        <div data-price="${p.id}" data-size="lg"></div>
+        <div class="small subtle mt-8 hide-dealer">No-cost EMI from <b>${fmt(p.price / 6)}/month</b> for 6 months on HDFC, ICICI & SBI cards. <a href="#" data-toast="EMI plans are shown at payment">EMI plans</a></div>
+      </div>
+
+      <div class="only-dealer"><div class="card" data-anno="1A · R04 Quantity tiers (all-units) · ex-GST">
+        <div class="card-head" style="padding:12px 16px"><div><h3 style="font-size:14px">Your tier prices · Dealer Gold</h3><div class="sub">Per unit, excl. GST 18% · valid to 31 Mar 2027 · all units priced at the reached tier</div></div></div>
+        <div style="padding:6px 12px 12px">
+          <table class="tier-table"><thead><tr><th>Quantity</th><th class="r">Unit (ex-GST)</th><th class="r">Incl. GST</th><th class="r">You save</th></tr></thead>
+          <tbody>${dealerTiers.map(([a, b, u]) => `<tr data-tier="${a}"><td>${b ? `${a}–${b}` : `${a}+`} units</td><td class="r">${fmt(u)}</td><td class="r">${fmt(u * 1.18)}</td><td class="r">${a === 1 ? "—" : fmt(p.dealer - u) + "/unit"}</td></tr>`).join("")}</tbody></table>
+          <div class="panel small mt-8" id="tier-now"></div>
+        </div>
+      </div></div>
+      <div class="only-guest"><div class="callout c-brand small"><i data-icon="briefcase"></i><div class="grow"><strong>Business buyer?</strong> Sign in for dealer pricing — approved dealers see private prices and 5+ / 10+ quantity tiers on this item.</div><a class="btn btn-xs btn-primary" href="store-login.html">Sign in</a></div></div>
+
+      <div>
+        <div class="row-between mb-8"><h4>Other offers for this model</h4><span class="small muted">Each offer is a separate stock position</span></div>
+        ${offersHTML()}
+      </div>
+
+      <div>
+        <h4 class="mb-8">About this item</h4>
+        <ul class="keyspecs">${keyBullets().map((b) => `<li>${b}</li>`).join("")}</ul>
+        <a href="#specs" class="small strong" data-go-tab="specs">See all specifications →</a>
+      </div>
+
+      <div class="bank-offers hide-dealer">
+        <div><b>${ic("card", "ic-sm")} Bank offer</b>10% instant discount up to ₹1,500 on HDFC Bank credit cards (min ₹15,000).</div>
+        <div><b>${ic("zap", "ic-sm")} UPI offer</b>Flat ₹250 off on UPI payments above ₹20,000 with code TRADEXUPI.</div>
+      </div>
+    </div>
+
+    <aside class="buybox" data-anno="1A · R08 Availability is a projection; checkout reserves">
+      <div class="card">
+        <div class="card-body">
+          <div id="bb-price"></div>
+          <div><div class="bb-stock" style="font-size:14px">${TX.stockHTML(p)}</div>${isUnit ? `<div class="small muted mt-4">Unit ${unitId} is at Central Warehouse, Bengaluru</div>` : ""}</div>
+          ${partner ? `<div class="callout c-warn small" style="padding:10px 12px"><i data-icon="clock"></i><div><b>Ships from partner warehouse</b> — Tradex confirms availability within 4 h of your order. If not confirmed, you're refunded in full automatically.</div></div>` : ""}
+          <div class="bb-line">${ic("truck")}<div><b id="bb-date">${p.stock === "low" || partner ? "" : "FREE "}delivery ${DATES[dIdx]}</b> to <b id="bb-pin">560034</b>${partner ? "" : `<div class="small muted">Order within <b style="color:var(--ok-tx)">3 h 12 min</b> for same-day dispatch</div>`}</div></div>
+          <form class="col gap-8" id="pin-form" data-anno="1A · PIN serviceability, date & COD before payment">
+            <label class="label" for="pin-in">Check delivery to another PIN code</label>
+            <div class="row gap-8"><input class="input" id="pin-in" inputmode="numeric" maxlength="6" value="560034" style="height:34px"><button class="btn btn-sm" type="submit" style="height:34px">Check</button></div>
+            <div class="pin-res" id="pin-res"></div>
+          </form>
+          <hr style="margin:2px 0">
+          <div class="row-between"><label class="label" for="qty-in">Quantity</label>
+            <div class="qty"><button data-step="-1" aria-label="Decrease"><i data-icon="minus"></i></button><input id="qty-in" value="1" min="1" aria-label="Quantity"><button data-step="1" aria-label="Increase"><i data-icon="plus"></i></button></div></div>
+          <div class="small muted" id="qty-note">${isUnit ? "Each unit ships with its own inspection report." : p.stock === "low" ? `Only ${p.qty} available.` : ""}</div>
+          <button class="btn btn-primary btn-lg btn-block" id="add-btn" data-add="${p.id}" data-qty="1">${ic("cart")} Add to cart</button>
+          <button class="btn btn-accent btn-lg btn-block" id="buy-btn">${ic("zap")} Buy now</button>
+          <button class="btn btn-block" data-open="m-wa" style="color:#178f4a;border-color:#b7e4c7" data-anno="1A · R11 Click-to-chat with product reference">${ic("whatsapp")} Ask about this product</button>
+          <div class="bb-line small">${ic("lock")}<span>Secure checkout · card data handled by the payment provider</span></div>
+          <div class="bb-line small">${ic("store")}<span>${partner ? `Sold by <b>Tradex</b> · ships from <b>partner warehouse (Prime IT Distributors)</b> — Tradex confirms within 4 h` : `Sold & shipped by <b>Tradex</b> · GST invoice from Tradex Electronics Pvt Ltd`}</span></div>
+          <div class="bb-line small">${ic("undo")}<span><b>${returnDays}-day returns</b>${isUnit ? " for refurbished & used" : ""} · unit serial checked on return</span></div>
+        </div>
+        <div class="card-foot" style="display:block;padding:14px 18px" data-anno="1A · R14 Availability by branch (one stock authority)">
+          <div class="row-between mb-8"><h4 style="font-size:13px">Availability by store</h4><span class="tiny muted">Updated 1 min ago</span></div>
+          <div class="stores">${storesHTML()}</div>
+        </div>
+      </div>
+    </aside>`;
+  }
+  function keyBullets() {
+    const b = [];
+    if (LAP[p.id]) { const v = LAP[p.id]; b.push(`<b>${v[0].split(" (")[0]}</b> with ${v[2].split(" (")[0]} memory and ${v[4]}`, `${v[3]}`, `${v[5].split(", ").slice(0, 3).join(", ")} and more`, `${v[12]}`); }
+    else if (CAM[p.id]) { const v = CAM[p.id]; b.push(`<b>${v[1]} ${v[0]}</b> sensor · ${v[2]}`, `${v[5]}`, `${v[3]} mount · ${v[4]}`, `${v[8]} · ${v[9]}`); if (v[11]) b.push(`Shutter count disclosed: <b>${v[11]}</b>`); }
+    else if (LENS[p.id]) { const v = LENS[p.id]; b.push(`<b>${v[1]} ${v[2]}</b> ${v[3].toLowerCase()} for ${v[0]}`, `${v[4]}`, `Weather sealing: ${v[5]} · ${v[6]} filter thread`, `${v[7]} · ${v[8]} coverage`); }
+    else p.specs.split(" · ").forEach((s, i) => b.push(i ? s : `<b>${s}</b>`));
+    b.push(`${p.warranty} — provided by <b>${tradexWarranty ? "Tradex" : p.brand}</b>`);
+    return b;
+  }
+  function storesHTML() {
+    if (partner) return `<div class="st"><span>All Tradex stores</span><span class="status s-muted">Not in store</span><span class="muted">Partner-warehouse item · store pickup not available</span></div>`;
+    const q = p.qty;
+    const rows = [
+      ["SP Road, Bengaluru", q >= 2 ? Math.min(2, q - 1) : 0, "Pick up today after 4 PM"],
+      ["Koramangala, Bengaluru", q >= 5 ? 1 : 0, "Pick up today after 5 PM"],
+      ["Mysuru", q >= 10 ? 1 : 0, "Pick up tomorrow"],
+      ["Central Warehouse", Math.max(0, q - (q >= 2 ? Math.min(2, q - 1) : 0) - (q >= 5 ? 1 : 0) - (q >= 10 ? 1 : 0)), "Ships to your address"],
+    ];
+    return rows.map(([n, c, t]) => `<div class="st"><span>${n}</span>${c ? `<span class="status s-ok">${c} available</span>` : `<span class="status s-muted">Not in stock</span>`}<span class="muted">${c ? t : n === "Central Warehouse" ? "—" : "Transfer on request · 2–3 days"}</span></div>`).join("");
+  }
+
+  /* ---------------- Inspection (unit-level evidence) ---------------- */
+  const CHECK = p.cat === "laptops" || p.cat === "desktops" ? [
+    ["Display & panel", ["Dead / stuck pixels", "Backlight bleed", "Brightness uniformity", "Panel scratches", "Hinge-to-panel alignment", "Touch / pen (where fitted)"]],
+    ["Keyboard & touchpad", ["All keys register", "Backlight zones", "Touchpad gestures", "Click buttons", "Key-cap wear"]],
+    ["Ports & connectivity", ["USB-C / Thunderbolt data & charge", "USB-A ports", "HDMI output", "Ethernet / adapter", "Audio jack", "Card reader", "Docking detection"]],
+    ["Battery & charging", ["Health vs design capacity", "Cycle count", "Charge rate", "Charger & cable"]],
+    ["Body & hinges", ["Chassis cracks / dents", "Hinge tension", "Screws & rubber feet", "Lid cosmetic", "Palm-rest wear", "Base cosmetic"]],
+    ["Audio, camera & mic", ["Speakers L/R", "Microphone array", "Webcam image", "Privacy shutter / LED"]],
+    ["Wireless", ["Wi-Fi throughput", "Bluetooth pairing", "Antenna signal"]],
+    ["Storage & memory", ["SSD SMART health", "Memory test (2 passes)", "Storage benchmark", "Secure wipe verified"]],
+    ["Thermals & performance", ["30-min stress test", "Fan noise", "Throttling check"]],
+  ] : p.cat === "cameras" ? [
+    ["Sensor & image", ["Dead / hot pixels", "Sensor dust & cleaning", "Colour & exposure test", "Long-exposure noise", "Banding", "RAW & JPEG write"]],
+    ["Shutter & mirror", ["Shutter count read", "All shutter speeds", "Burst rate", "Mirror / EFCS", "Flash sync"]],
+    ["Autofocus", ["Phase-detect accuracy", "Live-view AF", "Tracking", "Micro-adjust", "AF assist"]],
+    ["Lens mount & contacts", ["Mount wear", "Contacts clean", "Lens communication", "Aperture control"]],
+    ["Controls & dials", ["Mode dial", "Command dials", "Buttons", "Joystick / d-pad", "Touch panel", "Menu function", "Custom buttons"]],
+    ["Screen & viewfinder", ["LCD pixels", "LCD articulation", "Viewfinder clarity", "Diopter", "Eye sensor"]],
+    ["Battery & power", ["Battery capacity", "Charger", "Power-off drain"]],
+    ["Body & seals", ["Body cosmetic", "Rubber grips", "Port covers", "Tripod thread"]],
+    ["Connectivity & card slots", ["Card slot(s)", "USB / HDMI", "Wi-Fi / Bluetooth"]],
+  ] : [
+    ["Functional tests", ["Powers on", "Core function test", "Performance benchmark", "Firmware version", "Factory reset", "Error log clear", "Controls / buttons", "Indicators & LEDs", "Heat under load", "Noise under load"]],
+    ["Cosmetic", ["Top surface", "Bottom surface", "Sides & edges", "Labels & serial plate", "Screen / glass", "Ports cosmetic", "Rubber / feet", "Overall grade match"]],
+    ["Ports & connectors", ["Primary connector", "Secondary connectors", "Cable fit", "Pins / contacts", "Wireless pairing", "Signal quality"]],
+    ["Power & battery", ["PSU / adapter", "Battery health", "Charge cycle", "Standby drain", "Surge protection"]],
+    ["Accessories", ["Included items match listing", "Accessory function", "Manuals / docs", "Packaging", "Seals"]],
+    ["Data & software", ["User data removed", "Accounts unlinked", "Activation lock off", "Licence status"]],
+    ["Burn-in", ["2-hour burn-in", "Thermal stability", "Intermittent faults", "Final QC sign-off"]],
+  ];
+  const advisoryGroup = p.cat === "cameras" ? 7 : CHECK.length === 9 ? 4 : 1; // cosmetic group of the template
+  const advisoryCount = p.cond === "refurb-a" ? 1 : p.cond === "refurb-b" ? 2 : p.cond === "used" ? 3 : 0;
+  const totalChecks = CHECK.reduce((n, g) => n + g[1].length, 0);
+  const DEF = p.cat === "laptops" || p.cat === "desktops" ? { a: ["2 mm scuff on lid near left hinge"], b: ["Light scratches on base panel (3 × up to 15 mm)", "Minor shine on 4 key caps (A, S, D, space)"], u: ["Visible wear on palm rest", "Small dent on lid corner (no functional impact)", "One faint screen scratch, visible only when off"] }
+    : p.cat === "cameras" || p.cat === "lenses" ? { a: ["Faint mark on top plate"], b: ["Light scuffs on base plate", "Minor wear on rubber grip"], u: ["Visible wear on grip and top plate", "Small scuff on base plate (no functional impact)", "Fine scratches on LCD protector (replaceable)"] }
+    : { a: ["Faint surface mark on casing"], b: ["Light scratches on casing", "Minor scuff on one edge"], u: ["Light scratches on shroud / casing", "Small scuff on a corner (no functional impact)", "Original retail box not included"] };
+  const defList = p.cond === "refurb-a" ? DEF.a : p.cond === "refurb-b" ? DEF.b : p.cond === "used" ? DEF.u : [];
+  const defects = defList.map((d, i) => { const k = i === 0 ? gal.length - 1 : 0; return [gal[k], d, "Photo " + (k + 1) + (i === 0 && p.cond === "refurb-a" ? " · cosmetic only" : "")]; });
+  const osLine = p.cat === "laptops" ? (p.brand === "Apple" ? "macOS Sequoia reinstalled · Activation Lock OFF · not MDM-enrolled" : "Windows 11 Pro — genuine digital licence, activated on this hardware") : p.cat === "mobile" ? "iOS 18 · Activation Lock OFF · carrier unlocked" : p.cat === "cameras" ? "Firmware 1.1.1 (latest) · no OS licence applicable" : "Firmware updated · no OS licence applicable";
+  const wipe = ["laptops", "desktops", "mobile", "storage"].includes(p.cat) ? `NIST SP 800-88 Rev.1 <b>Purge</b> · certificate <span class="mono">DW-2026-0922-${812 + idx}</span>` : ["cameras"].includes(p.cat) ? "Memory cards removed · settings factory-reset (no internal user storage)" : "Not applicable — no user data storage";
+
+  function inspectionHTML() {
+    if (!hasReport) return "";
+    const open = p.cond === "openbox";
+    const passed = totalChecks - advisoryCount;
+    return `<div class="card mt-24" data-anno="1A · R19 Inspection report for the exact serialised unit (§6.6, §7.2)">
+      <div class="card-head">
+        <div class="row gap-12"><span class="li-icon" style="width:40px;height:40px;border-radius:10px;display:grid;place-items:center;background:#f3efff;color:var(--c-refurb)">${ic("clipboard")}</span>
+          <div><h3>Inspection report for this exact unit</h3><div class="sub">You receive unit <b class="mono">${unitId}</b> — it is reserved for you at checkout, and its serial is printed on your invoice.</div></div></div>
+        <div class="row gap-8"><button class="btn btn-sm" data-go-tab="inspection">${ic("list", "ic-sm")} All ${open ? "open-box" : totalChecks} checks</button><button class="btn btn-sm" data-toast="Downloading inspection report IR-${unitId}.pdf">${ic("download", "ic-sm")} Report PDF</button></div>
+      </div>
+      <div class="insp-grid">
+        <div>
+          <dl class="kv" style="grid-template-columns:110px 1fr">
+            <dt>Unit ID</dt><dd class="mono">${unitId}</dd>
+            <dt>Serial</dt><dd><span class="mono">${serialMask}</span> <span class="tiny muted">(masked)</span></dd>
+            <dt>Grade</dt><dd>${TX.condBadge(p.cond)}</dd>
+            <dt>Inspected</dt><dd>22 Sep 2026 · Naveen K. <span class="muted">(QC-07, Central Warehouse)</span></dd>
+            <dt>Source</dt><dd>${open ? "Customer return, unused (within 7 days)" : isUnit && p.cat === "laptops" ? "Corporate lease return, Bengaluru" : "Purchased from verified owner · invoice checked"}</dd>
+            <dt>Report</dt><dd>IR-${unitId} · v2 <span class="muted">(standard QC-STD-42 v4)</span></dd>
+          </dl>
+        </div>
+        <div class="col gap-12">
+          ${hasBattery ? `<div><div class="row-between"><span class="label">Battery health</span><span class="small muted">${cycles}</span></div>
+            <div class="row gap-12 mt-4"><span class="big-n">${batt}%</span><div class="grow"><div class="meter ${batt >= 85 ? "m-ok" : batt >= 75 ? "m-warn" : "m-bad"}"><span style="width:${batt}%"></span></div><div class="tiny muted mt-4">of original design capacity · ${p.cond === "openbox" ? "unused · as new" : `grade threshold ${p.cond === "refurb-a" ? "≥ 85%" : "≥ 75%"} ${batt >= (p.cond === "refurb-a" ? 85 : 75) ? "✓ met" : ""}`}</div></div></div></div>`
+          : p.cat === "cameras" && CAM[p.id] && CAM[p.id][11] ? `<div><span class="label">Shutter count</span><div class="row gap-12 mt-4"><span class="big-n">${CAM[p.id][11].split(" ")[0]}</span><span class="small muted">of ~${p.id === "cam-03" ? "100,000" : "150,000"} rated actuations</span></div></div>` : ""}
+          <div><div class="row-between"><span class="label">${open ? "Open-box check" : "42-point checklist"}</span><span class="small"><b class="text-ok">${open ? 12 : passed} passed</b> · <b class="${advisoryCount ? "text-warn" : "muted"}">${advisoryCount} advisory</b> · <b class="muted">0 failed</b></span></div>
+            <div class="mt-8">${open ? ["Seals & packaging", "Accessories complete", "Unused (no wear, 0 cycles)", "Power-on & function"].map((g) => `<div class="chk-row"><span>${g}</span><div class="meter m-ok thin"><span style="width:100%"></span></div><span class="tnum text-ok">✓</span></div>`).join("")
+              : CHECK.map(([g, items], gi) => { const adv = gi === advisoryGroup ? advisoryCount : 0; const ok = items.length - adv; return `<div class="chk-row"><span>${g}</span><div class="meter ${adv ? "m-warn" : "m-ok"} thin"><span style="width:${(ok / items.length) * 100}%"></span></div><span class="tnum ${adv ? "text-warn" : "text-ok"}">${ok}/${items.length}</span></div>`; }).join("")}</div></div>
+        </div>
+        <div class="col gap-12">
+          <div><span class="label">Known defects ${defects.length ? `(${defects.length})` : ""}</span>
+            <div class="col gap-8 mt-8">${defects.length ? defects.map(([img, d, ref]) => `<div class="defect">${TX.ph(img)}<div><b>${d}</b><div class="tiny muted">${ref} · shown in gallery</div></div></div>`).join("") : `<div class="panel small">None — no cosmetic or functional defects recorded.</div>`}</div></div>
+          <div><span class="label">Included in the box</span><div class="small mt-4">${boxContents()}</div></div>
+          <ul class="ok-list">
+            <li>${ic("key")}<span><b>OS / licence:</b> ${osLine}</span></li>
+            <li>${ic("shield")}<span><b>Data wipe:</b> ${wipe}${/Purge/.test(wipe) ? ` · <a href="#" data-toast="Downloading data-erasure certificate (PDF)">certificate</a>` : ""}</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  /* ---------------- Policy row ---------------- */
+  function policyHTML() {
+    return `
+    <div class="card card-pad pol-card" data-anno="1A · R19 Warranty provider named (brand vs Tradex) + policy version">
+      <div class="ttl"><span class="ti">${ic("shield")}</span><div><h3>Warranty</h3><div class="small muted">${p.warranty}</div></div></div>
+      <dl class="kv" style="grid-template-columns:96px 1fr"><dt>Provided by</dt><dd>${warrProvider}</dd><dt>Covers</dt><dd>${tradexWarranty ? (["laptops", "mobile"].includes(p.cat) ? "Hardware faults incl. battery (≥ 70% health), display, keyboard, ports. Excludes physical & liquid damage." : p.cat === "cameras" || p.cat === "lenses" ? "Shutter, sensor, autofocus and electronics. Excludes physical & liquid damage, fungus." : "Hardware faults under normal use. Excludes physical & liquid damage and consumables.") : "Manufacturing defects as per brand terms. Claim at any authorised service centre with your Tradex invoice."}</dd><dt>How to claim</dt><dd>${tradexWarranty ? "Raise from My orders → Tradex RMA (pickup from your address)" : `${p.brand} service centre · Tradex helps if the brand disputes the date`}</dd><dt>Policy</dt><dd class="mono small">${policyV}</dd></dl>
+      ${tradexWarranty ? `<div class="callout c-warn small" style="padding:9px 11px"><i data-icon="info"></i><div>This is <b>not</b> a manufacturer warranty. Any remaining ${p.brand} warranty is a bonus and not guaranteed.</div></div>` : ""}
+    </div>
+    <div class="card card-pad pol-card">
+      <div class="ttl"><span class="ti">${ic("undo")}</span><div><h3>Returns</h3><div class="small muted">${returnDays}-day return window from delivery</div></div></div>
+      <ul class="ok-list" style="font-size:13px"><li>${ic("check")}<span>${isUnit ? "Change of mind accepted within 10 days (item as delivered, all accessories)" : p.cond === "openbox" ? "Return within 7 days if unused since delivery" : "Replacement within 7 days for defects or wrong item"}</span></li>
+        <li>${ic("check")}<span>Refund to original payment method in 5–7 working days after inspection</span></li>
+        <li>${ic("check")}<span>We check the returned serial matches <span class="mono">${isUnit ? unitId : "your invoice"}</span></span></li>
+        <li>${ic("x-circle")}<span class="muted">Not returnable: physical/liquid damage, missing accessories, altered seals</span></li></ul>
+      <div class="small muted">Policy <span class="mono">${retPolicyV}</span> · the version in force at purchase applies. <a href="store-help.html#returns">Full policy</a></div>
+    </div>
+    <div class="card card-pad pol-card">
+      <div class="ttl"><span class="ti">${ic("certificate")}</span><div><h3>Authenticity & invoice</h3><div class="small muted">Sold by Tradex Electronics Pvt Ltd</div></div></div>
+      <dl class="kv" style="grid-template-columns:96px 1fr"><dt>Sourced from</dt><dd>${partner ? "Prime IT Distributors (authorised) — partner stock" : p.cond === "used" ? "Bought back from a verified owner · purchase invoice & serial checked" : isUnit ? "RenewTech Refurbishers (vendor V-022) · serial verified against source" : p.cond === "openbox" ? `Unused customer return · original ${p.brand} invoice verified` : `${p.brand} authorised distributor in India`}</dd><dt>Invoice</dt><dd>GST invoice with serial number · GSTIN 29AAHCT4821K1Z3</dd><dt>Business</dt><dd>Add your GSTIN at checkout to claim input tax credit</dd></dl>
+      <div class="small muted">Grey-market or unverified imports are not listed on Tradex.</div>
+    </div>`;
+  }
+
+  /* ---------------- Frequently bought together (explicit components, §7.5) ---------------- */
+  const FBT = { laptops: ["ms-02", "hub-02"], desktops: ["kb-01", "mon-03"], monitors: ["hub-02", "kb-02"], components: ["cool-01", "ram-01"], storage: ["hub-02", "usb-01"], cameras: p.brand === "Canon" ? ["lens-01", "ssd-03"] : p.brand === "Fujifilm" ? ["lens-03", "ssd-03"] : ["ssd-03", "chg-01"], lenses: p.brand === "Canon" ? ["cam-01", "ssd-03"] : ["cam-05", "ssd-03"], accessories: ["ms-03", "hub-01"], audio: ["chg-01", "spk-01"], networking: ["net-02", "hub-01"], printers: ["usb-01", "hub-01"], mobile: ["chg-01", "hp-03"] };
+  const fbtIds = [p.id, ...(FBT[p.cat] || ["chg-01", "hub-02"])].filter((x, i, a) => a.indexOf(x) === i);
+  const fbtOn = new Set(fbtIds);
+  function fbtHTML() {
+    const items = fbtIds.map(TX.byId);
+    const on = items.filter((x) => fbtOn.has(x.id));
+    const tot = on.reduce((n, x) => n + (TX.view === "dealer" ? x.dealer : x.price), 0);
+    return `<div class="section-head"><div><h2>Frequently bought together</h2><p>A bundle here is simply separate items added together — each keeps its own stock, warranty and return policy</p></div></div>
+    <div class="card card-pad fbt" data-anno="1A · Bundles consume each component's stock explicitly (§7.5)">
+      <div class="fbt-items">${items.map((x, i) => `${i ? `<span class="fbt-plus">+</span>` : ""}<label class="fbt-item ${fbtOn.has(x.id) ? "" : "off"}">${TX.ph(x.img)}<span class="row gap-6"><input type="checkbox" data-fbt="${x.id}" ${fbtOn.has(x.id) ? "checked" : ""} ${i === 0 ? "disabled" : ""}> ${TX.condBadge(x.cond).replace('class="cond', 'style="height:18px;font-size:10px" class="cond')}</span><span class="clamp-2 strong">${i === 0 ? "This item: " : ""}${esc(x.title)}</span><span><b>${fmt(TX.view === "dealer" ? x.dealer : x.price)}</b>${TX.view === "dealer" ? " + GST" : ""} · <span class="muted">${x.warranty}</span></span></label>`).join("")}</div>
+      <div class="col gap-8">
+        <div class="small muted">Total for ${on.length} item${on.length > 1 ? "s" : ""}</div>
+        <div style="font-size:26px;font-weight:750">${fmt(tot)}<span class="small muted" style="font-weight:500"> ${TX.view === "dealer" ? "+ GST" : "incl. GST"}</span></div>
+        <div class="small subtle">Components: ${on.map((x) => `<span class="mono">${x.sku}</span>`).join(" + ")}</div>
+        <button class="btn btn-primary" id="fbt-add">${ic("cart")} Add ${on.length} to cart</button>
+        <div class="tiny muted">No bundle-only discount today · items may arrive in separate shipments</div>
+      </div>
+    </div>`;
+  }
+
+  /* ---------------- Tabs ---------------- */
+  const dist = p.rating >= 4.6 ? [72, 18, 6, 2, 2] : p.rating >= 4.4 ? [61, 24, 8, 3, 4] : p.rating >= 4.2 ? [52, 27, 11, 4, 6] : [44, 28, 14, 6, 8];
+  function tabsHTML() {
+    const groups = specGroups();
+    const specRows = groups.map(([g, rows]) => `<tr><th colspan="2" style="background:#f4f6fa;color:var(--tx-1);font-weight:700;width:auto">${g}</th></tr>` + rows.map(([k, v]) => `<tr><th>${k}</th><td>${v == null ? `<span class="spec-missing" data-tip="Missing from manufacturer data — our catalog team is verifying">${ic("info", "ic-sm")} Not specified by manufacturer</span>` : v}</td></tr>`).join("")).join("");
+    const insp = !hasReport ? `<div class="empty"><i data-icon="package"></i><h4>Not applicable for new sealed items</h4><p>New products are covered by the manufacturer's QC. They are sold factory-sealed with ${p.warranty.toLowerCase()} from ${p.brand}.</p></div>`
+      : `<div class="row-between mb-12"><div><h3>Full checklist · unit ${unitId}</h3><div class="small muted">Standard QC-STD-42 v4 · inspected 22 Sep 2026 by Naveen K. · re-verified at packing</div></div><button class="btn btn-sm" data-toast="Downloading inspection report IR-${unitId}.pdf">${ic("download", "ic-sm")} Download PDF</button></div>
+        <div class="grid g-3">${CHECK.map(([g, items], gi) => `<div class="panel" style="background:#fff"><div class="row-between mb-8"><b>${g}</b><span class="small ${gi === advisoryGroup && advisoryCount ? "text-warn" : "text-ok"}">${items.length - (gi === advisoryGroup ? advisoryCount : 0)}/${items.length}</span></div>
+          <ul class="ok-list">${items.map((it, k) => { const adv = gi === advisoryGroup && k < advisoryCount; return `<li>${adv ? `<svg class="ic" viewBox="0 0 24 24" style="color:var(--warn)">${TX.icons.alert}</svg>` : ic("check")}<span>${adv ? `<b class="text-warn">Advisory</b> · ${defects[k] ? defects[k][1] + ` <span class="muted">(${defects[k][2]})</span>` : "cosmetic mark"}` : it}</span></li>`; }).join("")}</ul></div>`).join("")}</div>`;
+    const qas = [
+      p.cat === "laptops" ? ["Can I upgrade the RAM later?", LAP[p.id] && /soldered/.test(LAP[p.id][2]) ? "Memory on this model is soldered, so it can't be upgraded. Storage can be replaced with any M.2 2280 NVMe SSD." : "Yes. This model has SODIMM slot(s); see the compatible upgrades list below — each part is checked against this exact model."]
+        : p.cat === "cameras" ? ["Is the shutter count disclosed?", "Yes — for used and refurbished bodies we read the shutter count during inspection and print it on the report and invoice."]
+        : ["Is this the Indian version with local warranty?", `Yes. It is sourced from ${p.brand}'s authorised channel in India and the warranty is registered from your invoice date.`],
+      ["Will I get a GST invoice?", "Yes, every order gets a GST invoice from Tradex Electronics Pvt Ltd. Add your GSTIN at checkout to claim input tax credit."],
+      ["Can I see it at the SP Road store before buying?", partner ? "This item ships from a partner warehouse and isn't displayed in stores. A specialist can share extra photos on WhatsApp." : "Yes — check 'Availability by store'. You can reserve for pickup at checkout; we hold it for 24 hours."],
+      [isUnit ? "Is the unit in the photos the one I get?" : "What does the warranty cover?", isUnit ? `Yes. Refurbished and used listings show the actual unit (${unitId}). If you buy more than one, each additional unit comes with its own report.` : `${p.warranty}, provided by ${warrProvider}.`],
+    ];
+    const reviews = [
+      ["Karthik S.", "Bengaluru", 5, "18 Sep 2026", isUnit ? "Exactly as described in the report" : "Great value, fast delivery", isUnit ? `The ${TX.conditions[p.cond].label} unit matched the inspection report — ${hasBattery ? `battery showed ${batt}%` : "the only mark was the one in the photos"}. Delivered in 2 days with a proper GST invoice.` : "Sealed box, genuine product and the invoice had the serial number. Delivery was a day earlier than promised.", 24, null],
+      ["Ananya R.", "Mysuru", 4, "9 Sep 2026", "Good, packaging could be better", "Product works perfectly. The box was a bit dented on arrival, though the item was well protected inside.", 9, "Thanks Ananya — we've shared this with our packing team and upgraded outer cartons for this category from 15 Sep. — Tradex Care"],
+      ["Rohit M.", "Hubballi", 3, "30 Aug 2026", "Works fine but delivery took longer", "Took 5 days to Hubballi instead of 3. Product itself is fine.", 5, "Sorry for the delay, Rohit. The courier missed a connection at the Bengaluru hub; your delivery-fee refund was processed automatically. — Tradex Care"],
+    ];
+    return `<div data-tabset>
+      <div class="tabs">
+        <button class="tab active" data-tab="specs">${ic("list", "ic-sm")} Specifications</button>
+        <button class="tab" data-tab="description">Description</button>
+        <button class="tab" data-tab="inspection">${ic("clipboard", "ic-sm")} Inspection report ${hasReport ? `<span class="count">${p.cond === "openbox" ? "12" : totalChecks}</span>` : ""}</button>
+        <button class="tab" data-tab="warranty">Warranty & returns</button>
+        <button class="tab" data-tab="qa">Q&A <span class="count">14</span></button>
+        <button class="tab" data-tab="reviews">Reviews <span class="count">${TX.num(p.reviews)}</span></button>
+      </div>
+      <div class="card" style="border-top-left-radius:0;border-top-right-radius:0;border-top:0">
+        <div class="tab-panel active card-body" data-panel="specs">
+          <div class="grid" style="grid-template-columns:minmax(0,1fr) 300px;gap:24px">
+            <table class="spec-table">${specRows}</table>
+            <div class="col gap-12">
+              <div class="panel small"><b>Specifications by category</b><div class="subtle mt-4">Fields come from the <b>${catObj.name}</b> attribute template, so every ${catObj.name.toLowerCase()} listing shows the same comparable fields. Missing values are marked, never guessed.</div></div>
+              <div class="panel small"><b>Spotted an error?</b><div class="subtle mt-4">Tell us and our catalog team will verify against the manufacturer sheet.</div><button class="btn btn-sm mt-8" data-toast="Thanks — reported to the catalog team (CAT-2291)">Report a spec issue</button></div>
+            </div>
+          </div>
+        </div>
+        <div class="tab-panel card-body" data-panel="description">
+          <div class="grid" style="grid-template-columns:minmax(0,1fr) 360px;gap:28px;align-items:start">
+            <div class="col gap-12" style="font-size:14px;line-height:1.7;color:var(--tx-2)">
+              <h3 style="color:var(--tx-1)">${esc(p.title)}</h3>
+              <p>${p.specs}. ${isUnit ? `This is a ${TX.conditions[p.cond].label.toLowerCase()} unit that has been inspected, cleaned and tested by the Tradex refurbishment team in Bengaluru. What you see in the photos and report is the exact unit you'll receive.` : p.cond === "openbox" ? "This open-box unit is unused — the packaging has been opened for a display check or an unused return. It has been fully tested and carries the full manufacturer warranty." : `Brand-new and factory-sealed, sourced through ${p.brand}'s authorised channel in India.`}</p>
+              <p>Every Tradex order comes with a GST invoice showing the ${isUnit ? "unit and " : ""}serial number, ${returnDays}-day returns and support by phone, chat and WhatsApp. Business buyers can add a GSTIN at checkout.</p>
+              <h4 style="color:var(--tx-1)">In the box</h4><p>${boxContents()}</p>
+            </div>
+            <div>${TX.ph(gal[gal.length > 1 ? 1 : 0], "", "")}</div>
+          </div>
+        </div>
+        <div class="tab-panel card-body" data-panel="inspection">${insp}</div>
+        <div class="tab-panel card-body" data-panel="warranty">
+          <div class="grid g-2" style="gap:28px">
+            <div><h3>Warranty</h3><table class="spec-table mt-12"><tr><th>Warranty</th><td>${p.warranty}</td></tr><tr><th>Provider</th><td><b>${warrProvider}</b></td></tr><tr><th>Starts</th><td>Date on your Tradex invoice</td></tr><tr><th>Policy version</th><td class="mono">${policyV}</td></tr><tr><th>Claim route</th><td>${tradexWarranty ? "My orders → Warranty claim → free pickup → Tradex service desk (SP Road) · typical turnaround 7–10 days" : `${p.brand} authorised service centre; Tradex support helps with escalations`}</td></tr><tr><th>Serial check</th><td>Claims are validated against the serial sold on this order</td></tr></table></div>
+            <div><h3>Returns & refunds</h3><table class="spec-table mt-12"><tr><th>Window</th><td>${returnDays} days from delivery</td></tr><tr><th>Condition</th><td>As delivered, with all accessories and packaging</td></tr><tr><th>Pickup</th><td>Free pickup in serviceable PIN codes; or drop at any Tradex store</td></tr><tr><th>Refund</th><td>Original payment method, 5–7 working days after inspection · COD refunds to bank/UPI</td></tr><tr><th>Policy version</th><td class="mono">${retPolicyV}</td></tr><tr><th>Warranty vs return</th><td>Return window and warranty duration are separate — after ${returnDays} days, faults go through warranty</td></tr></table>
+            <a class="btn btn-sm mt-12" href="store-returns.html">${ic("undo", "ic-sm")} Start a return or warranty claim</a></div>
+          </div>
+        </div>
+        <div class="tab-panel card-body" data-panel="qa">
+          <div class="row-between mb-8"><div class="input-icon" style="width:420px">${ic("search")}<input class="input" placeholder="Search questions & answers" aria-label="Search questions"></div><button class="btn btn-primary btn-sm" data-open="m-ask">${ic("help", "ic-sm")} Ask a question</button></div>
+          ${qas.map(([q, a]) => `<div class="qa"><span class="k">Question</span><b>${q}</b><span class="k">Answer</span><div>${a}<div class="tiny muted mt-4">${ic("award", "ic-sm").replace('class="ic', 'style="display:inline;vertical-align:-2px" class="ic')} Tradex product specialist · 21 Sep 2026 · <button class="link-btn tiny" data-toast="Thanks for your feedback">Helpful (7)</button></div></div></div>`).join("")}
+          <button class="btn btn-sm mt-12">See all 14 questions</button>
+        </div>
+        <div class="tab-panel card-body" data-panel="reviews">
+          <div class="grid" style="grid-template-columns:280px minmax(0,1fr);gap:32px">
+            <div class="col gap-12">
+              <div class="row gap-12"><span style="font-size:40px;font-weight:750;line-height:1">${p.rating}</span><div>${TX.stars(p.rating)}<div class="small muted">${TX.num(p.reviews)} verified ratings</div></div></div>
+              <div>${dist.map((d, i) => `<div class="dist"><span>${5 - i} ★</span><div class="meter"><span style="width:${d}%"></span></div><span class="small muted tnum">${d}%</span></div>`).join("")}</div>
+              <div class="callout c-ok small"><i data-icon="check-circle"></i><div>Only customers who bought this item from Tradex can rate or review it. Reviews are never edited or removed for being negative.</div></div>
+              <button class="btn" data-toast="Only verified purchasers can review · sign in with the account used for your order" data-toast-icon="lock">Write a review</button>
+            </div>
+            <div>
+              <div class="row gap-8 mb-8 wrap"><span class="small muted">Filter:</span><button class="chip active">All</button><button class="chip">5 ★</button><button class="chip">Critical</button><button class="chip">With photos</button><button class="chip">${TX.conditions[p.cond].label}</button><select class="select input-sm ml-auto" style="width:auto" aria-label="Sort reviews"><option>Most helpful</option><option>Most recent</option></select></div>
+              ${reviews.map(([n, city, r, d, t, body, h, reply]) => `<div class="review"><div class="row gap-8"><span class="avatar sm" style="background:${["#2e5bff", "#7c3aed", "#0e9f8a"][r % 3]}">${n.split(" ").map((w) => w[0]).join("")}</span><b>${n}</b><span class="small muted">${city} · ${d}</span></div>
+                <div class="row gap-8 mt-8">${TX.stars(r)}<b>${t}</b></div>
+                <div class="row gap-6 mt-4"><span class="badge b-ok">${ic("check")} Verified purchase</span><span class="badge b-outline">${TX.conditions[p.cond].label}</span></div>
+                <p class="mt-8" style="font-size:13.5px;color:var(--tx-2)">${body}</p>
+                ${reply ? `<div class="reply"><b>Response from Tradex</b><div>${reply}</div></div>` : ""}
+                <div class="row gap-8 mt-8 small muted"><button class="btn btn-xs" data-toast="Thanks for your feedback">${ic("thumbs", "ic-sm")} Helpful (${h})</button><button class="link-btn tiny" style="color:var(--tx-3)" data-toast="Reported for moderation">Report</button></div></div>`).join("")}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  /* ---------------- Compatible accessories & upgrades (curated) ---------------- */
+  const ACC = {
+    laptops: (() => {
+      const v = LAP[p.id] || [];
+      const fixedRam = /soldered|unified/.test(v[2] || "");
+      const usbA = /USB-A/.test(v[5] || "");
+      const highPower = ["lap-04", "lap-06"].includes(p.id);
+      return [
+        fixedRam ? null : ["ram-02", "verified", `Fits the SODIMM slot in ${model} · 16 GB DDR4-3200 matches the installed module`],
+        ["hub-02", "verified", "USB-C DisplayPort Alt Mode supported — 4K external display"],
+        ["chg-01", highPower ? "check" : "verified", highPower ? "USB-C PD at up to 70 W — charges slower than the original high-wattage adapter" : "70 W USB-C PD — charges this laptop at full speed"],
+        ["ssd-01", "verified", "USB 3.2 Gen 2 — full 1,050 MB/s over USB-C"],
+        ["ms-02", usbA ? "verified" : "check", usbA ? "Plug-and-play receiver in the USB-A port" : "Receiver needs a USB-A port — use the USB-C hub above"],
+      ].filter(Boolean);
+    })(),
+    cameras: [["ssd-03", "verified", "Offload RAW files in the field · works with USB-C phones"], ...(p.brand === "Canon" ? [["lens-01", "verified", "Canon EF mount — full compatibility" + (/APS-C/.test(p.specs) ? " (1.6× crop on this body)" : "")], ["lens-02", "verified", "Canon EF standard zoom"]] : p.brand === "Fujifilm" ? [["lens-03", "verified", "Fujifilm X mount"]] : []), ["usb-01", "check", "For backups only — too slow for 4K video editing"]],
+    lenses: p.brand === "Canon" ? [["cam-01", "verified", "Canon EF full-frame body"], ["cam-04", "verified", "APS-C body — 1.6× crop factor applies"], ["ssd-03", "verified", "Portable backup for shoots"]] : [["cam-05", "verified", "Fujifilm X-mount body"], ["ssd-03", "verified", "Portable backup for shoots"]],
+    components: [["cool-01", "verified", "Supports AM5 & LGA1700 — check RAM clearance"], ["ram-01", "check", "DDR4 — confirm your motherboard supports DDR4"], ["mb-01", "check", "LGA1700 DDR5 board"]],
+  };
+  function accHTML() {
+    const list = ACC[p.cat] || [["hub-02", "verified", "Universal USB-C accessory"], ["chg-01", "verified", "65 W GaN charger with USB-C PD"], ["ssd-01", "verified", "Portable storage for any USB-C / USB-A device"]];
+    const note = LAP[p.id] && /soldered|unified/.test(LAP[p.id][2]) ? `<div class="acc-row" style="grid-template-columns:auto 1fr;background:#fafbfc">${ic("info")}<span class="small subtle">Memory on ${esc(model)} is soldered to the board and can't be upgraded — choose the configuration you need at purchase.</span></div>` : "";
+    return `<div class="section-head"><div><h2>Compatible accessories & upgrades</h2><p>Curated by our specialists for this exact model · compatibility is checked, not guessed</p></div></div>
+    <div class="card" data-anno="§7.5 Curated compatibility table (reduces returns)">${note}${list.map(([aid, st, note]) => { const a = TX.byId(aid); return `<div class="acc-row">${TX.ph(a.img)}<div class="grow"><a href="store-product.html?id=${a.id}" class="strong" style="color:var(--tx-1)">${esc(a.title)}</a><div class="small row gap-8 mt-4">${st === "verified" ? `<span class="badge b-ok">${ic("check")} Verified compatible</span>` : `<span class="badge b-warn">${ic("alert")} Check before buying</span>`}<span class="muted">${note}</span></div></div><div data-price="${a.id}"></div><button class="btn btn-sm btn-soft" data-add="${a.id}">${ic("plus", "ic-sm")} Add</button></div>`; }).join("")}</div>`;
+  }
+
+  /* ---------------- Similar ---------------- */
+  function similarHTML() {
+    let sim = TX.byCat(p.cat).filter((x) => x.id !== p.id);
+    if (sim.length < 5) sim = sim.concat(TX.products.filter((x) => x.cat !== p.cat && x.id !== p.id).slice(0, 5 - sim.length));
+    sim.sort((a, b) => Math.abs(a.price - p.price) - Math.abs(b.price - p.price));
+    return `<div class="section-head"><div><h2>Similar products</h2><p>Same category, closest in price · compare condition and warranty side by side</p></div><a class="strong" href="store-compare.html">Open compare →</a></div><div class="pgrid cols-5">${sim.slice(0, 5).map(TX.cardHTML).join("")}</div>`;
+  }
+
+  /* ---------------- State banner ---------------- */
+  function bannerHTML() {
+    if (state === "oos") return `<div class="callout c-warn mt-12" data-anno="§6.3 Variant unavailable state"><i data-icon="alert"></i><div class="grow"><strong>The variant you selected is out of stock.</strong> ${p.id === "lap-02" ? "Grade A · 512 GB" : "The " + TX.conditions[offers()[2][0]].label + " offer"} has no inspected units available right now (restock expected 8 Oct). We're showing the closest available variant instead — check its grade and price before adding to cart.</div><button class="btn btn-sm" data-toast="We'll notify you on WhatsApp when it's back" data-toast-icon="bell">${ic("bell", "ic-sm")} Notify me</button></div>`;
+    if (state === "price") return `<div class="callout c-info mt-12" data-anno="§8.1 Price change disclosed, never silent"><i data-icon="info"></i><div class="grow"><strong>Price updated since your last visit.</strong> This item was ${fmt(TX.view === "dealer" ? p.dealer + 850 : p.price + 1000)} when you viewed it on 24 Sep; it's now <b>${fmt(TX.view === "dealer" ? p.dealer : p.price)}</b> (−${fmt(TX.view === "dealer" ? 850 : 1000)}). Prices are re-checked again at checkout.</div></div>`;
+    if (state === "confirm" || partner) return `<div class="callout c-brand mt-12" data-anno="§9.7 Supplier stock needs confirmation (freshness)"><i data-icon="clock"></i><div class="grow"><strong>Supplier confirmation needed.</strong> ${partner ? "This item" : "The last unit of this item"} is held by our partner warehouse (Prime IT Distributors, availability feed updated 38 min ago). Tradex confirms stock within <b>4 hours</b> of your order; if it can't be confirmed you get an automatic full refund — no need to contact us.</div></div>`;
+    return "";
+  }
+
+  /* ---------------- Render ---------------- */
+  function renderBB() {
+    const dealer = TX.view === "dealer";
+    const unit = dealer ? dealerUnit(qty) : p.price;
+    $("#bb-price").innerHTML = dealer
+      ? `<div class="row gap-8" style="align-items:baseline"><span style="font-size:24px;font-weight:750">${fmt(unit)}</span><span class="small muted">+ GST / unit</span></div><div class="small" style="color:#07695b;font-weight:600">${qty >= 10 ? "10+ tier applied" : qty >= 5 ? "5+ tier applied" : `Add ${5 - qty} more for ${fmt(p.tiers[0].p)}/unit`}</div>`
+      : `<div class="row gap-8" style="align-items:baseline"><span style="font-size:24px;font-weight:750">${fmt(p.price)}</span><span class="small muted">incl. GST</span></div>`;
+    const tn = $("#tier-now");
+    if (tn) {
+      const sub = unit * qty;
+      tn.innerHTML = `<b>Your price at ${qty} unit${qty > 1 ? "s" : ""}:</b> ${qty} × ${fmt(unit)} = <b>${fmt(sub)}</b> + GST ${fmt(sub * 0.18)} = <b>${fmt(sub * 1.18)}</b>${qty < 10 ? `<div class="muted mt-4">${qty < 5 ? `Add ${5 - qty} more to reach the 5+ tier at ${fmt(p.tiers[0].p)}` : `Add ${10 - qty} more to reach the 10+ tier at ${fmt(p.tiers[1].p)}`}</div>` : ""}`;
+      $$(".tier-table tr[data-tier]").forEach((r) => { const a = +r.dataset.tier; r.classList.toggle("cur", (a === 1 && qty < 5) || (a === 5 && qty >= 5 && qty < 10) || (a === 10 && qty >= 10)); });
+    }
+    $("#add-btn").dataset.qty = qty;
+    $("#add-btn").innerHTML = `${ic("cart")} Add ${qty > 1 ? qty + " " : ""}to cart`;
+  }
+  function checkPin(pin) {
+    const box = $("#pin-res");
+    const bad = (m) => (box.innerHTML = `<div class="text-bad">${ic("x-circle")}<span>${m}</span></div>`);
+    if (!/^[1-9]\d{5}$/.test(pin)) return bad("Enter a valid 6-digit PIN code");
+    if (/^(79|74|19)/.test(pin)) return bad(`Sorry, we don't deliver to ${pin} yet. Try another PIN or ask us on WhatsApp.`);
+    const pre = pin.slice(0, 2);
+    const city = { 56: "Bengaluru, KA", 57: "Mysuru, KA", 58: "Hubballi, KA", 40: "Mumbai, MH", 11: "New Delhi, DL", 60: "Chennai, TN", 50: "Hyderabad, TS" }[pre] || "India";
+    const extra = pre === "56" ? 0 : pre === "57" || pre === "58" ? 1 : 3;
+    const date = DATES[Math.min(DATES.length - 1, dIdx + extra + (partner ? 0 : 0))];
+    const orderVal = TX.view === "dealer" ? p.dealer * 1.18 * qty : p.price * qty;
+    const codReasons = [];
+    if (TX.view === "dealer") codReasons.push("dealer orders are prepaid");
+    if (partner) codReasons.push("partner-warehouse items are prepaid");
+    if (orderVal > 50000) codReasons.push("order value above ₹50,000");
+    if (pre === "11" || pre === "40") codReasons.push("COD not offered in this region yet");
+    $("#bb-pin").textContent = pin;
+    $("#bb-date").textContent = (partner ? "Estimated delivery " : orderVal >= 999 ? "FREE delivery " : "Delivery ") + date;
+    box.innerHTML = `<div class="text-ok">${ic("check-circle")}<span><b>${pin}</b> · ${city} is serviceable</span></div>
+      <div>${ic("calendar")}<span>Delivery by <b>${date}</b>${extra === 0 && !partner ? " · Express next-day available" : ""}</span></div>
+      <div>${ic("truck")}<span>${orderVal >= 999 ? "Free delivery" : "Delivery ₹49"}${partner ? " · ships separately from partner warehouse" : ""}</span></div>
+      <div class="${codReasons.length ? "text-warn" : "text-ok"}">${ic(codReasons.length ? "alert" : "wallet")}<span>${codReasons.length ? `Cash on delivery not available — ${codReasons.join("; ")}` : "Cash on delivery available (up to ₹50,000)"}</span></div>`;
+  }
+  function renderAll() {
+    $("#state-banner").innerHTML = bannerHTML();
+    $("#pd-top").innerHTML = topHTML();
+    $("#insp-sec").innerHTML = inspectionHTML();
+    $("#policy-row").innerHTML = policyHTML();
+    $("#fbt-sec").innerHTML = fbtHTML();
+    $("#tabs-sec").innerHTML = tabsHTML();
+    $("#acc-sec").innerHTML = accHTML();
+    $("#similar-sec").innerHTML = similarHTML();
+    TX.hydrate(root);
+    $("#qty-in").value = qty;
+    renderBB(); checkPin($("#bb-pin").textContent || "560034");
+    $$("#state-seg button").forEach((b) => b.classList.toggle("active", b.dataset.state === state));
+    $("#wa-text").innerHTML = `Hi Tradex! I'd like to know more about:<br><b>${esc(p.title)}</b><br>SKU ${p.sku} · ${TX.conditions[p.cond].label}${isUnit ? ` · Unit ${unitId}` : ""}<br>Price seen: ${fmt(TX.view === "dealer" ? p.dealer : p.price)}${TX.view === "dealer" ? " + GST (Metro Computers)" : ""}<br>tradex.in/p/${p.id}<br><br>My question: `;
+  }
+  renderAll();
+  const h = location.hash.slice(1);
+  if (h) { const t = $(`.tab[data-tab="${h}"]`); if (t) { TX.activateTab(h); setTimeout(() => $("#tabs-sec").scrollIntoView(), 50); } if ($("#" + h) && $("#" + h).classList.contains("modal")) TX.open(h); }
+
+  /* ---------------- Events ---------------- */
+  document.addEventListener("click", (e) => {
+    const t = e.target; let el;
+    if ((el = t.closest("[data-gal]"))) { $$("[data-gal]").forEach((b) => b.classList.toggle("on", b === el)); $("#gal-main").innerHTML = TX.ph(el.dataset.gal, "", esc(p.title)); }
+    if ((el = t.closest("[data-go-tab]"))) { e.preventDefault(); TX.activateTab(el.dataset.goTab); $("#tabs-sec").scrollIntoView({ behavior: "smooth" }); }
+    if ((el = t.closest("#state-seg [data-state]"))) { state = el.dataset.state; renderAll(); }
+    if (t.closest("#buy-btn")) { TX.addToCart(p.id, qty); setTimeout(() => (location.href = "store-checkout.html"), 500); }
+    if (t.closest("#fbt-add")) { const c = TX.cart(); fbtOn.forEach((x) => (c[x] = (c[x] || 0) + 1)); TX.setCart(c); TX.toast(`${fbtOn.size} items added to cart · each ships with its own warranty`); }
+  });
+  document.addEventListener("change", (e) => {
+    const t = e.target;
+    if (t.id === "qty-in") {
+      let v = Math.max(1, parseInt(t.value) || 1);
+      if (v > maxQty) { v = maxQty; TX.toast(`Only ${maxQty} available right now`, "info"); }
+      qty = v; t.value = v; renderBB(); checkPin($("#bb-pin").textContent);
+      $("#qty-note").textContent = isUnit && qty > 1 ? `${qty} units — each ships with its own inspection report (units allocated at packing).` : isUnit ? "Each unit ships with its own inspection report." : p.stock === "low" ? `Only ${p.qty} available.` : "";
+    }
+    if (t.matches("[data-fbt]")) { t.checked ? fbtOn.add(t.dataset.fbt) : fbtOn.delete(t.dataset.fbt); $("#fbt-sec").innerHTML = fbtHTML(); }
+  });
+  document.addEventListener("submit", (e) => { if (e.target.id === "pin-form") { e.preventDefault(); checkPin($("#pin-in").value.trim()); } });
+  document.addEventListener("tx:view", renderAll);
+});
+</script>
+</body>
+</html>

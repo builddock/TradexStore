@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Support &amp; WhatsApp inbox · Tradex ERP</title>
+  <link rel="stylesheet" href="assets/tradex.css">
+  <style>
+    .inbox { height: 820px; grid-template-columns: 300px minmax(0, 1fr) 320px; border-radius: 0 0 var(--r-lg) var(--r-lg); border: 0; border-top: 1px solid var(--line); }
+    .ib-head { padding: 12px 14px; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 8px; position: sticky; top: 0; background: #fff; z-index: 2; }
+    .ib-head .seg { width: 100%; }
+    .ib-head .seg button { flex: 1; padding: 5px 6px; }
+    .ib-item .grow { min-width: 0; }
+    .ib-item .nm { font-weight: 650; font-size: 13px; display: flex; align-items: center; gap: 6px; }
+    .ib-item .nm .ic { width: 13px; height: 13px; flex: none; }
+    .ib-item .pv { font-size: 12px; color: var(--tx-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px; }
+    .ib-item .mt { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-top: 5px; }
+    .ib-item .tm { font-size: 11px; color: var(--tx-3); white-space: nowrap; }
+    .ib-item .unread { min-width: 18px; height: 18px; border-radius: 999px; background: #1faa59; color: #fff; font-size: 10.5px; font-weight: 700; display: grid; place-items: center; padding: 0 5px; margin-top: 4px; margin-left: auto; }
+    .mini { height: 18px; font-size: 10.5px; padding: 0 6px; }
+    .ch-ic { width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; position: absolute; right: -3px; bottom: -3px; border: 2px solid #fff; }
+    .ch-ic .ic { width: 10px; height: 10px; color: #fff; stroke-width: 2.6; }
+    .ch-ic.wa { background: #1faa59; } .ch-ic.web { background: var(--brand); } .ch-ic.email { background: #7c3aed; }
+    .av-wrap { position: relative; flex: none; }
+    .th-head { padding: 10px 16px; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 8px; }
+    .th-sub { padding: 8px 16px; border-bottom: 1px solid var(--line-2); display: flex; align-items: center; gap: 12px; background: #fcfcfd; font-size: 12.5px; flex-wrap: wrap; }
+    .ib-msgs .msg { max-width: 80%; position: relative; }
+    .msg.cust { background: #fff; border: 1px solid var(--line); border-top-left-radius: 4px; align-self: flex-start; }
+    .msg.botm { background: #eef2f8; border: 1px dashed #c3cde0; align-self: flex-end; border-top-right-radius: 4px; }
+    .msg.agent { background: var(--brand); color: #fff; align-self: flex-end; border-top-right-radius: 4px; }
+    .msg .who { font-size: 10.5px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; opacity: .7; margin-bottom: 3px; display: flex; align-items: center; gap: 5px; }
+    .msg .who .ic { width: 11px; height: 11px; }
+    .msg .t { font-size: 10.5px; opacity: .6; margin-top: 4px; text-align: right; }
+    .msg .qr { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+    .msg .qr span { border: 1px solid var(--brand-200); background: #fff; color: var(--brand-700); border-radius: 999px; padding: 3px 10px; font-size: 11.5px; font-weight: 600; }
+    .msg.sys { max-width: 90%; text-align: center; }
+    .handoff { align-self: stretch; display: flex; align-items: center; gap: 10px; font-size: 11.5px; font-weight: 700; color: #b24a00; }
+    .handoff::before, .handoff::after { content: ""; flex: 1; height: 1px; background: #f3c9a8; }
+    .handoff span { display: inline-flex; align-items: center; gap: 6px; background: var(--accent-50); border: 1px solid #f7d2b3; padding: 4px 10px; border-radius: 999px; }
+    .handoff .ic { width: 13px; height: 13px; }
+    .jump { position: sticky; bottom: 4px; align-self: center; display: inline-flex; align-items: center; gap: 6px; border: 0; background: var(--ink-900); color: #fff; font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 999px; box-shadow: var(--sh-2); z-index: 2; }
+    .jump.hidden { display: none; }
+    .paused-line { align-self: stretch; text-align: center; font-size: 11.5px; font-weight: 650; color: var(--warn-tx); }
+    .bcard { background: #fff; color: var(--tx-1); border-radius: 10px; padding: 10px 12px; margin-top: 8px; font-size: 12.5px; }
+    .bcard .row-between { font-size: 12px; }
+    .composer { border-top: 1px solid var(--line); padding: 10px 14px 12px; background: #fff; }
+    .composer .textarea { min-height: 64px; font-size: 13px; }
+    .composer .textarea:disabled { background: var(--bg); cursor: not-allowed; }
+    .win { display: flex; align-items: center; gap: 8px; font-size: 12px; margin-bottom: 8px; }
+    .side-sec { padding: 14px 0; border-bottom: 1px solid var(--line-2); }
+    .side-sec:first-child { padding-top: 0; }
+    .side-sec:last-child { border-bottom: 0; }
+    .side-sec h5 { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--tx-3); margin: 0 0 8px; display: flex; justify-content: space-between; align-items: center; }
+    .ord-mini { border: 1px solid var(--line); border-radius: var(--r); padding: 8px 10px; margin-bottom: 6px; font-size: 12px; }
+    .ord-mini .sts { display: flex; flex-wrap: wrap; gap: 4px 10px; margin-top: 4px; }
+    .ord-mini .status { font-size: 11.5px; }
+    .consent { display: grid; grid-template-columns: 1fr auto; gap: 6px 8px; font-size: 12px; align-items: center; }
+    .hidden-block { display: flex; flex-direction: column; align-items: center; border: 1px dashed var(--line); border-radius: var(--r); padding: 12px; text-align: center; font-size: 12px; color: var(--tx-3); background: repeating-linear-gradient(45deg, #fafbfc, #fafbfc 6px, #f3f5f8 6px, #f3f5f8 12px); }
+    .hidden-block .ic { margin: 0 auto 6px; color: var(--tx-4); width: 22px; height: 22px; }
+    .il { display: inline-flex; align-items: center; gap: 4px; }
+    .lib-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 16px; }
+    .tk-table td, .tk-table th { padding-left: 9px; padding-right: 9px; }
+    .dd-menu .tpl { display: block; width: 100%; text-align: left; border: 0; background: none; padding: 8px 10px; border-radius: var(--r-sm); font-size: 12.5px; }
+    .dd-menu .tpl:hover { background: var(--bg); }
+    .dd-menu .tpl b { display: block; font-size: 12.5px; }
+    .dd-menu .tpl span { color: var(--tx-3); font-size: 11.5px; }
+    .dd-menu .tpl[disabled] { opacity: .45; cursor: not-allowed; }
+    .composer .dd-menu { top: auto; bottom: calc(100% + 6px); left: 0; right: auto; width: 360px; max-height: 360px; overflow-y: auto; }
+  </style>
+</head>
+<body data-app="erp" data-page="support">
+<main>
+  <div class="page-head">
+    <div>
+      <div class="crumbs"><span>Sell &amp; serve</span><i data-icon="chevron-right"></i><span>Support inbox</span></div>
+      <h1>Support &amp; WhatsApp inbox</h1>
+      <p class="sub">Shared inbox for WhatsApp Business, website chat and email · service hours 9 AM–9 PM · guided bot answers approved FAQs and hands off to people — no AI in Phase 1</p>
+    </div>
+    <div class="actions">
+      <div class="dd"><button class="btn" data-dd-toggle><span class="status s-ok">Available</span> <i data-icon="chevron-down" class="ic-sm"></i></button>
+        <div class="dd-menu"><a href="#"><span class="status s-ok">Available</span></a><a href="#"><span class="status s-warn">Busy · no new chats</span></a><a href="#"><span class="status s-muted">Away</span></a></div></div>
+      <button class="btn" data-open="m-ticket"><i data-icon="plus"></i> New ticket</button>
+      <button class="btn btn-wa" data-open="m-basket"><i data-icon="cart"></i> Draft basket</button>
+    </div>
+  </div>
+
+  <section class="grid g-6">
+    <div class="kpi"><div class="k-label"><i data-icon="chat"></i> <span>Open chats</span></div><div class="k-value">14</div><div class="k-foot"><span>8 WhatsApp · 4 web · 2 email</span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="clock"></i> <span>Waiting on us</span></div><div class="k-value text-warn">4</div><div class="k-foot"><span>Oldest 12 min</span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="activity"></i> <span>First response</span></div><div class="k-value">4 min</div><div class="k-foot"><span class="delta down-good"><i data-icon="trending-down"></i> −2 min</span><span id="sp1"></span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="zap"></i> <span>Bot-resolved</span></div><div class="k-value">62%</div><div class="k-foot"><span>Order status &amp; FAQs · today</span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="alert"></i> <span>SLA breaches</span></div><div class="k-value text-bad">1</div><div class="k-foot"><span>SUP-7740 · late GPU order</span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="cart"></i> <span>Chat → orders</span></div><div class="k-value">6</div><div class="k-foot"><span>₹3.1 L today · via checkout links</span></div></div>
+  </section>
+
+  <section class="card mt-16" data-tabset>
+    <div class="tabs" style="padding:0 12px">
+      <button class="tab active" data-tab="inbox"><i data-icon="inbox" class="ic-sm"></i> Inbox <span class="count">14</span></button>
+      <button class="tab" data-tab="tickets"><i data-icon="clipboard" class="ic-sm"></i> Tickets <span class="count">9</span></button>
+      <button class="tab" data-tab="library"><i data-icon="file" class="ic-sm"></i> Answer library &amp; templates</button>
+    </div>
+
+    <!-- ============ INBOX ============ -->
+    <div class="tab-panel active" data-panel="inbox" data-anno="1A/1B · R11 Shared inbox · WhatsApp + web chat + email">
+      <div class="inbox">
+        <div class="ib-list">
+          <div class="ib-head">
+            <div class="seg" id="chf" aria-label="Channel filter"><button class="active" data-ch="">All</button><button data-ch="wa">WhatsApp</button><button data-ch="web">Web chat</button><button data-ch="email">Email</button></div>
+            <div class="row gap-6">
+              <select class="select input-sm" id="stf" aria-label="Status filter" style="flex:1"><option value="">Open · all (14)</option><option value="mine">Assigned to me</option><option value="unassigned">Unassigned</option><option value="bot">Bot handling</option><option value="waiting">Waiting on customer</option><option value="closed">Closed today</option></select>
+              <button class="btn btn-sm btn-icon" aria-label="Sort"><i data-icon="sort" class="ic-sm"></i></button>
+            </div>
+          </div>
+          <div id="conv-list"></div>
+        </div>
+        <div class="ib-thread" id="thread"></div>
+        <div class="ib-side" id="side"></div>
+      </div>
+    </div>
+
+    <!-- ============ TICKETS ============ -->
+    <div class="tab-panel" data-panel="tickets">
+      <div class="table-toolbar">
+        <div class="seg"><button class="active">Open (7)</button><button>Mine (3)</button><button>Breached (1)</button><button>Resolved (2)</button></div>
+        <select class="select input-sm" style="width:190px" aria-label="Category"><option>All categories</option><option>Payment dispute</option><option>Warranty ambiguity</option><option>Missing / late order</option><option>Unsafe product</option><option>Compatibility</option></select>
+        <span class="small muted ml-auto">SLA by priority: Critical 1 h · High 4 h · Normal 8 h · Low 24 h (business hours, example targets)</span>
+      </div>
+      <div class="table-wrap"><table class="table tk-table">
+        <thead><tr><th>Ticket</th><th>Subject · customer</th><th>Category</th><th>Priority</th><th>Status</th><th>Assignee</th><th>SLA</th><th>Linked</th></tr></thead>
+        <tbody id="tk-body"></tbody>
+      </table></div>
+      <div class="pager"><span>9 tickets · escalations from chat keep the full transcript</span><div class="pages"><button class="active">1</button></div></div>
+    </div>
+
+    <!-- ============ ANSWER LIBRARY ============ -->
+    <div class="tab-panel" data-panel="library">
+      <div class="lib-grid" style="padding:16px">
+        <div class="col gap-16">
+          <div class="card" style="border-radius:var(--r)" data-anno="§13.4 Versioned, approved answers (bot + agents)">
+            <div class="card-head"><div><h3>Approved answers (FAQ)</h3><div class="sub">Used by the guided bot, agents' quick replies and the help centre · every change is a new version that needs approval</div></div><button class="btn btn-sm" data-toast="Draft answer created · needs approval before use"><i data-icon="plus" class="ic-sm"></i> New answer</button></div>
+            <div class="table-wrap"><table class="table compact">
+              <thead><tr><th>Answer</th><th>Version</th><th>Status</th><th>Used by</th><th>Owner</th><th class="r">Uses 30 d</th></tr></thead>
+              <tbody id="faq-body"></tbody>
+            </table></div>
+          </div>
+          <div class="card" style="border-radius:var(--r)" data-anno="§13.3 WhatsApp templates · opt-in & category">
+            <div class="card-head"><div><h3>WhatsApp message templates</h3><div class="sub">Required for business-initiated messages and for any reply after the 24-hour service window · approved by Meta via the provider</div></div><button class="btn btn-sm" data-toast="Template submitted to provider for review"><i data-icon="upload" class="ic-sm"></i> Submit template</button></div>
+            <div class="table-wrap"><table class="table compact">
+              <thead><tr><th>Template</th><th>Category</th><th>Version</th><th>Status · last sent</th><th>Rule / consent</th></tr></thead>
+              <tbody id="tpl-body"></tbody>
+            </table></div>
+          </div>
+        </div>
+        <div class="col gap-16">
+          <div class="card" style="border-radius:var(--r)">
+            <div class="card-head"><div><h3>Return window by condition</h3><div class="sub">Answer A-012 · <b>v4 approved</b> by Anita R. · 1 Sep 2026 · linked to Returns policy v2026.2</div></div><span class="badge b-ok">Live</span></div>
+            <div class="card-body col gap-12">
+              <div class="panel small" style="line-height:1.6">Returns are accepted within <b>7 days</b> of delivery for new items and <b>10 days</b> for open-box and certified refurbished items, if the product is complete and undamaged. Warranty faults after the return window are handled by the warranty provider shown on your invoice. <a href="#">Start a return</a></div>
+              <div class="small"><b>Channels:</b> guided bot · agent quick reply · help centre page</div>
+              <div class="small"><b>Bot triggers:</b> menu “Returns &amp; warranty” → “Return window” · keywords are <i>not</i> interpreted by AI</div>
+              <div class="callout c-warn small"><i data-icon="edit"></i><div><b>v5 draft pending review</b> (Sneha P., 24 Sep): adds dealer restocking note. Bot keeps using v4 until v5 is approved.</div></div>
+              <div class="diff">
+                <div class="dh">Field</div><div class="dh">v4 (live)</div><div class="dh">v5 (draft)</div>
+                <div class="same">Consumer window</div><div class="same">7 d new · 10 d refurb</div><div class="same">7 d new · 10 d refurb</div>
+                <div class="same">Dealer returns</div><div class="old">not mentioned</div><div class="new">sealed only · 5% restocking</div>
+              </div>
+              <div class="row gap-8"><button class="btn btn-sm" data-toast="Version history: v1 12 Mar · v2 2 May · v3 18 Jul · v4 1 Sep">Version history</button><button class="btn btn-sm btn-primary" data-toast="v5 approved · bot and quick replies updated · audit logged">Approve v5</button></div>
+            </div>
+          </div>
+          <div class="card" style="border-radius:var(--r)">
+            <div class="card-head"><h3>Guided bot menu</h3><span class="badge b-outline">Deterministic · no LLM</span></div>
+            <div class="list-row"><span class="li-icon brand"><i data-icon="package"></i></span><div class="grow small"><b>Track my order</b><div class="muted">OTP to order phone → permitted status only</div></div><span class="small muted">41%</span></div>
+            <div class="list-row"><span class="li-icon brand"><i data-icon="cart"></i></span><div class="grow small"><b>Buy / get a quote</b><div class="muted">Pick item &amp; qty → draft basket → agent confirms variant</div></div><span class="small muted">22%</span></div>
+            <div class="list-row"><span class="li-icon brand"><i data-icon="undo"></i></span><div class="grow small"><b>Returns &amp; warranty</b><div class="muted">Approved answers → RMA form</div></div><span class="small muted">18%</span></div>
+            <div class="list-row"><span class="li-icon warn"><i data-icon="headset"></i></span><div class="grow small"><b>Talk to a person</b><div class="muted">Always available · handoff with transcript</div></div><span class="small muted">19%</span></div>
+            <div class="card-foot"><span class="small muted" data-anno="Phase 3 · R13 AI later">Free-text AI answers are a Phase 3 option (R13) — gated on accuracy, handoff and privacy tests.</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Draft basket modal -->
+  <div class="modal" id="m-basket"><div class="modal-card lg">
+    <div class="modal-head"><div><h3>Create draft basket · <span id="bk-cust">Metro Computers</span></h3><div class="small muted">Draft lives in the main order system · prices from the pricing engine · customer confirms on a secure checkout page</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-body col gap-16" data-anno="1B · R11 A08 Draft basket → secure checkout link">
+      <div class="callout c-info small"><i data-icon="whatsapp"></i><div>Pre-filled from conversation <b>SUP-7742</b>: “10 SanDisk Extreme 1TB + 4 USB-C hubs”. The item and condition were confirmed by the agent — the system never infers an order from unconfirmed text.</div></div>
+      <div class="card" style="border-radius:var(--r)"><table class="table compact">
+        <thead><tr><th>Item</th><th class="r">Qty</th><th class="r">Unit (ex-GST)</th><th>Rule</th><th class="r">Total</th></tr></thead>
+        <tbody id="bk-lines"></tbody>
+        <tfoot><tr><td colspan="4">Payable incl. 18% GST</td><td class="r" id="bk-tot"></td></tr></tfoot>
+      </table></div>
+      <div class="form-grid">
+        <div class="field"><label for="bk-ch">Send link via</label><select class="select" id="bk-ch"><option>WhatsApp · template checkout_link v2</option><option>SMS</option><option>Email</option></select></div>
+        <div class="field"><label for="bk-exp">Link &amp; reservation expiry</label><select class="select" id="bk-exp"><option>30 minutes (default)</option><option>2 hours (dealer, needs approval)</option></select></div>
+      </div>
+      <div class="small muted">On the checkout page the customer confirms address and final price and pays via Razorpay. Stock is reserved when the link is sent and revalidated at payment; the same reservation, payment and fulfilment rules as the website apply.</div>
+    </div>
+    <div class="modal-foot" style="justify-content:space-between">
+      <a class="btn" href="erp-orders.html#assisted"><i data-icon="external" class="ic-sm"></i> Open as assisted order</a>
+      <div class="row gap-8"><button class="btn" data-close data-toast="Draft DB-0417 saved · no stock reserved">Save draft</button><button class="btn btn-wa" data-close data-toast="Secure checkout link sent (checkout_link v2) · DB-0417 reserved 30 min" data-toast-icon="whatsapp"><i data-icon="send" class="ic-sm"></i> Send secure checkout link</button></div>
+    </div>
+  </div></div>
+
+  <!-- Escalate to ticket modal -->
+  <div class="modal" id="m-ticket"><div class="modal-card">
+    <div class="modal-head"><div><h3>Escalate to ticket</h3><div class="small muted">Transcript, customer identity state and linked orders are attached</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-body col gap-16">
+      <div class="field"><label for="tk-cat" class="req">Category</label><select class="select" id="tk-cat"><option>Payment dispute</option><option>Warranty ambiguity</option><option>Missing / late order</option><option>Unsafe product issue</option><option>Compatibility uncertainty</option><option>Other</option></select><span class="hint">These categories always go to a person — the bot never answers them.</span></div>
+      <div class="form-grid">
+        <div class="field"><label for="tk-pr">Priority</label><select class="select" id="tk-pr"><option>High · SLA 4 h</option><option>Critical · SLA 1 h</option><option>Normal · SLA 8 h</option><option>Low · SLA 24 h</option></select></div>
+        <div class="field"><label for="tk-as">Assign to</label><select class="select" id="tk-as"><option>Finance · Deepa K.</option><option>Operations · Anita R.</option><option>Catalog · Sneha P.</option><option>Me · Karthik R.</option></select></div>
+      </div>
+      <div class="field"><label for="tk-s">Summary</label><textarea class="textarea" id="tk-s">Customer asks why two debits appear for TXO-10483 — first attempt failed (3-D Secure), second not completed. Verify with provider and explain reversal timeline.</textarea></div>
+      <label class="check"><input type="checkbox" checked> Keep the conversation open and tell the customer a ticket was created (template ticket_created v1)</label>
+    </div>
+    <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-primary" data-close data-toast="Ticket SUP-7747 created · Finance · due 14:45">Create ticket</button></div>
+  </div></div>
+</main>
+<script src="assets/tradex.js"></script>
+<script>
+TX.ready(() => {
+  const $ = TX.$, $$ = TX.$$, ic = TX.icon, fmt = TX.fmt, P = TX.byId;
+  TX.charts.spark($("#sp1"), [9, 8, 8, 7, 6, 6, 5, 4]);
+
+  /* ---------------- Conversations ---------------- */
+  const CHN = { wa: ["WhatsApp", "whatsapp"], web: ["Web chat", "chat"], email: ["Email", "mail"] };
+  const C = [
+    { id: "c1", ref: "SUP-7742", name: "Arun Kumar", org: "Metro Computers", init: "AK", color: "#0e9f8a", ch: "wa", last: "Can you cancel the 2 mice? Got them locally", time: "10:20", status: ["Open", "s-brand"], filt: "mine", who: "Karthik R.", prio: ["Normal", ""], sla: ["ok", "Reply in 6 min"], ver: "yes", win: "open", winTxt: "closes in 23 h 38 m", unread: 0, dealer: true, phone: "+91 98450 •••10",
+      msgs: [
+        ["s", "Today · 09:26 · started from product page (click-to-chat) · product reference lap-01 — a reference, not a trusted price"],
+        ["c", "Hi, need 10 Samsung T7 1TB and the same Latitude as last time", "09:26"],
+        ["b", "Hi Arun 👋 I can help with that. To show account prices and your orders, I need to verify it's you — I've sent a 6-digit code to the number on the Metro Computers account.", "09:26", ["Enter code", "Talk to a person"]],
+        ["c", "•••••• (code entered)", "09:31"],
+        ["s", "Identity verified by OTP · 09:31 · linked to Metro Computers (Dealer Gold) for this conversation"],
+        ["b", "Thanks! Samsung T7 1 TB is in stock. For “the same Latitude” I found 2 options: Dell Latitude 5420 Refurbished Grade A (i5 · 16 GB · 512 GB) and Grade B (i5 · 8 GB · 256 GB). Which one?", "09:31", ["Grade A", "Grade B", "Talk to a person"]],
+        ["c", "Which has the better battery? I want the one like my March order", "09:37"],
+        ["h", "Handed off to human · Karthik R. · reason: ambiguous item + condition question — the bot does not guess", "09:38"],
+        ["a", "Hi Arun, Karthik here. Your March order was the Grade A (U-000702). I've added the Grade A with 10 × T7 — also the 2 × G305 mice you asked about last week?", "09:40", null, "Karthik R."],
+        ["c", "Yes add mice", "09:41"],
+        ["a", "Here's your basket. Prices are your Dealer Gold prices — please confirm address and pay on the secure page.", "09:44", null, "Karthik R.", { db: "DB-0412", items: "10 × Samsung T7 1 TB · 1 × Latitude 5420 Grade A · 2 × G305", total: "₹1,20,513 incl. GST", rule: "Dealer Gold v2026.3 · tier 10+ on T7", exp: "Link expires 10:14" }],
+        ["s", "Checkout opened 09:52 · order TXO-10486 paid 09:58 (Razorpay) · confirmation sent — template order_confirmed v3"],
+        ["c", "Can you cancel the 2 mice? Got them locally", "10:20"],
+        ["a", "Sure — I've raised a cancellation request for the mice (line 3). The refund goes back to your UPI once finance approves; the rest ships today.", "10:21", null, "Karthik R."],
+      ] },
+    { id: "c2", ref: "SUP-7746", name: "+91 99001 2••••", org: "", init: "?", color: "#98a2b3", ch: "wa", last: "That's my wife's number… just tell me the address", time: "10:38", status: ["Open", "s-brand"], filt: "unassigned", who: "Unassigned", prio: ["Normal", ""], sla: ["warn", "Reply in 2 min"], ver: "no", win: "open", winTxt: "closes in 23 h 56 m", unread: 2, phone: "+91 99001 2••••",
+      msgs: [
+        ["s", "Today · 10:36 · new contact · no account linked"],
+        ["c", "Hi where is my order TXO-10482?", "10:36"],
+        ["b", "I can help! For your security I'll send a one-time code to the phone number used on that order.", "10:36", ["I have the code", "Talk to a person"]],
+        ["s", "OTP sent to the number on the order (+91 98450 •••10) — not to this chat's number"],
+        ["c", "That's my wife's number, she's travelling. Just tell me the address it's going to", "10:38"],
+        ["b", "Sorry — I can't share order details without verification. The account holder can message us from her number, or a support executive can help.", "10:38"],
+        ["h", "Handed off to human · queue · reason: verification failed / third-party request", "10:38"],
+      ] },
+    { id: "c3", ref: "SUP-7718", name: "Sunita Rao", org: "", init: "SR", color: "#be185d", ch: "wa", last: "ok thanks", time: "Yesterday", status: ["Waiting on customer", "s-muted"], filt: "waiting", who: "Karthik R.", prio: ["Low", ""], sla: ["none", "No reply due"], ver: "yes", win: "closed", winTxt: "closed at 09:12 today", unread: 0, phone: "+91 97410 •••58",
+      msgs: [
+        ["s", "Yesterday · 25 Sep"],
+        ["a", "Hi Sunita, your replacement keyboard (RMA-0087) was dispatched today — AWB 1490 2233 8744. It should arrive by Saturday.", "09:05", null, "Karthik R."],
+        ["c", "ok thanks", "09:12"],
+        ["s", "24-hour customer service window closed today at 09:12 — only approved templates can be sent until she writes again"],
+      ] },
+    { id: "c4", ref: "SUP-7731", name: "Guest · web chat", org: "", init: "G", color: "#475467", ch: "web", last: "Talk to a person", time: "10:40", status: ["Waiting for agent", "s-warn"], filt: "unassigned", who: "Unassigned", prio: ["Normal", ""], sla: ["warn", "Accept in 3 min"], ver: "na", win: "na", unread: 1, phone: "—",
+      msgs: [
+        ["s", "Today · 10:39 · store-product.html?id=lap-03 · guest (not signed in)"],
+        ["b", "Hi! 👋 I'm the Tradex help assistant. What can I help you with?", "10:39", ["Track my order", "Product question", "Returns & warranty", "Dealer pricing", "Talk to a person"]],
+        ["c", "Product question", "10:39"],
+        ["b", "I can help with specifications, compatibility and condition grades. For compatibility checks a product specialist confirms before you buy.", "10:39", ["Explain condition grades", "Talk to a person"]],
+        ["c", "Talk to a person", "10:40"],
+        ["h", "Handed off to human · queue #2 · reference SUP-7731 · customer can continue on WhatsApp", "10:40"],
+      ] },
+    { id: "c5", ref: "SUP-7738", name: "accounts@coastalinfotech.in", org: "Coastal Infotech", init: "CI", color: "#7c3aed", ch: "email", last: "Re: GSTIN correction for TXO-10488", time: "08:15", status: ["Open", "s-brand"], filt: "", who: "Deepa K.", prio: ["High", "b-warn"], sla: ["ok", "2 h left"], ver: "yes", win: "na", unread: 0, dealer: true, phone: "+91 824 •••• 210",
+      msgs: [
+        ["s", "Email · 26 Sep 08:15 · verified sender domain (matches dealer profile)"],
+        ["c", "Dear team, please raise the invoice for TXO-10488 on our new GSTIN 29AACCC7791K1Z2 (registration certificate attached). — Faisal Ahmed, Coastal Infotech", "08:15"],
+        ["a", "Thanks Faisal — the order is on hold until finance verifies the new GSTIN on the GST portal. We'll confirm within 2 hours.", "08:32", null, "Deepa K."],
+      ] },
+    { id: "c6", ref: "SUP-7744", name: "Rahul Verma", org: "", init: "RV", color: "#c2410c", ch: "wa", last: "Bot: TXO-10489 is packed · pickup 17:00", time: "10:12", status: ["Bot handling", "s-info"], filt: "bot", who: "Guided bot", prio: ["Low", ""], sla: ["none", "—"], ver: "yes", win: "open", winTxt: "closes in 23 h 30 m", unread: 0, phone: "+91 90080 •••21",
+      msgs: [
+        ["c", "Track my order", "10:11"],
+        ["b", "Verified ✓. Order TXO-10489 (Sony WH-1000XM4) is packed at Koramangala and will be picked up by the courier at 17:00 today.", "10:12", ["Talk to a person"]],
+      ] },
+    { id: "c7", ref: "SUP-7740", name: "Kavya Reddy", org: "", init: "KR", color: "#2e5bff", ch: "web", last: "My GPU order is late and no one replied", time: "09:30", status: ["Escalated · ticket", "s-bad"], filt: "mine", who: "Karthik R.", prio: ["High", "b-warn"], sla: ["bad", "Breached 1 h 10 m"], ver: "yes", win: "na", unread: 0, phone: "+91 99452 •••07",
+      msgs: [
+        ["c", "My GPU order TXO-10471 is late and no one replied", "09:30"],
+        ["a", "Sorry Kavya — the unit wasn't in its bin. We're moving one from our SP Road branch today; you'll get a tracking link by 16:00.", "09:34", null, "Karthik R."],
+      ] },
+    { id: "c8", ref: "SUP-7745", name: "Deepak Shenoy", org: "", init: "DS", color: "#b42318", ch: "wa", last: "Power bank is swelling, is it safe?", time: "10:27", status: ["Escalated · safety", "s-bad"], filt: "", who: "Anita R.", prio: ["Critical", "b-bad"], sla: ["warn", "Due 11:15"], ver: "yes", win: "open", winTxt: "closes in 23 h 45 m", unread: 1, phone: "+91 94480 •••33",
+      msgs: [
+        ["c", "The power bank I bought is swelling, is it safe to use?", "10:27"],
+        ["h", "Unsafe product issue → always routed to a person · ticket SUP-7745 · Critical", "10:27"],
+        ["a", "Please stop using and charging it right away and keep it away from heat. We'll arrange a special pickup and full refund — Anita from our team will call you in 15 minutes.", "10:29", null, "Anita R."],
+      ] },
+  ];
+
+  let chF = "", stF = "", curId = TX.param("conv") || "c1", firstRender = true;
+  const convs = () => C.filter((c) => (!chF || c.ch === chF) && (!stF || c.filt === stF));
+  function renderList() {
+    const L = convs();
+    $("#conv-list").innerHTML = L.length ? L.map((c) => `<div class="ib-item ${c.id === curId ? "active" : ""}" data-conv="${c.id}" role="button" tabindex="0">
+      <div class="av-wrap"><div class="avatar" style="background:${c.color}">${c.init}</div><span class="ch-ic ${c.ch}">${ic(CHN[c.ch][1])}</span></div>
+      <div class="grow">
+        <div class="row-between" style="gap:6px"><span class="nm" style="min-width:0"><span class="truncate">${c.name}</span>${c.ver === "yes" ? `<span class="text-ok" title="Verified">${ic("check-circle")}</span>` : c.ver === "no" ? `<span class="text-warn" title="Not verified">${ic("lock")}</span>` : ""}</span><span class="tm">${c.time}</span></div>
+        <div class="pv">${c.last}</div>
+        <div class="mt"><span class="status ${c.status[1]}" style="font-size:11px">${c.status[0]}</span>${c.prio[1] ? `<span class="badge mini ${c.prio[1]}">${c.prio[0]}</span>` : ""}${c.win === "closed" ? `<span class="badge mini b-outline">${ic("clock")} Template only</span>` : ""}${c.unread ? `<span class="unread">${c.unread}</span>` : ""}</div>
+        <div class="tiny muted mt-4 il">${ic("user", "ic-sm")} ${c.who} · <span class="${c.sla[0] === "bad" ? "text-bad" : c.sla[0] === "warn" ? "text-warn" : ""}">${c.sla[1]}</span></div>
+      </div></div>`).join("")
+      : `<div class="empty">${ic("inbox")}<h4>Inbox zero</h4><p>No conversations for this filter.</p></div>`;
+  }
+
+  function msgHTML(m, c) {
+    const [k, text, t, q, who, card] = m;
+    if (k === "s") return `<div class="msg sys">${text}</div>`;
+    if (k === "h") return `<div class="handoff"><span data-anno="1B · T24 Bot → human handoff with context">${ic("headset")} ${text}${t ? " · " + t : ""}</span></div>`;
+    if (k === "p") return `<div class="paused-line"><span class="il">${ic("pause", "ic-sm")} ${text}</span></div>`;
+    const cls = k === "c" ? "cust" : k === "b" ? "botm" : "agent";
+    const whoTxt = k === "c" ? `${c.name.split(" ·")[0]}` : k === "b" ? `${ic("zap")} Guided bot · approved answers` : `${ic("headset")} ${who}`;
+    return `<div class="msg ${cls}"><div class="who">${whoTxt}</div>${text}
+      ${q ? `<div class="qr">${q.map((x) => `<span>${x}</span>`).join("")}</div>` : ""}
+      ${card ? `<div class="bcard"><div class="row-between"><b>${ic("cart", "ic-sm")} Draft basket ${card.db}</b><span class="badge mini b-ok">Converted · TXO-10486</span></div><div class="mt-4">${card.items}</div><div class="row-between mt-4"><span class="muted">${card.rule}</span><b>${card.total}</b></div><div class="small mt-4" style="color:var(--brand-700)">${ic("lock", "ic-sm")} Secure checkout link · tradex.in/c/DB0412-•••• · ${card.exp}</div></div>` : ""}
+      <div class="t">${t || ""}${k === "a" ? " · ✓✓ read" : ""}</div></div>`;
+  }
+
+  function renderThread() {
+    const c = C.find((x) => x.id === curId);
+    const closed = c.win === "closed";
+    const winBar = c.win === "open" ? `<div class="win"><span class="status s-ok">WhatsApp service window open</span><span class="muted">· ${c.winTxt} </span></div>`
+      : c.win === "closed" ? `<div class="win"><span class="status s-bad">WhatsApp service window closed</span><span class="muted">· ${c.winTxt}</span></div>`
+      : c.ch === "email" ? `<div class="win"><span class="status s-info">Email</span><span class="muted">· replies go from support@tradex.in · signature v3</span></div>`
+      : `<div class="win"><span class="status s-info">Web chat</span><span class="muted">· customer is ${c.id === "c4" ? "online now" : "offline — reply is emailed"}</span></div>`;
+    $("#thread").innerHTML = `
+      <div class="th-head">
+        <div class="av-wrap"><div class="avatar" style="background:${c.color}">${c.init}</div><span class="ch-ic ${c.ch}">${ic(CHN[c.ch][1])}</span></div>
+        <div class="grow" style="min-width:0"><div class="strong truncate">${c.name}${c.org ? ` <span class="muted" style="font-weight:500">· ${c.org}</span>` : ""}</div><div class="tiny muted truncate">${CHN[c.ch][0]} · <span class="mono">${c.ref}</span> · ${c.phone}</div></div>
+        <div class="dd"><button class="btn btn-sm" data-dd-toggle>${ic("user", "ic-sm")} ${c.who} ${ic("chevron-down", "ic-sm")}</button><div class="dd-menu"><div class="dd-label">Assign to</div><a href="#" data-toast="Assigned to you">Karthik R. (me)</a><a href="#" data-toast="Assigned to Anita R.">Anita R. · Operations</a><a href="#" data-toast="Assigned to Deepa K.">Deepa K. · Finance</a><a href="#" data-toast="Assigned to Sneha P.">Sneha P. · Catalog</a></div></div>
+        <button class="btn btn-sm" data-open="m-ticket">${ic("flag", "ic-sm")} Escalate</button>
+        <button class="btn btn-sm btn-ghost btn-icon" aria-label="Close conversation" data-tip="Close conversation" data-toast="Conversation closed · customer can reopen by replying">${ic("check-circle", "ic-sm")}</button>
+      </div>
+      <div class="th-sub">
+        <label class="switch" data-anno="§13.4 Pause automation per conversation"><input type="checkbox" id="pause" ${c.paused ? "checked" : ""}> Pause automation in this conversation</label>
+        <span class="muted">${c.paused ? "Bot &amp; automatic updates are silent here until resumed" : "Bot replies to menu choices; order updates are automatic"}</span>
+        <span class="ml-auto badge ${c.prio[1] || ""}">${c.prio[0]} priority</span>
+      </div>
+      <div class="ib-msgs" id="msgs">${c.msgs.map((m) => msgHTML(m, c)).join("")}<button class="jump hidden" id="jump">${ic("chevron-down", "ic-sm")} Latest messages</button></div>
+      <div class="composer" data-anno="§13.3 24-h window closed → template only">
+        ${winBar}
+        ${closed ? `<div class="callout c-warn small mb-8" style="padding:8px 12px"><i data-icon="lock"></i><div><b>Free-text reply not allowed.</b> The 24-hour customer service window has closed — send an approved template (utility). Marketing templates are blocked: Sunita opted out on 12 Aug.</div></div>` : ""}
+        <textarea class="textarea" id="reply" ${closed ? "disabled" : ""} placeholder="${closed ? "Choose an approved template to continue…" : c.ver === "no" ? "Reply — don't share order details: identity not verified" : "Type a reply · / for quick answers"}" aria-label="Reply"></textarea>
+        <div class="row gap-6 mt-8">
+          <div class="dd"><button class="btn btn-sm ${closed ? "btn-primary" : ""}" data-dd-toggle>${ic("file", "ic-sm")} Templates ${ic("chevron-up", "ic-sm")}</button>
+            <div class="dd-menu" id="tplmenu">
+              <div class="dd-label">Approved WhatsApp templates</div>
+              <button class="tpl" data-tpl="Hi {{1}}, an update on your request {{2}}: {{3}}. Reply to this message to continue."><b>support_followup · v2 · Utility</b><span>Re-opens the conversation after the window closes</span></button>
+              <button class="tpl" data-tpl="Your order {{1}} has been dispatched. Track it here: {{2}}"><b>order_dispatched · v3 · Utility</b><span>Order status · consent: transactional</span></button>
+              <button class="tpl" data-tpl="Your return {{1}} is now {{2}}. We'll update you at the next step."><b>rma_update · v2 · Utility</b><span>Returns progress</span></button>
+              <button class="tpl" data-tpl="Complete your order securely: {{1}} (valid 30 min)."><b>checkout_link · v2 · Utility</b><span>Secure checkout for a draft basket</span></button>
+              <button class="tpl" disabled><b>festive_offer · v1 · Marketing</b><span>Blocked — customer opted out of marketing</span></button>
+              <hr><div class="dd-label">Quick answers (approved FAQ)</div>
+              <button class="tpl" data-tpl="Returns are accepted within 7 days of delivery for new items and 10 days for open-box and certified refurbished items."><b>Return window by condition · v4</b><span>Answer A-012</span></button>
+              <button class="tpl" data-tpl="Open box: unused, packaging opened. Grade A: minimal signs of use. Grade B: light visible wear. Every refurbished unit has its own inspection report."><b>Condition grades explained · v3</b><span>Answer A-004</span></button>
+            </div></div>
+          <button class="btn btn-sm btn-ghost" aria-label="Attach" ${closed ? "disabled" : ""}>${ic("paperclip", "ic-sm")}</button>
+          <button class="btn btn-sm btn-ghost" data-toast="${c.ver === "yes" ? "Order status inserted (verified customer)" : "Blocked — verify identity before sharing order details"}" data-toast-icon="${c.ver === "yes" ? "check-circle" : "lock"}">${ic("package", "ic-sm")} Order status</button>
+          <span class="ml-auto"></span>
+          <button class="btn btn-sm ${c.ch === "wa" ? "btn-wa" : "btn-primary"}" id="send">${ic("send", "ic-sm")} ${closed ? "Send template" : "Send"}</button>
+        </div>
+      </div>`;
+    TX.hydrate($("#thread"));
+    const box = $("#msgs"), jump = $("#jump");
+    const h = box.querySelector(".handoff");
+    box.scrollTop = firstRender && h ? h.offsetTop - box.offsetTop - 170 : box.scrollHeight;
+    firstRender = false;
+    const syncJump = () => jump.classList.toggle("hidden", box.scrollHeight - box.scrollTop - box.clientHeight < 40);
+    box.addEventListener("scroll", syncJump); syncJump();
+    jump.addEventListener("click", () => { box.scrollTo({ top: box.scrollHeight, behavior: "smooth" }); });
+  }
+
+  function renderSide() {
+    const c = C.find((x) => x.id === curId);
+    const verBlock = c.ver === "yes" ? `<div class="callout c-ok small" style="padding:8px 10px"><i data-icon="shield"></i><div><b>Verified by OTP</b> · ${c.id === "c1" ? "09:31" : "today"}<div>Valid for this conversation (24 h). Account link: ${c.org || "consumer account"}.</div></div></div>`
+      : c.ver === "no" ? `<div class="callout c-warn small" style="padding:8px 10px" data-anno="1B · T23 No details before verification"><i data-icon="lock"></i><div><b>Not verified.</b> OTP sent to the phone on the order (10:36) — not entered. Don't reveal address, invoice, serials or payment details.</div></div>
+        <div class="row gap-6 mt-8"><button class="btn btn-xs" data-toast="OTP re-sent to the number on the order">Resend OTP</button><button class="btn btn-xs" data-toast="Call-back task created to the registered number">Call-back to registered no.</button></div>`
+      : `<div class="callout small" style="padding:8px 10px"><i data-icon="user"></i><div><b>Guest</b> · not signed in. Ask them to sign in or verify by OTP before discussing an order.</div></div>`;
+    const orders = c.id === "c1" ? [
+      ["TXO-10486", "Today 09:58 · ₹1,20,513", [["Confirmed", "s-brand"], ["Captured", "s-ok"], ["Picking", "s-info"]]],
+      ["TXO-10490", "Today 10:24 · ₹1,62,132", [["Awaiting payment", "s-warn"], ["Pending", "s-warn"], ["Unallocated", "s-muted"]]],
+      ["TXO-10455", "18 Sep · ₹48,210", [["Closed", "s-ok"], ["Captured", "s-ok"], ["Delivered", "s-ok"]]],
+    ] : c.id === "c5" ? [["TXO-10488", "Today 08:02 · ₹1,62,132", [["On hold", "s-bad"], ["Captured", "s-ok"], ["Allocated", "s-brand"]]]]
+      : c.id === "c7" ? [["TXO-10471", "25 Sep · ₹79,990", [["Confirmed", "s-brand"], ["Captured", "s-ok"], ["Allocated", "s-brand"]]]]
+      : c.id === "c6" ? [["TXO-10489", "Today · ₹19,990", [["Confirmed", "s-brand"], ["Captured", "s-ok"], ["Packed", "s-info"]]]]
+      : c.id === "c8" ? [["TXO-10419", "12 Sep · ₹2,499", [["Closed", "s-ok"], ["Captured", "s-ok"], ["Delivered", "s-ok"]]]]
+      : c.id === "c3" ? [["TXO-10392", "20 Sep · ₹7,499", [["Closed", "s-ok"], ["Captured", "s-ok"], ["Delivered", "s-ok"]]]] : [];
+    const ordHTML = c.ver !== "yes"
+      ? `<div class="hidden-block">${ic("eye-off")}<b>Order details hidden until verified</b><div class="mt-4">${c.id === "c2" ? "1 order matches the reference given" : "Guest has no linked orders"}</div></div>`
+      : orders.map(([id, meta, s]) => `<div class="ord-mini"><div class="row-between"><a class="mono strong" href="erp-orders.html?order=${id}">${id}</a><span class="tiny muted">${meta}</span></div><div class="sts">${s.map(([t, k], i) => `<span class="status ${k}" title="${["Order", "Payment", "Fulfilment"][i]}">${t}</span>`).join("")}</div></div>`).join("");
+    const consent = c.id === "c3" ? [["Service replies (in window)", "Allowed", "s-ok"], ["Order &amp; return updates", "Opted in · 3 Jun", "s-ok"], ["Marketing", "Opted out · 12 Aug", "s-bad"]]
+      : c.ver === "no" || c.id === "c4" ? [["Service replies (in window)", "Allowed", "s-ok"], ["Order &amp; return updates", "Unknown", "s-muted"], ["Marketing", "No consent", "s-muted"]]
+      : c.id === "c1" ? [["Service replies (in window)", "Allowed", "s-ok"], ["Order &amp; return updates", "Opted in · 12 Mar", "s-ok"], ["Marketing", "Opted out · 2 Aug", "s-bad"]]
+      : [["Service replies (in window)", "Allowed", "s-ok"], ["Order &amp; return updates", "Opted in", "s-ok"], ["Marketing", "Opted in · 5 Jan", "s-ok"]];
+    $("#side").innerHTML = `
+      <div class="side-sec">
+        <div class="row gap-12"><div class="avatar lg" style="background:${c.color}">${c.init}</div><div style="min-width:0"><div class="strong truncate">${c.ver === "no" ? "Unknown contact" : c.name}</div><div class="small muted">${c.org || (c.ver === "no" ? "No account linked" : c.ch === "web" && c.ver === "na" ? "Website visitor" : "Consumer")}</div>
+          <div class="row gap-6 mt-4">${c.dealer ? `<span class="badge b-vendor mini">${ic("briefcase")} ${c.id === "c1" ? "Dealer Gold" : "Dealer Gold"}</span>` : ""}<span class="badge mini">${CHN[c.ch][0]}</span></div></div></div>
+      </div>
+      <div class="side-sec"><h5>Identity</h5>${verBlock}</div>
+      <div class="side-sec"><h5>Linked orders <a href="erp-orders.html" class="tiny" style="text-transform:none;letter-spacing:0">All →</a></h5>${ordHTML}</div>
+      <div class="side-sec" data-anno="T25 Consent: opted-out → no reminders"><h5>Consent</h5>
+        <div class="consent">${consent.map(([l, v, k]) => `<span>${l}</span><span class="status ${k}" style="font-size:11.5px">${v}</span>`).join("")}</div>
+        <div class="tiny muted mt-8">Saving our number is not marketing consent. Opt-outs stop reminders and promotions immediately (rule A28).</div>
+        <button class="btn btn-xs mt-8" data-toast="Opt-out recorded for marketing · source: agent, SUP chat">Record opt-out</button>
+      </div>
+      <div class="side-sec"><h5>Actions</h5>
+        <div class="col gap-6">
+          <button class="btn btn-sm btn-wa btn-block" data-open="m-basket" ${c.ver === "yes" ? "" : "disabled"}>${ic("cart", "ic-sm")} Create draft basket</button>
+          <button class="btn btn-sm btn-block" ${c.ver === "yes" && c.win !== "closed" ? "" : "disabled"} data-toast="Secure checkout link sent · template checkout_link v2" data-toast-icon="whatsapp">${ic("link", "ic-sm")} Send secure checkout link</button>
+          <button class="btn btn-sm btn-block" data-open="m-ticket">${ic("flag", "ic-sm")} Escalate to ticket</button>
+          <a class="btn btn-sm btn-block btn-ghost" href="erp-returns.html">${ic("undo", "ic-sm")} Start return / warranty</a>
+        </div>
+        <div class="tiny muted mt-8"><span class="badge mini b-outline">1B</span> Guided WhatsApp ordering (R11) · Phase 1A offers assisted orders + click-to-chat.</div>
+      </div>`;
+    TX.hydrate($("#side"));
+  }
+  const renderAll = () => { renderList(); renderThread(); renderSide(); };
+  document.addEventListener("click", (e) => { if (e.target.closest('[data-open="m-basket"]')) { const c = C.find((x) => x.id === curId); $("#bk-cust").textContent = c.ver === "yes" ? (c.org || c.name) : "Metro Computers"; } });
+  renderAll();
+
+  $("#chf").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; chF = b.dataset.ch; renderList(); });
+  $("#stf").addEventListener("change", (e) => { stF = e.target.value; renderList(); });
+  $("#conv-list").addEventListener("click", (e) => { const it = e.target.closest("[data-conv]"); if (!it) return; curId = it.dataset.conv; const c = C.find((x) => x.id === curId); c.unread = 0; renderAll(); });
+  document.addEventListener("change", (e) => {
+    if (e.target.id === "pause") {
+      const c = C.find((x) => x.id === curId); c.paused = e.target.checked;
+      c.msgs.push(["p", c.paused ? "Automation paused by Karthik R. · bot and automatic updates silent in this conversation" : "Automation resumed by Karthik R."]);
+      renderThread(); TX.toast(c.paused ? "Automation paused for this conversation" : "Automation resumed", c.paused ? "pause" : "play");
+    }
+  });
+  document.addEventListener("click", (e) => {
+    const t = e.target.closest("[data-tpl]");
+    if (t) { const r = $("#reply"); r.disabled = false; r.value = t.dataset.tpl; r.focus(); t.closest(".dd").classList.remove("open"); }
+    if (e.target.closest("#send")) {
+      const c = C.find((x) => x.id === curId), r = $("#reply");
+      if (!r.value.trim()) { TX.toast(c.win === "closed" ? "Choose an approved template first" : "Type a message first", "info"); return; }
+      c.msgs.push(["a", TX.esc(r.value), "10:43", null, "Karthik R."]); c.last = r.value; renderAll();
+      TX.toast(c.win === "closed" ? "Template sent · window re-opens when the customer replies" : "Message sent", c.ch === "wa" ? "whatsapp" : "send");
+    }
+  });
+  document.addEventListener("keydown", (e) => { if (e.target.id === "reply" && e.key === "Enter" && !e.shiftKey) { e.preventDefault(); $("#send").click(); } });
+
+  /* ---------------- Draft basket (pricing engine, Dealer Gold) ---------------- */
+  const BK = [["ssd-03", 10], ["hub-02", 4]];
+  let bt = 0;
+  $("#bk-lines").innerHTML = BK.map(([id, q]) => { const p = P(id); const [u, r] = q >= 10 ? [p.tiers[1].p, "tier 10+"] : q >= 5 ? [p.tiers[0].p, "tier 5+"] : [p.dealer, "base"]; bt += u * q;
+    return `<tr><td><div class="row gap-8">${TX.ph(p.img, "thumb")}<div><div class="small strong">${p.title}</div><div class="row gap-6 mt-4">${TX.condBadge(p.cond)}<span class="tiny muted mono">${p.sku}</span></div></div></div></td><td class="r">${q}</td><td class="r">${fmt(u)}</td><td><span class="badge b-vendor mini">Dealer Gold v2026.3 · ${r}</span></td><td class="r strong">${fmt(u * q)}</td></tr>`; }).join("");
+  $("#bk-tot").textContent = fmt(Math.round(bt * 1.18));
+
+  /* ---------------- Tickets ---------------- */
+  const TK = [
+    ["SUP-7745", "Power bank swelling after 2 weeks", "Deepak Shenoy", "Unsafe product", ["Critical", "b-bad"], ["Open", "s-brand"], "Anita R.", ["warn", "Due 11:15 · 32 min", 70], "TXO-10419", "whatsapp"],
+    ["SUP-7740", "GPU order late — no update", "Kavya Reddy", "Missing / late order", ["High", "b-warn"], ["In progress", "s-info"], "Karthik R.", ["bad", "Breached 1 h 10 m", 100], "TXO-10471", "chat"],
+    ["SUP-7738", "GSTIN correction on invoice", "Coastal Infotech", "Billing", ["High", "b-warn"], ["Waiting on customer", "s-muted"], "Deepa K.", ["paused", "Paused · 2 h left", 45], "TXO-10488", "mail"],
+    ["SUP-7736", "Charged twice for one order?", "Farah Khan", "Payment dispute", ["High", "b-warn"], ["Open", "s-brand"], "Deepa K.", ["ok", "3 h 10 m left", 22], "TXO-10483", "chat"],
+    ["SUP-7734", "Will 16 GB SODIMM fit HP Pavilion 15-eg?", "Nisha Menon", "Compatibility", ["Normal", ""], ["Open", "s-brand"], "Sneha P.", ["ok", "5 h left", 30], "RAM02-N", "whatsapp"],
+    ["SUP-7731", "Web chat handoff — talk to a person", "Guest", "General", ["Normal", ""], ["New", "s-warn"], "Unassigned", ["warn", "Accept in 3 min", 80], "—", "chat"],
+    ["SUP-7729", "Return pickup didn't come", "Joseph Mathew", "Returns", ["Normal", ""], ["In progress", "s-info"], "Anita R.", ["ok", "1 d left", 15], "RMA-0096", "whatsapp"],
+    ["SUP-7733", "ASUS keyboard — who repairs it?", "Farhan Ali", "Warranty ambiguity", ["Normal", ""], ["Resolved", "s-ok"], "Karthik R.", ["met", "Met · 2 h 05 m", 100], "RMA-0099", "phone"],
+    ["SUP-7726", "Price on WhatsApp differs from website", "Rahul Verma", "Pricing", ["Low", ""], ["Resolved", "s-ok"], "Karthik R.", ["met", "Met · 40 min", 100], "—", "whatsapp"],
+  ];
+  $("#tk-body").innerHTML = TK.map(([id, sub, cust, cat, pr, st, as, sla, link, ch]) => `<tr>
+    <td class="mono strong nowrap">${id}</td>
+    <td><div class="cell-main truncate" style="max-width:260px">${sub}</div><div class="cell-sub il">${ic(ch, "ic-sm")} ${cust}</div></td>
+    <td class="small">${cat}</td><td><span class="badge ${pr[1]}">${pr[0]}</span></td><td><span class="status ${st[1]}">${st[0]}</span></td><td class="small">${as}</td>
+    <td style="min-width:150px"><div class="small strong ${sla[0] === "bad" ? "text-bad" : sla[0] === "warn" ? "text-warn" : sla[0] === "met" ? "text-ok" : ""}">${sla[1]}</div><div class="meter thin ${sla[0] === "bad" ? "m-bad" : sla[0] === "warn" ? "m-warn" : sla[0] === "met" || sla[0] === "ok" ? "m-ok" : ""}" style="margin-top:4px"><span style="width:${sla[2]}%"></span></div></td>
+    <td class="small mono">${link.startsWith("TXO") ? `<a href="erp-orders.html?order=${link}">${link}</a>` : link.startsWith("RMA") ? `<a href="erp-returns.html?rma=${link}">${link}</a>` : link}</td></tr>`).join("");
+
+  /* ---------------- Answer library ---------------- */
+  const FAQ = [
+    ["Return window by condition", "A-012", "v4", ["Approved", "s-ok"], "Bot · agents · help centre", "Anita R.", 412],
+    ["Condition grades explained", "A-004", "v3", ["Approved", "s-ok"], "Bot · agents · help centre", "Sneha P.", 388],
+    ["Who provides my warranty?", "A-019", "v2", ["Approved", "s-ok"], "Bot · agents", "Anita R.", 207],
+    ["Dealer pricing &amp; how to apply", "A-021", "v2", ["Approved", "s-ok"], "Bot · agents", "Rajesh M.", 96],
+    ["Delivery times by PIN", "A-008", "v5", ["Approved", "s-ok"], "Bot · agents", "Anita R.", 351],
+    ["COD eligibility", "A-027", "v1", ["In review", "s-warn"], "— (not live)", "Deepa K.", 0],
+    ["Data erasure on returned devices", "A-030", "v1", ["Draft", "s-muted"], "— (not live)", "Irfan M.", 0],
+    ["Same-day delivery (old)", "A-003", "v2", ["Retired", "s-muted"], "Replaced by A-008", "Anita R.", 0],
+  ];
+  $("#faq-body").innerHTML = FAQ.map(([t, id, v, s, u, o, n]) => `<tr><td><div class="cell-main small">${t}</div><div class="cell-sub mono">${id}</div></td><td class="mono small">${v}</td><td><span class="status ${s[1]}">${s[0]}</span></td><td class="small">${u}</td><td class="small">${o}</td><td class="r small">${n}</td></tr>`).join("");
+  const TPL = [
+    ["order_confirmed", "Utility", "v3", ["Approved", "s-ok"], "Transactional · sent on order confirmation", "Today 10:24"],
+    ["checkout_link", "Utility", "v2", ["Approved", "s-ok"], "Draft basket link · 30 min expiry", "Today 09:44"],
+    ["otp_verify", "Authentication", "v1", ["Approved", "s-ok"], "Identity check before order details", "Today 10:36"],
+    ["payment_reminder", "Utility", "v1", ["Approved", "s-ok"], "A28: opted-in only · stops on payment/dispute/opt-out · max 2", "Today 10:05"],
+    ["rma_update", "Utility", "v2", ["Approved", "s-ok"], "Returns progress", "Today 09:12"],
+    ["stock_alternate", "Utility", "v1", ["In review", "s-warn"], "Offer alternate unit after late payment", "—"],
+    ["festive_offer", "Marketing", "v1", ["Approved", "s-ok"], "Opted-in customers only · 3 blocked (opted out)", "22 Sep"],
+    ["dispatch_delay", "Utility", "v1", ["Rejected", "s-bad"], "Rejected by Meta: variable at start · fix &amp; resubmit", "—"],
+  ];
+  $("#tpl-body").innerHTML = TPL.map(([n, c, v, s, r, l]) => `<tr><td class="mono small strong">${n}</td><td><span class="badge ${c === "Marketing" ? "b-accent" : c === "Authentication" ? "b-info" : ""} mini">${c}</span></td><td class="mono small">${v}</td><td><span class="status ${s[1]}">${s[0]}</span><div class="cell-sub nowrap">${l === "—" ? "never sent" : l}</div></td><td class="small">${r}</td></tr>`).join("")
+    + `<tr><td colspan="5" class="small muted">${ic("alert", "ic-sm")} Debt-collection messages are a restricted use under WhatsApp policy — no such template is configured; unpaid-order reminders are limited to the opted-in rule above.</td></tr>`;
+  TX.hydrate($("#tpl-body"));
+});
+</script>
+</body>
+</html>

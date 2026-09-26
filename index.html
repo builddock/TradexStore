@@ -1,48 +1,164 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>TradexStore — Home Discovery | High-Performance IT &amp; Custom Hardware</title>
-<meta name="description" content="TradexStore — engineered IT infrastructure, competition-grade mechanical inputs and calibrated battlestation hardware.">
-<meta name="color-scheme" content="light">
-<link rel="canonical" href="https://tradex.builddocks.in/design-flow/home.html">
-<link rel="icon" href="design-flow/assets/img/logo-tradex-full.png">
-
-<!-- GitHub Pages cannot issue server-side redirects, so the site root forwards
-     straight to the store home page. Update this target if the store moves. -->
-<meta http-equiv="refresh" content="0; url=design-flow/home.html">
-
-<script>
-  // location.replace keeps this hop out of the back-button history, so
-  // "back" from the store returns to wherever the visitor came from.
-  location.replace('design-flow/home.html' + location.search + location.hash);
-</script>
-
-<style>
-  /* self-contained fallback: no dependency on the store's stylesheets, so the
-     redirect still renders if the assets folder is ever unavailable */
-  body {
-    margin: 0;
-    min-height: 100vh;
-    display: grid;
-    place-items: center;
-    background: #faf8ff;
-    color: #131b2e;
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    text-align: center;
-  }
-  main { padding: 2rem; }
-  img { display: block; height: 30px; width: auto; margin: 0 auto 1.25rem; }
-  p { margin: 0 0 0.75rem; color: #414754; font-size: 0.9375rem; }
-  a { color: #0058c3; font-weight: 600; }
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tradex — Prototype overview (v0.1 for review)</title>
+  <link rel="stylesheet" href="assets/tradex.css">
+  <style>
+    .hub-hero .kick { display: inline-flex; gap: 8px; align-items: center; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.18); padding: 5px 12px; border-radius: 999px; font-size: 12.5px; font-weight: 600; }
+    .hub-hero .facts { display: flex; gap: 32px; margin-top: 28px; color: #c3cdf0; font-size: 13px; }
+    .hub-hero .facts b { display: block; color: #fff; font-size: 22px; font-weight: 750; }
+    .hub-shot { border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,.15); box-shadow: 0 30px 60px rgba(0,0,0,.4); }
+    .hub-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 40px; align-items: center; }
+    .app-card .ac-photo { border-radius: 12px; overflow: hidden; aspect-ratio: 16/8; }
+    .app-card .ac-photo img { width: 100%; height: 100%; object-fit: cover; }
+    .journey { display: grid; grid-template-columns: 34px 1fr; gap: 14px; padding: 16px 20px; border-bottom: 1px solid var(--line-2); }
+    .journey:last-child { border-bottom: 0; }
+    .journey .jn { width: 34px; height: 34px; border-radius: 10px; background: var(--brand-50); color: var(--brand-700); display: grid; place-items: center; font-weight: 800; }
+    .journey .steps { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 8px; font-size: 12.5px; }
+    .journey .steps a { background: var(--bg); border: 1px solid var(--line); padding: 3px 9px; border-radius: 999px; color: var(--tx-1); font-weight: 550; }
+    .journey .steps a:hover { border-color: var(--brand-200); text-decoration: none; color: var(--brand-700); }
+    .journey .steps .ic { width: 12px; height: 12px; color: var(--tx-4); }
+    .tip { display: flex; gap: 12px; align-items: flex-start; }
+    .tip .ti { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; background: var(--ink-900); color: #fff; flex: none; }
+  </style>
 </head>
-<body>
+<body data-app="hub" data-page="index">
 <main>
-  <img src="design-flow/assets/img/logo-tradex-full.png" alt="TradexStore" width="140" height="30">
-  <p>Opening the TradexStore home page&hellip;</p>
-  <p><a href="design-flow/home.html">Continue to Home Discovery</a></p>
+  <section class="hub-hero">
+    <div class="container hub-grid">
+      <div>
+        <span class="kick"><i data-icon="layers" class="ic-sm"></i> Clickable prototype · v0.1 for client review · 27 Sep 2026</span>
+        <h1>Tradex — one connected platform for commerce, stock and operations</h1>
+        <p>A premium e-commerce storefront for computers, parts, cameras and certified refurbished electronics, connected to an ERP web workspace and a controlled vendor portal. One stock authority, consumer and dealer pricing, exception-driven owner control and measured automation.</p>
+        <div class="row mt-24 wrap">
+          <a class="btn btn-lg btn-accent" href="store-home.html"><i data-icon="store"></i> Open storefront</a>
+          <a class="btn btn-lg" style="--b-bg:#fff;--b-fg:var(--ink-900);--b-bd:#fff" href="erp-dashboard.html"><i data-icon="dashboard"></i> Open ERP workspace</a>
+          <a class="btn btn-lg" style="--b-bg:transparent;--b-fg:#fff;--b-bd:rgba(255,255,255,.35)" href="vendor-dashboard.html"><i data-icon="building"></i> Vendor portal</a>
+        </div>
+        <div class="facts">
+          <div><b>32</b>screens</div>
+          <div><b>3</b>applications</div>
+          <div><b>60</b>sample products</div>
+          <div><b>R01–R20</b>requirements mapped</div>
+        </div>
+      </div>
+      <div class="hub-shot"><img src="assets/img/hero-desk.jpg" alt="Workspace with monitor and laptop" style="width:100%;display:block;aspect-ratio:4/3;object-fit:cover"></div>
+    </div>
+  </section>
+
+  <div class="container">
+    <section class="hub-apps" id="apps"></section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>How to review this prototype</h2><p>The dark toolbar at the top of every screen is part of the prototype, not the product.</p></div></div>
+      <div class="grid g-4">
+        <div class="card card-pad tip"><span class="ti"><i data-icon="users"></i></span><div><b>View as Guest / Consumer / Dealer</b><p class="small subtle mt-4">On storefront screens, switch buyer context to see public prices, GST-inclusive consumer prices, or a dealer's private ex-GST price list with 5+ and 10+ quantity tiers.</p></div></div>
+        <div class="card card-pad tip"><span class="ti" style="background:#7a5410;color:#ffcf70"><i data-icon="flag"></i></span><div><b>Phase notes</b><p class="small subtle mt-4">Turn on to label each feature with its delivery phase (1A, 1B, 2, 3) and requirement ID (R01–R20) from the requirements blueprint.</p></div></div>
+        <div class="card card-pad tip"><span class="ti"><i data-icon="layers"></i></span><div><b>All screens</b><p class="small subtle mt-4">Jump to any of the 32 screens across the three applications. Tabs, drawers, modals, cart, compare and chat are interactive.</p></div></div>
+        <div class="card card-pad tip"><span class="ti"><i data-icon="info"></i></span><div><b>Sample data only</b><p class="small subtle mt-4">Products, prices, people, orders and vendors are illustrative. Product photos are free-licence stock images (see <a href="credits.html">credits</a>). Real catalogue and brand assets come from discovery.</p></div></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>Delivery phases</h2><p>Phase 1 = e-commerce web application + ERP web application. Mobile-friendly e-commerce and the mobile app are Phase 2.</p></div></div>
+      <div class="phase-grid">
+        <div class="phase"><div class="ph-n">PHASE 0</div><h4>Discovery & proof</h4><p>Process maps, current-system audit, this UI prototype, platform fit tests, data sample, backlog and estimate.</p></div>
+        <div class="phase now"><div class="ph-n">PHASE 1A</div><h4>Core web launch</h4><p>Consumer & dealer storefront, ERP workspace, central stock & serials, purchasing/receipt, payments, dispatch, basic returns, reports, access control.</p></div>
+        <div class="phase now"><div class="ph-n">PHASE 1B</div><h4>Operational completion</h4><p>Controlled vendor portal, validated bulk import, guided WhatsApp ordering, approvals and selected integrations.</p></div>
+        <div class="phase"><div class="ph-n">PHASE 2</div><h4>Mobile & approved growth</h4><p>Mobile-friendly e-commerce and mobile app on Phase 1 APIs. Optional marketplace with seller settlements.</p></div>
+        <div class="phase"><div class="ph-n">PHASE 3</div><h4>AI & expansion</h4><p>Grounded AI assistance, advanced automation, and possible additional storefronts or businesses.</p></div>
+      </div>
+    </section>
+
+    <section class="section grid" style="grid-template-columns: 1.3fr 1fr; align-items: start">
+      <div class="card">
+        <div class="card-head"><div><h3>Walk-through journeys</h3><div class="sub">Scenarios from the blueprint (§29) you can click through end to end</div></div></div>
+        <div id="journeys"></div>
+      </div>
+      <div class="col gap-16">
+        <div class="card">
+          <div class="card-head"><div><h3>Decisions this prototype assumes</h3><div class="sub">To confirm in the review meeting (blueprint §1.4, §27.2)</div></div></div>
+          <div class="list-row"><span class="li-icon warn"><i data-icon="help"></i></span><div class="small"><b>“Retail users” = consumers; dealers = approved businesses.</b><div class="muted">Consumers see GST-inclusive prices; dealers see ex-GST prices with 5+/10+ tiers.</div></div></div>
+          <div class="list-row"><span class="li-icon warn"><i data-icon="help"></i></span><div class="small"><b>Tradex sells in its own name at launch.</b><div class="muted">Vendors submit products and stock for approval (1B). Marketplace sellers are Phase 2.</div></div></div>
+          <div class="list-row"><span class="li-icon warn"><i data-icon="help"></i></span><div class="small"><b>Dealer orders are prepaid.</b><div class="muted">Credit limits, ageing and collections are not shown.</div></div></div>
+          <div class="list-row"><span class="li-icon warn"><i data-icon="help"></i></span><div class="small"><b>One payment gateway and one courier at launch</b><div class="muted">COD depends on eligibility rules.</div></div></div>
+          <div class="list-row"><span class="li-icon warn"><i data-icon="help"></i></span><div class="small"><b>Existing accounting system stays the ledger.</b><div class="muted">The ERP exports invoices and credits with control totals.</div></div></div>
+          <div class="list-row"><span class="li-icon warn"><i data-icon="help"></i></span><div class="small"><b>Approval thresholds and return windows are placeholders.</b><div class="muted">The client supplies the real values.</div></div></div>
+          <div class="list-row"><span class="li-icon warn"><i data-icon="help"></i></span><div class="small"><b>Branch and store names are illustrative.</b><div class="muted">Assumed locations: SP Road, Koramangala, Mysuru and a Central Warehouse.</div></div></div>
+        </div>
+        <div class="card card-pad">
+          <h3>Not in Phase 1 (by design)</h3>
+          <p class="small subtle mt-8">Mobile app and mobile-specific optimisation, AI/LLM chat, marketplace payouts, automated collection calls, full accounting replacement, payroll/HR and a general workflow builder. These features appear in the prototype only as locked previews or phase-tagged notes.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section card">
+      <div class="card-head"><div><h3>Requirement coverage</h3><div class="sub">Where each captured requirement shows up in this prototype</div></div></div>
+      <div class="table-wrap"><table class="table">
+        <thead><tr><th>ID</th><th>Requirement</th><th>Phase</th><th>Where to see it</th></tr></thead>
+        <tbody id="reqs"></tbody>
+      </table></div>
+    </section>
+
+    <p class="small muted mt-24" style="text-align:center">Tradex prototype v0.1 · prepared from the client meeting summary, requirements blueprint and proposals · <a href="credits.html">Photo credits</a></p>
+  </div>
 </main>
+<script src="assets/tradex.js"></script>
+<script>
+TX.ready(() => {
+  const apps = [
+    ["Storefront", "store-home.html", "hero-laptop-glow", "var(--accent)", "store", "Customer web shop: search, categories, product details with refurbished inspection reports, compare, cart, checkout, tracking, returns, dealer zone and help."],
+    ["ERP workspace", "erp-dashboard.html", "hero-setup-rog", "var(--brand)", "dashboard", "Staff and owner workspace: control centre, orders, fulfilment, returns, support inbox, catalog, pricing, inventory, purchasing, partners, finance, reports, automation and admin."],
+    ["Vendor portal", "vendor-dashboard.html", "pc-setup-white", "var(--vendor)", "building", "Approved suppliers submit products and stock for review, update their availability feeds, confirm purchase orders and see statements. They only see their own data."],
+  ];
+  TX.$("#apps").innerHTML = apps.map(([name, href, img, color, icon, desc]) => `
+    <div class="app-card">
+      <div class="ac-photo"><img src="assets/img/${img}.jpg" alt=""></div>
+      <div class="row"><span class="ac-icon" style="background:${color}">${TX.icon(icon, "ic-lg")}</span><div><h3>${name}</h3><a class="small strong" href="${href}">Open ${name} →</a></div></div>
+      <p class="small subtle">${desc}</p>
+      <ul>${TX.screens[name].map(([h, l]) => `<li><a href="${h}">${l} ${TX.icon("chevron-right")}</a></li>`).join("")}</ul>
+    </div>`).join("");
+
+  const J = [
+    ["Consumer buys a refurbished laptop", "Unit-level grade, warranty provider, stock reservation, payment verification and tracking.", [["store-home.html", "Home"], ["store-product.html?id=lap-01", "Dell Latitude (Grade A)"], ["store-cart.html", "Cart"], ["store-checkout.html", "Checkout"], ["store-order.html?placed=1", "Confirmation & tracking"]]],
+    ["Dealer places a bulk order", "Switch “View as” to Approved dealer. Private ex-GST prices and 5+/10+ tiers apply automatically.", [["store-dealer.html", "Dealer zone"], ["store-dealer.html#bulk", "Quick order by SKU"], ["store-cart.html", "Cart with tier hints"], ["erp-pricing.html", "ERP price simulator"]]],
+    ["Vendor submits a product", "Validation, review with a diff, approval, and a pending version that doesn't overwrite the live listing.", [["vendor-products.html#new", "Vendor: submit"], ["erp-vendors.html#submissions", "ERP: review diff"], ["erp-catalog.html#review", "Catalog review queue"]]],
+    ["Website and branch compete for the last unit", "One stock authority. Reservations and available-to-promise protect against overselling.", [["erp-inventory.html#stock", "Stock & ATP"], ["erp-inventory.html#reservations", "Reservations"], ["erp-dashboard.html", "Exception raised"]]],
+    ["Customer returns a serialised unit", "Serial match, quarantine, inspection, then separate refund and resale decisions.", [["store-returns.html", "Return request"], ["erp-returns.html", "RMA inspection"], ["erp-finance.html#refunds", "Refund"], ["erp-inventory.html#serials", "Unit history"]]],
+    ["WhatsApp customer orders in chat", "Guided flow, agent handoff, draft basket and secure checkout link, using the same pricing and stock.", [["erp-support.html", "Support inbox"], ["store-checkout.html", "Secure checkout"], ["erp-orders.html", "Order created"]]],
+    ["Owner is away for a day", "Delegation, thresholds and a daily digest. Only material exceptions reach the owner.", [["erp-dashboard.html", "Control centre"], ["erp-automation.html#exceptions", "Exception queue"], ["erp-admin.html#delegation", "Delegation"], ["erp-admin.html#thresholds", "Thresholds"]]],
+    ["Goods arrive from a supplier", "PO, GRN with serial scan, QC to sellable or quarantine, and 3-way bill match.", [["erp-purchasing.html#suggestions", "Reorder suggestion"], ["erp-purchasing.html#receive", "Receive & QC"], ["erp-purchasing.html#bills", "Bill match"], ["erp-fulfilment.html", "Pick, pack, dispatch"]]],
+  ];
+  TX.$("#journeys").innerHTML = J.map(([t, d, steps], i) => `<div class="journey"><span class="jn">${i + 1}</span><div><b>${t}</b><div class="small muted">${d}</div>
+    <div class="steps">${steps.map(([h, l], k) => `${k ? TX.icon("chevron-right") : ""}<a href="${h}">${l}</a>`).join("")}</div></div></div>`).join("");
+
+  const R = [
+    ["R01", "Strong UI with familiar marketplace patterns", "1A", "Storefront (all screens)"],
+    ["R02", "High-quality, responsive web interactions", "1A / 2", "Desktop web in Phase 1; mobile-specific work in Phase 2"],
+    ["R03", "Consumer and dealer prices", "1A", "View as → Dealer · Dealer zone · ERP Pricing"],
+    ["R04", "Quantity discounts", "1A", "Product tiers · Cart tier hints · Pricing tier editor"],
+    ["R05", "Vendors log in and add products & stock", "1B", "Vendor portal · ERP Vendors"],
+    ["R06", "Owner/team retain control", "1A", "Control centre · Approvals · Settings & access"],
+    ["R07", "Generic catalog for new product types", "1A", "Catalog → Category templates"],
+    ["R08", "Inventory reflected on website", "1A", "Stock badges · Checkout reservation · Inventory ATP"],
+    ["R09", "Automate repetitive staff work", "1A / 1B", "Automation rules & run log"],
+    ["R10", "Reduce owner intervention", "1A", "Exceptions · Delegation · Owner digest"],
+    ["R11", "Website chatbot & WhatsApp ordering", "1A / 1B", "Help widget · WhatsApp band · Support inbox"],
+    ["R12", "Mobile-friendly e-commerce & mobile app", "2", "Out of Phase 1 scope (noted)"],
+    ["R13", "Future AI / custom LLM", "3", "Out of Phase 1 scope (guided flows only)"],
+    ["R14", "Multi-branch & warehouse reporting", "1A", "Location filters · Inventory by location · Reports"],
+    ["R15", "Separate businesses/domains later", "Later", "Not modelled beyond the company switcher"],
+    ["R16", "Requirements before cost & timeline", "0", "This prototype is a Phase 0 deliverable"],
+    ["R17", "Support & maintenance", "1A", "Settings → System (backups, monitoring owners)"],
+    ["R18", "Existing AWS website/backend", "0", "Settings → Integrations (legacy ERP/POS placeholder)"],
+    ["R19", "Warranty, RMA, authenticity, returns", "1A", "Inspection reports · Returns · ERP RMA · Serial history"],
+    ["R20", "Automatic product/image import", "1B", "Catalog → Bulk import · Vendor bulk upload"],
+  ];
+  TX.$("#reqs").innerHTML = R.map(([id, t, ph, w]) => `<tr><td class="mono strong">${id}</td><td>${t}</td><td><span class="badge ${ph.startsWith("1") ? "b-brand" : ph === "2" || ph === "3" || ph === "Later" ? "b-outline" : "b-warn"}">${ph}</span></td><td class="subtle">${w}</td></tr>`).join("");
+});
+</script>
 </body>
 </html>

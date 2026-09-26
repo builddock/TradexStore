@@ -1,0 +1,621 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Purchasing & receiving · Tradex ERP</title>
+  <link rel="stylesheet" href="assets/tradex.css">
+  <style>
+    .page-tabs > .tabs { margin-bottom: 20px; }
+    svg.ic.ii, .ii svg.ic { display: inline-block; vertical-align: -2px; }
+    .ico-line { display: inline-flex; align-items: center; gap: 5px; }
+    .rule { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+    .rule .fx { font-family: ui-monospace, monospace; font-size: 12.5px; background: var(--ink-900); color: #dfe5f1; padding: 12px 14px; border-radius: var(--r); line-height: 1.6; display: flex; flex-direction: column; gap: 4px; }
+    .rule .fx > div { display: grid; grid-template-columns: 70px 1fr; gap: 8px; }
+    .rule .fx b { color: #8fa8ff; font-weight: 600; }
+    .grp-row td { background: #f6f7fa !important; font-weight: 650; font-size: 12.5px; }
+    .qty.sm { height: 28px; }
+    .qty.sm button { width: 26px; }
+    .qty.sm input { width: 38px; font-size: 12.5px; }
+    .cover { font-weight: 700; }
+    .pipeline { grid-template-columns: repeat(6, 1fr); }
+    .pipeline .stage { cursor: pointer; }
+    .pipeline .stage:hover { background: #fafbff; }
+    .pipeline .stage.active { box-shadow: inset 0 -2px 0 var(--brand); }
+    .po-t tbody tr { cursor: pointer; }
+    .po-grid { display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 16px; align-items: start; }
+    .rail { position: sticky; top: 76px; display: flex; flex-direction: column; gap: 16px; }
+    .tier { display: flex; gap: 10px; align-items: center; padding: 9px 12px; border-radius: var(--r-sm); border: 1px solid var(--line-2); font-size: 12.5px; }
+    .tier + .tier { margin-top: 6px; }
+    .tier.on { border-color: var(--brand); background: var(--brand-50); box-shadow: var(--ring); }
+    .tier .who { margin-left: auto; font-weight: 650; }
+    .tot { display: grid; grid-template-columns: 1fr auto; gap: 6px 20px; font-size: 13px; max-width: 340px; margin-left: auto; }
+    .tot .g { font-size: 16px; font-weight: 750; border-top: 1px solid var(--line); padding-top: 8px; }
+    .scanlog { list-style: none; margin: 0; padding: 0; max-height: 260px; overflow-y: auto; }
+    .scanlog li { display: grid; grid-template-columns: 20px 1fr auto; gap: 10px; padding: 8px 16px; border-bottom: 1px solid var(--line-2); font-size: 12.5px; align-items: start; }
+    .scanlog li .ic { width: 16px; height: 16px; margin-top: 1px; }
+    .scanlog li.new { animation: flash 1.2s; }
+    @keyframes flash { from { background: var(--brand-50); } }
+    .rcv-t td, .rcv-t th { padding-left: 10px; padding-right: 10px; }
+    .qc-sel { height: 30px; font-size: 12.5px; width: 170px; }
+    .match-grid { display: grid; grid-template-columns: 1.4fr 1fr .7fr 1fr 1fr 110px; font-size: 12.5px; border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; }
+    .match-grid > div { padding: 9px 12px; border-bottom: 1px solid var(--line-2); }
+    .match-grid .h { background: #fafbfc; font-weight: 650; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--tx-3); }
+    .match-grid .bad { background: #fff5f5; color: var(--bad-tx); font-weight: 650; }
+    .match-grid .ok { color: var(--ok-tx); font-weight: 650; }
+    .three { display: inline-flex; gap: 3px; }
+    .three span { display: inline-grid; place-items: center; height: 20px; padding: 0 6px; border-radius: 4px; font-size: 10.5px; font-weight: 700; background: var(--ok-50); color: var(--ok-tx); }
+    .three span.x { background: var(--bad-50); color: var(--bad-tx); }
+    .three span.n { background: var(--bg-2); color: var(--tx-4); }
+    .dup { display: grid; grid-template-columns: 150px 1fr 1fr 90px; font-size: 12.5px; border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; }
+    .dup > div { padding: 8px 12px; border-bottom: 1px solid var(--line-2); }
+    .dup .h { background: #fafbfc; font-weight: 650; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--tx-3); }
+    .stat-tile { border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; background: #fff; }
+    .stat-tile .n { font-size: 22px; font-weight: 700; }
+    .stat-tile .l { font-size: 12px; color: var(--tx-3); }
+    .lc-row { display: flex; justify-content: space-between; font-size: 13px; padding: 5px 0; }
+  </style>
+</head>
+<body data-app="erp" data-page="purchasing">
+<main>
+  <div class="page-head">
+    <div>
+      <div class="crumbs"><span>Stock</span><i data-icon="chevron-right"></i><span>Purchasing & receiving</span></div>
+      <h1>Purchasing & receiving</h1>
+      <p class="sub">Reorder suggestions → buyer-approved POs → goods receipt & QC → 3-way match. Tradex never commits to a supplier automatically.</p>
+    </div>
+    <div class="actions">
+      <button class="btn" data-toast="Open POs exported · po-register-2026-09-26.xlsx"><i data-icon="download"></i> Export</button>
+      <a class="btn" href="#receive"><i data-icon="scan"></i> Receive goods</a>
+      <a class="btn btn-primary" href="#new-po"><i data-icon="plus"></i> New purchase order</a>
+    </div>
+  </div>
+
+  <section class="grid g-6 mb-24">
+    <div class="kpi"><div class="k-label"><i data-icon="clipboard"></i> Open POs</div><div class="k-value">14</div><div class="k-foot"><span>₹38.6 L ex-GST</span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="clock"></i> <span>Awaiting approval</span></div><div class="k-value text-warn">3</div><div class="k-foot"><span>1 needs owner (&gt; ₹5 L)</span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="truck"></i> <span>Due this week</span></div><div class="k-value">6</div><div class="k-foot"><span>1 overdue · NetCore</span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="scan"></i> <span>Receiving now</span></div><div class="k-value">1</div><div class="k-foot"><span>GRN-0442 · dock 2</span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="receipt"></i> <span>Bills on hold</span></div><div class="k-value text-bad">3</div><div class="k-foot"><span>1 duplicate blocked</span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="award"></i> <span>Supplier on-time</span></div><div class="k-value">92%</div><div class="k-foot"><span class="delta up-good"><i data-icon="trending-up"></i> +3 pt</span><span>90 d</span></div></div>
+  </section>
+
+  <div data-tabset class="page-tabs">
+    <div class="tabs">
+      <button class="tab active" data-tab="suggestions"><i data-icon="zap"></i> Reorder suggestions <span class="count">18</span></button>
+      <button class="tab" data-tab="orders"><i data-icon="clipboard"></i> Purchase orders <span class="count">14</span></button>
+      <button class="tab" data-tab="new-po"><i data-icon="plus"></i> New PO</button>
+      <button class="tab" data-tab="receive"><i data-icon="scan"></i> Receive (GRN)</button>
+      <button class="tab" data-tab="bills"><i data-icon="receipt"></i> Bills & 3-way match <span class="count">3 on hold</span></button>
+      <button class="tab" data-tab="suppliers"><i data-icon="building"></i> Suppliers</button>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- SUGGESTIONS                                                          -->
+    <!-- ================================================================== -->
+    <div class="tab-panel active" data-panel="suggestions">
+      <div class="card mb-16" data-anno="1A · A17 Rule drafts, buyer approves (no auto-purchasing)">
+        <div class="card-head"><div><h3>Rule A17 · reorder suggestion</h3><div class="sub">Deterministic rule · ran 06:00 today · next run 06:00 tomorrow · 18 SKUs triggered · 2 excluded</div></div><a class="btn btn-sm" href="erp-automation.html"><i data-icon="settings"></i> Rule settings</a></div>
+        <div class="card-body rule">
+          <div class="fx">
+            <div><b>trigger</b><span>ATP ≤ ROP · where ROP = avg/day × lead time + safety stock</span></div>
+            <div><b>suggest</b><span>max(0, avg/day × (lead + 7 d review) + safety − (ATP + on order))</span></div>
+            <div><b>round</b><span>up to supplier pack / MOQ · refurbished laptops in lots of 10</span></div>
+            <div><b>exclude</b><span>archived · discontinued · supplier suspended · need covered by open PO</span></div>
+          </div>
+          <div class="col gap-8 small">
+            <div class="callout c-brand"><i data-icon="shield"></i><div><strong>Human boundary:</strong> the rule only drafts. A buyer reviews quantities and sends; POs above approval thresholds also need a manager or owner.</div></div>
+            <div class="muted">Forecast-based quantities (A30) are a Phase 2 candidate and will still require buyer approval.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="filterbar">
+        <select class="select" id="sg-sup" aria-label="Supplier"><option value="">All suppliers</option></select>
+        <div class="seg" id="sg-seg"><button class="active" data-f="">All (9 shown)</button><button data-f="risk">Stock-out &lt; 7 days</button><button data-f="refurb">Refurbished lots</button></div>
+        <span class="small muted ml-auto">Costs are last PO cost ex-GST · quantities editable before drafting</span>
+      </div>
+      <div class="card">
+        <div class="bulkbar"><b><span class="bulk-count">0</span> lines selected</b><span style="opacity:.6">·</span><button class="btn btn-sm btn-primary" id="sg-draft">Create draft POs for buyer approval</button><button class="btn btn-sm" data-toast="Dismissed for 7 days · reason recorded">Dismiss…</button><span class="ml-auto small" style="opacity:.7">Nothing is sent to suppliers from here</span></div>
+        <div class="table-wrap"><table class="table compact" id="sg-table">
+          <thead><tr><th class="check-col"><input type="checkbox" data-check-all aria-label="Select all suggestions"></th><th>Product</th><th class="r">ATP · ROP</th><th class="r">On order</th><th class="r" data-tip="30-day average units sold per day · supplier lead time">Avg/day · lead</th><th class="r" data-tip="Days until ATP runs out">Cover</th><th class="c">Suggested qty</th><th class="r">Unit cost</th><th class="r">Line value</th><th>Reason</th></tr></thead>
+          <tbody id="sg-body"></tbody>
+        </table></div>
+        <div class="card-foot"><span class="small muted"><b>Excluded:</b> Seagate BarraCuda 1 TB (archived) · Apple AirPods Max refurbished (no supplier lot offered)</span><span class="small strong" id="sg-total"></span></div>
+      </div>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- ORDERS                                                               -->
+    <!-- ================================================================== -->
+    <div class="tab-panel" data-panel="orders">
+      <div class="card mb-16" data-anno="1A · PO state machine">
+        <div class="pipeline" id="po-pipe"></div>
+      </div>
+      <div class="filterbar">
+        <div class="input-icon" style="width:260px"><i data-icon="search"></i><input class="input" id="po-q" placeholder="PO number, supplier, SKU…" aria-label="Search purchase orders" style="height:34px;width:100%"></div>
+        <select class="select" id="po-sup" aria-label="Supplier"><option value="">All suppliers</option></select>
+        <span class="small muted ml-auto">Click a PO for details · closed POs from the last 30 days: 41</span>
+      </div>
+      <div class="card">
+        <div class="table-wrap"><table class="table po-t">
+          <thead><tr><th>PO</th><th>Supplier</th><th class="r">Lines</th><th class="r">Value ex-GST</th><th>Status</th><th>Approval</th><th>Expected</th><th>Received</th></tr></thead>
+          <tbody id="po-body"></tbody>
+        </table></div>
+        <div class="pager"><span>Showing 10 recent POs of 55 in the last 90 days (sample) · click a pipeline stage to filter</span><div class="pages"><button class="active">1</button><button>2</button><button>3</button><button aria-label="Next page">›</button></div></div>
+      </div>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- NEW PO                                                               -->
+    <!-- ================================================================== -->
+    <div class="tab-panel" data-panel="new-po">
+      <div class="po-grid">
+        <div class="col gap-16">
+          <div class="card">
+            <div class="card-head"><div><h3>New purchase order · draft PO-2026-0196</h3><div class="sub">Autosaved 10:44 · submitting twice returns the same PO (idempotent)</div></div><span class="status s-muted">Draft</span></div>
+            <div class="card-body">
+              <div class="form-grid" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+                <div class="field"><label class="req" for="np-sup">Supplier</label><select class="select" id="np-sup"></select><span class="hint" id="np-gstin"></span></div>
+                <div class="field"><label class="req" for="np-loc">Deliver to</label><select class="select" id="np-loc"><option>WH-BLR · Central Warehouse</option><option>BR-SPR · SP Road Branch</option><option>BR-MYS · Mysuru Branch</option></select></div>
+                <div class="field"><label class="req" for="np-date">Expected delivery</label><input class="input" id="np-date" value="02 Oct 2026"><span class="hint" id="np-lead"></span></div>
+                <div class="field"><label for="np-terms">Payment terms</label><select class="select" id="np-terms"><option>Net 30 from invoice</option><option>Net 15</option><option>50% advance · 50% on delivery</option><option>100% advance</option></select></div>
+                <div class="field"><label for="np-freight">Freight</label><select class="select" id="np-freight"><option>Supplier pays (FOR)</option><option>Tradex pays · landed cost applies</option></select></div>
+                <div class="field"><label for="np-ref">Supplier quotation ref.</label><input class="input" id="np-ref" value="Q/PIT/2026/1187"></div>
+                <div class="field full"><label for="np-note">Note to supplier</label><input class="input" id="np-note" value="Please scan-label cartons with PO number. Serial list (CSV) required with invoice."></div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h3>Lines</h3><div class="row gap-8"><button class="btn btn-sm" data-toast="Low-stock suggestions for this supplier added"><i data-icon="zap"></i> Add from suggestions</button><button class="btn btn-sm" data-toast="SKU search opened"><i data-icon="plus"></i> Add line</button></div></div>
+            <div class="table-wrap"><table class="table compact">
+              <thead><tr><th>SKU · supplier code</th><th class="c">Qty</th><th class="r" data-tip="Unit cost excluding GST">Unit cost</th><th class="r">Last cost</th><th class="r">Line total</th><th></th></tr></thead>
+              <tbody id="np-lines"></tbody>
+            </table></div>
+            <div class="card-body"><div class="tot" id="np-tot"></div></div>
+          </div>
+        </div>
+        <aside class="rail">
+          <div class="card" data-anno="1A · R06/R10 Approval by PO value">
+            <div class="card-head"><div><h3>Approval required</h3><div class="sub">Determined by PO value ex-GST</div></div></div>
+            <div class="card-body">
+              <div id="np-tiers"></div>
+              <div class="small muted mt-12">Sample thresholds — exact ₹ limits to be confirmed by the client (§18). The creator can't approve their own PO.</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h3>Checks</h3></div>
+            <ul class="scanlog" id="np-checks" style="max-height:none"></ul>
+          </div>
+          <div class="card card-pad">
+            <div class="label mb-8">Attachments</div>
+            <div class="dropzone" style="padding:16px"><i data-icon="paperclip"></i><div class="small">Supplier quotation, specs, price confirmation</div></div>
+            <div class="small mt-8 ico-line"><i data-icon="file" class="ic-sm"></i> Q-PIT-2026-1187.pdf · 182 KB</div>
+          </div>
+          <div class="row gap-8"><button class="btn grow" data-toast="Draft PO-2026-0196 saved">Save draft</button><button class="btn btn-primary grow" id="np-submit">Submit for approval</button></div>
+        </aside>
+      </div>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- RECEIVE                                                              -->
+    <!-- ================================================================== -->
+    <div class="tab-panel" data-panel="receive">
+      <div class="card mb-16">
+        <div class="card-head">
+          <div><h3>GRN-0442 · receiving against PO-2026-0188</h3><div class="sub">Prime IT Distributors · delivery challan DC/PIT/8812 · invoice INV/PIT/2026/4502 · WH-BLR dock 2 · vehicle KA-01-AB-2231 · started 10:22 by Mohammed Irfan</div></div>
+          <div class="row gap-8"><select class="select" style="width:auto;height:32px;font-size:12.5px" aria-label="Purchase order"><option>PO-2026-0188 · Prime IT · partially received</option><option>PO-2026-0187 · NetCore · partially received</option><option>PO-2026-0192 · RenewTech · sent</option></select></div>
+        </div>
+        <div class="card-body" data-anno="1A · A03 Scan receipt & serials against PO">
+          <div class="stepper">
+            <div class="step done"><span class="dot"><i data-icon="check" class="ic-sm"></i></span> Match PO</div>
+            <div class="step current"><span class="dot">2</span> Count & scan serials</div>
+            <div class="step"><span class="dot">3</span> QC per unit</div>
+            <div class="step"><span class="dot">4</span> Post receipt</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid mb-16" style="grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);align-items:start">
+        <div class="col gap-16">
+          <div class="scanbox">
+            <i data-icon="scan" class="ic-lg" style="color:var(--brand)"></i>
+            <input class="input" id="scan-in" placeholder="Scan barcode or serial, then Enter" aria-label="Scan barcode or serial" value="S6XNNS0T812447">
+            <button class="btn btn-primary" id="scan-go">Add</button>
+          </div>
+          <div class="card">
+            <div class="card-head"><h3>Scan log</h3><span class="small muted" id="scan-count"></span></div>
+            <ul class="scanlog" id="scan-log"></ul>
+          </div>
+        </div>
+        <div class="col gap-16">
+          <div class="callout c-warn" data-anno="1A · T15 Wrong serial → discrepancy, not stock"><i data-icon="alert"></i><div><strong>4 exceptions on this delivery — none can become sellable stock.</strong>
+            <ul style="margin:6px 0 0;padding-left:18px"><li>Duplicate serial PF3K9Z21 · unit held · case DSC-0034</li><li>2 × Samsung T7 Shield sent instead of T7 · substitution needs buyer approval</li><li>1 extra GaN charger (over-receipt) · held for buyer decision</li><li>ASUS ROG mouse not on PO · set aside for return</li></ul></div></div>
+          <div class="card">
+            <div class="card-head"><div><h3>Landed cost</h3><div class="sub">Allocated to unit cost for valuation & margin — never changes retail price</div></div></div>
+            <div class="card-body" style="padding-top:12px">
+              <div class="lc-row"><span>Freight (VRL Logistics)</span><b>₹3,200</b></div>
+              <div class="lc-row"><span>Transit insurance</span><b>₹450</b></div>
+              <div class="lc-row"><span>Loading / unloading</span><b>₹300</b></div>
+              <div class="lc-row" style="border-top:1px solid var(--line);margin-top:4px;padding-top:8px"><span class="strong">Total to allocate</span><b>₹3,950</b></div>
+              <div class="row-between mt-12"><span class="label">Allocation basis</span><div class="seg"><button class="active">By value</button><button>By quantity</button><button>By weight</button></div></div>
+              <div class="small muted mt-8">Effect: Samsung T7 1 TB +₹66/unit · USB-C adapter +₹18/unit · GaN charger +₹21/unit</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card mb-16" data-anno="1A · Partial, over, short & substitution">
+        <div class="card-head"><div><h3>Lines on this delivery</h3><div class="sub">Quantities are posted only after QC · nothing reaches the website until units are sellable</div></div></div>
+        <div class="table-wrap"><table class="table compact rcv-t">
+          <thead><tr><th>SKU</th><th class="r">Ordered</th><th class="r">Before</th><th class="c">Receiving now</th><th>Serials</th><th>Variance</th><th>Handling</th></tr></thead>
+          <tbody id="rc-lines"></tbody>
+        </table></div>
+      </div>
+      <div class="card mb-16" data-anno="1A · §9.3 QC pass → sellable · fail → quarantine">
+        <div class="card-head"><div><h3>QC outcome per unit · SSD01-N</h3><div class="sub">18 units scanned · 16 pass · 2 fail · unit IDs assigned at receipt</div></div><div class="seg"><button class="active">All (18)</button><button>Failed (2)</button></div></div>
+        <div class="table-wrap"><table class="table compact">
+          <thead><tr><th>Unit</th><th>Manufacturer serial</th><th>Seal</th><th>Physical</th><th>Speed test</th><th>Outcome</th><th>Resolution</th></tr></thead>
+          <tbody id="qc-body"></tbody>
+        </table></div>
+        <div class="card-foot"><span class="small muted">Showing 7 of 18 · passing units become sellable at WH-BLR on posting</span><button class="btn btn-sm" data-toast="All remaining units marked Pass">Mark remaining as pass</button></div>
+      </div>
+      <div class="card card-pad row-between">
+        <div><div class="row gap-8"><b>Ready to post GRN-0442</b><span class="badge b-warn">4 units held</span></div>
+          <div class="small subtle mt-4">Posting creates receipt movements, moves 16 SSD + 20 adapters + 10 chargers to sellable, 2 SSD to quarantine, refreshes website availability (A04) and makes the supplier bill matchable.</div></div>
+        <div class="row gap-8"><button class="btn" data-toast="GRN-0442 saved as draft">Save draft</button><button class="btn btn-primary" data-toast="GRN-0442 posted · 46 units sellable · 2 quarantined · 4 held (incl. duplicate-serial unit) · availability refresh queued">Post GRN-0442</button></div>
+      </div>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- BILLS                                                                -->
+    <!-- ================================================================== -->
+    <div class="tab-panel" data-panel="bills">
+      <div class="grid g-4 mb-16">
+        <div class="stat-tile"><div class="l">Matched & approved (30 d)</div><div class="n text-ok">38</div><div class="small muted">₹1.12 Cr</div></div>
+        <div class="stat-tile"><div class="l">On hold · variance</div><div class="n text-warn">2</div><div class="small muted">price +₹1,440 · qty −2</div></div>
+        <div class="stat-tile"><div class="l">Duplicate suspected</div><div class="n text-bad">1</div><div class="small muted">blocked from payment</div></div>
+        <div class="stat-tile"><div class="l">Tolerance (sample)</div><div class="n" style="font-size:16px;margin-top:4px">±2% or ₹500 / line</div><div class="small muted">quantity must match exactly · tax must match</div></div>
+      </div>
+      <div class="card mb-16" data-anno="1A · 3-way match PO ↔ GRN ↔ invoice">
+        <div class="card-head"><div><h3>Supplier bills</h3><div class="sub">A bill is payable only when PO, goods receipt and invoice agree within tolerance</div></div><button class="btn btn-sm" data-toast="Upload bill · OCR extraction is a Phase 2 candidate (A31); enter manually for now"><i data-icon="upload"></i> Record bill</button></div>
+        <div class="table-wrap"><table class="table">
+          <thead><tr><th>Bill</th><th>Supplier invoice</th><th>Supplier</th><th>PO · GRN</th><th class="r">Amount incl. GST</th><th>Match</th><th>Status</th><th>Due</th></tr></thead>
+          <tbody id="bl-body"></tbody>
+        </table></div>
+      </div>
+      <div class="col gap-16">
+        <div class="card">
+          <div class="card-head"><div><h3>BL-0331 · 3-way match detail</h3><div class="sub">INV/PIT/2026/4488 · PO-2026-0185 · GRN-0438 · Prime IT Distributors</div></div><span class="sev warning"><i data-icon="alert"></i> Price variance</span></div>
+          <div class="card-body">
+            <div class="match-grid">
+              <div class="h">Line</div><div class="h">PO qty × price</div><div class="h">GRN qty</div><div class="h">Invoice qty × price</div><div class="h">Variance</div><div class="h">Result</div>
+              <div>Intel Core i5-12400F <span class="mono muted">CPU02-N</span></div><div>40 × ₹8,640</div><div>40</div><div>40 × ₹8,640</div><div>—</div><div class="ok">✓ Match</div>
+              <div>Kingston FURY 16 GB <span class="mono muted">RAM01-N</span></div><div>60 × ₹2,284</div><div>60</div><div class="bad">60 × ₹2,308</div><div class="bad">+₹1,440 (+1.1%)</div><div class="bad">✗ Over ₹500</div>
+              <div>Logitech M190 <span class="mono muted">MS03-N</span></div><div>100 × ₹674</div><div>100</div><div>100 × ₹674</div><div>—</div><div class="ok">✓ Match</div>
+              <div class="strong">Taxable value</div><div>₹5,50,040</div><div></div><div class="strong">₹5,51,480</div><div class="bad">+₹1,440</div><div></div>
+              <div class="strong" style="border-bottom:0">GST (CGST 9% + SGST 9%)</div><div style="border-bottom:0">₹99,007</div><div style="border-bottom:0"></div><div style="border-bottom:0">₹99,266</div><div style="border-bottom:0">+₹259</div><div style="border-bottom:0" class="ok">✓ rate matches</div>
+            </div>
+            <div class="callout c-info mt-12"><i data-icon="info"></i><div>Prime IT's price list changed on 22 Sep (after the PO was approved on 19 Sep). Options: accept the variance with a reason (finance), or ask for a credit note of ₹1,699 incl. GST.</div></div>
+          </div>
+          <div class="card-foot"><span class="small muted">Assigned: Deepa K. (Finance) · buyer Anita R. informed · due 29 Sep</span><div class="row gap-8"><button class="btn btn-sm" data-toast="Sent to buyer for review with PO price evidence">Send to buyer</button><button class="btn btn-sm" data-toast="Credit note request emailed to Prime IT · ₹1,699">Request credit note</button><button class="btn btn-sm btn-ok" data-toast="Approved with variance · reason recorded · exported to accounting once">Approve with reason…</button></div></div>
+        </div>
+        <div class="card" data-anno="1A · A25 Duplicate invoice detection">
+          <div class="card-head"><div><h3>Duplicate invoice blocked · BL-0332</h3><div class="sub">Matched against bills from the last 12 months · normalised invoice numbers</div></div><span class="sev critical"><i data-icon="alert-octagon"></i> Blocked</span></div>
+          <div class="card-body">
+            <div class="dup">
+              <div class="h">Field</div><div class="h">BL-0332 (new)</div><div class="h">BL-0318 (posted)</div><div class="h">Same?</div>
+              <div class="muted">Supplier</div><div>Prime IT (V-014)</div><div>Prime IT (V-014)</div><div class="text-ok strong">Yes</div>
+              <div class="muted">Invoice no.</div><div class="mono">INV-PIT-2026-4471</div><div class="mono">INV/PIT/2026/4471</div><div class="text-ok strong">Yes*</div>
+              <div class="muted">Invoice date</div><div>18 Sep 2026</div><div>18 Sep 2026</div><div class="text-ok strong">Yes</div>
+              <div class="muted">Amount</div><div>₹2,14,380</div><div>₹2,14,380</div><div class="text-ok strong">Yes</div>
+              <div class="muted" style="border-bottom:0">Status</div><div style="border-bottom:0">Just recorded</div><div style="border-bottom:0">Paid 24 Sep · UTR HDFCR5202609241187</div><div style="border-bottom:0"></div>
+            </div>
+            <div class="small muted mt-8">* Numbers match after removing separators. Near matches (same amount ±1%, different number) are flagged for review, not blocked.</div>
+          </div>
+          <div class="card-foot"><button class="btn btn-sm" data-toast="Marked not duplicate · reason & approver required" data-toast-icon="alert">Not a duplicate…</button><button class="btn btn-sm btn-danger" data-toast="BL-0332 rejected as duplicate · supplier notified">Reject as duplicate</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- SUPPLIERS                                                            -->
+    <!-- ================================================================== -->
+    <div class="tab-panel" data-panel="suppliers">
+      <div class="card" data-anno="1A · Actual lead times feed reorder points">
+        <div class="card-head"><div><h3>Suppliers</h3><div class="sub">Lead time used by the reorder rule is the 90-day actual, not the quoted figure</div></div><a class="btn btn-sm" href="erp-vendors.html"><i data-icon="building"></i> Vendor onboarding</a></div>
+        <div class="table-wrap"><table class="table compact">
+          <thead><tr><th>Supplier</th><th>GSTIN</th><th>Status</th><th class="r">Lead time<br><span style="text-transform:none;font-weight:500">quoted · actual</span></th><th class="r">On-time</th><th class="r">Fill rate</th><th class="r">QC fail</th><th>Terms</th><th class="r">Open POs</th><th>Score</th><th></th></tr></thead>
+          <tbody id="sp-body"></tbody>
+        </table></div>
+        <div class="card-foot"><span class="small muted">Scores combine on-time, fill rate, QC failures and invoice accuracy · vendors see only their own scorecard in the vendor portal</span></div>
+      </div>
+      <div class="grid g-2 mt-16" style="align-items:start">
+        <div class="card">
+          <div class="card-head"><div><h3>Actual lead time · last 90 days</h3><div class="sub">Order sent → goods received · used by reorder rule A17</div></div><button class="btn btn-sm btn-ghost" id="lt-tbl"><i data-icon="list"></i> Table</button></div>
+          <div class="card-body"><div id="ch-lead"></div></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div><h3>Prime IT Distributors · terms</h3><div class="sub">V-014 · approved supplier since Apr 2024</div></div><span class="badge b-ok">Price list valid to 31 Dec</span></div>
+          <div class="card-body">
+            <dl class="kv" style="grid-template-columns:130px 1fr">
+              <dt>Account manager</dt><dd>Naveen Gowda · +91 98450 1•••• · naveen@primeit.example</dd>
+              <dt>Payment terms</dt><dd>Net 30 from invoice · 1% early-payment discount (10 days)</dd>
+              <dt>Bank account</dt><dd>HDFC ••••4471 · verified (maker-checker) 02 Apr 2026</dd>
+              <dt>Categories</dt><dd>Laptops (new), monitors, components, storage, accessories</dd>
+              <dt>MOQ / packs</dt><dd>SSDs & RAM in packs of 10 · laptops per unit</dd>
+              <dt>Returns (RTV)</dt><dd>DOA within 7 days → replacement; QC fail → credit note in 15 days</dd>
+              <dt>Feed</dt><dd>Availability API every 30 min · price list XLSX weekly (IMP-0092)</dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PO drawer -->
+  <div class="drawer" id="d-po"><div class="drawer-card wide" id="d-po-card"></div></div>
+</main>
+<script src="assets/tradex.js"></script>
+<script>
+TX.ready(() => {
+  const $ = TX.$, $$ = TX.$$, ic = TX.icon, esc = TX.esc;
+
+  /* ---------- Tab hash sync ---------- */
+  const syncHash = () => { const h = location.hash.slice(1); if (!h) return; if ($(`.tab[data-tab="${h}"]`)) { TX.activateTab(h); window.scrollTo(0, 0); } else { const m = document.getElementById(h); if (m && m.matches(".modal,.drawer")) TX.open(h); } };
+  window.addEventListener("hashchange", syncHash);
+  document.addEventListener("click", (e) => {
+    const t = e.target.closest(".page-tabs > .tabs > .tab"); if (t) history.replaceState(null, "", "#" + t.dataset.tab);
+    const a = e.target.closest('a[href^="#"]'); if (a && a.getAttribute("href") === location.hash) setTimeout(syncHash);
+  });
+
+  /* ---------- Shared data ---------- */
+  const V = Object.fromEntries(TX.vendors.map((v) => [v.id, v]));
+  const COST = { "lap-01": 30450, "lap-02": 25400, "ssd-01": 6850, "cpu-02": 8640, "ram-01": 2284, "ms-03": 674, "ms-02": 2350, "hub-02": 1880, "chg-01": 2190 };
+  const cost = (id) => COST[id] || Math.round(TX.byId(id).price / 1.18 * 0.85 / 10) * 10;
+  const inr = TX.fmt;
+  const tier = (v) => v <= 100000 ? ["Buyer", "Anita R. (self) · ≤ ₹1 L", "s-ok"] : v <= 500000 ? ["Ops admin", "Anita R. · ₹1–5 L", "s-warn"] : ["Owner", "Rajesh M. · > ₹5 L", "s-bad"];
+
+  /* ---------- Suggestions ---------- */
+  const SG = [
+    ["V-014", "lap-04", 18, 0, 20, 2.0, 4, 20, "Below ROP"],
+    ["V-014", "gpu-01", 8, 0, 10, 1.4, 5, 6, "Stock-out 6 d"],
+    ["V-014", "mon-03", 11, 0, 12, 0.6, 3, 6, "Below ROP"],
+    ["V-014", "ssd-01", 63, 20, 70, 6.4, 3, 40, "Dealer demand"],
+    ["V-014", "kb-02", 14, 0, 15, 0.9, 4, 10, "Below ROP"],
+    ["V-014", "cpu-01", 21, 0, 24, 1.8, 3, 12, "Below ROP"],
+    ["V-031", "cam-02", 5, 0, 6, 0.5, 7, 4, "Below ROP"],
+    ["V-031", "cam-01", 2, 0, 3, 0.2, 10, 2, "Refurb unit"],
+    ["V-022", "lap-02", 9, 0, 10, 1.4, 6, 10, "Refurb lot"],
+  ];
+  const sgQty = SG.map((r) => r[7]);
+  $("#sg-sup").innerHTML += [...new Set(SG.map((r) => r[0]))].map((id) => `<option value="${id}">${V[id].name}</option>`).join("");
+  let sgF = "";
+  const renderSg = () => {
+    const sup = $("#sg-sup").value; let total = 0, lastSup = null, html = "";
+    SG.forEach((r, i) => {
+      const [vid, id, atp, onord, rop, avg, lead, , reason] = r; const p = TX.byId(id);
+      const cover = atp / avg;
+      if (sup && vid !== sup) return;
+      if (sgF === "risk" && cover >= 7) return;
+      if (sgF === "refurb" && p.cond === "new") return;
+      if (vid !== lastSup) { const v = V[vid]; html += `<tr class="grp-row"><td></td><td colspan="9">${v.name} <span class="muted small" style="font-weight:500">· ${v.id} · ${v.city} · actual lead ${vid === "V-014" ? "3.6" : vid === "V-031" ? "6.8" : "5.9"} d</span></td></tr>`; lastSup = vid; }
+      const val = sgQty[i] * cost(id); total += val;
+      html += `<tr><td class="check-col"><input type="checkbox" aria-label="Select ${esc(p.title)}"></td>
+        <td><div class="row" style="gap:10px">${TX.ph(p.img, "thumb")}<div style="min-width:0"><div class="cell-main truncate" style="max-width:200px">${esc(p.title)}</div><div class="cell-sub row gap-6"><span class="mono">${p.sku}</span>${p.cond !== "new" ? TX.condBadge(p.cond).replace('class="cond', 'style="height:18px;font-size:10px;padding:0 6px" class="cond') : ""}</div></div></div></td>
+        <td class="r"><b>${atp}</b><div class="cell-sub">ROP ${rop}</div></td><td class="r ${onord ? "" : "muted"}">${onord}</td><td class="r">${avg.toFixed(1)}/d<div class="cell-sub">lead ${lead} d</div></td>
+        <td class="r"><span class="cover ${cover < 7 ? "text-bad" : cover < 12 ? "text-warn" : ""}">${cover.toFixed(0)} d</span></td>
+        <td class="c"><div class="qty sm"><button data-step="${id === "lap-02" ? -10 : -1}" aria-label="Decrease">${ic("minus", "ic-sm")}</button><input value="${sgQty[i]}" min="0" data-sg="${i}" aria-label="Suggested quantity"><button data-step="${id === "lap-02" ? 10 : 1}" aria-label="Increase">${ic("plus", "ic-sm")}</button></div></td>
+        <td class="r">${inr(cost(id))}</td><td class="r strong" id="sgv-${i}">${inr(val)}</td>
+        <td><span class="badge ${reason.includes("Stock-out") ? "b-bad" : reason.includes("Refurb") ? "b-accent" : reason.includes("Dealer") ? "b-info" : "b-warn"}">${reason}</span></td></tr>`;
+    });
+    $("#sg-body").innerHTML = html || `<tr><td colspan="10"><div class="empty"><i data-icon="check-circle"></i><h4>Nothing to reorder in this view</h4><p>All SKUs are above their reorder point.</p></div></td></tr>`;
+    TX.hydrate($("#sg-body"));
+    $("#sg-total").textContent = `Suggested value ${inr(total)} ex-GST · would create ${new Set(SG.filter((r) => !sup || r[0] === sup).map((r) => r[0])).size} draft POs`;
+  };
+  renderSg();
+  $("#sg-sup").addEventListener("change", renderSg);
+  $("#sg-seg").addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) { sgF = b.dataset.f; renderSg(); } });
+  $("#sg-body").addEventListener("change", (e) => { const i = e.target.closest("[data-sg]"); if (!i) return; const k = +i.dataset.sg; sgQty[k] = Math.max(0, +i.value || 0); $("#sgv-" + k).textContent = inr(sgQty[k] * cost(SG[k][1]));
+    const sup = $("#sg-sup").value; const tot = SG.reduce((a, r, j) => a + ((!sup || r[0] === sup) ? sgQty[j] * cost(r[1]) : 0), 0); $("#sg-total").textContent = $("#sg-total").textContent.replace(/₹[\d,]+/, inr(tot)); });
+  $("#sg-draft").addEventListener("click", () => TX.toast("3 draft POs created (PO-2026-0196…0198) · buyer approval required · nothing sent to suppliers"));
+
+  /* ---------- Purchase orders ---------- */
+  const ST = {
+    draft: ["Draft", "s-muted"], approval: ["Awaiting approval", "s-warn"], approved: ["Approved · not sent", "s-brand"], sent: ["Sent · awaiting confirmation", "s-info"],
+    partial: ["Partially received", "s-warn"], received: ["Received", "s-ok"], closed: ["Closed", "s-muted"],
+  };
+  const POS = [
+    { no: "PO-2026-0195", v: "V-014", st: "draft", exp: "02 Oct", by: "Rule A17 → Anita R.", lines: [["lap-04", 20, 0], ["gpu-01", 6, 0], ["mon-03", 6, 0], ["kb-02", 10, 0], ["cpu-01", 12, 0]], note: "Created from reorder suggestions" },
+    { no: "PO-2026-0194", v: "V-014", st: "approval", exp: "01 Oct", by: "Anita R.", lines: [["lap-05", 12, 0], ["mon-01", 6, 0]], note: "Festive-season laptop stock" },
+    { no: "PO-2026-0193", v: "V-031", st: "approval", exp: "03 Oct", by: "Anita R.", lines: [["cam-04", 6, 0], ["cam-05", 2, 0]] },
+    { no: "PO-2026-0192", v: "V-022", st: "sent", exp: "30 Sep", by: "Anita R.", lines: [["lap-02", 10, 0]], note: "Refurbished lot · grade mix confirmed on receipt" },
+    { no: "PO-2026-0190", v: "V-031", st: "approved", exp: "02 Oct", by: "Anita R.", lines: [["cam-02", 2, 0], ["cam-04", 3, 0]] },
+    { no: "PO-2026-0188", v: "V-014", st: "partial", exp: "26 Sep", by: "Anita R.", lines: [["ssd-01", 40, 20], ["ms-02", 30, 30], ["hub-02", 20, 0], ["chg-01", 10, 0]], grn: ["GRN-0441 (25 Sep)", "GRN-0442 (receiving now)"] },
+    { no: "PO-2026-0187", v: "V-037", st: "partial", exp: "24 Sep", late: true, by: "Vikram S.", lines: [["net-01", 6, 4], ["net-02", 20, 20]], grn: ["GRN-0439"], note: "Substitution offered for 2 × RT-AX86U Pro" },
+    { no: "PO-2026-0185", v: "V-014", st: "received", exp: "22 Sep", by: "Anita R.", lines: [["cpu-02", 40, 40], ["ram-01", 60, 60], ["ms-03", 100, 100]], grn: ["GRN-0438"], note: "Bill BL-0331 on hold (price variance)" },
+    { no: "PO-2026-0183", v: "V-022", st: "received", exp: "20 Sep", by: "Anita R.", lines: [["lap-01", 8, 8]], grn: ["GRN-0435"], note: "Matched · ready to close" },
+    { no: "PO-2026-0179", v: "V-014", st: "closed", exp: "16 Sep", by: "Anita R.", lines: [["ssd-03", 30, 30], ["hdd-01", 40, 40]], grn: ["GRN-0431"] },
+  ];
+  POS.forEach((po) => { po.value = po.lines.reduce((a, [id, q]) => a + q * cost(id), 0); po.ord = po.lines.reduce((a, l) => a + l[1], 0); po.rec = po.lines.reduce((a, l) => a + l[2], 0); });
+  const stages = [["draft", "Draft"], ["approval", "Awaiting approval"], ["approved", "Approved"], ["sent", "Sent"], ["partial", "Partially received"], ["received", "Received · to close"]];
+  const cnt = { draft: 4, approval: 3, approved: 2, sent: 5, partial: 2, received: 3 };
+  let poStage = "";
+  $("#po-pipe").innerHTML = stages.map(([k, l]) => `<div class="stage" data-stage="${k}"><div class="s-n ${k === "approval" || k === "partial" ? "text-warn" : ""}">${cnt[k]}</div><div class="s-l">${l}</div><div class="s-w muted">${k === "approval" ? "1 needs owner" : k === "partial" ? "1 overdue" : k === "received" ? "1 bill on hold" : k === "sent" ? "2 unconfirmed" : "&nbsp;"}</div></div>`).join("");
+  $("#po-sup").innerHTML += TX.vendors.filter((v) => v.status !== "Applied").map((v) => `<option value="${v.id}">${v.name}</option>`).join("");
+  const renderPo = () => {
+    const q = $("#po-q").value.trim().toLowerCase(), sup = $("#po-sup").value;
+    const list = POS.filter((po) => (!q || (po.no + V[po.v].name + po.lines.map((l) => TX.byId(l[0]).sku).join(" ")).toLowerCase().includes(q)) && (!sup || po.v === sup) && (!poStage || po.st === poStage));
+    $("#po-body").innerHTML = list.map((po) => { const s = ST[po.st]; const t = tier(po.value); const pct = Math.round(po.rec / po.ord * 100);
+      const appr = po.st === "draft" ? `<span class="small muted">Will need: ${t[0]}</span>` : po.st === "approval" ? `<span class="status ${t[2]}">${t[0]}</span><div class="cell-sub">${t[1]}</div>` : `<span class="small ico-line text-ok">${ic("check", "ic-sm")} ${t[0] === "Owner" ? "Rajesh M." : "Anita R."}</span>`;
+      return `<tr data-po="${po.no}"><td><div class="mono strong">${po.no}</div><div class="cell-sub">${po.by}</div></td><td><div class="cell-main">${V[po.v].name}</div><div class="cell-sub">${V[po.v].id} · ${V[po.v].city}</div></td>
+        <td class="r">${po.lines.length}</td><td class="r strong">${inr(po.value)}</td><td><span class="status ${s[1]}">${s[0]}</span>${po.note ? `<div class="cell-sub truncate" style="max-width:200px">${po.note}</div>` : ""}</td>
+        <td>${appr}</td><td class="nowrap ${po.late ? "text-bad strong" : ""}">${po.exp}${po.late ? " · late" : ""}</td>
+        <td style="min-width:110px">${po.rec ? `<div class="row gap-8"><div class="meter thin ${pct === 100 ? "m-ok" : "m-warn"}" style="width:60px"><span style="width:${pct}%"></span></div><span class="small">${pct}%</span></div><div class="cell-sub">${po.rec}/${po.ord} units</div>` : `<span class="small muted">0/${po.ord} units</span>`}</td></tr>`; }).join("") ||
+      `<tr><td colspan="8"><div class="empty"><i data-icon="clipboard"></i><h4>No purchase orders in this stage</h4><p>Draft POs are created from suggestions or manually.</p></div></td></tr>`;
+    TX.hydrate($("#po-body"));
+  };
+  $("#po-pipe").addEventListener("click", (e) => { const s = e.target.closest(".stage"); if (!s) return; poStage = poStage === s.dataset.stage ? "" : s.dataset.stage; $$(".stage", $("#po-pipe")).forEach((x) => x.classList.toggle("active", x.dataset.stage === poStage)); renderPo(); });
+  $("#po-q").addEventListener("input", renderPo); $("#po-sup").addEventListener("change", renderPo);
+  renderPo();
+
+  const tlSteps = ["Draft", "Approved", "Sent", "Receiving", "Received", "Closed"];
+  const stepIdx = { draft: 0, approval: 0, approved: 1, sent: 2, partial: 3, received: 4, closed: 5 };
+  const openPo = (no) => {
+    const po = POS.find((p) => p.no === no); const v = V[po.v]; const s = ST[po.st]; const t = tier(po.value);
+    const gstIntra = v.city === "Bengaluru";
+    const gst = Math.round(po.value * 0.18);
+    const si = stepIdx[po.st];
+    $("#d-po-card").innerHTML = `
+      <div class="drawer-head"><div><div class="small muted">Purchase order · created by ${po.by}</div><h3 class="row gap-8" style="font-size:19px"><span class="mono" style="font-size:18px">${po.no}</span><span class="status ${s[1]}">${s[0]}</span></h3><div class="small subtle mt-4">${v.name} · ${v.id} · ${v.city} · GSTIN ${gstIntra ? "29AAGCP4471K1Z5" : v.id === "V-031" ? "27AACCC9812M1Z2" : v.id === "V-022" ? "33AAHCR2231F1ZQ" : "36AAFCN7812P1Z9"}</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close">${ic("x")}</button></div>
+      <div class="drawer-body col gap-16">
+        <div class="stepper" style="flex-wrap:nowrap">${tlSteps.map((l, i) => `<div class="step ${i < si || (po.st === "closed") ? "done" : i === si ? "current" : ""}"><span class="dot">${i < si || po.st === "closed" ? ic("check", "ic-sm") : i + 1}</span><span class="small">${l}</span></div>`).join("")}</div>
+        <div class="grid g-4">
+          <div class="stat-tile"><div class="l">Value ex-GST</div><div class="n" style="font-size:18px">${inr(po.value)}</div></div>
+          <div class="stat-tile"><div class="l">GST ${gstIntra ? "(CGST+SGST)" : "(IGST)"}</div><div class="n" style="font-size:18px">${inr(gst)}</div></div>
+          <div class="stat-tile"><div class="l">Expected</div><div class="n ${po.late ? "text-bad" : ""}" style="font-size:18px">${po.exp}</div></div>
+          <div class="stat-tile"><div class="l">Received</div><div class="n" style="font-size:18px">${po.rec}/${po.ord}</div></div>
+        </div>
+        <div class="card"><table class="table compact">
+          <thead><tr><th>SKU</th><th class="r">Ordered</th><th class="r">Received</th><th class="r">Pending</th><th class="r">Unit cost</th><th class="r">Line total</th></tr></thead>
+          <tbody>${po.lines.map(([id, q, r]) => { const p = TX.byId(id); return `<tr><td><div class="row" style="gap:8px">${TX.ph(p.img, "thumb")}<div><div class="cell-main truncate" style="max-width:280px">${esc(p.title)}</div><div class="cell-sub mono">${p.sku}</div></div></div></td><td class="r">${q}</td><td class="r">${r}</td><td class="r ${q - r ? "text-warn strong" : "muted"}">${q - r}</td><td class="r">${inr(cost(id))}</td><td class="r strong">${inr(q * cost(id))}</td></tr>`; }).join("")}</tbody>
+        </table></div>
+        <div class="grid g-2">
+          <div class="card card-pad"><h4 class="mb-8">Approval</h4><dl class="kv"><dt>Required</dt><dd>${t[0]} (${t[1]})</dd><dt>Decision</dt><dd>${po.st === "draft" ? "Not submitted" : po.st === "approval" ? `<span class="text-warn">Pending · requested ${po.no === "PO-2026-0194" ? "25 Sep 17:20" : "26 Sep 09:10"}</span>` : "Approved with reason “festive demand / within budget”"}</dd><dt>Terms</dt><dd>Net 30 · FOR destination</dd></dl></div>
+          <div class="card card-pad"><h4 class="mb-8">Linked documents</h4><dl class="kv"><dt>Receipts</dt><dd>${po.grn ? po.grn.join(" · ") : "—"}</dd><dt>Bills</dt><dd>${po.no === "PO-2026-0185" ? "BL-0331 (on hold), BL-0332 (blocked)" : po.st === "received" || po.st === "closed" ? "Matched" : "—"}</dd><dt>Quotation</dt><dd>${ic("paperclip", "ic-sm ii")} quotation.pdf</dd></dl></div>
+        </div>
+        ${po.st === "partial" ? `<div class="callout c-warn">${ic("alert")}<div><strong>${po.ord - po.rec} units still pending.</strong> Keep as backorder with a new expected date, or cancel the remaining quantity (supplier notified, reorder rule re-evaluates).</div></div>` : ""}
+        <div><div class="label mb-8">Activity</div><ul class="timeline">
+          <li class="done"><span class="t-dot">${ic("edit")}</span><div class="t-title">Created</div><div class="t-meta">${po.by}</div></li>
+          ${si >= 1 ? `<li class="done"><span class="t-dot">${ic("check")}</span><div class="t-title">Approved by ${t[0] === "Owner" ? "Rajesh M." : "Anita R."}</div><div class="t-meta">Threshold: ${t[1]}</div></li>` : ""}
+          ${si >= 2 ? `<li class="done"><span class="t-dot">${ic("send")}</span><div class="t-title">Sent to supplier (email + vendor portal)</div><div class="t-meta">${po.st === "sent" ? "Awaiting confirmation · reminder at 48 h" : "Confirmed by supplier"}</div></li>` : ""}
+          ${si >= 3 && po.grn ? `<li class="${po.st === "partial" ? "current" : "done"}"><span class="t-dot">${ic("scan")}</span><div class="t-title">${po.grn.join(", ")}</div><div class="t-meta">${po.rec} of ${po.ord} units received</div></li>` : ""}
+        </ul></div>
+      </div>
+      <div class="drawer-foot">${po.st === "approval" ? `<button class="btn btn-danger" data-close data-toast="Rejected · reason sent to buyer">Reject</button><button class="btn btn-ok" data-close data-toast="Approved · PO will be sent to supplier">Approve</button>` : po.st === "draft" ? `<a class="btn" href="#new-po" data-close>Edit draft</a><button class="btn btn-primary" data-close data-toast="Submitted for ${t[0]} approval">Submit for approval</button>` : po.st === "partial" || po.st === "sent" || po.st === "approved" ? `<button class="btn" data-toast="Reminder sent to ${v.name}">Remind supplier</button><button class="btn" data-toast="Remaining quantity cancelled · supplier notified" data-toast-icon="alert">Cancel remaining</button><a class="btn btn-primary" href="#receive" data-close>Receive goods</a>` : `<button class="btn" data-toast="PDF downloaded">Download PDF</button>${po.st === "received" ? `<button class="btn btn-primary" data-close data-toast="PO closed">Close PO</button>` : ""}`}</div>`;
+    TX.open("d-po");
+  };
+  $("#po-body").addEventListener("click", (e) => { const tr = e.target.closest("tr[data-po]"); if (tr) openPo(tr.dataset.po); });
+  if (location.hash === "#d-po") openPo("PO-2026-0188");
+
+  /* ---------- New PO ---------- */
+  const sups = TX.vendors.filter((v) => v.status !== "Applied");
+  $("#np-sup").innerHTML = sups.map((v) => `<option value="${v.id}">${v.name} (${v.id})</option>`).join("") + `<option disabled>Digital Hub Traders — not eligible (marketplace applicant)</option>`;
+  const GSTIN = { "V-014": "29AAGCP4471K1Z5 · Karnataka", "V-022": "33AAHCR2231F1ZQ · Tamil Nadu", "V-031": "27AACCC9812M1Z2 · Maharashtra", "V-037": "36AAFCN7812P1Z9 · Telangana" };
+  const LEAD = { "V-014": "3.6", "V-022": "5.9", "V-031": "6.8", "V-037": "4.9" };
+  const NP = [["lap-04", 20, 52580, 52000], ["mon-03", 6, 33850, 33850], ["gpu-01", 6, 57620, 56900]];
+  const renderNp = () => {
+    const vid = $("#np-sup").value, intra = vid === "V-014";
+    $("#np-gstin").textContent = "GSTIN " + GSTIN[vid] + (intra ? " · intra-state (CGST + SGST)" : " · inter-state (IGST)");
+    $("#np-lead").textContent = `Actual lead time ${LEAD[vid]} days (90-day average)`;
+    let sub = 0;
+    $("#np-lines").innerHTML = NP.map(([id, q, c, last], i) => { const p = TX.byId(id); const line = q * c; sub += line; const diff = (c - last) / last * 100;
+      return `<tr><td><div class="row" style="gap:8px">${TX.ph(p.img, "thumb")}<div><div class="cell-main truncate" style="max-width:190px">${esc(p.title)}</div><div class="cell-sub mono">${p.sku} · PIT-${p.sku}</div></div></div></td>
+        <td class="c"><div class="qty sm"><button data-step="-1" aria-label="Decrease">${ic("minus", "ic-sm")}</button><input value="${q}" min="1" data-np="${i}" aria-label="Quantity"><button data-step="1" aria-label="Increase">${ic("plus", "ic-sm")}</button></div></td>
+        <td class="r"><input class="input input-sm" style="width:84px;text-align:right" value="${c}" data-npc="${i}" aria-label="Unit cost"></td>
+        <td class="r small ${Math.abs(diff) > 1 ? "text-warn strong" : "muted"}">${inr(last)}${Math.abs(diff) > 1 ? `<div class="cell-sub text-warn">+${diff.toFixed(1)}%</div>` : ""}</td>
+        <td class="r strong">${inr(line)}</td><td class="r"><button class="btn btn-ghost btn-icon btn-sm" aria-label="Remove line">${ic("trash", "ic-sm")}</button></td></tr>`; }).join("");
+    const gst = Math.round(sub * 0.18);
+    $("#np-tot").innerHTML = `<span class="muted">Subtotal ex-GST</span><span>${inr(sub)}</span>${intra ? `<span class="muted">CGST 9%</span><span>${inr(gst / 2)}</span><span class="muted">SGST 9%</span><span>${inr(gst / 2)}</span>` : `<span class="muted">IGST 18%</span><span>${inr(gst)}</span>`}<span class="g">PO total</span><span class="g">${inr(sub + gst)}</span>`;
+    const t = tier(sub);
+    $("#np-tiers").innerHTML = [["Buyer self-approval", "≤ ₹1,00,000", "Anita R.", 100000], ["Operations admin", "₹1 L – ₹5 L", "Anita R. → alt. Vikram S.", 500000], ["Owner", "> ₹5,00,000", "Rajesh M. → alt. Deepa K.", Infinity]]
+      .map(([n, r, w, lim], k) => `<div class="tier ${t[0] === ["Buyer", "Ops admin", "Owner"][k] ? "on" : ""}">${t[0] === ["Buyer", "Ops admin", "Owner"][k] ? ic("check-circle", "ic-sm text-brand") : ic("minus", "ic-sm muted")}<div class="grow"><div class="row-between"><b>${n}</b><span class="small muted">${r}</span></div><div class="small subtle">${w}</div></div></div>`).join("") +
+      `<div class="callout ${t[0] === "Owner" ? "c-warn" : "c-info"} mt-12">${ic(t[0] === "Owner" ? "alert" : "info")}<div>This PO (${inr(sub)} ex-GST) needs <b>${t[0] === "Buyer" ? "no further approval" : t[0] === "Owner" ? "owner approval" : "operations admin approval"}</b>.${t[0] === "Owner" ? " It will appear in the owner's approval queue with your reason." : ""}</div></div>`;
+    $("#np-checks").innerHTML = [
+      ["check-circle", "text-ok", "Supplier active · GSTIN verified", ""],
+      [NP.some((l) => l[2] > l[3] * 1.01) ? "alert" : "check-circle", NP.some((l) => l[2] > l[3] * 1.01) ? "text-warn" : "text-ok", "Price vs last PO", NP.some((l) => l[2] > l[3] * 1.01) ? "2 lines above last cost — reason needed" : "All within 1%"],
+      ["alert", "text-warn", "Open PO overlap", "PO-2026-0195 (draft) also contains LAP04-N ×20 — avoid double ordering"],
+      ["check-circle", "text-ok", "Delivery date ≥ lead time", ""],
+      ["info", "muted", "Budget", "Sep purchase budget 78% used (sample)"],
+    ].map(([i, c, t2, d]) => `<li><span class="${c}">${ic(i)}</span><div><b>${t2}</b>${d ? `<div class="muted">${d}</div>` : ""}</div><span></span></li>`).join("");
+  };
+  renderNp();
+  $("#np-sup").addEventListener("change", renderNp);
+  $("#np-lines").addEventListener("change", (e) => { const q = e.target.closest("[data-np]"); const c = e.target.closest("[data-npc]"); if (q) NP[+q.dataset.np][1] = Math.max(1, +q.value || 1); if (c) NP[+c.dataset.npc][2] = Math.max(0, +c.value || 0); if (q || c) renderNp(); });
+  $("#np-submit").addEventListener("click", () => { const sub = NP.reduce((a, l) => a + l[1] * l[2], 0); TX.toast(`PO-2026-0196 submitted · ${tier(sub)[0]} approval requested · nothing sent to supplier yet`); });
+
+  /* ---------- Receive ---------- */
+  const RC = [
+    ["ssd-01", 40, 20, 18, "18/18", ["Short 2", "s-warn"], ["Backorder 2 (new ETA 30 Sep)", "Cancel remaining 2", "Wait — more cartons"]],
+    ["hub-02", 20, 0, 20, "not serialised", ["Matched", "s-ok"], ["Post to QC"]],
+    ["chg-01", 10, 0, 11, "not serialised", ["Over +1", "s-bad"], ["Hold extra 1 for buyer approval", "Return extra 1 to supplier", "Accept +1 (needs PO amendment)"]],
+    ["ms-02", 30, 30, 0, "—", ["Fully received earlier", "s-muted"], ["—"]],
+  ];
+  $("#rc-lines").innerHTML = RC.map(([id, o, b, n, ser, v, h]) => { const p = TX.byId(id); return `<tr><td><div class="row" style="gap:8px">${TX.ph(p.img, "thumb")}<div><div class="cell-main truncate" style="max-width:200px">${esc(p.title)}</div><div class="cell-sub mono">${p.sku}</div></div></div></td>
+    <td class="r">${o}</td><td class="r muted">${b}</td>
+    <td class="c"><div class="qty sm"><button data-step="-1" aria-label="Decrease">${ic("minus", "ic-sm")}</button><input value="${n}" min="0" aria-label="Receiving now"><button data-step="1" aria-label="Increase">${ic("plus", "ic-sm")}</button></div></td>
+    <td class="small">${ser}</td><td><span class="status ${v[1]}">${v[0]}</span></td>
+    <td>${h.length > 1 ? `<select class="select input-sm" style="width:250px" aria-label="Handling">${h.map((x) => `<option>${x}</option>`).join("")}</select>` : `<span class="small muted">${h[0]}</span>`}</td></tr>`; }).join("") +
+    `<tr style="background:#fffbeb"><td><div class="row" style="gap:8px">${TX.ph("ssd-t5", "thumb")}<div><div class="cell-main">Samsung T7 Shield 1 TB <span class="badge b-accent">Not on PO</span></div><div class="cell-sub">Supplier substitute for SSD01-N</div></div></div></td><td class="r muted">—</td><td class="r muted">—</td><td class="c strong">2</td><td class="small">2/2</td><td><span class="status s-warn">Substitution</span></td><td><select class="select input-sm" style="width:250px" aria-label="Substitution handling"><option>Hold · ask buyer to approve</option><option>Reject · return to supplier</option></select></td></tr>`;
+  TX.hydrate($("#rc-lines"));
+
+  const QC = [
+    ["U-000840", "S6XNNS0T812441", 1, 1, "1,048 MB/s", "pass"], ["U-000841", "S6XNNS0T812442", 1, 1, "1,051 MB/s", "pass"], ["U-000842", "S6XNNS0T812443", 1, 0, "1,046 MB/s", "fail", "Dented casing"],
+    ["U-000843", "S6XNNS0T812444", 1, 1, "1,049 MB/s", "pass"], ["U-000844", "S6XNNS0T812445", 0, 1, "212 MB/s", "fail", "Seal broken · slow"], ["U-000845", "S6XNNS0T812446", 1, 1, "1,050 MB/s", "pass"], ["U-000846", "S6XNNS0T812447", 1, 1, "—", "pending"],
+  ];
+  $("#qc-body").innerHTML = QC.map(([u, sn, seal, phys, speed, out, why]) => `<tr><td class="mono strong">${u}</td><td class="mono small">${sn.slice(0, 6)}•••${sn.slice(-4)}</td>
+    <td>${seal ? `<span class="text-ok">${ic("check", "ic-sm")}</span>` : `<span class="text-bad">${ic("x", "ic-sm")}</span>`}</td><td>${phys ? `<span class="text-ok">${ic("check", "ic-sm")}</span>` : `<span class="text-bad">${ic("x", "ic-sm")}</span>`}</td><td class="small ${out === "fail" && speed.startsWith("2") ? "text-bad strong" : ""}">${speed}</td>
+    <td><select class="select qc-sel" aria-label="QC outcome for ${u}" style="${out === "fail" ? "border-color:var(--bad);color:var(--bad-tx)" : out === "pass" ? "border-color:#bde8cc;color:var(--ok-tx)" : ""}"><option ${out === "pass" ? "selected" : ""}>Pass → Sellable</option><option ${out === "fail" ? "selected" : ""}>Fail → Quarantine</option><option ${out === "pending" ? "selected" : ""}>Pending</option></select></td>
+    <td class="small">${out === "fail" ? `<div class="strong text-bad">${why}</div><select class="select input-sm" style="width:210px;margin-top:4px" aria-label="Supplier resolution"><option>Return to supplier (RTV)</option><option>Replacement</option><option>Credit note</option></select>` : out === "pending" ? '<span class="muted">Scan speed test</span>' : '<span class="muted">—</span>'}</td></tr>`).join("");
+
+  const LOG = [
+    ["ok", "S6XNNS0T812446", "SSD01-N · unit U-000845 assigned", "10:39"],
+    ["bad", "PF3K9Z21", "Duplicate serial — already on U-000799 (sold 04 Sep). Held · DSC-0034", "10:37"],
+    ["warn", "8806094215311", "Samsung T7 Shield — not on this PO (substitution?)", "10:35"],
+    ["bad", "4710886123457", "ASUS ROG mouse — not on this PO · set aside for return", "10:33"],
+    ["warn", "5099206091801", "Logitech G305 White — PO line already fully received (over-receipt)", "10:31"],
+    ["ok", "6974…GaN70", "Baseus 70 W GaN charger × 11 (carton count)", "10:28"],
+  ];
+  const logHTML = (l, cls = "") => `<li class="${cls}"><span class="${l[0] === "ok" ? "text-ok" : l[0] === "bad" ? "text-bad" : "text-warn"}">${ic(l[0] === "ok" ? "check-circle" : l[0] === "bad" ? "x-circle" : "alert")}</span><div><div class="mono strong">${l[1]}</div><div class="muted">${l[2]}</div></div><span class="muted">${l[3]}</span></li>`;
+  $("#scan-log").innerHTML = LOG.map((l) => logHTML(l)).join("");
+  let scanned = 18;
+  $("#scan-count").textContent = `${scanned} of 20 serials for SSD01-N`;
+  const doScan = () => {
+    const v = $("#scan-in").value.trim(); if (!v) return;
+    let l;
+    if (/^S6XNNS0T8124\d\d$/.test(v)) { scanned++; l = ["ok", v, `SSD01-N · unit U-0008${46 + scanned - 19} assigned`, "now"]; }
+    else if (v.toUpperCase() === "PF3K9Z21") l = ["bad", v, "Duplicate serial — already on U-000799. Held for review", "now"];
+    else l = ["bad", v, "Not found on PO-2026-0188 — set aside, discrepancy recorded", "now"];
+    $("#scan-log").insertAdjacentHTML("afterbegin", logHTML(l, "new"));
+    $("#scan-count").textContent = `${scanned} of 20 serials for SSD01-N`;
+    $("#scan-in").value = ""; $("#scan-in").focus();
+    TX.toast(l[0] === "ok" ? "Serial accepted" : "Scan rejected — see log", l[0] === "ok" ? "check-circle" : "alert");
+  };
+  $("#scan-go").addEventListener("click", doScan);
+  $("#scan-in").addEventListener("keydown", (e) => { if (e.key === "Enter") doScan(); });
+
+  /* ---------- Bills ---------- */
+  const BL = [
+    ["BL-0331", "INV/PIT/2026/4488", "V-014", "PO-2026-0185", "GRN-0438", 650746, [1, 1, 0], ["Price variance +₹1,440", "sev warning", "alert"], "29 Sep"],
+    ["BL-0332", "INV-PIT-2026-4471", "V-014", "PO-2026-0176", "GRN-0427", 214380, [1, 1, 0], ["Duplicate suspected · blocked", "sev critical", "alert-octagon"], "—"],
+    ["BL-0330", "NC/26-27/1187", "V-037", "PO-2026-0187", "GRN-0439", 117245, [1, 0, 1], ["Qty mismatch · billed 6, received 4", "sev warning", "alert"], "30 Sep"],
+    ["BL-0333", "CWI/2026/771", "V-031", "PO-2026-0190", "—", 376526, [1, 2, 1], ["Awaiting goods receipt", "status s-info", null], "12 Oct"],
+    ["BL-0329", "RT/26-27/0912", "V-022", "PO-2026-0183", "GRN-0435", 287448, [1, 1, 1], ["Matched · approved for payment", "status s-ok", null], "20 Oct"],
+    ["BL-0328", "INV/PIT/2026/4430", "V-014", "PO-2026-0179", "GRN-0431", 396952, [1, 1, 1], ["Paid 24 Sep", "status s-muted", null], "Paid"],
+  ];
+  $("#bl-body").innerHTML = BL.map(([id, inv, vid, po, grn, amt, m, st, due]) => `<tr>
+    <td class="mono strong nowrap">${id}</td><td class="mono small nowrap">${inv}</td><td>${V[vid].name}</td><td class="small nowrap"><div>${po}</div><div class="cell-sub">${grn}</div></td><td class="r strong">${inr(amt)}</td>
+    <td><span class="three" aria-label="PO, GRN, invoice match"><span class="${m[0] ? "" : "x"}">PO</span><span class="${m[1] === 2 ? "n" : m[1] ? "" : "x"}">GRN</span><span class="${m[2] ? "" : "x"}">INV</span></span></td>
+    <td><span class="${st[1]}">${st[2] ? ic(st[2]) : ""} ${st[0]}</span></td><td class="small nowrap">${due}</td></tr>`).join("");
+
+  /* ---------- Suppliers ---------- */
+  const SP = {
+    "V-014": ["29AAGCP4471K1Z5", "3 · 3.6 d", 94, 97, 1.2, "Net 30", 6, "Fresh · 12 min"],
+    "V-022": ["33AAHCR2231F1ZQ", "5 · 5.9 d", 89, 92, 3.8, "Net 15", 2, "Fresh · 12 min"],
+    "V-031": ["27AACCC9812M1Z2", "6 · 6.8 d", 91, 95, 0.9, "50% advance", 3, "Fresh · 2 h"],
+    "V-037": ["36AAFCN7812P1Z9", "4 · 4.9 d", 78, 84, 2.1, "Net 15", 1, "Stale · 26 h"],
+    "V-041": ["27AAKFD5521Q1Z8", "—", null, null, null, "—", 0, "Not onboarded"],
+  };
+  TX.charts.hbar($("#ch-lead"), { title: "Actual lead time by supplier", seriesName: "Days (90-day avg)", labelHeader: "Supplier", labelWidth: 170, format: (v) => v.toFixed(1) + " d",
+    items: [{ label: "Prime IT Distributors", value: 3.6 }, { label: "NetCore Solutions", value: 4.9 }, { label: "RenewTech Refurbishers", value: 5.9 }, { label: "CamWorld Imports", value: 6.8 }] });
+  $("#lt-tbl").addEventListener("click", () => TX.charts.toggleTable($("#ch-lead")));
+  $("#sp-body").innerHTML = TX.vendors.map((v) => { const s = SP[v.id]; const sc = v.score;
+    return `<tr><td><div class="cell-main">${v.name}</div><div class="cell-sub">${v.id} · ${v.model} · ${v.city}</div></td><td class="mono small">${s[0]}</td>
+      <td><span class="status ${v.status === "Active" ? "s-ok" : v.status === "Pilot" ? "s-info" : "s-muted"}">${v.status}</span>${v.status === "Applied" ? '<div class="cell-sub">Not eligible for POs</div>' : ""}</td>
+      <td class="r small">${s[1]}</td><td class="r ${s[2] !== null && s[2] < 85 ? "text-warn strong" : ""}">${s[2] === null ? "—" : s[2] + "%"}</td><td class="r">${s[3] === null ? "—" : s[3] + "%"}</td><td class="r ${s[4] > 3 ? "text-warn strong" : ""}">${s[4] === null ? "—" : s[4] + "%"}</td>
+      <td class="small">${s[5]}</td><td class="r">${s[6]}</td>
+      <td>${sc ? `<div class="row gap-8"><div class="meter thin ${sc >= 90 ? "m-ok" : sc >= 80 ? "m-warn" : "m-bad"}" style="width:56px"><span style="width:${sc}%"></span></div><b class="small">${sc}</b></div>` : '<span class="muted small">—</span>'}</td>
+      <td class="r nowrap">${v.status === "Applied" ? `<a class="btn btn-xs" href="erp-vendors.html#applications">Review</a>` : `<a class="btn btn-xs" href="#new-po">New PO</a>`}</td></tr>`; }).join("");
+});
+</script>
+</body>
+</html>

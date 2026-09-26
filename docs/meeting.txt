@@ -1,0 +1,49 @@
+## Overview
+- A business requirements meeting about replacing or extending existing systems into a connected ERP and e-commerce platform, with automation, reporting, inventory, and growth as central needs
+- Multiple speakers; participants’ names and roles are not consistently clear
+- The platform should provide centralized control across online sales, branches, inventory, staff, and reporting, while keeping manual effort low
+- Shopify-style platforms were considered too constrained for the required ERP processes and customization; the proposed system is to be designed around the business’s requirements
+- Agreement to define requirements and phase 1 before committing to budget, timeline, implementation technologies, or additional hires
+---
+## ERP and E-commerce Platform Planning (16:34–19:19 - 2h 45m)
+### Platform fit and business goals (16:34)
+- Shopify is geared toward simpler e-commerce; its limited customization and bundled functionality may not fit the business’s inventory, employee, and custom-logic requirements
+- A connected system is needed for ERP, WhatsApp orders, stock, retail and online sales, and multiple branches, with inventory updates reflected on the website
+- The desired operating model emphasizes owner control, automated processes, monitoring rather than unrestricted staff input, and the ability to expand with less manual work
+- Possible future business models include separate domains or instances on one platform, including seller listings and products the business does not stock
+### Existing systems, inventory, and automation (16:37)
+- Current inventory is managed through an existing backend; the existing site is reported to be unattractive and slow, and hosted on Amazon AWS
+- Desired stock flow includes recording purchase orders and received products, updating available quantities when goods are sold, and synchronizing inventory with the site
+- Automation could support WhatsApp order review, reporting, customer service, and payment follow-up; AI usage costs depend on billable tokens
+- Payment-collection calls were described as a possible automation, with a quoted monthly cost of ₹5,000 and additional usage charges unclear; other reported costs included ₹12,000–₹20,000 per card and an estimated ₹80,000 total, with the exact basis unclear
+### Products, vendors, and marketplace model (16:46)
+- Product opportunities raised included imported and refurbished IT goods, own-brand products, and vendor-stocked products; concerns included product authenticity, warranty/RMA handling, returns, and marketplace margins
+- The proposed seller model would allow sellers to upload products, while the company retains overall control over vendor access, listing approval, and priority
+- Pricing may vary by location, with dealer and retail prices and potentially location-based pricing engines
+- Product and stock entry currently involves manual steps; automatic transfer of product details, quantities, and images was raised for investigation
+### Requirements, phases, and delivery planning (17:07)
+- The proposed work begins with requirements gathering and analysis, followed by a workflow diagram or wireframe, technical scope, budget, and timeline
+- Phase 1 prioritizes the customer-facing website and customer attraction; web comes before an app, with chatbot, automated customer care, and expanded reporting considered later
+- Vendor registration would be handled by a super admin; role-based access and an approval step before product data enters the live database were discussed
+- The requirements should cover existing modules and automation needs, including branch and warehouse stock reporting
+### UI, architecture, and implementation resources (17:11)
+- Mobile responsiveness and the current site’s look and feel were identified as shortcomings; UI quality is important to customer experience
+- Backend architecture and security were emphasized alongside reliability; implementation technology, hosting, payment gateway, and delivery modules remain to be determined
+- Existing software architecture and AI/token-optimization experience may be reusable; AI should be evaluated against operating cost and expected business value
+- Hiring and external UI support should follow requirements and system design, with additional specialists brought in where actual gaps emerge
+### Budget, support, and commitments (18:04)
+- LLM functionality was excluded from initial budget consideration; the immediate scope is to reduce user dependency and establish core functionality
+- Budget and timeline are to follow requirements analysis; support and maintenance should be accounted for in the overall proposal
+- Phase 1 cost figures of 5–6 and 10 were floated, but no amount or currency was confirmed as a decision
+- A preliminary requirements document is to be reviewed jointly before scope, phases, and commitments are finalized
+### Local AI and later-stage automation (17:49)
+- Local LLM hosting was raised as a possible way to reduce recurring token charges, but would require sufficient computing capacity and cooling
+- The group treated local AI and fuller automation as later-stage possibilities, after the core system is established
+### Planning follow-through (18:19)
+- The group aimed to meet the next day to refine the plan and review the phase 1 goal; the exact schedule was not settled
+- The closing discussion returned to requirements and budget sequencing: define what can be built first, then price the scope
+---
+## Action items
+- Prepare a preliminary requirements form for review
+- Work out an existing-modules and automation list and share it for cross-checking
+- Send the requirements document for review; no specific owner was established

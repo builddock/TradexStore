@@ -1,0 +1,529 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Payments & reconciliation · Tradex ERP</title>
+  <link rel="stylesheet" href="assets/tradex.css">
+  <style>
+    #tabs-main > .tabs .tab { padding: 10px 12px; }
+    .ov-grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+    .st { display: inline-flex; align-items: center; gap: 5px; height: 22px; padding: 0 8px; border-radius: 4px; font-size: 11.5px; font-weight: 700; white-space: nowrap; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: -.01em; }
+    .st::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    .st.created { background: var(--bg-2); color: var(--tx-2); }
+    .st.pending { background: var(--warn-50); color: var(--warn-tx); }
+    .st.authorised { background: var(--info-50); color: var(--info-tx); }
+    .st.captured { background: var(--ok-50); color: var(--ok-tx); }
+    .st.failed { background: var(--bad-50); color: var(--bad-tx); }
+    .st.expired { background: #f2f4f7; color: var(--tx-3); }
+    .wf { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+    .wf td { padding: 9px 0; border-bottom: 1px solid var(--line-2); }
+    .wf td.r { text-align: right; font-variant-numeric: tabular-nums; }
+    .wf tr.sum td { font-weight: 700; border-bottom: 2px solid var(--line); }
+    .wf tr.ok td { color: var(--ok-tx); font-weight: 700; border-bottom: 0; }
+    .wf .op { color: var(--tx-3); width: 18px; }
+    .ck { display: grid; grid-template-columns: 28px minmax(0, 1fr) 150px 140px 120px; gap: 12px; align-items: center; padding: 12px 20px; border-bottom: 1px solid var(--line-2); }
+    .ck:last-child { border-bottom: 0; }
+    .ck .ci { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; }
+    .ck .ci .ic { width: 13px; height: 13px; stroke-width: 3; }
+    .ci.ok { background: var(--ok-50); color: var(--ok-tx); } .ci.bad { background: var(--bad-50); color: var(--bad-tx); } .ci.warn { background: var(--warn-50); color: var(--warn-tx); } .ci.muted { background: var(--bg-2); color: var(--tx-3); }
+    .mini-ck { display: flex; gap: 10px; align-items: center; padding: 7px 0; font-size: 13px; border-bottom: 1px solid var(--line-2); }
+    .mini-ck:last-child { border-bottom: 0; }
+    .mini-ck .ci { width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; flex: none; }
+    .mini-ck .ci .ic { width: 11px; height: 11px; stroke-width: 3; }
+    .rt-step { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line-2); font-size: 13px; }
+    .rt-step:last-child { border-bottom: 0; }
+    .rt-step .ci { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: var(--bg-2); color: var(--tx-3); }
+    .rt-step .ci .ic { width: 13px; height: 13px; stroke-width: 3; }
+    .rt-step.run .ci { background: var(--brand-50); color: var(--brand); }
+    .rt-step.done .ci { background: var(--ok-50); color: var(--ok-tx); }
+    .rt-step.warn .ci { background: var(--warn-50); color: var(--warn-tx); }
+    .sm3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+  </style>
+</head>
+<body data-app="erp" data-page="finance">
+<main>
+  <div class="page-head">
+    <div>
+      <div class="crumbs"><span>Finance & insight</span><i data-icon="chevron-right"></i><span>Payments & reconciliation</span></div>
+      <h1>Payments & reconciliation</h1>
+      <p class="sub">Razorpay (primary gateway) · settlement file imported 07:10 · <b>Tally Prime remains the accounting system of record</b> — Tradex exports approved documents to it</p>
+    </div>
+    <div class="actions">
+      <button class="btn" data-toast="Provider reconciliation started · 4 pending attempts queried" data-toast-icon="refresh"><i data-icon="refresh"></i> Check pending with provider</button>
+      <button class="btn" data-open="m-import"><i data-icon="upload"></i> Import settlement file</button>
+      <div class="dd"><button class="btn btn-primary" data-dd-toggle><i data-icon="download"></i> Export <i data-icon="chevron-down" class="ic-sm"></i></button>
+        <div class="dd-menu"><a href="#" data-goto="export">Accounting export (Tally)</a><a href="#" data-toast="Payment ledger CSV queued · formula-safe · link expires 24 h">Payment ledger (CSV)</a><a href="#" data-toast="Reconciliation report queued">Reconciliation report</a></div></div>
+    </div>
+  </div>
+
+  <div class="filterbar">
+    <div class="seg"><button class="active">Today</button><button>Yesterday</button><button>7 days</button><button>Month to date</button></div>
+    <select class="select" aria-label="Location"><option>All locations & channels</option><option>Website</option><option>WhatsApp checkout links</option><option>SP Road POS</option><option>Koramangala POS</option><option>Mysuru POS</option></select>
+    <select class="select" aria-label="Provider"><option>Razorpay</option><option>Branch card terminals</option><option>COD (couriers)</option></select>
+    <span class="muted small ml-auto">Business date Sat 26 Sep 2026 · amounts incl. GST unless stated · payment date ≠ invoice date ≠ settlement date</span>
+  </div>
+
+  <section class="grid g-6">
+    <div class="kpi"><div class="k-label"><i data-icon="check-circle"></i> <span>Captured today</span></div><div class="k-value">₹8.42 L</div><div class="k-foot"><span>61 payments</span><span id="sp1"></span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="activity"></i> <span>Success rate</span></div><div class="k-value">91.4%</div><div class="k-foot"><span class="delta up-good"><i data-icon="trending-up"></i> +0.6 pt</span><span id="sp2"></span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="clock"></i> <span>In flight</span></div><div class="k-value">5</div><div class="k-foot"><span>4 pending · 1 authorised</span></div></div>
+    <div class="kpi" data-anno="1A · R09 Settlement matching (A10)"><div class="k-label"><i data-icon="alert"></i> <span>Unmatched</span></div><div class="k-value text-warn" id="k-unm">—</div><div class="k-foot"><span id="k-unm-n"></span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="undo"></i> <span>Refunds open</span></div><div class="k-value">6</div><div class="k-foot"><span class="text-bad strong">1 failed</span><span>₹1.36 L</span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="database"></i> <span>Tally export</span></div><div class="k-value">212 / 214</div><div class="k-foot"><span class="text-bad strong">2 failed</span><span>07:30 batch</span></div></div>
+  </section>
+
+  <section class="ov-grid mt-16">
+    <div class="card">
+      <div class="card-head"><div><h3>Unmatched value by age</h3><div class="sub">Settlement, bank & COD differences awaiting finance</div></div><button class="btn btn-sm btn-ghost" data-table-toggle="ch-age"><i data-icon="list"></i> Table</button></div>
+      <div class="card-body" style="padding-top:14px"><div id="ch-age"></div><div class="small muted mt-8">Items older than 15 days escalate to the Owner digest.</div></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><div><h3>Method mix · today</h3><div class="sub">Share of captured value · success rate by method</div></div></div>
+      <div class="card-body" style="padding-top:14px">
+        <div id="ch-mix"></div>
+        <table class="table compact mt-12"><thead><tr><th>Method</th><th class="r">Attempts</th><th class="r">Success</th></tr></thead><tbody>
+          <tr><td>UPI</td><td class="r">41</td><td class="r">93%</td></tr><tr><td>Cards</td><td class="r">17</td><td class="r">88%</td></tr><tr><td>Netbanking · EMI</td><td class="r">9</td><td class="r">89%</td></tr><tr><td>COD (orders)</td><td class="r">5</td><td class="r">—</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+    <div class="card" data-anno="1A · Daily close checklist (maker → checker)">
+      <div class="card-head"><div><h3>Daily close · 26 Sep</h3><div class="sub">6 of 9 checks done · finance sign-off by 19:00</div></div><button class="btn btn-sm" data-goto="close">Open</button></div>
+      <div class="card-body" style="padding-top:10px">
+        <div class="meter m-warn mb-12"><span style="width:67%"></span></div>
+        <div class="mini-ck"><span class="ci ok" style="background:var(--ok-50);color:var(--ok-tx)"><i data-icon="check"></i></span><span class="grow">Webhooks processed · retry queue empty</span></div>
+        <div class="mini-ck"><span class="ci ok" style="background:var(--ok-50);color:var(--ok-tx)"><i data-icon="check"></i></span><span class="grow">Settlement 25 Sep matched to bank</span></div>
+        <div class="mini-ck"><span class="ci" style="background:var(--bad-50);color:var(--bad-tx)"><i data-icon="x"></i></span><span class="grow">Failed refund RF-0231 unresolved</span></div>
+        <div class="mini-ck"><span class="ci" style="background:var(--warn-50);color:var(--warn-tx)"><i data-icon="alert"></i></span><span class="grow">COD remittance short ₹2,490</span></div>
+        <div class="mini-ck"><span class="ci" style="background:var(--warn-50);color:var(--warn-tx)"><i data-icon="alert"></i></span><span class="grow">2 documents failed Tally export</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card mt-16" data-tabset id="tabs-main">
+    <div class="tabs" style="padding:0 12px">
+      <button class="tab active" data-tab="payments">Payment attempts <span class="count">72</span></button>
+      <button class="tab" data-tab="events">Webhook events</button>
+      <button class="tab" data-tab="recon">Settlement reconciliation <span class="count" id="t-unm">9</span></button>
+      <button class="tab" data-tab="refunds">Refunds <span class="count">6</span></button>
+      <button class="tab" data-tab="cod">COD remittance</button>
+      <button class="tab" data-tab="export">Accounting export & GST series</button>
+      <button class="tab" data-tab="close">Daily close</button>
+    </div>
+
+    <!-- PAYMENT ATTEMPTS -->
+    <div class="tab-panel active" data-panel="payments">
+      <div class="table-toolbar">
+        <div class="input-icon" style="width:270px"><i data-icon="search"></i><input class="input input-sm" id="pa-q" placeholder="Order, provider ref, customer…" aria-label="Search payments"></div>
+        <div class="seg" id="pa-state"><button class="active" data-s="all">All</button><button data-s="created">Created</button><button data-s="pending">Pending</button><button data-s="authorised">Authorised</button><button data-s="captured">Captured</button><button data-s="failed">Failed</button><button data-s="expired">Expired</button></div>
+        <span class="ml-auto small muted">One order can have several attempts · no card data is stored (hosted checkout)</span>
+      </div>
+      <div class="table-wrap" data-anno="1A · §10.1 Payment attempt states are separate from order state"><table class="table">
+        <thead><tr><th>Attempt</th><th>Order</th><th>Method</th><th>Provider ref</th><th class="r">Amount</th><th>Attempt state</th><th>Order state</th><th>Updated</th><th>Note</th></tr></thead>
+        <tbody id="pa-body"></tbody>
+      </table></div>
+      <div class="pager"><span id="pa-count"></span><div class="pages"><button class="active">1</button><button>2</button><button>3</button><button>…</button><button>6</button></div></div>
+    </div>
+
+    <!-- WEBHOOK EVENTS -->
+    <div class="tab-panel" data-panel="events">
+      <div class="card-body" style="padding-bottom:0">
+        <div class="grid g-4 mb-16">
+          <div class="panel"><div class="small muted">Events today</div><b style="font-size:18px">418</b><div class="small muted">p95 processing 0.9 s</div></div>
+          <div class="panel"><div class="small muted">Signature verified</div><b style="font-size:18px" class="text-ok">417</b><div class="small muted">1 rejected (invalid)</div></div>
+          <div class="panel"><div class="small muted">Duplicates ignored</div><b style="font-size:18px">23</b><div class="small muted">idempotent by event ID</div></div>
+          <div class="panel"><div class="small muted">Recovered by polling</div><b style="font-size:18px">2</b><div class="small muted">webhook never arrived</div></div>
+        </div>
+      </div>
+      <div class="table-toolbar">
+        <div class="seg" id="ev-f"><button class="active" data-f="all">All</button><button data-f="applied">Applied</button><button data-f="dup">Duplicate</button><button data-f="ooo">Out of order</button><button data-f="rej">Rejected</button><button data-f="poll">Polling</button></div>
+        <span class="ml-auto small muted">Events are recorded once, then state transitions are applied only if legal · a proven capture is never downgraded</span>
+      </div>
+      <div class="table-wrap" data-anno="1A · §10.2 Signed webhooks, duplicates & out-of-order events handled idempotently"><table class="table compact">
+        <thead><tr><th>Received</th><th>Event ID</th><th>Type</th><th>Payment / order</th><th>Signature</th><th>Result</th><th class="r">Latency</th></tr></thead>
+        <tbody id="ev-body"></tbody>
+      </table></div>
+    </div>
+
+    <!-- SETTLEMENT RECONCILIATION -->
+    <div class="tab-panel" data-panel="recon">
+      <div class="card-body">
+        <div class="grid" style="grid-template-columns:minmax(0,0.95fr) minmax(0,1.4fr);gap:20px">
+          <div class="card" style="overflow:hidden" data-anno="Captured vs settled vs fees vs net vs bank">
+            <div class="card-head"><div><h3>Settlement <span class="mono">setl_Nx6Tq2</span></h3><div class="sub">Payments of 25 Sep · credited 26 Sep to HDFC current a/c ••4412</div></div><span class="badge b-ok">Matched to bank</span></div>
+            <div class="card-body" style="padding-top:8px">
+              <table class="wf">
+                <tr><td class="op"></td><td>Captured payments (58)</td><td class="r">₹7,94,210.00</td></tr>
+                <tr><td class="op">−</td><td>Not in this batch · 2 EMI captures (T+2)</td><td class="r">−₹21,800.00</td></tr>
+                <tr class="sum"><td class="op">=</td><td>Gross settled</td><td class="r">₹7,72,410.00</td></tr>
+                <tr><td class="op">−</td><td>Gateway fees</td><td class="r">−₹15,448.20</td></tr>
+                <tr><td class="op">−</td><td>GST on fees (18%)</td><td class="r">−₹2,780.68</td></tr>
+                <tr><td class="op">−</td><td>Refunds adjusted (1)</td><td class="r">−₹9,990.00</td></tr>
+                <tr class="sum"><td class="op">=</td><td>Net payout per settlement file</td><td class="r">₹7,44,191.12</td></tr>
+                <tr><td class="op"></td><td>Bank credit · UTR HDFCR52026092600418</td><td class="r">₹7,44,191.12</td></tr>
+                <tr class="ok"><td class="op"><i data-icon="check" class="ic-sm"></i></td><td>Difference</td><td class="r">₹0.00</td></tr>
+              </table>
+              <div class="small muted mt-8">Fees and GST on fees post to the “Gateway charges” ledger in the Tally export; the 2 carried captures are expected in tomorrow's batch.</div>
+            </div>
+          </div>
+          <div>
+            <div class="row-between mb-8"><h4>Recent settlements</h4><span class="small muted">auto-matched daily at 07:15</span></div>
+            <table class="table compact" style="border:1px solid var(--line);border-radius:var(--r)">
+              <thead><tr><th>Settlement</th><th>For date</th><th class="r">Captured</th><th class="r">Fees + GST</th><th class="r">Net</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td class="mono small">setl_Nx6Tq2</td><td>25 Sep</td><td class="r">₹7,94,210</td><td class="r">₹18,229</td><td class="r">₹7,44,191</td><td><span class="status s-ok">Matched</span></td></tr>
+                <tr><td class="mono small">setl_Nx4Ab9</td><td>24 Sep</td><td class="r">₹6,88,040</td><td class="r">₹15,902</td><td class="r">₹6,72,138</td><td><span class="status s-warn">1 fee mismatch</span></td></tr>
+                <tr><td class="mono small">setl_Nx2Pk1</td><td>23 Sep</td><td class="r">₹7,12,655</td><td class="r">₹16,318</td><td class="r">₹6,86,347</td><td><span class="status s-ok">Matched</span></td></tr>
+                <tr><td class="mono small">setl_Nx0Fz7</td><td>22 Sep</td><td class="r">₹5,90,120</td><td class="r">₹13,570</td><td class="r">₹5,65,560</td><td><span class="status s-warn">Chargeback debit</span></td></tr>
+                <tr><td class="mono small">—</td><td>26 Sep</td><td class="r">₹8,42,318</td><td class="r">—</td><td class="r">—</td><td><span class="status s-muted">Expected 27 Sep</span></td></tr>
+              </tbody>
+            </table>
+            <div class="row-between mt-16 mb-8"><h4>Settlement & statement imports</h4><button class="btn btn-sm" data-open="m-import"><i data-icon="upload" class="ic-sm"></i> Import file</button></div>
+            <table class="table compact" style="border:1px solid var(--line);border-radius:var(--r)">
+              <thead><tr><th>File</th><th class="r">Rows</th><th class="r">Matched</th><th>Result</th></tr></thead>
+              <tbody>
+                <tr><td class="small"><div class="strong" style="word-break:break-all">razorpay_settlement_2026-09-25.csv</div><div class="cell-sub">Provider settlement · 07:10 · auto (SFTP)</div></td><td class="r">60</td><td class="r">58</td><td><span class="status s-ok">Imported</span></td></tr>
+                <tr><td class="small"><div class="strong">hdfc_statement_26sep.xlsx</div><div class="cell-sub">Bank statement · 08:02 · Deepa K.</div></td><td class="r">41</td><td class="r">38</td><td><span class="status s-warn">3 unmatched</span></td></tr>
+                <tr><td class="small"><div class="strong" style="word-break:break-all">razorpay_settlement_2026-09-25 (1).csv</div><div class="cell-sub">08:05 · Deepa K.</div></td><td class="r">60</td><td class="r">—</td><td><span class="status s-bad">Duplicate · rejected</span><div class="cell-sub">same file hash as 07:10</div></td></tr>
+                <tr><td class="small"><div class="strong">delhivery_cod_remit_0921.csv</div><div class="cell-sub">COD remittance · 23 Sep · Deepa K.</div></td><td class="r">41</td><td class="r">40</td><td><span class="status s-warn">1 short</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="card-head" style="border-top:1px solid var(--line-2)"><div><h3>Unmatched items queue</h3><div class="sub">Each item has an owner and a due date · write-offs above ₹5,000 need Owner approval (placeholder)</div></div>
+        <div class="seg" id="um-f"><button class="active" data-f="all">All</button><button data-f="0">0–2 d</button><button data-f="1">3–7 d</button><button data-f="2">8–15 d</button><button data-f="3">16–30 d</button></div></div>
+      <div class="table-wrap"><table class="table">
+        <thead><tr><th>Item</th><th>Type</th><th>Reference</th><th class="r">Amount</th><th class="r">Age</th><th>Owner</th><th class="r">Action</th></tr></thead>
+        <tbody id="um-body"></tbody>
+        <tfoot><tr><td colspan="3">Total unmatched</td><td class="r" id="um-total"></td><td colspan="3"></td></tr></tfoot>
+      </table></div>
+    </div>
+
+    <!-- REFUNDS -->
+    <div class="tab-panel" data-panel="refunds">
+      <div class="pipeline" style="border-bottom:1px solid var(--line-2)" data-anno="1A · §10.1 Refund state machine">
+        <div class="stage"><div class="s-n">1</div><div class="s-l">Requested</div><div class="s-w muted">awaiting RMA result</div></div>
+        <div class="stage"><div class="s-n">2</div><div class="s-l">Approved</div><div class="s-w muted">1 needs checker</div></div>
+        <div class="stage"><div class="s-n">1</div><div class="s-l">Submitted</div><div class="s-w muted">to provider</div></div>
+        <div class="stage"><div class="s-n">1</div><div class="s-l">Pending at provider</div><div class="s-w muted">card / EMI 5–10 d</div></div>
+        <div class="stage"><div class="s-n text-ok">7</div><div class="s-l">Completed today</div><div class="s-w text-ok">₹61,420</div></div>
+        <div class="stage"><div class="s-n text-bad">1</div><div class="s-l">Failed</div><div class="s-w text-bad">SLA 6 h · 3 h used</div></div>
+      </div>
+      <div class="table-wrap"><table class="table">
+        <thead><tr><th>Refund</th><th>Source</th><th>Customer</th><th>Route</th><th class="r">Amount</th><th>State</th><th>Approval</th><th>Provider ref</th><th class="r">Action</th></tr></thead>
+        <tbody>
+          <tr><td class="mono strong nowrap">RF-0236</td><td><div class="small">RMA-0094</div><div class="cell-sub">return · Keychron K2</div></td><td>Kavya Reddy</td><td class="small">Original · UPI</td><td class="r">₹7,499</td><td><span class="st created">requested</span></td><td class="small muted">Waits for inspection result</td><td class="mono small">—</td><td class="r"><button class="btn btn-xs" disabled>Approve</button></td></tr>
+          <tr><td class="mono strong nowrap">RF-0235</td><td><div class="small">TXO-10483</div><div class="cell-sub">cancelled before dispatch</div></td><td>Rahul Deshpande</td><td class="small">Original · Visa ••4421</td><td class="r">₹3,495</td><td><span class="st authorised">approved</span></td><td class="small">Auto · within policy</td><td class="mono small">—</td><td class="r"><button class="btn btn-xs btn-primary" data-toast="Submitted to Razorpay with idempotency key RF-0235-1 · rfnd_Nx9H…">Submit</button></td></tr>
+          <tr><td class="mono strong nowrap">RF-0230</td><td><div class="small">RMA-0089 · COD order</div><div class="cell-sub">return · Seagate 2 TB</div></td><td>Mohammed Salim</td><td class="small">Bank transfer · IFSC verified</td><td class="r">₹5,299</td><td><span class="st authorised">approved</span></td><td class="small">Maker Deepa K. → <b>checker pending</b> (Rajesh M.)</td><td class="mono small">—</td><td class="r"><button class="btn btn-xs" data-toast="Checked & released · maker ≠ checker recorded">Check & release</button></td></tr>
+          <tr><td class="mono strong nowrap">RF-0234</td><td><div class="small">RMA-0092</div><div class="cell-sub">return · TP-Link Archer C6</div></td><td>Ananya Iyer</td><td class="small">Original · Netbanking</td><td class="r">₹2,799</td><td><span class="st pending">submitted</span></td><td class="small">Karthik R. · ≤ ₹10k</td><td class="mono small">rfnd_Nx9A2c</td><td class="r"><button class="btn btn-xs btn-ghost" data-toast="Provider status: processed · will complete on next event">Status</button></td></tr>
+          <tr><td class="mono strong nowrap">RF-0232</td><td><div class="small">RMA-0090</div><div class="cell-sub">return · ASUS TUF F15</div></td><td>Kavya Reddy</td><td class="small">Original · HDFC EMI</td><td class="r">₹72,990</td><td><span class="st pending">pending</span></td><td class="small">Deepa K. · Finance</td><td class="mono small">rfnd_Nx7Tq8</td><td class="r"><span class="small muted">EMI reversal 7–10 d</span></td></tr>
+          <tr style="background:#fff8f8"><td class="mono strong nowrap">RF-0231</td><td><div class="small">RMA-0093</div><div class="cell-sub">return · Sony WH-1000XM4</div></td><td>Priya Nair</td><td class="small">Original · UPI (VPA closed)</td><td class="r">₹19,990</td><td><span class="st failed">failed</span><div class="cell-sub text-bad">2 retries · beneficiary account closed</div></td><td class="small">Deepa K. · Finance</td><td class="mono small">rfnd_Nx7Zp4</td><td class="r"><button class="btn btn-xs btn-danger" data-open="m-retry">Retry safely</button></td></tr>
+          <tr><td class="mono strong nowrap">RF-0229</td><td><div class="small">TXO-10479</div><div class="cell-sub">duplicate capture</div></td><td>Arjun Mehta</td><td class="small">Original · UPI</td><td class="r">₹5,499</td><td><span class="st captured">completed</span></td><td class="small">Auto · duplicate payment rule</td><td class="mono small">rfnd_Nx8Kd0</td><td class="r"><span class="small muted">10:02</span></td></tr>
+        </tbody>
+      </table></div>
+      <div class="card-foot"><span class="small muted">Refunds use the original allocated line amount, discount and tax from the order · credit notes are raised automatically and exported to Tally.</span><a class="small strong" href="erp-returns.html">Returns & RMA →</a></div>
+    </div>
+
+    <!-- COD -->
+    <div class="tab-panel" data-panel="cod">
+      <div class="card-body">
+        <div class="callout c-warn mb-16" data-anno="§10.6 COD is conditional — eligibility, remittance, RTO, abuse controls">
+          <i data-icon="alert"></i><div><strong>COD is conditional, not a default.</strong> It is offered only where the rules below pass, and every delivered COD order must be matched to a courier remittance. Values shown are placeholders pending client decision (discovery Q37).</div>
+        </div>
+        <div class="grid" style="grid-template-columns:minmax(0,2.1fr) minmax(0,1fr);gap:20px">
+          <div>
+            <div class="row-between mb-8"><h4>Courier remittances</h4><span class="small muted">COD share: 5.1% of orders · 3.2% of value</span></div>
+            <div class="table-wrap" style="border:1px solid var(--line);border-radius:var(--r)"><table class="table compact">
+              <thead><tr><th>Courier · batch</th><th class="r">Orders</th><th class="r">Expected</th><th class="r">Remitted</th><th class="r">Diff.</th><th>Due</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td><div class="strong">Delhivery</div><div class="cell-sub mono">DLV-R-0926</div></td><td class="r">38</td><td class="r">₹2,14,300</td><td class="r">₹2,14,300</td><td class="r">₹0</td><td class="nowrap">26 Sep</td><td><span class="status s-ok">Reconciled</span></td></tr>
+                <tr><td><div class="strong">Delhivery</div><div class="cell-sub mono">DLV-R-0921</div></td><td class="r">41</td><td class="r">₹2,33,480</td><td class="r">₹2,30,990</td><td class="r text-bad strong">−₹2,490</td><td class="nowrap">23 Sep</td><td><span class="status s-bad">Short · disputed</span></td></tr>
+                <tr><td><div class="strong">Blue Dart</div><div class="cell-sub mono">BD-R-1130</div></td><td class="r">12</td><td class="r">₹71,880</td><td class="r">—</td><td class="r">—</td><td class="nowrap">28 Sep</td><td><span class="status s-info">Awaiting remittance</span></td></tr>
+                <tr><td><div class="strong">Blue Dart</div><div class="cell-sub mono">BD-R-1124</div></td><td class="r">9</td><td class="r">₹48,610</td><td class="r">₹48,610</td><td class="r">₹0</td><td class="nowrap">21 Sep</td><td><span class="status s-ok">Reconciled</span></td></tr>
+                <tr><td><div class="strong">Delhivery</div><div class="cell-sub mono">DLV-R-0916</div></td><td class="r">33</td><td class="r">₹1,86,240</td><td class="r">—</td><td class="r">—</td><td class="text-bad nowrap">18 Sep</td><td><span class="status s-bad">Overdue 8 d</span></td></tr>
+              </tbody>
+            </table></div>
+            <div class="grid g-3 mt-16">
+              <div class="panel"><div class="small muted">Returned to origin (7 d)</div><b style="font-size:18px">3 · ₹14,480</b><div class="small muted">no remittance expected</div></div>
+              <div class="panel"><div class="small muted">RTO rate on COD</div><b style="font-size:18px" class="text-warn">11.8%</b><div class="small muted">prepaid: 1.9%</div></div>
+              <div class="panel"><div class="small muted">Customers COD-blocked</div><b style="font-size:18px">27</b><div class="small muted">≥ 2 refused deliveries</div></div>
+            </div>
+          </div>
+          <div>
+            <h4 class="mb-8">Eligibility rules (proposed)</h4>
+            <div class="panel" style="padding:4px 14px">
+              <div class="mini-ck"><span class="ci" style="background:var(--ok-50);color:var(--ok-tx)"><i data-icon="check"></i></span><span>Serviceable PIN with a COD-enabled courier</span></div>
+              <div class="mini-ck"><span class="ci" style="background:var(--ok-50);color:var(--ok-tx)"><i data-icon="check"></i></span><span>Order value ≤ ₹25,000 <span class="muted">(placeholder)</span></span></div>
+              <div class="mini-ck"><span class="ci" style="background:var(--ok-50);color:var(--ok-tx)"><i data-icon="check"></i></span><span>Consumer orders only — dealer orders stay prepaid</span></div>
+              <div class="mini-ck"><span class="ci" style="background:var(--bad-50);color:var(--bad-tx)"><i data-icon="x"></i></span><span>Not for refurbished items above ₹15,000 or serial-tracked cameras</span></div>
+              <div class="mini-ck"><span class="ci" style="background:var(--bad-50);color:var(--bad-tx)"><i data-icon="x"></i></span><span>Disabled after 2 refused deliveries (per verified phone)</span></div>
+              <div class="mini-ck"><span class="ci" style="background:var(--warn-50);color:var(--warn-tx)"><i data-icon="alert"></i></span><span>OTP confirmation on orders above ₹10,000</span></div>
+            </div>
+            <div class="callout c-info small mt-12"><i data-icon="info"></i><div>COD refunds can't go back to “cash” — they go to a verified bank account or UPI ID with maker–checker release.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACCOUNTING EXPORT & GST SERIES -->
+    <div class="tab-panel" data-panel="export">
+      <div class="card-body">
+        <div class="callout c-brand mb-16" data-anno="§14.2 One accounting authority: Tally · controlled export with control totals">
+          <i data-icon="database"></i><div class="grow"><strong>Tally Prime (HO, Bengaluru) stays the official books.</strong> Tradex publishes approved sales invoices, credit notes, receipts and gateway charges through the Tally gateway agent. Every document is exported <b>once</b> (idempotency key = document ID + version); re-runs skip already-acknowledged documents, and corrections go as credit/debit notes — never by editing an exported voucher.</div>
+        </div>
+        <div class="grid" style="grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:20px">
+          <div>
+            <div class="row-between mb-8"><h4>Control totals · batch EXP-0926-01</h4><span class="status s-warn">2 differences</span></div>
+            <table class="table compact" style="border:1px solid var(--line);border-radius:var(--r)">
+              <thead><tr><th>Measure</th><th class="r">Tradex</th><th class="r">Tally ack.</th><th class="r">Diff.</th></tr></thead>
+              <tbody>
+                <tr><td>Documents</td><td class="r">214</td><td class="r">212</td><td class="r text-bad strong">2</td></tr>
+                <tr><td>Taxable value</td><td class="r">₹41,82,310</td><td class="r">₹41,59,810</td><td class="r text-bad strong">₹22,500</td></tr>
+                <tr><td>CGST</td><td class="r">₹3,74,582</td><td class="r">₹3,72,557</td><td class="r text-bad strong">₹2,025</td></tr>
+                <tr><td>SGST</td><td class="r">₹3,74,582</td><td class="r">₹3,72,557</td><td class="r text-bad strong">₹2,025</td></tr>
+                <tr><td>IGST</td><td class="r">₹12,840</td><td class="r">₹12,840</td><td class="r">₹0</td></tr>
+                <tr><td>Receipts</td><td class="r">₹49,22,410</td><td class="r">₹49,10,415</td><td class="r text-bad strong">₹11,995</td></tr>
+                <tr><td>Credit notes</td><td class="r">−₹61,420</td><td class="r">−₹61,420</td><td class="r">₹0</td></tr>
+              </tbody>
+            </table>
+            <div class="row gap-8 mt-12"><button class="btn btn-sm btn-primary" data-toast="Retrying 2 failed documents with the same idempotency keys · no duplicates possible">Retry failed (2)</button><button class="btn btn-sm" data-toast="Control-total report downloaded">Control-total report</button></div>
+          </div>
+          <div>
+            <div class="row-between mb-8"><h4>Documents</h4><div class="seg" id="ex-f"><button class="active" data-f="all">All</button><button data-f="failed">Failed</button><button data-f="skipped">Skipped</button></div></div>
+            <div class="table-wrap" style="border:1px solid var(--line);border-radius:var(--r)"><table class="table compact">
+              <thead><tr><th>Document</th><th>Type</th><th class="r">Amount</th><th>Status</th><th>Tally voucher / error</th></tr></thead>
+              <tbody id="ex-body"></tbody>
+            </table></div>
+          </div>
+        </div>
+        <hr class="mt-24">
+        <div class="row-between mb-8" data-anno="1A · GST invoice series — gapless, never reused"><h4>GST invoice series · FY 2026-27 · GSTIN 29AAGCT4821K1Z3</h4><span class="small muted">Numbers are allocated only when an invoice is finalised · cancelled numbers are kept, never reused</span></div>
+        <div class="table-wrap" style="border:1px solid var(--line);border-radius:var(--r)"><table class="table compact">
+          <thead><tr><th>Series</th><th>Used for</th><th>Last issued</th><th>Next</th><th class="r">Issued FY</th><th class="r">Cancelled</th><th>Gap check</th><th>E-invoice (IRN)</th></tr></thead>
+          <tbody>
+            <tr><td class="mono strong">TX/26-27/</td><td>Online B2C tax invoices</td><td class="mono">TX/26-27/004872</td><td class="mono">004873</td><td class="r">4,872</td><td class="r">3</td><td><span class="status s-ok">No gaps</span></td><td class="small muted">Not applicable (B2C)</td></tr>
+            <tr><td class="mono strong">TXB/26-27/</td><td>Dealer (B2B) invoices</td><td class="mono">TXB/26-27/001204</td><td class="mono">001205</td><td class="r">1,204</td><td class="r">0</td><td><span class="status s-ok">No gaps</span></td><td><span class="status s-warn">Accountant to confirm</span></td></tr>
+            <tr><td class="mono strong">SPR/26-27/</td><td>SP Road POS</td><td class="mono">SPR/26-27/002311</td><td class="mono">002312</td><td class="r">2,311</td><td class="r">5</td><td><span class="status s-ok">No gaps</span></td><td class="small muted">B2B via TXB series</td></tr>
+            <tr><td class="mono strong">KRM/26-27/</td><td>Koramangala POS</td><td class="mono">KRM/26-27/001876</td><td class="mono">001877</td><td class="r">1,876</td><td class="r">2</td><td><span class="status s-ok">No gaps</span></td><td class="small muted">B2B via TXB series</td></tr>
+            <tr><td class="mono strong">MYS/26-27/</td><td>Mysuru POS</td><td class="mono">MYS/26-27/000918</td><td class="mono">000919</td><td class="r">918</td><td class="r">1</td><td><span class="status s-bad">Gap at 000812 · explain</span></td><td class="small muted">B2B via TXB series</td></tr>
+            <tr><td class="mono strong">CN/26-27/</td><td>Credit notes (all channels)</td><td class="mono">CN/26-27/000119</td><td class="mono">000120</td><td class="r">119</td><td class="r">0</td><td><span class="status s-ok">No gaps</span></td><td class="small muted">Follows original invoice</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- DAILY CLOSE -->
+    <div class="tab-panel" data-panel="close">
+      <div class="row-between" style="padding:16px 20px;border-bottom:1px solid var(--line-2)"><div><b>Daily close · Saturday 26 Sep 2026</b><div class="small muted">Maker: Deepa Krishnan (Finance) · Checker: Rajesh Menon · deadline 19:00</div></div><div class="row gap-12"><div class="meter m-warn" style="width:200px"><span style="width:67%"></span></div><b>6 / 9</b></div></div>
+      <div id="close-list"></div>
+      <div class="card-body" style="border-top:1px solid var(--line-2)">
+        <div class="grid g-2">
+          <div class="field"><label for="close-note">Exceptions note (required to sign off with open items)</label><textarea class="textarea" id="close-note" placeholder="e.g. RF-0231 awaiting customer's new UPI ID; Delhivery short remittance disputed (ticket DLV-88412)."></textarea></div>
+          <div class="col gap-8" style="justify-content:flex-end">
+            <div class="callout c-info small"><i data-icon="info"></i><div>Signing off locks the day's payment ledger for export. Late events still post, but to the next business date with a reference to this close.</div></div>
+            <div class="row gap-8"><button class="btn" data-toast="Checklist refreshed · 6 of 9 complete"><i data-icon="refresh" class="ic-sm"></i> Re-run checks</button><span class="ml-auto"></span><button class="btn btn-primary" id="close-go">Sign off with exceptions</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Payment drawer -->
+  <div class="drawer" id="d-pay"><div class="drawer-card wide">
+    <div class="drawer-head"><div id="dp-head" class="grow"></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="drawer-body" id="dp-body"></div>
+    <div class="drawer-foot"><button class="btn" data-close>Close</button><button class="btn" data-toast="Provider says: captured · no change needed" data-toast-icon="refresh"><i data-icon="refresh" class="ic-sm"></i> Check with provider</button><a class="btn btn-primary" href="erp-orders.html">Open order</a></div>
+  </div></div>
+
+  <!-- Retry refund modal -->
+  <div class="modal" id="m-retry"><div class="modal-card">
+    <div class="modal-head"><div><h3>Retry refund RF-0231 safely</h3><div class="small muted">₹19,990 · RMA-0093 · Priya Nair · rfnd_Nx7Zp4</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-body">
+      <p class="small subtle mb-12">A refund is never re-issued blindly. The provider's status is checked first so a timed-out or delayed refund can't be paid twice.</p>
+      <div id="rt-steps">
+        <div class="rt-step" data-i="0"><span class="ci"><i data-icon="search"></i></span><div><b>Query provider status for rfnd_Nx7Zp4</b><div class="small muted rt-res">Not run yet</div></div></div>
+        <div class="rt-step" data-i="1"><span class="ci"><i data-icon="receipt"></i></span><div><b>Check total refunded on pay_Nx5Wc1</b><div class="small muted rt-res">Not run yet</div></div></div>
+        <div class="rt-step" data-i="2"><span class="ci"><i data-icon="route"></i></span><div><b>Choose a route</b><div class="small muted rt-res">Not run yet</div></div></div>
+      </div>
+      <div class="field mt-12 hidden" id="rt-route"><label for="rt-sel">Refund route</label><select class="select" id="rt-sel"><option>New UPI ID confirmed by customer (priya.n@okhdfc · verified ₹1 check)</option><option>Bank transfer · maker–checker</option></select><span class="hint">Idempotency key <span class="mono">RF-0231-r3</span> · same key on any further retry</span></div>
+    </div>
+    <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn" id="rt-run"><i data-icon="refresh" class="ic-sm"></i> Run status check</button><button class="btn btn-primary" id="rt-go" disabled>Submit retry</button></div>
+  </div></div>
+
+  <!-- Import modal -->
+  <div class="modal" id="m-import"><div class="modal-card lg">
+    <div class="modal-head"><div><h3>Import settlement or bank file</h3><div class="small muted">Duplicate files are rejected by content hash · rows are matched automatically</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-body col gap-16">
+      <div class="seg"><button class="active">Razorpay settlement</button><button>Bank statement (HDFC)</button><button>Courier COD remittance</button></div>
+      <div class="dropzone"><i data-icon="upload"></i><b>Drop a CSV / XLSX file here</b><div class="small">or <a href="#" data-toast="File picker opens">browse</a> · max 10 MB · template v3</div></div>
+      <div class="panel small"><b>Preview (last successful import):</b> 60 rows · 58 matched to captures · 2 carried (EMI T+2) · fees ₹15,448.20 · GST on fees ₹2,780.68 · net ₹7,44,191.12</div>
+    </div>
+    <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-primary" data-close data-toast="File queued · you'll be notified when matching finishes">Import & match</button></div>
+  </div></div>
+</main>
+<script src="assets/tradex.js"></script>
+<script>
+TX.ready(() => {
+  const $ = TX.$, $$ = TX.$$, ic = TX.icon, fmt = TX.fmt;
+  const fmt2 = (n) => (n < 0 ? "−" : "") + "₹" + Math.abs(n).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  document.addEventListener("click", (e) => {
+    const g = e.target.closest("[data-goto]"); if (g) { e.preventDefault(); TX.activateTab(g.dataset.goto); $("#tabs-main").scrollIntoView({ behavior: "smooth" }); }
+    const b = e.target.closest("[data-table-toggle]"); if (b) TX.charts.toggleTable($("#" + b.dataset.tableToggle));
+  });
+  TX.charts.spark($("#sp1"), [6.1, 7.4, 6.8, 7.9, 7.2, 8.8, 7.6, 8.1, 7.7, 8.42]);
+  TX.charts.spark($("#sp2"), [89.2, 90.1, 90.8, 89.9, 90.6, 91.2, 90.4, 90.9, 90.8, 91.4]);
+
+  /* ---------------- Payment attempts ---------------- */
+  const PA = [
+    ["PA-88412", "TXO-10490", "Arjun Mehta", "Card · Visa ••4421", "pay_Nx9F2kQ1", 10165, "captured", ["s-ok", "Confirmed"], "10:38", ""],
+    ["PA-88411", "TXO-10489", "Coastal Infotech", "Netbanking · HDFC", "pay_Nx9D7uLm", 214380, "captured", ["s-ok", "Confirmed"], "10:32", "Dealer order · prepaid"],
+    ["PA-88410", "TXO-10488", "Priya Nair", "UPI · collect", "pay_Nx9Cq0Za", 8999, "pending", ["s-warn", "Awaiting payment"], "10:29", "Reservation R-5534 held to 10:44"],
+    ["PA-88409", "TXO-10487", "Kavya Reddy", "EMI · HDFC 6 m no-cost", "pay_Nx9B1wEr", 72990, "authorised", ["s-info", "Awaiting capture"], "10:24", "Auto-capture after stock check"],
+    ["PA-88408", "TXO-10486", "Suresh (WhatsApp)", "UPI · intent", "pay_Nx9A8hTy", 3495, "captured", ["s-ok", "Confirmed"], "10:02", "WhatsApp checkout link"],
+    ["PA-88407", "TXO-10485", "Rahul Deshpande", "UPI · intent", "pay_Nx99xVb2", 22990, "captured", ["s-warn", "On hold · supplier confirm"], "09:57", "2nd attempt succeeded"],
+    ["PA-88406", "TXO-10485", "Rahul Deshpande", "Card · Mastercard ••0917", "pay_Nx99m3Fa", 22990, "failed", ["s-warn", "On hold · supplier confirm"], "09:55", "Issuer declined · insufficient funds"],
+    ["PA-88401", "TXO-10482", "Priya Nair", "UPI · intent", "pay_Nx96Lp0q", 2999, "captured", ["s-ok", "Confirmed"], "09:31", ""],
+    ["PA-88397", "TXO-10477", "Neha Kulkarni", "Card · RuPay ••5520", "pay_Nx8Q7sDe", 84990, "captured", ["s-bad", "On hold · stock exception"], "10:04", "Captured after reservation R-5521 expired"],
+    ["PA-88392", "TXO-10475", "Vivek S", "Netbanking · SBI", "pay_Nx8Lc2Wm", 58990, "pending", ["s-warn", "Awaiting payment"], "09:12", "Bank page open 32 min · polling"],
+    ["PA-88390", "TXO-10474", "Farah Khan", "UPI · intent", "pay_Nx8Jz1Qa", 11995, "expired", ["s-muted", "Cancelled · stock released"], "09:05", "Abandoned · link expired 15 min"],
+    ["PA-88388", "TXO-10473", "Manoj P", "COD · Delhivery", "cod_TXO10473", 5499, "created", ["s-info", "Confirmed · COD"], "08:50", "Collect on delivery · OTP verified"],
+    ["PA-88385", "TXO-10472", "Sai Systems & Services", "Netbanking · Axis", "pay_Nx8Ev6Rt", 118420, "captured", ["s-ok", "Confirmed"], "08:44", "Dealer order · prepaid"],
+    ["PA-88381", "TXO-10470", "Deepak Rao", "Card · Visa ••7730", "pay_Nx8Ba4Po", 13495, "failed", ["s-muted", "Cancelled by customer"], "08:31", "3-D Secure not completed"],
+  ];
+  const renderPA = () => {
+    const q = $("#pa-q").value.toLowerCase(), f = ($("#pa-state .active") || {}).dataset?.s || "all";
+    const rows = PA.filter((r) => (f === "all" || r[6] === f) && r.join(" ").toLowerCase().includes(q));
+    $("#pa-count").textContent = `Showing ${rows.length} of 72 attempts today`;
+    $("#pa-body").innerHTML = rows.map((r) => `<tr data-pa="${r[0]}" style="cursor:pointer${r[0] === "PA-88397" ? ";background:#fff8f8" : ""}">
+      <td class="mono strong nowrap">${r[0]}</td><td class="nowrap"><div class="cell-main mono">${r[1]}</div><div class="cell-sub">${r[2]}</div></td><td class="small">${r[3]}</td><td class="mono small">${r[4]}</td>
+      <td class="r strong">${fmt(r[5])}</td><td><span class="st ${r[6]}">${r[6]}</span></td><td><span class="status ${r[7][0]}">${r[7][1]}</span></td><td class="small">${r[8]}</td><td class="small ${r[0] === "PA-88397" ? "text-bad" : "muted"}">${r[9] || "—"}</td></tr>`).join("")
+      || `<tr><td colspan="9"><div class="empty">${ic("wallet")}<h4>No payment attempts in this state</h4><p>Try another filter.</p></div></td></tr>`;
+  };
+  renderPA();
+  $("#pa-q").addEventListener("input", renderPA);
+  $("#pa-state").addEventListener("click", (e) => { if (e.target.closest("button")) setTimeout(renderPA); });
+
+  const openPay = (id) => {
+    const r = PA.find((x) => x[0] === id); const exc = id === "PA-88397";
+    const steps = { created: ["created"], pending: ["created", "pending"], authorised: ["created", "pending", "authorised"], captured: ["created", "pending", "authorised", "captured"], failed: ["created", "pending", "failed"], expired: ["created", "pending", "expired"] }[r[6]];
+    $("#dp-head").innerHTML = `<div class="row gap-8"><h3 class="mono">${r[0]}</h3><span class="st ${r[6]}">${r[6]}</span></div><div class="small muted mt-4">${r[1]} · ${r[2]} · ${r[3]} · ${fmt(r[5])}</div>`;
+    $("#dp-body").innerHTML = `
+      ${exc ? `<div class="callout c-bad mb-16 small">${ic("alert-octagon")}<div><b>Payment captured after the stock hold expired.</b> Reservation R-5521 expired 10:02; capture arrived 10:04. The payment is recorded, no negative stock was created and the order is on hold. Policy: re-reserve (alternate unit U-000815 at SP Road) with customer consent, offer an alternative, or refund. Escalated to Finance · Deepa K. · due 11:30.</div></div>` : ""}
+      <div class="grid g-3 mb-16" data-anno="Separate state machines: order ≠ payment ≠ fulfilment">
+        <div class="panel"><div class="upper muted mb-4">Order</div><span class="status ${r[7][0]}">${r[7][1]}</span></div>
+        <div class="panel"><div class="upper muted mb-4">Payment attempt</div><span class="st ${r[6]}">${r[6]}</span></div>
+        <div class="panel"><div class="upper muted mb-4">Fulfilment</div><span class="status ${r[6] === "captured" && !exc ? "s-brand" : "s-muted"}">${r[6] === "captured" && !exc ? "Allocated · to pick" : "Unallocated"}</span></div>
+      </div>
+      <div class="grid g-2 mb-16">
+        <dl class="kv"><dt>Provider</dt><dd>Razorpay (hosted checkout)</dd><dt>Provider order</dt><dd class="mono">order_${r[4].slice(4)}</dd><dt>Payment ID</dt><dd class="mono">${r[4]}</dd><dt>Idempotency key</dt><dd class="mono">${r[1]}-att-${r[0].slice(-2)}</dd></dl>
+        <dl class="kv"><dt>Amount</dt><dd>${fmt2(r[5])}</dd><dt>Method</dt><dd>${r[3]}</dd><dt>Gateway fee (est.)</dt><dd>${r[3].startsWith("COD") ? "—" : fmt2(r[5] * 0.0195)} + GST</dd><dt>Card data</dt><dd>Not stored — tokenised by provider</dd></dl>
+      </div>
+      <h4 class="mb-8">Attempt timeline</h4>
+      <ul class="timeline">
+        ${steps.map((s, i) => `<li class="${s === "failed" || s === "expired" ? "warn" : i === steps.length - 1 ? "current" : "done"}"><span class="t-dot">${ic(s === "failed" ? "x" : s === "expired" ? "clock" : "check")}</span><div class="t-title">${s}</div><div class="t-meta">${s === "created" ? "Attempt created after stock reservation" : ""}${s === "captured" ? "Signed webhook evt verified ✓ · applied once" : s === "authorised" ? "payment.authorized · signature ✓" : s === "pending" ? "Customer redirected to provider" : s === "failed" ? r[9] : s === "expired" ? "No completion within 15 min · reservation released" : ""}</div></li>`).join("")}
+        ${exc ? `<li class="warn"><span class="t-dot">${ic("alert")}</span><div class="t-title">Stock exception raised</div><div class="t-meta">10:04 · no confirmation, no fulfilment task created</div></li>` : ""}
+      </ul>
+      ${r[6] === "pending" ? `<div class="callout c-info small mt-12">${ic("refresh")}<div>If no webhook arrives within 15 minutes, the provider API is polled every 10 minutes — two attempts today were recovered this way.</div></div>` : ""}`;
+    TX.open("d-pay");
+  };
+  document.addEventListener("click", (e) => { const r = e.target.closest("tr[data-pa]"); if (r) openPay(r.dataset.pa); });
+
+  /* ---------------- Webhook events ---------------- */
+  const EV = [
+    ["10:38:40", "evt_Nx9F3aT2", "payment.captured", "pay_Nx9F2kQ1 · TXO-10490", 1, "dup", "Duplicate — ignored (already applied 10:38:14)", "0.1 s"],
+    ["10:38:14", "evt_Nx9F3aT2", "payment.captured", "pay_Nx9F2kQ1 · TXO-10490", 1, "applied", "Applied · authorised → captured · order confirmed", "1.2 s"],
+    ["10:38:13", "evt_Nx9F39Rk", "payment.authorized", "pay_Nx9F2kQ1 · TXO-10490", 1, "applied", "Applied · created → authorised", "0.8 s"],
+    ["10:40:02", "poll_7731", "status poll", "pay_Nx8Lc2Wm · TXO-10475", 1, "poll", "Polling · provider says pending · next check 10:50", "—"],
+    ["10:32:07", "evt_Nx9D8a1c", "payment.authorized", "pay_Nx9D7uLm · TXO-10489", 1, "ooo", "Out of order — recorded, no downgrade (already captured)", "0.7 s"],
+    ["10:32:05", "evt_Nx9D8b4f", "payment.captured", "pay_Nx9D7uLm · TXO-10489", 1, "applied", "Applied · created → captured (authorised arrived later)", "0.9 s"],
+    ["10:04:12", "evt_Nx8Q9dW1", "payment.captured", "pay_Nx8Q7sDe · TXO-10477", 1, "applied", "Applied · captured · stock exception raised (R-5521 expired)", "1.4 s"],
+    ["09:58:30", "evt_unknown", "payment.captured", "pay_FAKE01 · —", 0, "rej", "Rejected 401 · signature mismatch · security alert raised", "0.0 s"],
+    ["09:55:41", "evt_Nx99n0Lp", "payment.failed", "pay_Nx99m3Fa · TXO-10485", 1, "applied", "Applied · attempt failed · order stays awaiting payment", "0.6 s"],
+    ["09:57:03", "evt_Nx99yA4c", "payment.failed", "pay_Nx99xVb2 · TXO-10485", 1, "ooo", "Out of order — ignored: attempt already captured (never downgrade)", "0.5 s"],
+    ["09:40:02", "evt_Nx8A1rQ7", "refund.failed", "rfnd_Nx7Zp4 · RF-0231", 1, "applied", "Applied · refund failed · finance exception created", "0.9 s"],
+    ["09:12:00", "poll_7702", "status poll", "pay_Nx7Yk2Hs · TXO-10468", 1, "poll", "Recovered · captured per API (webhook never arrived)", "—"],
+    ["07:10:00", "evt_Nx6Tq2Zz", "settlement.processed", "setl_Nx6Tq2", 1, "applied", "Applied · 60 rows queued for matching", "2.8 s"],
+  ];
+  const evCls = { applied: "s-ok", dup: "s-muted", ooo: "s-info", rej: "s-bad", poll: "s-brand" };
+  EV.sort((a, b) => b[0].localeCompare(a[0]));
+  const renderEV = () => { const f = ($("#ev-f .active") || {}).dataset?.f || "all";
+    $("#ev-body").innerHTML = EV.filter((e) => f === "all" || e[5] === f).map((e) => `<tr><td class="mono small nowrap">${e[0]}</td><td class="mono small">${e[1]}</td><td class="mono small">${e[2]}</td><td class="small">${e[3]}</td>
+      <td>${e[1].startsWith("poll") ? '<span class="small muted">API call</span>' : e[4] ? `<span class="status s-ok">Verified</span>` : `<span class="status s-bad">Invalid</span>`}</td><td><span class="status ${evCls[e[5]]}">${e[6]}</span></td><td class="r small">${e[7]}</td></tr>`).join(""); };
+  renderEV();
+  $("#ev-f").addEventListener("click", (e) => { if (e.target.closest("button")) setTimeout(renderEV); });
+
+  /* ---------------- Unmatched queue + chart ---------------- */
+  const UM = [
+    ["Captured, not settled after T+3", "Settlement", "pay_Nx2Kd8Pq · TXO-10402", 24990, 5, "Deepa K.", "Raise with provider"],
+    ["Settlement line without an order", "Settlement", "pay_Nx5Hs1Vb", 3499, 2, "Deepa K.", "Investigate"],
+    ["Fee mismatch (EMI rate)", "Fees", "setl_Nx4Ab9 · expected ₹1,212", 224, 1, "Deepa K.", "Raise with provider"],
+    ["Refund deducted, no refund record", "Settlement", "rfnd_Nx4Qe7", 8990, 9, "Deepa K.", "Match manually"],
+    ["Bank credit without settlement", "Bank", "NEFT UTR HDFCN52026091711", 12000, 12, "Anita R.", "Match to dealer TXO-10433"],
+    ["COD remittance short", "COD", "Delhivery DLV-R-0921", 2490, 16, "Deepa K.", "Dispute with courier"],
+    ["Chargeback debit", "Dispute", "pay_Nx0Uw3Lm · TXO-10318", 10480, 19, "Deepa K.", "Submit evidence by 30 Sep"],
+    ["Customer paid twice (duplicate capture)", "Settlement", "TXO-10479 · 2 captures", 5499, 2, "Auto", "Refund RF-0229 completed · confirm"],
+    ["EMI capture awaiting bank confirmation", "Settlement", "pay_Nx3Rt5Yh · TXO-10411", 42990, 4, "Deepa K.", "Check with provider"],
+  ];
+  const bucket = (d) => (d <= 2 ? 0 : d <= 7 ? 1 : d <= 15 ? 2 : 3);
+  const BUCKETS = ["0–2 days", "3–7 days", "8–15 days", "16–30 days"];
+  const total = UM.reduce((a, r) => a + r[3], 0);
+  $("#k-unm").textContent = TX.fmtK(total); $("#k-unm-n").textContent = `${UM.length} items · oldest 19 d`; $("#t-unm").textContent = UM.length;
+  const renderUM = () => { const f = ($("#um-f .active") || {}).dataset?.f || "all"; const rows = UM.filter((r) => f === "all" || bucket(r[4]) === +f);
+    $("#um-body").innerHTML = rows.map((r) => `<tr><td class="strong small">${r[0]}</td><td><span class="badge">${r[1]}</span></td><td class="mono small">${r[2]}</td><td class="r strong">${fmt(r[3])}</td>
+      <td class="r ${r[4] > 15 ? "text-bad strong" : r[4] > 7 ? "text-warn" : ""}">${r[4]} d</td><td class="small">${r[5]}</td><td class="r"><button class="btn btn-xs" data-toast="${r[6]} · action logged against the item">${r[6]}</button></td></tr>`).join("");
+    $("#um-total").textContent = fmt(rows.reduce((a, r) => a + r[3], 0)); };
+  renderUM();
+  $("#um-f").addEventListener("click", (e) => { if (e.target.closest("button")) setTimeout(renderUM); });
+  const byB = [0, 0, 0, 0]; UM.forEach((r) => (byB[bucket(r[4])] += r[3]));
+  TX.charts.hbar($("#ch-age"), { title: "Unmatched value by age bucket", seriesName: "Unmatched value", labelHeader: "Age", labelWidth: 84, format: (v) => fmt(v),
+    items: BUCKETS.map((l, i) => ({ label: l, value: byB[i], color: i === 3 ? "var(--st-critical)" : i === 2 ? "var(--st-serious)" : "var(--series-1)" })) });
+  TX.charts.stack($("#ch-mix"), { parts: [{ name: "UPI", value: 51, color: "var(--series-1)" }, { name: "Cards", value: 22, color: "var(--series-2)" }, { name: "Netbanking", value: 16, color: "var(--series-3)" }, { name: "EMI", value: 9, color: "#7c3aed" }, { name: "COD", value: 2, color: "#eda100" }] });
+
+  /* ---------------- Export documents ---------------- */
+  const EX = [
+    ["TX/26-27/004861", "Sales invoice", 26550, "failed", "Ledger “HDFC EMI Clearing” not found in Tally — create ledger, then retry"],
+    ["RCPT-26-27-009412", "Receipt", 11995, "failed", "Party ledger “Arjun Mehta” missing · auto-create disabled by policy"],
+    ["TX/26-27/004872", "Sales invoice", 10165, "ok", "Vch 18842 · ack 07:31"],
+    ["TXB/26-27/001204", "Sales invoice (B2B)", 214380, "ok", "Vch 18839 · ack 07:31"],
+    ["CN/26-27/000119", "Credit note", -5499, "ok", "Vch 18836 · linked to TX/26-27/004858"],
+    ["GW-CHG-0925", "Journal · gateway charges", 18229, "ok", "Vch 18830 · fees ₹15,448.20 + GST ₹2,780.68"],
+    ["TX/26-27/004850", "Sales invoice", 38990, "skipped", "Already exported 25 Sep (same key TX/26-27/004850·v1) — not duplicated"],
+    ["TX/26-27/004844", "Sales invoice · amended", 8999, "skipped", "Exported v1 earlier · amendment sent as CN/26-27/000117"],
+  ];
+  const renderEX = () => { const f = ($("#ex-f .active") || {}).dataset?.f || "all";
+    $("#ex-body").innerHTML = EX.filter((r) => f === "all" || r[3] === f).map((r) => `<tr><td class="mono small strong nowrap">${r[0]}</td><td class="small">${r[1]}</td><td class="r">${r[2] < 0 ? "−" + fmt(-r[2]) : fmt(r[2])}</td>
+      <td><span class="status ${r[3] === "ok" ? "s-ok" : r[3] === "failed" ? "s-bad" : "s-muted"}">${r[3] === "ok" ? "Exported" : r[3] === "failed" ? "Failed" : "Skipped"}</span></td><td class="small ${r[3] === "failed" ? "text-bad" : "muted"}">${r[4]}</td></tr>`).join(""); };
+  renderEX();
+  $("#ex-f").addEventListener("click", (e) => { if (e.target.closest("button")) setTimeout(renderEX); });
+
+  /* ---------------- Daily close ---------------- */
+  const CL = [
+    ["ok", "All webhook events processed", "418 events · retry queue empty · 1 invalid signature investigated", "Automation", "10:40"],
+    ["ok", "Pending attempts older than 15 min resolved", "2 recovered via provider API · 2 still pending within window", "Automation", "10:40"],
+    ["ok", "Settlement file for 25 Sep imported & matched", "58/60 matched · 2 carried (EMI T+2) · difference ₹0", "Deepa K.", "07:15"],
+    ["ok", "Bank statement matched to settlements", "38/41 lines matched · 3 moved to unmatched queue", "Deepa K.", "08:05"],
+    ["bad", "Failed refunds reviewed", "RF-0231 · ₹19,990 · customer's UPI closed — new route needed", "Deepa K.", "Open"],
+    ["warn", "COD remittances due today received", "DLV-R-0921 short ₹2,490 · DLV-R-0916 overdue 8 days", "Deepa K.", "Open"],
+    ["ok", "Branch POS & card terminal totals entered", "SP Road, Koramangala, Mysuru · cash counted by branch managers", "Branch mgrs", "Yesterday 21:10"],
+    ["ok", "Invoice series gap check", "No new gaps · Mysuru gap 000812 explained (voided draft)", "Automation", "07:00"],
+    ["warn", "Accounting export control totals match", "2 documents failed · ₹22,500 taxable + ₹11,995 receipts", "Deepa K.", "Open"],
+  ];
+  const ico = { ok: "check", bad: "x", warn: "alert" };
+  $("#close-list").innerHTML = CL.map((c) => `<div class="ck"><span class="ci ${c[0]}">${ic(ico[c[0]])}</span><div><b>${c[1]}</b><div class="small muted">${c[2]}</div></div><div class="small">${c[3]}</div><div><span class="status ${c[0] === "ok" ? "s-ok" : c[0] === "bad" ? "s-bad" : "s-warn"}">${c[0] === "ok" ? "Done · " + c[4] : "Open"}</span></div><div class="r">${c[0] === "ok" ? "" : `<button class="btn btn-xs" data-goto="${c[1].includes("refund") ? "refunds" : c[1].includes("COD") ? "cod" : "export"}">Resolve</button>`}</div></div>`).join("");
+  $("#close-go").addEventListener("click", () => { const n = $("#close-note"); if (!n.value.trim()) { n.classList.add("is-error"); TX.toast("Add an exceptions note — 3 items are still open", "alert"); n.focus(); return; } n.classList.remove("is-error"); TX.toast("Day signed off by maker · sent to Rajesh M. for checker approval"); });
+
+  /* ---------------- Retry refund flow ---------------- */
+  const setStep = (i, cls, txt) => { const s = $(`.rt-step[data-i="${i}"]`); s.className = "rt-step " + cls; $(".rt-res", s).innerHTML = txt; };
+  $("#rt-run").addEventListener("click", () => {
+    $("#rt-run").disabled = true; setStep(0, "run", "Querying provider…");
+    setTimeout(() => { setStep(0, "done", "Provider status: <b>failed</b> · reason: beneficiary VPA closed · no money moved"); setStep(1, "run", "Checking…"); }, 600);
+    setTimeout(() => { setStep(1, "done", "Refunded so far ₹0.00 of ₹19,990.00 · no other refund in flight — safe to retry"); setStep(2, "warn", "Original UPI ID can't receive funds — pick a verified alternative"); $("#rt-route").classList.remove("hidden"); $("#rt-go").disabled = false; }, 1300);
+  });
+  $("#rt-go").addEventListener("click", () => { TX.close($("#rt-go")); TX.toast("Retry submitted · key RF-0231-r3 · customer notified on WhatsApp"); });
+  if (location.hash === "#d-pay") openPay("PA-88397");
+  if (location.hash === "#m-retry") setTimeout(() => $("#rt-run").click(), 100);
+});
+</script>
+</body>
+</html>

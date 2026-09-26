@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Checkout · Tradex</title>
+  <link rel="stylesheet" href="assets/tradex.css">
+  <style>
+    .co-top { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 14px; }
+    .timer { display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; border-radius: 999px; background: var(--brand-50); color: var(--brand-800); font-weight: 650; font-size: 13px; border: 1px solid var(--brand-100); }
+    .timer .t { font-variant-numeric: tabular-nums; font-weight: 800; }
+    .timer.low { background: var(--warn-50); color: #7a4a04; border-color: #f8dca6; }
+    .timer.exp { background: var(--bad-50); color: var(--bad-tx); border-color: #f6c9c6; }
+    .co-stepper { background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); padding: 16px 22px; margin-top: 16px; }
+    .co-stepper .step { cursor: default; }
+    .co-stepper .step.done { cursor: pointer; }
+    .co-grid { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 24px; align-items: start; margin-top: 16px; }
+    .co-step { background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); margin-bottom: 14px; }
+    .co-step .cs-head { display: flex; align-items: center; gap: 14px; padding: 16px 20px; }
+    .co-step .cs-n { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 12.5px; background: var(--bg-2); color: var(--tx-3); flex: none; }
+    .co-step.done .cs-n { background: var(--ok); color: #fff; }
+    .co-step.current .cs-n { background: var(--brand); color: #fff; box-shadow: var(--ring); }
+    .co-step .cs-sum { font-size: 12.5px; color: var(--tx-2); margin-top: 2px; }
+    .co-step .cs-body { display: none; padding: 4px 20px 20px 62px; }
+    .co-step.current .cs-body { display: flex; flex-direction: column; gap: 16px; }
+    .co-step.future { opacity: .6; }
+    .co-step.future .cs-head h3 { color: var(--tx-3); }
+    .co-step:not(.done) .cs-change { display: none; }
+    .co-step.done .cs-sum { display: block; }
+    .co-step:not(.done) .cs-sum { display: none; }
+    .opt { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: flex-start; padding: 13px 14px; border: 1.5px solid var(--line); border-radius: var(--r); cursor: pointer; background: #fff; }
+    .opt:has(input:checked) { border-color: var(--brand); background: #fafbff; box-shadow: var(--ring); }
+    .opt input { margin-top: 3px; accent-color: var(--brand); width: 16px; height: 16px; }
+    .opt.disabled { opacity: .6; cursor: not-allowed; background: #fafbfc; }
+    .opt .o-t { font-weight: 650; font-size: 13.5px; }
+    .opt .o-s { font-size: 12.5px; color: var(--tx-2); margin-top: 2px; }
+    .opts { display: grid; gap: 10px; }
+    .opts.g2 { grid-template-columns: 1fr 1fr; }
+    .opts.g3 { grid-template-columns: repeat(3, 1fr); }
+    .pay { display: grid; grid-template-columns: 210px minmax(0, 1fr); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; }
+    .pay-tabs { background: #fafbfc; border-right: 1px solid var(--line); display: flex; flex-direction: column; }
+    .pay-tabs button { display: flex; align-items: center; gap: 10px; padding: 13px 14px; border: 0; border-bottom: 1px solid var(--line-2); background: none; text-align: left; font-weight: 600; font-size: 13px; color: var(--tx-2); }
+    .pay-tabs button small { display: block; font-weight: 500; font-size: 11px; color: var(--tx-3); }
+    .pay-tabs button.on { background: #fff; color: var(--brand-700); box-shadow: inset 3px 0 0 var(--brand); }
+    .pay-tabs button.na { color: var(--tx-4); }
+    .pay-panel { padding: 18px; display: none; }
+    .pay-panel.on { display: block; }
+    .app-chip { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border: 1px solid var(--line); border-radius: var(--r); font-weight: 650; font-size: 12.5px; background: #fff; }
+    .app-chip span { width: 22px; height: 22px; border-radius: 6px; display: grid; place-items: center; color: #fff; font-size: 10px; font-weight: 800; }
+    .qr { width: 132px; height: 132px; border-radius: var(--r); border: 1px solid var(--line); display: grid; place-items: center; background: repeating-conic-gradient(#101828 0 25%, #fff 0 50%) 0 0 / 16px 16px; position: relative; }
+    .qr::after { content: "UPI"; position: absolute; background: #fff; padding: 4px 8px; border-radius: 6px; font-weight: 800; font-size: 12px; }
+    .ship-box { border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; }
+    .ship-box .sh { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 14px; background: #fafbfc; border-bottom: 1px solid var(--line-2); font-size: 12.5px; }
+    .ship-box .items { display: flex; gap: 10px; padding: 12px 14px; flex-wrap: wrap; }
+    .ship-box .it { display: flex; align-items: center; gap: 8px; font-size: 12px; max-width: 250px; }
+    .ship-box .it .ph { width: 40px; height: 40px; aspect-ratio: auto; flex: none; }
+    .sum { position: sticky; top: 84px; }
+    .sum-item { display: grid; grid-template-columns: 48px 1fr auto; gap: 10px; align-items: center; padding: 8px 0; font-size: 12.5px; border-bottom: 1px solid var(--line-2); }
+    .sum-item:last-child { border-bottom: 0; }
+    .sum-item .ph { width: 48px; height: 48px; aspect-ratio: auto; position: relative; }
+    .sum-item .qb { position: absolute; top: -6px; right: -6px; background: var(--ink-800); color: #fff; font-size: 10.5px; font-weight: 700; border-radius: 999px; min-width: 18px; height: 18px; display: grid; place-items: center; padding: 0 4px; z-index: 2; }
+    .sum-rows { display: flex; flex-direction: column; gap: 8px; font-size: 13px; }
+    .sum-rows .r { display: flex; justify-content: space-between; gap: 12px; }
+    .sum-rows .r span:first-child { color: var(--tx-2); }
+    .sum-rows .r.sub { font-size: 12px; color: var(--tx-3); }
+    .sum-rows .total { border-top: 1px dashed var(--line); padding-top: 10px; margin-top: 4px; font-size: 17px; font-weight: 750; }
+    .rev-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .rev-box { border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; font-size: 13px; }
+    .rev-box .row-between b { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--tx-3); }
+    .processing { position: fixed; inset: 0; z-index: 400; background: rgba(7, 12, 24, .6); display: none; align-items: center; justify-content: center; }
+    .processing.on { display: flex; }
+    .processing .box { background: #fff; border-radius: var(--r-lg); padding: 28px 32px; width: 440px; text-align: center; box-shadow: var(--sh-3); }
+    .spin { width: 40px; height: 40px; border-radius: 50%; border: 4px solid var(--brand-100); border-top-color: var(--brand); animation: spin 0.9s linear infinite; margin: 0 auto 14px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .pin-ok { font-size: 12px; margin-top: 4px; display: flex; gap: 6px; align-items: center; }
+    .pin-ok .ic { width: 14px; height: 14px; }
+    .emi-t td, .emi-t th { padding: 8px 10px !important; }
+  </style>
+</head>
+<body data-app="store" data-page="checkout">
+<main>
+  <div class="container">
+    <nav class="crumbs mt-16" aria-label="Breadcrumb"><a href="store-cart.html">Cart</a><i data-icon="chevron-right"></i><span>Checkout</span></nav>
+    <div class="co-top">
+      <div class="row gap-12"><h1>Checkout</h1><span class="badge b-ok"><i data-icon="lock"></i> Secure checkout</span></div>
+      <div class="row gap-12">
+        <span class="timer" id="timer" data-anno="1A · R08 Checkout reserves stock for 15 min (R-55xx)"><i data-icon="clock"></i> Items reserved for <span class="t" id="timer-t">14:52</span> · <span class="mono" id="res-id">R-5534</span></span>
+        <div class="seg" id="state-seg" data-anno="Prototype: checkout states (§6.3, §10.3)">
+          <button data-state="normal">Normal</button>
+          <button data-state="failed">Payment failed</button>
+          <button data-state="price">Price changed</button>
+          <button data-state="expired">Reservation expired</button>
+        </div>
+      </div>
+    </div>
+    <div id="state-banner"></div>
+
+    <div class="co-stepper">
+      <div class="stepper" id="stepper">
+        <div class="step" data-go="address"><span class="dot">1</span> Address</div>
+        <div class="step" data-go="delivery"><span class="dot">2</span> Delivery</div>
+        <div class="step" data-go="payment"><span class="dot">3</span> Payment</div>
+        <div class="step" data-go="review"><span class="dot">4</span> Review & place order</div>
+      </div>
+    </div>
+
+    <div class="co-grid">
+      <div>
+        <!-- 1 · Address -->
+        <section class="co-step" id="s-address" data-anno="1A · PIN serviceability validated before payment (§6.5)">
+          <div class="cs-head"><span class="cs-n">1</span><div class="grow"><h3>Delivery address & billing</h3><div class="cs-sum" id="sum-address"></div></div><button class="btn btn-sm cs-change" data-go="address">Change</button></div>
+          <div class="cs-body col gap-16">
+            <div class="only-guest"><div class="panel col gap-12">
+              <div class="row-between"><b>Contact details</b><a class="small" href="store-login.html">Have an account? Sign in</a></div>
+              <div class="form-grid"><div class="field"><label for="g-phone" class="req">Mobile number</label><div class="input-group"><span class="addon">+91</span><input class="input" id="g-phone" value="98450 12345"></div><span class="hint">We send an OTP to verify · used for delivery updates</span></div>
+              <div class="field"><label for="g-email" class="req">Email</label><input class="input" id="g-email" value="priya.nair@example.com"><span class="hint">Order confirmation & secure order-access link</span></div></div>
+              <div class="row gap-8"><input class="input" style="width:140px" placeholder="Enter OTP" aria-label="OTP" value="4 8 2 1 9 0"><button class="btn btn-sm btn-ok" data-toast="Phone verified">Verify</button><span class="small text-ok row gap-6"><i data-icon="check-circle"></i> OTP sent to +91 98450 •••45</span></div>
+            </div></div>
+            <div>
+              <div class="row-between mb-8"><b>Deliver to</b><button class="link-btn small row gap-6" id="add-addr-btn"><i data-icon="plus"></i> Add a new address</button></div>
+              <div class="opts g2" id="addr-list"></div>
+            </div>
+            <div class="panel hidden" id="new-addr" style="background:#fff">
+              <div class="row-between mb-12"><b>New address</b><button class="btn btn-ghost btn-sm" id="close-addr">Cancel</button></div>
+              <div class="form-grid">
+                <div class="field"><label for="na-name" class="req">Full name</label><input class="input" id="na-name" value="Priya Nair"></div>
+                <div class="field"><label for="na-phone" class="req">Mobile</label><div class="input-group"><span class="addon">+91</span><input class="input" id="na-phone" value="98450 12345"></div></div>
+                <div class="field"><label for="na-pin" class="req">PIN code</label><input class="input" id="na-pin" inputmode="numeric" maxlength="6" placeholder="6-digit PIN" value="57001"><div id="na-pin-msg" class="pin-ok"></div></div>
+                <div class="field"><label for="na-city" class="req">City / district</label><input class="input" id="na-city" placeholder="Auto-filled from PIN"></div>
+                <div class="field full"><label for="na-l1" class="req">Flat, house no., building</label><input class="input" id="na-l1" value="No. 14, 2nd Floor, Sri Krishna Residency"></div>
+                <div class="field"><label for="na-l2" class="req">Area, street</label><input class="input" id="na-l2" value="Saraswathipuram"></div>
+                <div class="field"><label for="na-state" class="req">State</label><select class="select" id="na-state"><option value="">Select state</option><option>Karnataka</option><option>Tamil Nadu</option><option>Kerala</option><option>Maharashtra</option><option>Delhi</option><option>Telangana</option></select></div>
+                <div class="field"><label for="na-lm">Landmark (optional)</label><input class="input" id="na-lm" placeholder="e.g. near JSS College"></div>
+                <div class="field"><span class="label">Address type</span><div class="seg"><button class="active">Home</button><button>Office</button><button>Other</button></div></div>
+              </div>
+              <div class="row mt-16"><button class="btn btn-primary" id="save-addr">Save & deliver here</button><span class="small muted">Addresses are validated against the courier's serviceable PIN list</span></div>
+            </div>
+            <div data-anno="1A · Business billing with GSTIN (dealer: verified & locked)">
+              <label class="check"><input type="checkbox" id="gst-toggle"> <b>Use GST invoice</b> <span class="muted small">— business purchase, claim input tax credit</span></label>
+              <div class="panel mt-8 hidden" id="gst-box" style="background:#fff"></div>
+            </div>
+            <div id="svc"></div>
+            <div class="row"><button class="btn btn-primary btn-lg" data-go="delivery">Continue to delivery <i data-icon="arrow-right"></i></button></div>
+          </div>
+        </section>
+
+        <!-- 2 · Delivery -->
+        <section class="co-step" id="s-delivery" data-anno="1A · Split shipment disclosed · partner stock ships separately">
+          <div class="cs-head"><span class="cs-n">2</span><div class="grow"><h3>Delivery method</h3><div class="cs-sum" id="sum-delivery"></div></div><button class="btn btn-sm cs-change" data-go="delivery">Change</button></div>
+          <div class="cs-body col gap-16">
+            <div class="opts g3" id="dlv-opts">
+              <label class="opt"><input type="radio" name="dlv" value="std" checked><div><div class="o-t">Standard</div><div class="o-s" id="dlv-std-d">By Wed, 30 Sep</div></div><b class="text-ok small">Free</b></label>
+              <label class="opt"><input type="radio" name="dlv" value="exp"><div><div class="o-t">Express</div><div class="o-s">By Tue, 29 Sep · order before 2 PM</div></div><b class="small">₹149</b></label>
+              <label class="opt"><input type="radio" name="dlv" value="pick"><div><div class="o-t">Store pickup</div><div class="o-s">SP Road · ready today 5 PM</div></div><b class="text-ok small">Free</b></label>
+            </div>
+            <div class="panel hidden" id="pick-box" style="background:#fff">
+              <b>Choose a pickup store</b>
+              <div class="opts g3 mt-8">
+                <label class="opt"><input type="radio" name="store" checked><div><div class="o-t">SP Road</div><div class="o-s">All warehouse items · ready today 5 PM</div></div><span></span></label>
+                <label class="opt"><input type="radio" name="store"><div><div class="o-t">Koramangala</div><div class="o-s">Ready tomorrow 12 PM (transfer)</div></div><span></span></label>
+                <label class="opt disabled"><input type="radio" name="store" disabled><div><div class="o-t">Mysuru</div><div class="o-s">Pickup not enabled for this order</div></div><span></span></label>
+              </div>
+              <div class="small muted mt-8">We hold pickup orders for 3 days · bring the order OTP and photo ID.</div>
+            </div>
+            <div id="split"></div>
+            <div class="field"><label for="dlv-note">Delivery instructions (optional)</label><input class="input" id="dlv-note" placeholder="e.g. Call before delivery · security desk at gate 2"></div>
+            <div class="callout small"><i data-icon="shield"></i><div>High-value shipments (above ₹20,000) are handed over only against a <b>delivery OTP</b> sent to your phone.</div></div>
+            <div class="row"><button class="btn btn-primary btn-lg" data-go="payment">Continue to payment <i data-icon="arrow-right"></i></button></div>
+          </div>
+        </section>
+
+        <!-- 3 · Payment -->
+        <section class="co-step" id="s-payment" data-anno="1A · One provider, hosted page · no card data stored (§10.6)">
+          <div class="cs-head"><span class="cs-n">3</span><div class="grow"><h3>Payment method</h3><div class="cs-sum" id="sum-payment"></div></div><button class="btn btn-sm cs-change" data-go="payment">Change</button></div>
+          <div class="cs-body col gap-16">
+            <div id="pay-failed"></div>
+            <div class="pay">
+              <div class="pay-tabs" id="pay-tabs">
+                <button class="on" data-pay="upi"><i data-icon="zap"></i><span>UPI<small>GPay, PhonePe, Paytm, BHIM</small></span></button>
+                <button data-pay="card"><i data-icon="card"></i><span>Credit / debit card<small>Visa, Mastercard, RuPay</small></span></button>
+                <button data-pay="nb"><i data-icon="building"></i><span>Net banking<small>50+ banks</small></span></button>
+                <button data-pay="emi"><i data-icon="calendar"></i><span>EMI<small>No-cost on 3 & 6 months</small></span></button>
+                <button data-pay="cod" class="na"><i data-icon="wallet"></i><span>Cash on delivery<small id="cod-small">Not available</small></span></button>
+              </div>
+              <div>
+                <div class="pay-panel on" data-pp="upi">
+                  <div class="grid" style="grid-template-columns:1fr 150px;gap:20px">
+                    <div class="col gap-12">
+                      <div class="field"><label for="upi-id">UPI ID</label><div class="row gap-8"><input class="input" id="upi-id" value="priya@okhdfcbank"><button class="btn" id="upi-verify">Verify</button></div><div class="pin-ok text-ok" id="upi-msg"><i data-icon="check-circle"></i> Verified · PRIYA NAIR</div></div>
+                      <div class="row wrap gap-8"><span class="app-chip"><span style="background:#4285f4">G</span>Google Pay</span><span class="app-chip"><span style="background:#5f259f">Pe</span>PhonePe</span><span class="app-chip"><span style="background:#00baf2">P</span>Paytm</span><span class="app-chip"><span style="background:#f47920">B</span>BHIM</span></div>
+                      <div class="callout c-ok small hide-dealer"><i data-icon="tag"></i><div><b>TRADEXUPI</b> — ₹250 off applies automatically when you pay by UPI (shown in your total).</div></div>
+                      <div class="small muted">You'll approve the collect request in your UPI app within 5 minutes. Don't close this page.</div>
+                    </div>
+                    <div class="col gap-8" style="align-items:center"><div class="qr" aria-label="UPI QR code"></div><span class="tiny muted">Or scan with any UPI app</span></div>
+                  </div>
+                </div>
+                <div class="pay-panel" data-pp="card">
+                  <div class="col gap-12">
+                    <label class="opt"><input type="radio" name="card" checked><div><div class="o-t">HDFC Bank Visa •••• 4821</div><div class="o-s">Saved as a token with Razorpay · expires 08/29</div></div><span class="badge b-ok">10% bank offer</span></label>
+                    <label class="opt"><input type="radio" name="card"><div><div class="o-t">Use a new card</div><div class="o-s">Credit, debit or RuPay</div></div><span></span></label>
+                    <div class="callout c-info small"><i data-icon="lock"></i><div>You'll enter card details on <b>Razorpay's secure hosted page</b> (PCI-DSS Level 1). Tradex never sees or stores your full card number or CVV — cards are saved only as provider tokens with your consent (RBI tokenisation).</div></div>
+                  </div>
+                </div>
+                <div class="pay-panel" data-pp="nb">
+                  <div class="opts g3">
+                    <label class="opt"><input type="radio" name="nb" checked><div class="o-t">HDFC Bank</div><span></span></label>
+                    <label class="opt"><input type="radio" name="nb"><div class="o-t">ICICI Bank</div><span></span></label>
+                    <label class="opt"><input type="radio" name="nb"><div class="o-t">State Bank of India</div><span></span></label>
+                    <label class="opt"><input type="radio" name="nb"><div class="o-t">Axis Bank</div><span></span></label>
+                    <label class="opt"><input type="radio" name="nb"><div class="o-t">Kotak Mahindra</div><span></span></label>
+                    <label class="opt"><input type="radio" name="nb"><div class="o-t">Canara Bank</div><span></span></label>
+                  </div>
+                  <select class="select mt-12" aria-label="Other banks"><option>Other banks…</option><option>Bank of Baroda</option><option>Karnataka Bank</option><option>Union Bank of India</option></select>
+                  <div class="small muted mt-8">You'll be redirected to your bank via Razorpay and returned here after authorisation.</div>
+                </div>
+                <div class="pay-panel" data-pp="emi"><div id="emi-body"></div></div>
+                <div class="pay-panel" data-pp="cod"><div id="cod-body"></div></div>
+              </div>
+            </div>
+            <div class="row"><button class="btn btn-primary btn-lg" data-go="review">Review order <i data-icon="arrow-right"></i></button><span class="small muted">You won't be charged until you place the order</span></div>
+          </div>
+        </section>
+
+        <!-- 4 · Review -->
+        <section class="co-step" id="s-review" data-anno="1A · Final total with GST · policy acknowledgement · duplicate-safe submit">
+          <div class="cs-head"><span class="cs-n">4</span><div class="grow"><h3>Review & place order</h3></div></div>
+          <div class="cs-body col gap-16" id="review-body"></div>
+        </section>
+      </div>
+
+      <aside class="sum" id="summary"></aside>
+    </div>
+  </div>
+</main>
+
+<!-- Price changed modal -->
+<div class="modal" id="m-price"><div class="modal-card">
+  <div class="modal-head"><h3 class="row gap-8"><i data-icon="alert" class="text-warn"></i> Price changed — please confirm</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+  <div class="modal-body col gap-12" id="m-price-body"></div>
+  <div class="modal-foot"><button class="btn" id="pc-remove">Remove this item</button><button class="btn btn-primary" id="pc-accept">Accept new total</button></div>
+</div></div>
+
+<div class="processing" id="processing" role="alertdialog" aria-live="assertive">
+  <div class="box"><div class="spin"></div><h3>Processing your payment…</h3><p class="small subtle mt-8">Please don't refresh, close this tab or press back. We're confirming with Razorpay — this usually takes a few seconds.</p><div class="tiny muted mt-12 mono">Attempt key ck_7Hq2Zp · order draft TXO-10492 · reservation <span id="proc-res">R-5534</span></div></div>
+</div>
+
+<script src="assets/tradex.js"></script>
+<script>
+TX.ready(() => {
+  const $ = TX.$, $$ = TX.$$, ic = TX.icon, fmt = TX.fmt, esc = TX.esc;
+  const as = TX.param("as"); if (["guest", "consumer", "dealer"].includes(as)) TX.setView(as);
+  const dealer = () => TX.view === "dealer";
+
+  /* ---------------- Cart snapshot (same source as the cart page) ---------------- */
+  const SEED = { "lap-01": 1, "ssd-01": 2, "ms-02": 1, "mon-02": 3, "prn-02": 1 };
+  if (TX.store.get("cart", null) === null) TX.setCart(SEED);
+  // Same stock revalidation as the cart page: reduce to available and record the adjustment
+  (() => { const c = TX.cart(), adj = TX.store.get("cartAdj", {}); let ch = false;
+    Object.keys(c).forEach((id) => { const p = TX.products.find((x) => x.id === id); if (p && p.stock !== "supplier" && c[id] > p.qty) { adj[id] = { from: c[id], to: p.qty }; c[id] = p.qty; ch = true; } });
+    if (ch) { TX.setCart(c); TX.store.set("cartAdj", adj); } })();
+  let cartObj = TX.cart();
+  if (!Object.keys(cartObj).length) cartObj = SEED; // prototype: never show an empty checkout
+  const avail = (p) => (p.stock === "supplier" ? 10 : p.qty);
+  let priceBump = 0; // price-changed state applies +₹1,500 to the partner line
+  let removedPartner = false;
+  const PARTNER_BUMP = 1500;
+  const lines = () => Object.keys(cartObj).filter((id) => TX.products.some((p) => p.id === id)).map((id) => {
+    const p = TX.byId(id); const q = Math.min(cartObj[id], avail(p));
+    const bump = p.stock === "supplier" ? priceBump : 0;
+    const unit = dealer() ? (q >= 10 ? p.tiers[1].p : q >= 5 ? p.tiers[0].p : p.dealer) + Math.round(bump / 1.18) : p.price + bump;
+    return { p, q, unit };
+  }).filter((l) => !(removedPartner && l.p.stock === "supplier"));
+  const coupon = TX.store.get("coupon", "TRADEX500");
+
+  /* ---------------- State ---------------- */
+  const STEPS = ["address", "delivery", "payment", "review"];
+  let step = STEPS.includes(TX.param("step")) ? TX.param("step") : STEPS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "address";
+  let state = ["normal", "failed", "price", "expired"].includes(TX.param("state")) ? TX.param("state") : "normal";
+  let dlv = "std", pay = "upi", split = "now", gst = dealer(), priceAccepted = false;
+  let addrSel = 0, secs = 14 * 60 + 52, resId = "R-5534";
+  if (state === "price") { priceBump = PARTNER_BUMP; step = "review"; }
+  if (state === "failed") step = "payment";
+
+  const ADDR = () => dealer()
+    ? [{ tag: "Business", name: "Arun Kumar · Metro Computers", l: "No. 42, Sayyaji Rao Road, Devaraja Mohalla", c: "Mysuru, Karnataka 570001", ph: "+91 98860 •••21", pin: "570001" },
+       { tag: "Warehouse", name: "Metro Computers — Stores", l: "Plot 18-C, Hebbal Industrial Area", c: "Mysuru, Karnataka 570016", ph: "+91 98860 •••21", pin: "570016" }]
+    : [{ tag: TX.view === "guest" ? "Entered at checkout" : "Home", name: "Priya Nair", l: "Flat 3B, Sai Enclave, 5th Block, 3rd Cross, Koramangala", c: "Bengaluru, Karnataka 560034", ph: "+91 98450 •••45", pin: "560034" },
+       { tag: "Office", name: "Priya Nair", l: "Tower C, 6th Floor, Prestige Tech Park, Marathahalli–Sarjapur ORR", c: "Bengaluru, Karnataka 560103", ph: "+91 98450 •••45", pin: "560103" }].slice(0, TX.view === "guest" ? 1 : 2);
+  const PINS = { 560034: ["Bengaluru", "Karnataka"], 560103: ["Bengaluru", "Karnataka"], 560066: ["Bengaluru", "Karnataka"], 570001: ["Mysuru", "Karnataka"], 570016: ["Mysuru", "Karnataka"], 570017: ["Mysuru", "Karnataka"], 400001: ["Mumbai", "Maharashtra"], 110001: ["New Delhi", "Delhi"], 600001: ["Chennai", "Tamil Nadu"], 682001: ["Kochi", "Kerala"] };
+
+  /* ---------------- Totals ---------------- */
+  function totals() {
+    const L = lines();
+    const shipFee = dlv === "exp" ? 149 : 0;
+    if (dealer()) {
+      const sub = L.reduce((n, l) => n + l.unit * l.q, 0);
+      const gstAmt = Math.round((sub + shipFee) * 0.18);
+      return { L, sub, shipFee, gst: gstAmt, total: sub + shipFee + gstAmt, items: L.reduce((n, l) => n + l.q, 0) };
+    }
+    const mrp = L.reduce((n, l) => n + l.p.mrp * l.q, 0), sell = L.reduce((n, l) => n + l.unit * l.q, 0);
+    const cp = coupon === "TRADEX500" && sell >= 20000 ? 500 : 0;
+    const upi = pay === "upi" && sell >= 20000 ? 250 : 0;
+    const total = sell - cp - upi + shipFee;
+    return { L, mrp, sell, disc: mrp - sell, cp, upi, shipFee, total, gst: Math.round((total * 18) / 118), items: L.reduce((n, l) => n + l.q, 0) };
+  }
+
+  /* ---------------- Renderers ---------------- */
+  function renderAddr() {
+    const A = ADDR();
+    $("#addr-list").innerHTML = A.map((a, i) => `<label class="opt"><input type="radio" name="addr" value="${i}" ${i === addrSel ? "checked" : ""}><div><div class="o-t row gap-8">${a.name} <span class="badge b-outline" style="height:19px">${a.tag}</span></div><div class="o-s">${a.l}<br>${a.c} · ${a.ph}</div></div><span></span></label>`).join("");
+    const a = A[addrSel];
+    const pin = a.pin, [city, st] = PINS[pin] || ["", ""];
+    const T = totals();
+    const partner = T.L.some((l) => l.p.stock === "supplier");
+    const codReasons = codWhyNot(T);
+    $("#svc").innerHTML = `<div class="callout c-ok small"><i data-icon="check-circle"></i><div><b>${pin} · ${city}, ${st} is serviceable.</b> Standard delivery by ${pin.startsWith("57") ? "Thu, 1 Oct" : "Wed, 30 Sep"}${pin.startsWith("56") ? " · Express next-day available" : ""}${partner ? " · partner item est. Mon, 5 Oct" : ""}. ${codReasons.length ? "Cash on delivery isn't available for this order (see payment)." : "Cash on delivery available up to ₹50,000."}</div></div>`;
+    TX.hydrate($("#svc"));
+    $("#sum-address").innerHTML = `${a.name} · ${a.l.split(",").slice(0, 2).join(",")}, ${a.c}${gst ? ` · GST invoice ${dealer() ? "29ABCDE1234F1Z5" : "requested"}` : ""}`;
+    // Business billing
+    $("#gst-toggle").checked = gst;
+    $("#gst-toggle").disabled = dealer();
+    $("#gst-box").classList.toggle("hidden", !gst);
+    $("#gst-box").innerHTML = dealer()
+      ? `<div class="row-between"><div><b>Metro Computers</b> <span class="badge b-ok" style="height:19px">${ic("check")} GSTIN verified 12 Mar 2026</span><div class="small subtle mt-4">GSTIN <span class="mono">29ABCDE1234F1Z5</span> · No. 42, Sayyaji Rao Road, Mysuru 570001</div></div><span class="small muted">Locked to your approved dealer account</span></div>
+         <div class="small mt-8">Place of supply: <b>Karnataka (29)</b> → CGST 9% + SGST 9%. Invoice emailed to arun@metrocomputers.example and available in Dealer zone → Invoices.</div>`
+      : `<div class="form-grid"><div class="field"><label for="gstin" class="req">GSTIN</label><input class="input" id="gstin" value="29AAKCS7788M1Z2" style="text-transform:uppercase"><div class="pin-ok" id="gstin-msg"></div></div><div class="field"><label for="gst-name" class="req">Registered business name</label><input class="input" id="gst-name" value="Sai Design Studio LLP"></div>
+         <div class="field full"><label class="check"><input type="checkbox" checked> Billing address same as the GST registration address</label></div></div>
+         <div class="small muted mt-8">GST invoices can't be changed after dispatch. Consumer prices stay the same — the invoice shows tax separately so you can claim input tax credit.</div>`;
+    if (!dealer() && gst) validateGstin();
+  }
+  function validateGstin() {
+    const v = ($("#gstin").value || "").trim().toUpperCase(); const m = $("#gstin-msg");
+    if (!/^\d{2}[A-Z]{5}\d{4}[A-Z][1-9A-Z]Z[0-9A-Z]$/.test(v)) { m.className = "pin-ok text-bad"; m.innerHTML = `${ic("x-circle")} Enter a valid 15-character GSTIN (e.g. 29ABCDE1234F1Z5)`; $("#gstin").classList.add("is-error"); return; }
+    $("#gstin").classList.remove("is-error");
+    const inState = v.startsWith("29");
+    m.className = "pin-ok " + (inState ? "text-ok" : "text-warn");
+    m.innerHTML = inState ? `${ic("check-circle")} Format valid · Karnataka (29) → CGST + SGST · name checked against GST portal` : `${ic("alert")} Registered in state ${v.slice(0, 2)} — invoice will show IGST 18% (place of supply rules)`;
+  }
+  function checkNewPin() {
+    const v = $("#na-pin").value.trim(), m = $("#na-pin-msg");
+    if (!/^[1-9]\d{5}$/.test(v)) { m.className = "pin-ok text-bad"; m.innerHTML = `${ic("x-circle")} Enter a valid 6-digit PIN code`; $("#na-pin").classList.add("is-error"); $("#na-city").value = ""; return false; }
+    $("#na-pin").classList.remove("is-error");
+    if (/^(79|74|19)/.test(v)) { m.className = "pin-ok text-bad"; m.innerHTML = `${ic("x-circle")} We don't deliver to ${v} yet — choose store pickup or another address`; return false; }
+    const hit = PINS[v] || (v.startsWith("56") ? ["Bengaluru", "Karnataka"] : v.startsWith("57") ? ["Mysuru", "Karnataka"] : null);
+    if (hit) { $("#na-city").value = hit[0]; $("#na-state").value = hit[1]; }
+    m.className = "pin-ok text-ok"; m.innerHTML = `${ic("check-circle")} ${hit ? `${hit[0]}, ${hit[1]} · ` : ""}serviceable · delivery by ${v.startsWith("56") ? "Wed, 30 Sep" : v.startsWith("57") ? "Thu, 1 Oct" : "Sat, 3 Oct"}`;
+    return true;
+  }
+
+  function renderDelivery() {
+    const T = totals();
+    const wh = T.L.filter((l) => l.p.stock !== "supplier"), pt = T.L.filter((l) => l.p.stock === "supplier");
+    $("#pick-box").classList.toggle("hidden", dlv !== "pick");
+    const it = (l) => `<div class="it">${TX.ph(l.p.img)}<span class="clamp-2">${l.q > 1 ? `<b>${l.q} ×</b> ` : ""}${esc(l.p.title)}</span></div>`;
+    $("#split").innerHTML = pt.length ? `<div class="col gap-12">
+      <div class="callout c-brand small"><i data-icon="split"></i><div><b>Your order ships in 2 parts.</b> ${pt.length} item${pt.length > 1 ? " is" : " is"} held by our partner warehouse. Tradex confirms it within 4 hours of payment; if it can't be confirmed, only that line is cancelled and refunded automatically — the rest of your order is unaffected.</div></div>
+      <div class="ship-box"><div class="sh"><b>Shipment 1 · ${dlv === "pick" ? "Pickup at SP Road" : "Tradex Central Warehouse, Bengaluru"}</b><span>${dlv === "pick" ? "Ready today 5 PM" : dlv === "exp" ? "By Tue, 29 Sep" : "By Wed, 30 Sep"} · ${wh.reduce((n, l) => n + l.q, 0)} items</span></div><div class="items">${wh.map(it).join("")}</div></div>
+      <div class="ship-box"><div class="sh"><b>Shipment 2 · Partner warehouse (Prime IT Distributors)</b><span>Est. Mon, 5 Oct · ships to your address${dlv === "pick" ? " (not eligible for pickup)" : ""}</span></div><div class="items">${pt.map(it).join("")}</div></div>
+      <div class="opts g2"><label class="opt"><input type="radio" name="split" value="now" ${split === "now" ? "checked" : ""}><div><div class="o-t">Ship available items now</div><div class="o-s">Recommended · 2 deliveries, no extra charge</div></div><span></span></label>
+        <label class="opt"><input type="radio" name="split" value="together" ${split === "together" ? "checked" : ""}><div><div class="o-t">Ship everything together</div><div class="o-s">One delivery, est. Mon, 5 Oct</div></div><span></span></label></div>
+    </div>` : `<div class="ship-box"><div class="sh"><b>1 shipment · Tradex Central Warehouse</b><span>By Wed, 30 Sep</span></div><div class="items">${wh.map(it).join("")}</div></div>`;
+    TX.hydrate($("#split"));
+    const nm = { std: "Standard · free", exp: "Express · ₹149", pick: "Store pickup · SP Road" }[dlv];
+    $("#sum-delivery").textContent = `${nm}${pt.length ? ` · ${split === "now" ? "2 shipments (partner item est. 5 Oct)" : "ship together, est. 5 Oct"}` : ""}`;
+  }
+
+  function codWhyNot(T) {
+    const r = [];
+    if (dealer()) r.push("Dealer orders are prepaid (credit terms not enabled for your account)");
+    if (T.total > 50000) r.push(`Order total ${fmt(T.total)} is above the ₹50,000 cash-on-delivery limit`);
+    if (T.L.some((l) => l.p.stock === "supplier")) r.push("Partner-warehouse items are prepaid only");
+    if (T.L.some((l) => /refurb|used/.test(l.p.cond) && l.p.price > 30000)) r.push("Refurbished items above ₹30,000 need prepayment");
+    return r;
+  }
+  function renderPayment() {
+    const T = totals();
+    $$("#pay-tabs button").forEach((b) => b.classList.toggle("on", b.dataset.pay === pay));
+    $$(".pay-panel").forEach((p) => p.classList.toggle("on", p.dataset.pp === pay));
+    const why = codWhyNot(T);
+    $("#cod-small").textContent = why.length ? "Not available for this order" : "Pay in cash or UPI at your door";
+    $('#pay-tabs [data-pay="cod"]').classList.toggle("na", !!why.length);
+    $("#cod-body").innerHTML = why.length ? `<div class="callout c-warn"><i data-icon="alert"></i><div><b>Cash on delivery isn't available for this order</b><ul class="small" style="margin:6px 0 0;padding-left:18px">${why.map((w) => `<li>${w}</li>`).join("")}</ul></div></div>
+      <div class="small muted mt-12">COD is offered for orders up to ₹50,000 containing only Tradex-warehouse stock, in serviceable PIN codes, for accounts without recent failed COD deliveries (eligibility rules v1.1).</div>`
+      : `<label class="opt"><input type="radio" checked><div><div class="o-t">Pay on delivery</div><div class="o-s">Cash or UPI to the courier · ₹49 COD fee</div></div><span></span></label>`;
+    TX.hydrate($("#cod-body"));
+    const plans = [["HDFC Bank credit card", 3, 0], ["HDFC Bank credit card", 6, 0], ["ICICI Bank credit card", 9, 13], ["SBI credit card", 12, 14], ["Bajaj Finserv EMI card", 6, 0]];
+    $("#emi-body").innerHTML = `<table class="table compact emi-t"><thead><tr><th></th><th>Plan</th><th class="r">Monthly</th><th class="r">Interest</th><th class="r">Total cost</th></tr></thead><tbody>${plans.map(([b, m, r], i) => {
+      const P = T.total, mo = r ? (P * (r / 1200)) / (1 - Math.pow(1 + r / 1200, -m)) : P / m;
+      return `<tr><td><input type="radio" name="emi" ${i === 1 ? "checked" : ""} aria-label="${b} ${m} months"></td><td><b>${b}</b><div class="cell-sub">${m} months ${r ? "" : '· <span class="text-ok strong">No-cost EMI</span>'}</div></td><td class="r"><b>${fmt(mo)}</b></td><td class="r">${r ? r + "% p.a." : "₹0 (discount applied)"}</td><td class="r">${fmt(mo * m)}</td></tr>`; }).join("")}</tbody></table>
+      <div class="small muted mt-8">EMI is set up on the card issuer's page via Razorpay. No-cost EMI: the interest is given as an upfront discount by Tradex. ${dealer() ? "EMI isn't available on dealer orders." : ""}</div>`;
+    const nm = { upi: "UPI · priya@okhdfcbank", card: "Card · HDFC Visa •••• 4821", nb: "Net banking · HDFC Bank", emi: "EMI · HDFC 6 months (no-cost)", cod: "Cash on delivery" }[pay];
+    $("#sum-payment").textContent = nm;
+    $("#pay-failed").innerHTML = state === "failed" ? `<div class="callout c-bad" data-anno="§10.3 Failed payment: clear reason, no double charge, retry"><i data-icon="x-circle"></i><div class="grow"><b>Payment failed — UPI request declined by your bank (code U30).</b><div class="small mt-4">No money was taken. If your bank shows a debit, it's reversed automatically within 5–7 working days — no need to pay again for the same attempt. Your items are still reserved (${fmtT(secs)} left).</div>
+      <div class="row gap-8 mt-8"><button class="btn btn-sm btn-primary" data-toast="Retrying payment with a new attempt · same order draft">Retry UPI</button><button class="btn btn-sm" data-pay-go="card">Pay by card instead</button><span class="tiny muted mono">attempt pay_OaK81 · failed 10:46</span></div></div></div>` : "";
+    TX.hydrate($("#pay-failed"));
+  }
+
+  function renderReview() {
+    const T = totals(), A = ADDR()[addrSel];
+    const blocked = state === "price" && !priceAccepted;
+    $("#review-body").innerHTML = `
+      ${blocked ? `<div class="callout c-warn"><i data-icon="alert"></i><div class="grow"><b>A price changed while you were checking out.</b> HP LaserJet Pro MFP M428fdw is now ${fmt(TX.byId("prn-02").price + PARTNER_BUMP)} (+${fmt(PARTNER_BUMP)}) because the partner's cost changed at 10:39. Please confirm the new total before placing the order.</div><button class="btn btn-sm btn-primary" data-open="m-price">Review change</button></div>` : state === "price" ? `<div class="callout c-ok small"><i data-icon="check-circle"></i><div>New total confirmed at 10:44 · quote version Q-10492-v2.</div></div>` : ""}
+      <div class="rev-grid">
+        <div class="rev-box"><div class="row-between"><b>Ship to</b><button class="link-btn small" data-go="address">Change</button></div><div class="mt-4"><b>${A.name}</b><br>${A.l}<br>${A.c}<br>${A.ph}</div></div>
+        <div class="rev-box"><div class="row-between"><b>Billing</b><button class="link-btn small" data-go="address">Change</button></div><div class="mt-4">${gst ? (dealer() ? "GST invoice · Metro Computers<br>GSTIN <span class='mono'>29ABCDE1234F1Z5</span><br>CGST + SGST (Karnataka)" : "GST invoice · Sai Design Studio LLP<br>GSTIN <span class='mono'>29AAKCS7788M1Z2</span>") : "Consumer invoice · same as shipping address"}</div></div>
+        <div class="rev-box"><div class="row-between"><b>Delivery</b><button class="link-btn small" data-go="delivery">Change</button></div><div class="mt-4">${$("#sum-delivery").textContent}</div></div>
+        <div class="rev-box"><div class="row-between"><b>Payment</b><button class="link-btn small" data-go="payment">Change</button></div><div class="mt-4">${$("#sum-payment").textContent}<div class="small muted">Charged by Razorpay after you place the order</div></div></div>
+      </div>
+      <div class="rev-box" style="padding:0">
+        <div class="row-between" style="padding:10px 14px;border-bottom:1px solid var(--line-2)"><b style="font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--tx-3)">Items · stock reserved under ${resId}</b><a class="small" href="store-cart.html">Edit cart</a></div>
+        ${T.L.map((l) => `<div class="row gap-12" style="padding:10px 14px;border-bottom:1px solid var(--line-2)">${TX.ph(l.p.img, "thumb")}<div class="grow"><div class="strong small">${esc(l.p.title)}</div><div class="tiny muted row gap-6 mt-4">${TX.condBadge(l.p.cond).replace('class="cond', 'style="height:17px;font-size:10px" class="cond')} ${/refurb|used/.test(l.p.cond) ? `Unit U-000${812 + TX.products.indexOf(l.p)} reserved ·` : ""} ${l.p.warranty} · ${l.p.stock === "supplier" ? "partner warehouse, est. 5 Oct" : "Central Warehouse"}</div></div><span class="small nowrap">${l.q} × ${fmt(l.unit)}</span><b style="min-width:90px;text-align:right">${fmt(l.unit * l.q)}</b></div>`).join("")}
+      </div>
+      <div class="panel col gap-8" data-anno="Policy versions recorded on the order">
+        <label class="check" style="align-items:flex-start"><input type="checkbox" id="ack" style="margin-top:3px"> <span class="small">I agree to the <a href="store-help.html#terms">Terms of sale</a> and <a href="store-help.html#returns">Return policy</a>. I understand refurbished/used items are covered by a <b>Tradex seller warranty</b> (WP-TRX-06M v3.2 / WP-TRX-03M v3.2), not the manufacturer, and have a 10-day return window (RP-REFURB-10D v2.1); other items follow RP-STD-7D v2.1.</span></label>
+        <span class="tiny muted">The policy versions above are stored with your order and apply to any later return or warranty claim.</span>
+      </div>
+      <div class="row gap-12">
+        <button class="btn btn-accent btn-lg" id="place" ${blocked ? "disabled" : ""} style="min-width:300px">${ic("lock")} Place order & pay ${fmt(T.total)}</button>
+        <span class="small muted" id="place-hint">${blocked ? "Confirm the price change first" : "Tick the agreement to continue"}</span>
+      </div>
+      <div class="tiny muted">Pressing the button twice won't create two orders — each checkout has a single attempt key. We confirm the order only after Razorpay verifies the payment server-side.</div>`;
+    TX.hydrate($("#review-body"));
+    syncPlace();
+  }
+  function syncPlace() {
+    const b = $("#place"); if (!b) return;
+    const blocked = (state === "price" && !priceAccepted) || state === "expired";
+    const ok = $("#ack") && $("#ack").checked && !blocked;
+    b.disabled = !ok;
+    $("#place-hint").textContent = state === "expired" ? "Re-reserve your items first" : blocked ? "Confirm the price change first" : ok ? "You'll be taken to the payment step" : "Tick the agreement to continue";
+  }
+
+  function renderSummary() {
+    const T = totals(), d = dealer();
+    $("#summary").innerHTML = `<div class="card">
+      <div class="card-head"><h3>Order summary</h3><a class="small" href="store-cart.html">Edit cart</a></div>
+      <div class="card-body col gap-12">
+        <div>${T.L.map((l) => `<div class="sum-item"><div style="position:relative">${TX.ph(l.p.img)}<span class="qb">${l.q}</span></div><div><div class="clamp-2" style="font-weight:600">${esc(l.p.title)}</div><div class="tiny muted">${TX.conditions[l.p.cond].label}${l.p.stock === "supplier" ? " · partner stock" : ""}</div></div><b>${fmt(l.unit * l.q)}</b></div>`).join("")}</div>
+        <div class="sum-rows">
+          ${d ? `<div class="r"><span>Subtotal (excl. GST)</span><b>${fmt(T.sub)}</b></div>
+            <div class="r"><span>Delivery</span><b>${T.shipFee ? fmt(T.shipFee) : '<span class="text-ok">Free</span>'}</b></div>
+            <div class="r"><span>CGST 9%</span><span>${fmt(T.gst / 2)}</span></div><div class="r"><span>SGST 9%</span><span>${fmt(T.gst / 2)}</span></div>
+            <div class="r total"><span>Total payable</span><span>${fmt(T.total)}</span></div>`
+          : `<div class="r"><span>Items (MRP)</span><span>${fmt(T.mrp)}</span></div>
+            <div class="r"><span>Discount on MRP</span><span class="text-ok">−${fmt(T.disc)}</span></div>
+            ${T.cp ? `<div class="r"><span>Coupon TRADEX500</span><span class="text-ok">−${fmt(T.cp)}</span></div>` : ""}
+            ${T.upi ? `<div class="r"><span>UPI offer TRADEXUPI</span><span class="text-ok">−${fmt(T.upi)}</span></div>` : ""}
+            <div class="r"><span>Delivery</span><span>${T.shipFee ? fmt(T.shipFee) : '<span class="text-ok">Free</span>'}</span></div>
+            <div class="r total"><span>Total</span><span>${fmt(T.total)}</span></div>
+            <div class="r sub"><span>Includes GST ${fmt(T.gst)}</span><span>CGST ${fmt(T.gst / 2)} + SGST ${fmt(T.gst / 2)}</span></div>`}
+        </div>
+        <div class="panel small col gap-6">
+          <span class="row gap-6">${ic("clock", "ic-sm")} Stock reserved under <b class="mono">${resId}</b> until ${state === "expired" ? "<b class='text-bad'>expired</b>" : "10:57"}</span>
+          <span class="row gap-6">${ic("refresh", "ic-sm")} Prices & stock revalidated at 10:42</span>
+          <span class="row gap-6">${ic("shield", "ic-sm")} Payment verified server-side before confirmation</span>
+        </div>
+      </div></div>`;
+  }
+
+  function renderBanner() {
+    const tm = $("#timer");
+    tm.classList.toggle("exp", state === "expired");
+    $("#state-banner").innerHTML = state === "expired" ? `<div class="callout c-bad mt-12" data-anno="§10.3 Expired reservation: re-check, never assume"><i data-icon="clock"></i><div class="grow"><b>Your 15-minute reservation (${resId}) has expired.</b> Items may have been released to other buyers. We'll re-check live stock and prices before you can pay — nothing has been charged.</div><button class="btn btn-sm btn-primary" id="rereserve">${ic("refresh", "ic-sm")} Re-check & reserve again</button></div>` : "";
+    TX.hydrate($("#state-banner"));
+  }
+
+  function renderSteps() {
+    const i = STEPS.indexOf(step);
+    STEPS.forEach((s, k) => { const el = $("#s-" + s); el.classList.toggle("done", k < i); el.classList.toggle("current", k === i); el.classList.toggle("future", k > i); });
+    $$("#stepper .step").forEach((el, k) => { el.classList.toggle("done", k < i); el.classList.toggle("current", k === i); $(".dot", el).innerHTML = k < i ? ic("check", "ic-sm") : k + 1; });
+  }
+  const fmtT = (s) => `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
+  function renderAll() {
+    $$("#state-seg button").forEach((b) => b.classList.toggle("active", b.dataset.state === state));
+    renderAddr(); renderDelivery(); renderPayment(); renderReview(); renderSummary(); renderBanner(); renderSteps();
+  }
+
+  /* ---------------- Timer (R08) ---------------- */
+  setInterval(() => {
+    if (state === "expired") { $("#timer-t").textContent = "00:00"; return; }
+    secs = Math.max(0, secs - 1); $("#timer-t").textContent = fmtT(secs); $("#timer").classList.toggle("low", secs < 180);
+  }, 1000);
+
+  /* ---------------- Events ---------------- */
+  const go = (s) => { step = s; renderAll(); const el = $("#s-" + s); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); };
+  document.addEventListener("click", (e) => {
+    const t = e.target; let el;
+    if ((el = t.closest("[data-go]"))) {
+      const target = el.dataset.go; const i = STEPS.indexOf(target), cur = STEPS.indexOf(step);
+      if (el.closest("#stepper") && i > cur) return; // only completed steps are clickable
+      if (target === "delivery" && cur === 0 && $("#new-addr") && !$("#new-addr").classList.contains("hidden") && !checkNewPin()) { TX.toast("Fix the address errors first", "alert"); return; }
+      go(target);
+    }
+    if ((el = t.closest("#state-seg [data-state]"))) {
+      state = el.dataset.state; priceAccepted = false; removedPartner = false; priceBump = state === "price" ? PARTNER_BUMP : 0;
+      if (state === "failed") step = "payment"; if (state === "price") step = "review"; if (state === "normal") secs = 14 * 60 + 52;
+      renderAll(); if (state === "price") setTimeout(() => { $("#m-price-body").innerHTML = priceModal(); TX.hydrate($("#m-price-body")); TX.open("m-price"); }, 250);
+    }
+    if ((el = t.closest("[data-pay]"))) { pay = el.dataset.pay; renderPayment(); renderSummary(); renderReview(); }
+    if ((el = t.closest("[data-pay-go]"))) { pay = el.dataset.payGo; renderPayment(); }
+    if (t.closest("#add-addr-btn")) { $("#new-addr").classList.remove("hidden"); checkNewPin(); }
+    if (t.closest("#close-addr")) $("#new-addr").classList.add("hidden");
+    if (t.closest("#save-addr")) { if (checkNewPin() && $("#na-state").value) { $("#new-addr").classList.add("hidden"); TX.toast("Address saved & verified serviceable", "pin"); } else if (!$("#na-state").value) TX.toast("Select a state", "alert"); }
+    if (t.closest("#upi-verify")) { const v = $("#upi-id").value.trim(); const m = $("#upi-msg"); if (/^[\w.\-]{2,}@[a-z]{2,}$/i.test(v)) { m.className = "pin-ok text-ok"; m.innerHTML = `${ic("check-circle")} Verified · PRIYA NAIR`; } else { m.className = "pin-ok text-bad"; m.innerHTML = `${ic("x-circle")} That doesn't look like a UPI ID (e.g. name@okhdfcbank)`; } }
+    if (t.closest("#rereserve")) { state = "normal"; resId = "R-5535"; secs = 15 * 60; renderAll(); TX.toast("All items still available · re-reserved under R-5535 for 15:00", "check-circle"); $("#res-id").textContent = resId; }
+    if (t.closest("#pc-accept")) { priceAccepted = true; TX.close(t); renderAll(); TX.toast("New total accepted · quote Q-10492-v2", "check-circle"); }
+    if (t.closest("#pc-remove")) { removedPartner = true; priceAccepted = true; TX.close(t); renderAll(); TX.toast("Item removed · totals updated", "trash"); }
+    if (t.closest("#place") && !$("#place").disabled) {
+      const b = $("#place"); b.disabled = true; b.innerHTML = `${ic("clock")} Processing — don't refresh`;
+      $("#proc-res").textContent = resId; $("#processing").classList.add("on");
+      setTimeout(() => (location.href = "store-order.html?placed=1"), 2200);
+    }
+  });
+  document.addEventListener("change", (e) => {
+    const t = e.target;
+    if (t.name === "addr") { addrSel = +t.value; renderAddr(); renderSummary(); }
+    if (t.name === "dlv") { dlv = t.value; renderDelivery(); renderSummary(); renderReview(); }
+    if (t.name === "split") { split = t.value; renderDelivery(); }
+    if (t.id === "gst-toggle") { gst = t.checked; renderAddr(); }
+    if (t.id === "ack") syncPlace();
+  });
+  document.addEventListener("input", (e) => {
+    if (e.target.id === "na-pin" && e.target.value.length >= 6) checkNewPin();
+    if (e.target.id === "gstin") validateGstin();
+  });
+  function priceModal() {
+    const p = TX.byId("prn-02"), T = totals();
+    return `<p class="small subtle">We re-checked prices before payment. One item changed after you started checkout:</p>
+      <div class="row gap-12 panel">${TX.ph(p.img, "thumb-lg")}<div class="grow"><b>${esc(p.title)}</b><div class="small mt-4"><span style="text-decoration:line-through;color:var(--tx-4)">${fmt(p.price)}</span> → <b>${fmt(p.price + PARTNER_BUMP)}</b> <span class="badge b-warn">+${fmt(PARTNER_BUMP)}</span></div><div class="tiny muted mt-4">Reason: partner warehouse cost update at 10:39 · price rule PR-REFURB-07 v3</div></div></div>
+      <div class="row-between"><span>New order total</span><b style="font-size:18px">${fmt(T.total)}</b></div>
+      <div class="callout c-info small"><i data-icon="info"></i><div>We never change a price silently. You can accept the new total or remove this item — the rest of your reservation stays in place.</div></div>`;
+  }
+  document.addEventListener("tx:view", () => { gst = dealer(); addrSel = 0; renderAll(); });
+
+  renderAll();
+  if (state === "price") setTimeout(() => { $("#m-price-body").innerHTML = priceModal(); TX.hydrate($("#m-price-body")); TX.open("m-price"); }, 300);
+});
+</script>
+</body>
+</html>

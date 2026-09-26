@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Customers & dealers · Tradex ERP</title>
+  <link rel="stylesheet" href="assets/tradex.css">
+  <style>
+    #tabs-main > .tabs .tab { padding: 10px 12px; }
+    .split { display: grid; grid-template-columns: 300px minmax(0, 1fr); min-height: 560px; }
+    .split > .side { border-right: 1px solid var(--line-2); }
+    .pick { display: flex; gap: 12px; align-items: flex-start; padding: 13px 16px; border-bottom: 1px solid var(--line-2); cursor: pointer; }
+    .pick:hover { background: #fafbff; }
+    .pick.active { background: var(--brand-50); box-shadow: inset 3px 0 0 var(--brand); }
+    .pick .p-t { font-weight: 650; font-size: 13.5px; }
+    .pick .p-s { font-size: 12px; color: var(--tx-3); margin-top: 2px; }
+    .chk { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; gap: 10px; align-items: start; padding: 11px 0; border-bottom: 1px solid var(--line-2); }
+    .chk:last-child { border-bottom: 0; }
+    .chk .ci { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; }
+    .chk .ci .ic { width: 14px; height: 14px; stroke-width: 3; }
+    .chk .ci.ok { background: var(--ok-50); color: var(--ok-tx); }
+    .chk .ci.bad { background: var(--bad-50); color: var(--bad-tx); }
+    .chk .ci.warn { background: var(--warn-50); color: var(--warn-tx); }
+    .chk .ci.muted { background: var(--bg-2); color: var(--tx-3); }
+    .chk .c-t { font-weight: 600; font-size: 13.5px; }
+    .chk .c-s { font-size: 12px; color: var(--tx-3); margin-top: 2px; }
+    .mini-kpis { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 1px; background: var(--line-2); border: 1px solid var(--line-2); border-radius: var(--r); overflow: hidden; }
+    .mini-kpis > div { background: #fff; padding: 12px 14px; }
+    .mini-kpis .mk-v { font-size: 18px; font-weight: 700; }
+    .mini-kpis .mk-l { font-size: 12px; color: var(--tx-3); }
+    .consent-ic { display: inline-flex; gap: 4px; }
+    .consent-ic span { width: 22px; height: 22px; border-radius: 6px; display: grid; place-items: center; }
+    .consent-ic .ic { width: 13px; height: 13px; }
+    .consent-ic .on { background: var(--ok-50); color: var(--ok-tx); }
+    .consent-ic .off { background: var(--bg-2); color: var(--tx-4); }
+    .merge-grid { display: grid; grid-template-columns: 170px 1fr 1fr 1fr; border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; font-size: 13px; }
+    .merge-grid > div { padding: 10px 12px; border-bottom: 1px solid var(--line-2); }
+    .merge-grid .mh { background: #fafbfc; font-weight: 650; font-size: 11.5px; text-transform: uppercase; letter-spacing: .04em; color: var(--tx-3); }
+    .merge-grid .ml { color: var(--tx-3); }
+    .merge-grid .mr { background: #f0fbf4; color: #05603a; font-weight: 600; }
+    .merge-grid label { display: flex; gap: 8px; align-items: flex-start; cursor: pointer; }
+    .merge-grid input { accent-color: var(--brand); margin-top: 3px; }
+    .sig { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 999px; }
+    .sig.strong { background: var(--ok-50); color: var(--ok-tx); }
+    .sig.weak { background: var(--bg-2); color: var(--tx-2); }
+    .sig.no { background: var(--bad-50); color: var(--bad-tx); }
+    .sig .ic { width: 12px; height: 12px; }
+    .banner-susp { display: none; }
+    .is-suspended .banner-susp { display: flex; }
+  </style>
+</head>
+<body data-app="erp" data-page="customers">
+<main>
+  <div class="page-head">
+    <div>
+      <div class="crumbs"><span>Partners</span><i data-icon="chevron-right"></i><span>Customers & dealers</span></div>
+      <h1>Customers & dealers</h1>
+      <p class="sub">Consumers (B2C) and approved business accounts (B2B) · personal data is masked by default — every reveal is logged with a reason</p>
+    </div>
+    <div class="actions">
+      <div class="dd"><button class="btn" data-dd-toggle><i data-icon="download"></i> Export <i data-icon="chevron-down" class="ic-sm"></i></button>
+        <div class="dd-menu"><div class="dd-label">Governed exports</div><a href="#" data-toast="Masked customer list queued · link expires in 24 h">Customer list (masked)</a><a href="#" data-toast="Request sent to Owner · full PII export needs approval">Full contact details (needs approval)</a><a href="#" data-toast="Dealer account summary exported">Dealer accounts & price lists</a></div></div>
+      <button class="btn" data-goto="duplicates"><i data-icon="users"></i> Review duplicates</button>
+      <button class="btn btn-primary" data-open="m-invite"><i data-icon="plus"></i> Invite business account</button>
+    </div>
+  </div>
+
+  <section class="grid g-6">
+    <div class="kpi"><div class="k-label"><i data-icon="user"></i> <span>Consumers</span></div><div class="k-value">12,480</div><div class="k-foot"><span class="delta up-good"><i data-icon="trending-up"></i> +312</span><span>30 d</span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="activity"></i> <span>Active · 90 d</span></div><div class="k-value">3,914</div><div class="k-foot"><span>repeat rate 31%</span></div></div>
+    <div class="kpi" data-anno="1A · R03 Approved dealers only"><div class="k-label"><i data-icon="briefcase"></i> <span>Business accounts</span></div><div class="k-value">46</div><div class="k-foot"><span>42 approved · 3 suspended · 1 invited</span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="inbox"></i> <span>Applications</span></div><div class="k-value text-warn">3</div><div class="k-foot"><span>oldest 3 d · SLA 2 working d</span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="rupee"></i> <span>Dealer share</span></div><div class="k-value">38%</div><div class="k-foot"><span class="delta up-good"><i data-icon="trending-up"></i> +3 pt</span><span>net, 30 d</span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="copy"></i> <span>Duplicates</span></div><div class="k-value">7</div><div class="k-foot"><span>2 eligible to merge</span></div></div>
+  </section>
+
+  <section class="card mt-16" data-tabset id="tabs-main">
+    <div class="tabs" style="padding:0 12px">
+      <button class="tab active" data-tab="all">All customers <span class="count">12,526</span></button>
+      <button class="tab" data-tab="business">Business accounts <span class="count">46</span></button>
+      <button class="tab" data-tab="applications">Dealer applications <span class="count">3</span></button>
+      <button class="tab" data-tab="duplicates">Duplicates <span class="count">7</span></button>
+      <button class="tab" data-tab="privacy">Consent & data requests <span class="count">1</span></button>
+    </div>
+
+    <!-- ALL CUSTOMERS -->
+    <div class="tab-panel active" data-panel="all">
+      <div class="table-toolbar">
+        <div class="input-icon" style="width:280px"><i data-icon="search"></i><input class="input input-sm" id="c-q" placeholder="Name, business, city, order no…" aria-label="Search customers"></div>
+        <div class="seg" id="c-type"><button class="active" data-t="all">All</button><button data-t="consumer">Consumers</button><button data-t="business">Business</button></div>
+        <button class="chip" data-toggle data-f="open">Open return / support</button>
+        <button class="chip" data-toggle data-f="wa">WhatsApp opt-in</button>
+        <button class="chip" data-toggle data-f="flag">Needs attention</button>
+        <span class="ml-auto small muted" id="c-count"></span>
+      </div>
+      <div class="bulkbar"><b><span class="bulk-count">0</span> selected</b><button class="btn btn-sm btn-ghost" style="color:#fff" data-toast="Tag added to selected customers">Add tag</button><button class="btn btn-sm btn-ghost" style="color:#fff" data-toast="Masked export queued">Export (masked)</button><button class="btn btn-sm btn-ghost" style="color:#fff" data-toast="Only customers with marketing consent will receive this · 2 excluded">Send consented message</button></div>
+      <div class="table-wrap"><table class="table">
+        <thead><tr><th class="check-col"><input type="checkbox" data-check-all aria-label="Select all"></th><th>Customer</th><th>Type</th><th class="r">Orders</th><th class="r">Net lifetime value</th><th>Last order</th><th>Open items</th><th>Consent</th><th>Status</th></tr></thead>
+        <tbody id="c-body"></tbody>
+      </table></div>
+      <div class="pager"><span>Showing 12 of 12,526 · values are net of returns, excl. GST</span><div class="pages"><button class="active">1</button><button>2</button><button>3</button><button>…</button><button>1,044</button></div></div>
+    </div>
+
+    <!-- BUSINESS ACCOUNTS -->
+    <div class="tab-panel" data-panel="business">
+      <div class="split">
+        <div class="side">
+          <div style="padding:12px 16px;border-bottom:1px solid var(--line-2)"><div class="input-icon"><i data-icon="search"></i><input class="input input-sm" placeholder="Search business accounts" aria-label="Search business accounts"></div></div>
+          <div id="biz-list"></div>
+        </div>
+        <div id="biz-detail" style="min-width:0"></div>
+      </div>
+    </div>
+
+    <!-- DEALER APPLICATIONS -->
+    <div class="tab-panel" data-panel="applications">
+      <div class="split">
+        <div class="side">
+          <div class="row-between" style="padding:12px 16px;border-bottom:1px solid var(--line-2)"><b class="small">Queue · oldest first</b><span class="small muted">SLA 2 working days</span></div>
+          <div id="app-list"></div>
+          <div style="padding:12px 16px" class="small muted"><div class="upper mb-8">Recently decided</div>
+            <div class="row-between mb-8"><span>Pixel Point, Belagavi</span><span class="status s-bad">Rejected</span></div>
+            <div class="small muted mb-12">20 Sep · duplicate of an existing account (same GSTIN) · reason sent</div>
+            <div class="row-between mb-8"><span>Coastal Infotech, Mangaluru</span><span class="status s-ok">Approved</span></div>
+            <div class="small muted">14 Mar 2025 · Dealer Standard → Gold 23 Sep 2026</div></div>
+        </div>
+        <div id="app-detail" style="min-width:0" data-anno="1A · R03 Dealer approval: verify, decide with reason, assign price list"></div>
+      </div>
+    </div>
+
+    <!-- DUPLICATES -->
+    <div class="tab-panel" data-panel="duplicates">
+      <div class="card-body">
+        <div class="callout c-info mb-16" data-anno="Merge safeguards — never merge on name only">
+          <i data-icon="shield"></i><div><strong>Merge safeguards.</strong> Candidates need at least <b>two strong identifiers</b> (verified phone, verified email, GSTIN or matching delivery address + one verified contact). Name similarity alone never qualifies. Consumer and business accounts are never merged. Orders, invoices and consent records keep their original IDs; merges are reversible for 30 days and fully audited.</div>
+        </div>
+        <div class="table-wrap" style="border:1px solid var(--line);border-radius:var(--r)"><table class="table">
+          <thead><tr><th>Candidate pair</th><th>Match signals</th><th>Assessment</th><th class="r">Action</th></tr></thead>
+          <tbody>
+            <tr class="selected"><td><div class="cell-main">Priya Nair ↔ Priya N</div><div class="cell-sub">C-100231 · C-118870 · both Bengaluru 560034</div></td>
+              <td><div class="row wrap gap-4"><span class="sig strong"><i data-icon="check"></i> Verified phone</span><span class="sig strong"><i data-icon="check"></i> Same delivery address</span><span class="sig weak">Name similar</span><span class="sig weak">Different email</span></div></td>
+              <td><span class="status s-ok">Eligible · 2 strong identifiers</span></td><td class="r"><button class="btn btn-sm btn-primary" data-scroll="merge-review">Review merge</button></td></tr>
+            <tr><td><div class="cell-main">Ananya Iyer ↔ Ananya I.</div><div class="cell-sub">C-104552 · C-120114</div></td>
+              <td><div class="row wrap gap-4"><span class="sig strong"><i data-icon="check"></i> Verified email</span><span class="sig weak">Different phone</span><span class="sig weak">Different address</span></div></td>
+              <td><span class="status s-warn">Needs a 2nd identifier · ask customer</span></td><td class="r"><button class="btn btn-sm" data-toast="Verification request sent to both contacts">Request verification</button></td></tr>
+            <tr><td><div class="cell-main">Rahul Deshpande ↔ Rahul Deshpande</div><div class="cell-sub">C-109871 Pune · C-121006 Nagpur</div></td>
+              <td><div class="row wrap gap-4"><span class="sig weak">Exact name</span><span class="sig no"><i data-icon="x"></i> Different phone</span><span class="sig no"><i data-icon="x"></i> Different email</span></div></td>
+              <td><span class="status s-bad">Blocked · name-only match</span></td><td class="r"><button class="btn btn-sm btn-ghost" data-toast="Marked as different people · won't be suggested again">Not duplicates</button></td></tr>
+            <tr><td><div class="cell-main">Coastal Infotech ↔ Faisal Ahmed (consumer)</div><div class="cell-sub">B-0019 · C-113420</div></td>
+              <td><div class="row wrap gap-4"><span class="sig strong"><i data-icon="check"></i> Verified phone</span><span class="sig weak">GSTIN used on a B2C order</span></div></td>
+              <td><span class="status s-warn">Not mergeable · business ↔ consumer</span></td><td class="r"><button class="btn btn-sm" data-toast="Invitation sent: Faisal can join Coastal Infotech as a member; personal account stays separate">Invite as member</button></td></tr>
+          </tbody>
+        </table></div>
+
+        <div class="card mt-16" id="merge-review" style="overflow:hidden">
+          <div class="card-head"><div><h3>Merge review · Priya Nair ↔ Priya N</h3><div class="sub">Choose the surviving value per field · the survivor keeps ID C-100231</div></div><span class="badge b-ok">Eligible</span></div>
+          <div class="card-body">
+            <div class="merge-grid">
+              <div class="mh">Field</div><div class="mh">Record A · C-100231 (survivor)</div><div class="mh">Record B · C-118870</div><div class="mh">After merge</div>
+              <div class="ml">Name</div><div><label><input type="radio" name="m-name" checked> Priya Nair</label></div><div><label><input type="radio" name="m-name"> Priya N</label></div><div class="mr">Priya Nair</div>
+              <div class="ml">Email</div><div><label><input type="radio" name="m-mail" checked> pr•••.nair@example.com <span class="badge b-ok sq">verified</span></label></div><div><label><input type="radio" name="m-mail"> pr•••work@example.com <span class="badge sq">unverified</span></label></div><div class="mr">Primary: pr•••.nair@ · B kept as secondary</div>
+              <div class="ml">Phone</div><div>+91 98••• ••345 <span class="badge b-ok sq">verified</span></div><div>+91 98••• ••345 <span class="badge b-ok sq">verified</span></div><div class="mr">+91 98••• ••345</div>
+              <div class="ml">Addresses</div><div>Home — Koramangala 560034 · Office — Whitefield 560066</div><div>Koramangala 560034 (same)</div><div class="mr">2 addresses (deduplicated)</div>
+              <div class="ml">Orders & invoices</div><div>7 orders</div><div>1 order · TXO-09870</div><div class="mr">8 orders linked · original IDs & invoices unchanged</div>
+              <div class="ml">Consent</div><div>WhatsApp marketing: opted out (3 Aug)</div><div>WhatsApp marketing: opted in (Mar)</div><div class="mr">Opted out — most restrictive / latest wins</div>
+              <div class="ml">Support & returns</div><div>SUP-7731 · RMA-0088</div><div>—</div><div class="mr">Re-linked to survivor</div>
+              <div class="ml" style="border-bottom:0">Wishlist & cart</div><div style="border-bottom:0">4 saved items</div><div style="border-bottom:0">1 saved item</div><div class="mr" style="border-bottom:0">5 saved items (union)</div>
+            </div>
+            <div class="grid g-3 mt-16">
+              <div class="panel small"><b>Record B after merge</b><div class="muted mt-4">Closed as “merged into C-100231”; sign-in redirected; kept 30 days for undo.</div></div>
+              <div class="panel small"><b>Customer notice</b><div class="muted mt-4">Email to both addresses explaining the merge and how to report a mistake.</div></div>
+              <div class="panel small"><b>Separation of duties</b><div class="muted mt-4">Suggested by automation (A25-style match) · executed by Support lead · audited.</div></div>
+            </div>
+          </div>
+          <div class="card-foot"><span class="small muted">Merge is reversible until 26 Oct 2026</span><div class="row gap-8"><button class="btn" data-toast="Marked as different people">Not the same person</button><button class="btn btn-primary" data-open="m-merge">Merge records…</button></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRIVACY -->
+    <div class="tab-panel" data-panel="privacy">
+      <div class="card-body">
+        <div class="grid g-4 mb-16">
+          <div class="panel"><div class="small muted">Order updates on WhatsApp</div><div class="strong" style="font-size:18px">71% opted in</div></div>
+          <div class="panel"><div class="small muted">Marketing · email</div><div class="strong" style="font-size:18px">46% opted in</div></div>
+          <div class="panel"><div class="small muted">Marketing · WhatsApp</div><div class="strong" style="font-size:18px">22% opted in</div></div>
+          <div class="panel"><div class="small muted">Opt-outs (30 d)</div><div class="strong" style="font-size:18px">184 <span class="small muted">· 61 via “STOP”</span></div></div>
+        </div>
+        <div class="row-between mb-8"><h4>Data requests</h4><span class="small muted">Deletion separates profile removal from legally retained transaction records</span></div>
+        <div class="table-wrap" style="border:1px solid var(--line);border-radius:var(--r)" data-anno="§19.3 Deletion keeps statutory invoice/warranty records"><table class="table">
+          <thead><tr><th>Request</th><th>Customer</th><th>Type</th><th>Received</th><th>Due</th><th>Retention check</th><th>Status</th><th class="r"></th></tr></thead>
+          <tbody>
+            <tr><td class="mono">DR-0012</td><td><div class="cell-main">Mohammed Salim</div><div class="cell-sub">C-111902</div></td><td>Delete account</td><td class="nowrap">20 Sep</td><td class="nowrap">20 Oct</td><td class="small">1 invoice (retain 8 yrs, masked) · warranty open until 2 Feb 2027</td><td><span class="status s-warn">In review</span></td><td class="r"><button class="btn btn-sm" data-toast="Profile & marketing data scheduled for deletion · invoice and warranty records retained (masked)">Process</button></td></tr>
+            <tr><td class="mono">DR-0013</td><td><div class="cell-main">Kavya Reddy</div><div class="cell-sub">C-116045</div></td><td>Access / copy of data</td><td class="nowrap">22 Sep</td><td class="nowrap">22 Oct</td><td class="small">No restriction</td><td><span class="status s-ok">Completed 24 Sep</span></td><td class="r"><button class="btn btn-sm btn-ghost" data-toast="Secure link re-sent · expires in 72 h">Re-send link</button></td></tr>
+            <tr><td class="mono">DR-0011</td><td><div class="cell-main">Arjun Mehta</div><div class="cell-sub">C-121377</div></td><td>Correct details</td><td class="nowrap">18 Sep</td><td class="nowrap">18 Oct</td><td class="small">Invoice name can't change after issue · credit/re-issue only</td><td><span class="status s-ok">Completed 19 Sep</span></td><td class="r"></td></tr>
+          </tbody>
+        </table></div>
+        <div class="callout c-warn mt-16 small"><i data-icon="alert"></i><div>Compliance items (DPDP rules, retention periods, notices) are an implementation checklist for qualified review — the retention periods shown are placeholders until confirmed by the business and its advisers.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Customer 360 drawer -->
+  <div class="drawer" id="d-360"><div class="drawer-card wide">
+    <div class="drawer-head"><div id="c360-head" class="grow"></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="drawer-body" id="c360-body"></div>
+    <div class="drawer-foot"><button class="btn" data-toast="Data request DR-0014 opened for this customer">Data request</button><a class="btn" href="erp-returns.html">Start return</a><a class="btn btn-primary" href="erp-orders.html#assisted"><i data-icon="receipt" class="ic-sm"></i> Assisted order</a></div>
+  </div></div>
+
+  <!-- Suspend modal -->
+  <div class="modal" id="m-suspend"><div class="modal-card">
+    <div class="modal-head"><h3>Suspend business account</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-body col gap-12">
+      <div class="callout c-warn small"><i data-icon="alert"></i><div>Suspension hides dealer prices and blocks new orders. Open orders continue under their confirmed terms; invoices and history stay accessible to authorised members.</div></div>
+      <div class="field"><label class="req" for="susp-reason">Reason</label><select class="select" id="susp-reason"><option value="">Select a reason…</option><option>GSTIN cancelled / inactive on portal</option><option>Suspected misuse of dealer pricing (resale to consumers)</option><option>Chargeback / payment dispute</option><option>Account owner request</option></select><span class="err hidden" id="susp-err">Choose a reason — it is shown to approvers and kept in the audit log.</span></div>
+      <div class="field"><label for="susp-note">Note to account owner</label><textarea class="textarea" id="susp-note" placeholder="Optional explanation sent by email"></textarea></div>
+    </div>
+    <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-danger" id="susp-go">Suspend account</button></div>
+  </div></div>
+
+  <!-- Merge modal -->
+  <div class="modal" id="m-merge"><div class="modal-card">
+    <div class="modal-head"><h3>Confirm merge</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-body col gap-12">
+      <p>Merge <b>C-118870 (Priya N)</b> into <b>C-100231 (Priya Nair)</b>?</p>
+      <dl class="kv"><dt>Strong identifiers</dt><dd>Verified phone · same delivery address</dd><dt>Records moved</dt><dd>1 order, 1 wishlist item, 1 address</dd><dt>Consent result</dt><dd>WhatsApp marketing: opted out</dd><dt>Undo until</dt><dd>26 Oct 2026</dd></dl>
+      <div class="field"><label class="req" for="merge-reason">Reason</label><input class="input" id="merge-reason" value="Customer confirmed on call SUP-7731 that both accounts are hers"></div>
+    </div>
+    <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-primary" data-close data-toast="Merged · C-118870 → C-100231 · reversible for 30 days · audit entry AUD-55120">Merge</button></div>
+  </div></div>
+
+  <!-- Invite modal -->
+  <div class="modal" id="m-invite"><div class="modal-card">
+    <div class="modal-head"><h3>Invite a business account</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-body col gap-12">
+      <p class="small subtle">The business completes the same application (GSTIN check, documents). An invitation never creates an approved account on its own.</p>
+      <div class="form-grid"><div class="field"><label class="req" for="inv-biz">Business name</label><input class="input" id="inv-biz" placeholder="e.g. Karavali Computers"></div><div class="field"><label class="req" for="inv-mail">Contact email</label><input class="input" id="inv-mail" type="email" placeholder="owner@business.example"></div>
+      <div class="field"><label for="inv-list">Suggested price list</label><select class="select" id="inv-list"><option>Dealer Standard</option><option>Dealer Gold (needs manager approval)</option></select></div><div class="field"><label for="inv-city">City</label><input class="input" id="inv-city" placeholder="City"></div></div>
+    </div>
+    <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-primary" data-close data-toast="Invitation sent · link valid for 7 days">Send invitation</button></div>
+  </div></div>
+</main>
+<script src="assets/tradex.js"></script>
+<script>
+TX.ready(() => {
+  const $ = TX.$, $$ = TX.$$, ic = TX.icon, fmt = TX.fmt;
+  const colors = ["#2e5bff", "#7c3aed", "#0e9f8a", "#c2410c", "#0b8ec9", "#be185d", "#4d7c0f", "#b45309"];
+  const init = (n) => n.split(" ").filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase();
+  document.addEventListener("click", (e) => {
+    const g = e.target.closest("[data-goto]"); if (g) { TX.activateTab(g.dataset.goto); $("#tabs-main").scrollIntoView({ behavior: "smooth" }); }
+    const sc = e.target.closest("[data-scroll]"); if (sc) document.getElementById(sc.dataset.scroll).scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  /* ---------------- Customers ---------------- */
+  const D = TX.dealers;
+  const C = [
+    { id: "C-100231", name: "Priya Nair", type: "consumer", seg: "Repeat buyer", city: "Bengaluru 560034", orders: 7, ltv: 142380, last: "24 Sep · TXO-10482", open: [["support", "SUP-7731"]], consent: [1, 1, 0], status: ["s-ok", "Active"], since: "Jan 2023", email: "pr•••.nair@example.com", phone: "+91 98••• ••345", dup: true },
+    { id: "B-0007", name: D[0].name, contact: D[0].contact, type: "business", list: D[0].list, city: D[0].city, orders: 38, ltv: 1860000, last: "25 Sep · TXO-10466", open: [], consent: [1, 1, 1], status: ["s-ok", D[0].status], biz: "metro" },
+    { id: "C-109871", name: "Rahul Deshpande", type: "consumer", seg: "New", city: "Pune 411001", orders: 2, ltv: 84990, last: "12 Sep · TXO-10398", open: [["return", "RMA-0091"]], consent: [1, 0, 0], status: ["s-ok", "Active"], since: "Jul 2026", email: "ra•••@example.com", phone: "+91 99••• ••120" },
+    { id: "B-0011", name: D[1].name, contact: D[1].contact, type: "business", list: D[1].list, city: D[1].city, orders: 21, ltv: 790000, last: "22 Sep · TXO-10431", open: [], consent: [1, 1, 0], status: ["s-ok", D[1].status], biz: "sai" },
+    { id: "C-104552", name: "Ananya Iyer", type: "consumer", seg: "Repeat buyer", city: "Bengaluru 560066", orders: 4, ltv: 61450, last: "19 Sep · TXO-10417", open: [], consent: [1, 1, 1], status: ["s-ok", "Active"], since: "Nov 2024", email: "an•••@example.com", phone: "+91 97••• ••018", dup: true },
+    { id: "B-0019", name: D[2].name, contact: D[2].contact, type: "business", list: D[2].list + " + contract", city: D[2].city, orders: 44, ltv: 2240000, last: "26 Sep · TXO-10489", open: [["quote", "Q-88114"]], consent: [1, 1, 0], status: ["s-ok", D[2].status], biz: "coastal" },
+    { id: "C-111902", name: "Mohammed Salim", type: "consumer", seg: "One-time", city: "Mysuru 570017", orders: 1, ltv: 5499, last: "2 Aug · TXO-09912", open: [["privacy", "DR-0012"]], consent: [0, 0, 0], status: ["s-warn", "Deletion requested"], since: "Aug 2026", email: "mo•••@example.com", phone: "+91 96••• ••771", flag: true },
+    { id: "A-0031", name: D[3].name, contact: D[3].contact, type: "business", list: "—", city: D[3].city, orders: 0, ltv: 0, last: "—", open: [["application", "Dealer application"]], consent: [1, 0, 0], status: ["s-warn", D[3].status], app: true, flag: true },
+    { id: "C-116045", name: "Kavya Reddy", type: "consumer", seg: "Repeat buyer", city: "Hyderabad 500081", orders: 3, ltv: 27480, last: "5 Sep · TXO-10301", open: [["support", "SUP-7740"]], consent: [1, 1, 0], status: ["s-ok", "Active"], since: "Feb 2025", email: "ka•••@example.com", phone: "+91 90••• ••552" },
+    { id: "B-0023", name: "Vijay Traders", contact: "Vijay Kumar", type: "business", list: "Dealer Standard", city: "Davanagere", orders: 9, ltv: 210000, last: "30 Jul · TXO-09790", open: [], consent: [1, 0, 0], status: ["s-bad", "Suspended"], biz: "vijay", flag: true },
+    { id: "C-118870", name: "Priya N", type: "consumer", seg: "Possible duplicate", city: "Bengaluru 560034", orders: 1, ltv: 7626, last: "3 Mar · TXO-09870", open: [], consent: [1, 1, 1], status: ["s-warn", "Possible duplicate"], since: "Mar 2026", email: "pr•••work@example.com", phone: "+91 98••• ••345", flag: true },
+    { id: "C-121377", name: "Arjun Mehta", type: "consumer", seg: "Guest → account", city: "Chennai 600040", orders: 1, ltv: 10165, last: "26 Sep · TXO-10490", open: [], consent: [1, 0, 0], status: ["s-ok", "Active"], since: "Sep 2026", email: "ar•••@example.com", phone: "+91 94••• ••208" },
+  ];
+  const openBadge = (o) => ({ support: `<span class="badge b-info sq">${ic("headset")} ${o[1]}</span>`, return: `<span class="badge b-warn sq">${ic("undo")} ${o[1]}</span>`, quote: `<span class="badge b-brand sq">${ic("file")} ${o[1]}</span>`, privacy: `<span class="badge b-bad sq">${ic("shield")} ${o[1]}</span>`, application: `<span class="badge b-warn sq">${ic("inbox")} Application</span>` }[o[0]]);
+  const consentHTML = (c) => `<span class="consent-ic"><span class="${c[0] ? "on" : "off"}" data-tip="Order updates ${c[0] ? "on" : "off"}">${ic("bell")}</span><span class="${c[1] ? "on" : "off"}" data-tip="Email marketing ${c[1] ? "opted in" : "off"}">${ic("mail")}</span><span class="${c[2] ? "on" : "off"}" data-tip="WhatsApp marketing ${c[2] ? "opted in" : "off"}">${ic("whatsapp")}</span></span>`;
+  const renderC = () => {
+    const q = $("#c-q").value.toLowerCase(), t = ($("#c-type .active") || {}).dataset?.t || "all";
+    const f = $$(".chip[data-f].active").map((x) => x.dataset.f);
+    const rows = C.filter((c) => (t === "all" || c.type === t) && (c.name + (c.contact || "") + c.city + c.last).toLowerCase().includes(q)
+      && (!f.includes("open") || c.open.length) && (!f.includes("wa") || c.consent[2]) && (!f.includes("flag") || c.flag));
+    $("#c-count").textContent = `${rows.length} shown`;
+    $("#c-body").innerHTML = rows.map((c, i) => `<tr data-cust="${c.id}" style="cursor:pointer">
+      <td class="check-col"><input type="checkbox" aria-label="Select ${c.name}"></td>
+      <td><div class="row"><span class="avatar sm ${c.type === "business" ? "sq" : ""}" style="background:${colors[C.indexOf(c) % colors.length]}">${init(c.name)}</span><div><div class="cell-main">${c.name}</div><div class="cell-sub">${c.type === "business" ? c.contact + " · " + c.city : c.id + " · " + c.city}</div></div></div></td>
+      <td>${c.type === "business" ? `<span class="badge b-vendor">${ic("briefcase")} ${c.list === "—" ? "Applicant" : c.list}</span>` : `<span class="badge">${c.seg}</span>`}</td>
+      <td class="r">${c.orders}</td><td class="r strong">${c.ltv ? (c.ltv >= 100000 ? TX.fmtK(c.ltv) : fmt(c.ltv)) : "—"}</td>
+      <td class="small nowrap">${c.last.split(" · ")[0]}${c.last.includes(" · ") ? `<div class="cell-sub mono">${c.last.split(" · ")[1]}</div>` : ""}</td><td>${c.open.map(openBadge).join(" ") || '<span class="muted small">—</span>'}</td>
+      <td>${consentHTML(c.consent)}</td><td><span class="status ${c.status[0]}">${c.status[1]}</span></td></tr>`).join("") || `<tr><td colspan="9"><div class="empty">${ic("users")}<h4>No customers match these filters</h4><p>Clear a filter or search by order number.</p></div></td></tr>`;
+  };
+  renderC();
+  $("#c-q").addEventListener("input", renderC);
+  $("#c-type").addEventListener("click", (e) => { if (e.target.closest("button")) setTimeout(renderC); });
+  $$(".chip[data-f]").forEach((ch) => ch.addEventListener("click", () => setTimeout(renderC)));
+  document.addEventListener("click", (e) => {
+    const r = e.target.closest("tr[data-cust]"); if (!r || e.target.closest("input,a,button")) return;
+    const c = C.find((x) => x.id === r.dataset.cust);
+    if (c.app) { TX.activateTab("applications"); return; }
+    if (c.biz) { TX.activateTab("business"); renderBiz(c.biz); return; }
+    open360(c);
+  });
+
+  /* ---------------- Customer 360 ---------------- */
+  const PROD = ["lap-01", "ssd-01", "ms-02", "hp-01", "kb-01", "mon-01", "hub-02", "ram-02"];
+  const open360 = (c) => {
+    const n = Math.max(1, Math.min(c.orders, 5));
+    const orders = [...Array(n)].map((_, i) => { const p = TX.byId(PROD[(i + c.orders) % PROD.length]); return { id: i === 0 ? c.last.split("· ")[1] : "TXO-" + (10470 - i * 37 - c.orders), p, date: i === 0 ? c.last.split(" · ")[0] : ["18 Aug", "2 Jul", "11 May", "20 Feb"][i - 1] }; });
+    const isPriya = c.id === "C-100231";
+    $("#c360-head").innerHTML = `<div class="row gap-12"><span class="avatar lg" style="background:${colors[C.indexOf(c) % colors.length]}">${init(c.name)}</span><div class="grow"><div class="row gap-8"><h3>${c.name}</h3><span class="badge">${c.seg}</span><span class="status ${c.status[0]}">${c.status[1]}</span></div>
+      <div class="small muted mt-4">${c.id} · customer since ${c.since} · ${c.city}</div>
+      <div class="small mt-4 row gap-8"><span class="mono">${c.email}</span>·<span class="mono">${c.phone}</span><button class="link-btn small" style="display:inline-flex;align-items:center;gap:4px" data-toast="Reveal logged · reason: “support call SUP-7731” · visible for 5 min">${ic("eye", "ic-sm")} Reveal</button></div></div></div>`;
+    $("#c360-body").innerHTML = `
+      ${c.status[1] === "Deletion requested" ? `<div class="callout c-warn mb-16 small">${ic("shield")}<div><b>Deletion requested (DR-0012).</b> Marketing stopped. Profile removal is scheduled after retention review; the invoice and open warranty stay as statutory records.</div></div>` : ""}
+      ${c.dup ? `<div class="callout c-info mb-16 small">${ic("copy")}<div><b>Possible duplicate:</b> ${isPriya ? "Priya N (C-118870) shares a verified phone and address." : "a similar account exists."} <button class="link-btn" data-close data-goto="duplicates">Review</button></div></div>` : ""}
+      <div class="mini-kpis mb-16" data-anno="Customer 360 · lifetime value is net of returns, excl. GST">
+        <div><div class="mk-v">${c.ltv ? fmt(c.ltv) : "—"}</div><div class="mk-l">Lifetime value (net)</div></div>
+        <div><div class="mk-v">${c.orders}</div><div class="mk-l">Orders</div></div>
+        <div><div class="mk-v">${c.orders ? fmt(c.ltv / c.orders) : "—"}</div><div class="mk-l">Avg. order</div></div>
+        <div><div class="mk-v">${isPriya ? 1 : c.open.some((o) => o[0] === "return") ? 1 : 0}</div><div class="mk-l">Returns</div></div>
+        <div><div class="mk-v">${isPriya ? 3 : c.open.some((o) => o[0] === "support") ? 1 : 0}</div><div class="mk-l">Conversations</div></div>
+      </div>
+      <div data-tabset>
+        <div class="tabs mb-16"><button class="tab active" data-tab="c-orders">Orders</button><button class="tab" data-tab="c-returns">Returns</button><button class="tab" data-tab="c-support">Support</button><button class="tab" data-tab="c-consent">Consent</button><button class="tab" data-tab="c-profile">Profile & notes</button></div>
+        <div class="tab-panel active" data-panel="c-orders">
+          <table class="table compact" style="border:1px solid var(--line);border-radius:var(--r)"><thead><tr><th>Order</th><th>Item</th><th class="r">Total</th><th>Order</th><th>Payment</th><th>Fulfilment</th></tr></thead><tbody>
+          ${orders.map((o, i) => `<tr data-href="erp-orders.html"><td><div class="cell-main mono">${o.id}</div><div class="cell-sub">${o.date}</div></td><td><div class="row gap-8">${TX.ph(o.p.img, "thumb")}<span class="small truncate" style="max-width:190px">${o.p.title}</span></div></td><td class="r">${fmt(o.p.price)}</td>
+            <td><span class="status ${i === 0 ? "s-info" : "s-ok"}">${i === 0 ? "Confirmed" : "Closed"}</span></td><td><span class="status s-ok">Captured</span></td><td><span class="status ${i === 0 ? "s-brand" : "s-ok"}">${i === 0 ? "Packed" : "Delivered"}</span></td></tr>`).join("")}
+          </tbody></table>
+          <p class="small muted mt-8">Order, payment and fulfilment are separate states — see each order for its own timeline.</p>
+        </div>
+        <div class="tab-panel" data-panel="c-returns">
+          ${isPriya || c.open.some((o) => o[0] === "return") ? `<div class="list-row" style="padding:12px 0"><span class="li-icon warn">${ic("undo")}</span><div class="grow"><b>${isPriya ? "RMA-0088" : "RMA-0091"}</b> · ${isPriya ? "Logitech G305 — double-click fault" : "Dell Latitude 5420 — battery health below grade"}<div class="small muted">${isPriya ? "Resolved 14 Jul · replaced under warranty · serial matched" : "Received 24 Sep · in quarantine · inspection due 27 Sep"}</div></div><span class="status ${isPriya ? "s-ok" : "s-warn"}">${isPriya ? "Resolved" : "Inspecting"}</span></div>` : `<div class="empty">${ic("undo")}<h4>No returns</h4><p>This customer hasn't returned anything.</p></div>`}
+        </div>
+        <div class="tab-panel" data-panel="c-support">
+          ${isPriya ? `<div class="list-row" style="padding:12px 0"><span class="li-icon" style="background:#e9f9ef;color:#178f4a">${ic("whatsapp")}</span><div class="grow"><b>SUP-7731</b> · Where is my order TXO-10482?<div class="small muted">WhatsApp · verified by OTP · Karthik R. · today 09:58</div></div><span class="status s-info">Open</span></div>
+          <div class="list-row" style="padding:12px 0"><span class="li-icon brand">${ic("chat")}</span><div class="grow"><b>SUP-7502</b> · Compatible RAM for Latitude 5420<div class="small muted">Web chat → specialist · 2 Sep</div></div><span class="status s-ok">Resolved</span></div>
+          <div class="list-row" style="padding:12px 0"><span class="li-icon">${ic("mail")}</span><div class="grow"><b>SUP-7120</b> · GST invoice copy<div class="small muted">Email · 21 Jul</div></div><span class="status s-ok">Resolved</span></div>`
+          : c.open.some((o) => o[0] === "support") ? `<div class="list-row" style="padding:12px 0"><span class="li-icon brand">${ic("chat")}</span><div class="grow"><b>${c.open.find((o) => o[0] === "support")[1]}</b> · Delivery date question<div class="small muted">Web chat · yesterday</div></div><span class="status s-info">Open</span></div>` : `<div class="empty">${ic("headset")}<h4>No conversations</h4></div>`}
+        </div>
+        <div class="tab-panel" data-panel="c-consent">
+          <table class="table compact" style="border:1px solid var(--line);border-radius:var(--r)"><thead><tr><th>Purpose</th><th>Channel</th><th>Status</th><th>Captured</th><th>Evidence</th></tr></thead><tbody>
+            <tr><td>Order & delivery updates</td><td>WhatsApp · SMS</td><td>${c.consent[0] ? '<span class="status s-ok">Opted in</span>' : '<span class="status s-muted">Off</span>'}</td><td class="small">${c.since} · checkout</td><td class="small mono">notice v3</td></tr>
+            <tr><td>Offers & new arrivals</td><td>Email</td><td>${c.consent[1] ? '<span class="status s-ok">Opted in</span>' : '<span class="status s-muted">Not given</span>'}</td><td class="small">${c.since} · account signup</td><td class="small mono">notice v3 · double opt-in</td></tr>
+            <tr><td>Offers & new arrivals</td><td>WhatsApp</td><td>${c.consent[2] ? '<span class="status s-ok">Opted in</span>' : '<span class="status s-bad">Opted out</span>'}</td><td class="small">${c.consent[2] ? "Mar 2026 · product page" : "3 Aug 2026 · replied “STOP”"}</td><td class="small mono">${c.consent[2] ? "template opt-in" : "WA msg wamid.HBg…"}</td></tr>
+            <tr><td>Personalised recommendations</td><td>Website</td><td><span class="status s-muted">Not asked (Phase 1)</span></td><td class="small">—</td><td class="small">—</td></tr>
+          </tbody></table>
+          <p class="small muted mt-8">Consent changes are append-only; the most recent record wins. Transactional messages don't need marketing consent but respect opt-outs where required.</p>
+        </div>
+        <div class="tab-panel" data-panel="c-profile">
+          <div class="grid g-2"><dl class="kv"><dt>Addresses</dt><dd>${isPriya ? "Home — Koramangala 560034<br>Office — Whitefield 560066" : c.city}</dd><dt>Preferred branch</dt><dd>${c.city.includes("Mysuru") ? "Mysuru" : "Koramangala"}</dd><dt>Buyer type</dt><dd>Consumer · public prices incl. GST</dd></dl>
+          <dl class="kv"><dt>Tags</dt><dd><span class="badge">Refurb buyer</span> <span class="badge">EMI</span></dd><dt>Risk flags</dt><dd>None · COD eligible</dd><dt>Account manager</dt><dd>—</dd></dl></div>
+          <div class="field mt-16"><label for="c-note">Internal note (staff only)</label><textarea class="textarea" id="c-note" placeholder="Visible to staff; never shown to the customer"></textarea></div>
+        </div>
+      </div>`;
+    TX.hydrate($("#c360-body"));
+    TX.open("d-360");
+  };
+
+  /* ---------------- Business accounts ---------------- */
+  const BIZ = {
+    metro: { name: D[0].name, legal: "Metro Computers (Prop. Arun Kumar)", list: "Dealer Gold v7", list2: "v8 pending approval (1 Oct)", gstin: "29ABCPM1234K1Z6", pan: "ABCPM1234K", addr: "12, Sayyaji Rao Road, Mysuru 570001", since: "14 Mar 2025", orders: 38, net: "₹18.6 L", aov: "₹48,950", last: "TXO-10466 · 25 Sep", returns: "2 (1.1%)", manager: "Vikram Shetty", status: "active",
+      members: [["Arun Kumar", "Account owner", 1, 1, 1, "Today 09:12", "Active"], ["Meena Kumar", "Purchaser", 1, 0, 0, "24 Sep", "Active"], ["Ravi Shankar", "Accounts", 0, 1, 0, "20 Sep", "Active"], ["Sanjay M. (invited)", "Purchaser", 1, 0, 0, "—", "Invite expires 29 Sep"]] },
+    sai: { name: D[1].name, legal: "Sai Systems & Services Pvt Ltd", list: "Dealer Standard v6", list2: "valid to 31 Dec", gstin: "29AAHCS7788M1Z2", pan: "AAHCS7788M", addr: "B H Road, Tumakuru 572101", since: "2 Jun 2025", orders: 21, net: "₹7.9 L", aov: "₹37,600", last: "TXO-10431 · 22 Sep", returns: "0", manager: "Anita Rao", status: "active",
+      members: [["Lakshmi Narayan", "Account owner", 1, 1, 1, "22 Sep", "Active"], ["Harish B", "Purchaser", 1, 0, 0, "22 Sep", "Active"]] },
+    coastal: { name: D[2].name, legal: "Coastal Infotech Pvt Ltd", list: "Dealer Gold v7 + contract CT-0007", list2: "contract to 31 Mar 2027", gstin: "29AAECC4410P1ZK", pan: "AAECC4410P", addr: "Bendoorwell, Mangaluru 575002", since: "14 Mar 2025", orders: 44, net: "₹22.4 L", aov: "₹50,900", last: "TXO-10489 · 26 Sep", returns: "1 (0.4%)", manager: "Anita Rao", status: "active",
+      members: [["Faisal Ahmed", "Account owner", 1, 1, 1, "Today 08:40", "Active"], ["Shreya Pai", "Purchaser", 1, 0, 0, "25 Sep", "Active"], ["Accounts desk", "Accounts", 0, 1, 0, "19 Sep", "Active"]] },
+    vijay: { name: "Vijay Traders", legal: "Vijay Traders (Prop. Vijay Kumar)", list: "Dealer Standard v6", list2: "hidden while suspended", gstin: "29AKVPK5521D1Z0", pan: "AKVPK5521D", addr: "P J Extension, Davanagere 577002", since: "9 Jan 2026", orders: 9, net: "₹2.1 L", aov: "₹23,300", last: "TXO-09790 · 30 Jul", returns: "1 (11%)", manager: "Vikram Shetty", status: "suspended",
+      members: [["Vijay Kumar", "Account owner", 1, 1, 1, "21 Sep", "Active"], ["Pooja V", "Accounts", 0, 1, 0, "2 Aug", "Active"]] },
+  };
+  const bizList = [["metro", "Dealer Gold", "s-ok", "Approved"], ["coastal", "Gold + contract", "s-ok", "Approved"], ["sai", "Dealer Standard", "s-ok", "Approved"], ["vijay", "Dealer Standard", "s-bad", "Suspended"]];
+  let curBiz = "metro";
+  const renderBizList = () => {
+    $("#biz-list").innerHTML = bizList.map(([id, l, s, st]) => { const b = BIZ[id]; return `<div class="pick ${id === curBiz ? "active" : ""}" data-biz="${id}"><span class="avatar sm sq" style="background:${colors[Object.keys(BIZ).indexOf(id) + 2]}">${init(b.name)}</span><div class="grow"><div class="p-t">${b.name}</div><div class="p-s">${l} · ${b.addr.split(", ").pop()}</div></div><span class="status ${s}">${st}</span></div>`; }).join("")
+      + `<div class="pick" data-goto="applications"><span class="avatar sm sq" style="background:#98a2b3">BP</span><div class="grow"><div class="p-t">Byte Point Solutions</div><div class="p-s">Applicant · Hubballi</div></div><span class="status s-warn">In review</span></div>
+         <div class="pick"><span class="avatar sm sq" style="background:#d0d5dd">+</span><div class="grow"><div class="p-t muted">41 more accounts</div><div class="p-s">Use search to find an account</div></div></div>`;
+  };
+  const Y = `<span class="text-ok" aria-label="Yes">${ic("check", "ic-sm")}</span>`, N = `<span class="muted" aria-label="No">${ic("minus", "ic-sm")}</span>`;
+  const renderBiz = (id) => {
+    curBiz = id; renderBizList(); const b = BIZ[id]; const susp = b.status === "suspended";
+    $("#biz-detail").innerHTML = `
+      <div class="${susp ? "is-suspended" : ""}" style="padding:20px">
+        <div class="row-between mb-16" style="align-items:flex-start">
+          <div class="row gap-12"><span class="avatar lg sq" style="background:${colors[Object.keys(BIZ).indexOf(id) + 2]}">${init(b.name)}</span>
+            <div><div class="row gap-8"><h2 style="font-size:19px">${b.name}</h2><span class="badge b-vendor">${ic("briefcase")} ${b.list.split(" v")[0]}</span>${susp ? '<span class="badge b-bad">Suspended</span>' : '<span class="badge b-ok">Approved</span>'}</div>
+            <div class="small muted mt-4">${b.legal} · approved ${b.since} · account manager ${b.manager}</div></div></div>
+          <div class="row gap-8">${susp ? `<button class="btn btn-sm" data-toast="Reinstatement request sent · GSTIN re-check required first">Request reinstatement</button>` : `<button class="btn btn-sm btn-danger" data-open="m-suspend">Suspend</button>`}<button class="btn btn-sm" data-toast="Price-list change request created · needs Operations admin approval">Change price list</button><a class="btn btn-sm" href="store-dealer.html">${ic("external", "ic-sm")} View as dealer</a></div>
+        </div>
+        <div class="callout c-bad mb-16 banner-susp" data-anno="Suspension: prices hidden, new orders blocked, history kept">${ic("alert-octagon")}<div class="grow"><b>Suspended 22 Sep 2026 by Anita Rao</b> — reason: GSTIN cancelled on GST portal (automatic re-check 21 Sep).<br>Effects: dealer prices hidden (members see public prices), new orders and quotes blocked, open order TXO-09790 continues, invoices & history remain available to members. Reinstatement requires a fresh GSTIN verification.</div></div>
+        <div class="mini-kpis mb-16"><div><div class="mk-v">${b.orders}</div><div class="mk-l">Orders</div></div><div><div class="mk-v">${b.net}</div><div class="mk-l">Net sales</div></div><div><div class="mk-v">${b.aov}</div><div class="mk-l">Avg. order</div></div><div><div class="mk-v" style="font-size:14px;padding-top:4px">${b.last}</div><div class="mk-l">Last order</div></div><div><div class="mk-v">${b.returns}</div><div class="mk-l">Returns</div></div></div>
+        <div class="grid g-2 mb-16">
+          <div class="panel"><div class="upper muted mb-8">Business & tax</div><dl class="kv"><dt>GSTIN</dt><dd><span class="mono">${b.gstin}</span><br>${susp ? '<span class="status s-bad">Cancelled on portal · 21 Sep</span>' : '<span class="status s-ok">Verified · GST portal check</span>'}</dd><dt>PAN</dt><dd class="mono">${b.pan}</dd><dt>Address</dt><dd>${b.addr}</dd><dt>Place of supply</dt><dd>Karnataka (29)</dd></dl></div>
+          <div class="panel" data-anno="§8.3 Default prepaid; credit is separate finance scope"><div class="upper muted mb-8">Commercial terms</div><dl class="kv"><dt>Price list</dt><dd>${b.list}<br><span class="small muted">${b.list2}</span></dd><dt>Tiers</dt><dd>All-units · 5+ / 10+</dd><dt>Payment terms</dt><dd><span class="row gap-4">${ic("lock", "ic-sm")} Prepaid — credit not enabled</span></dd><dt>COD</dt><dd>Not offered on dealer orders</dd></dl></div>
+        </div>
+        <div class="row-between mb-8"><h4>Members & roles</h4><div class="row gap-8"><span class="small muted">Only the account owner can invite members</span><button class="btn btn-sm" ${susp ? "disabled" : ""} data-toast="Invitation sent on behalf of the account owner (logged)">${ic("plus", "ic-sm")} Invite member</button></div></div>
+        <div class="table-wrap mb-16" style="border:1px solid var(--line);border-radius:var(--r)" data-anno="§8.3 Who can order, who sees invoices"><table class="table compact">
+          <thead><tr><th>Member</th><th>Role</th><th class="c">Orders</th><th class="c">Invoices & GST</th><th class="c">Invite</th><th>Last sign-in</th><th>Status</th></tr></thead>
+          <tbody>${b.members.map((m) => `<tr><td class="strong">${m[0]}</td><td>${m[1]}</td><td class="c">${m[2] ? Y : N}</td><td class="c">${m[3] ? Y : N}</td><td class="c">${m[4] ? Y : N}</td><td class="small">${m[5]}</td><td><span class="status ${m[6] === "Active" ? (susp ? "s-muted" : "s-ok") : "s-warn"}">${susp && m[6] === "Active" ? "Active · read-only" : m[6]}</span></td></tr>`).join("")}</tbody>
+        </table></div>
+        <div class="grid g-2">
+          <div class="panel"><div class="row-between"><b>Credit terms</b><label class="switch small"><input type="checkbox" disabled aria-label="Enable credit terms"> Off</label></div><p class="small muted mt-4">Phase 1 policy: dealer orders are prepaid. Credit limits, ageing, overdue blocking, partial payments and collections are a separate finance scope — enable only after that scope is approved.</p></div>
+          <div class="panel"><b>Account history</b><ul class="timeline mt-8">
+            ${susp ? `<li class="warn"><span class="t-dot">${ic("alert")}</span><div class="t-title">Suspended · GSTIN cancelled</div><div class="t-meta">22 Sep 2026 · Anita Rao</div></li>` : ""}
+            <li class="done"><span class="t-dot">${ic("check")}</span><div class="t-title">Price list: ${b.list.split(" v")[0]}</div><div class="t-meta">${id === "coastal" ? "23 Sep 2026 · approved by Rajesh Menon (APR-0381)" : b.since}</div></li>
+            <li class="done"><span class="t-dot">${ic("check")}</span><div class="t-title">Application approved</div><div class="t-meta">${b.since} · GSTIN verified via portal check</div></li>
+          </ul></div>
+        </div>
+      </div>`;
+  };
+  $("#biz-list").addEventListener("click", (e) => { const p = e.target.closest("[data-biz]"); if (p) renderBiz(p.dataset.biz); });
+  renderBiz("metro");
+  $("#susp-go").addEventListener("click", () => { const s = $("#susp-reason"); if (!s.value) { s.classList.add("is-error"); $("#susp-err").classList.remove("hidden"); return; } s.classList.remove("is-error"); $("#susp-err").classList.add("hidden"); TX.close(s); TX.toast("Suspension request logged · takes effect immediately · owner notified", "alert"); });
+
+  /* ---------------- Dealer applications ---------------- */
+  const APPS = {
+    bp: { name: "Byte Point Solutions", who: "Ramya S", city: "Hubballi", age: "1 d", sub: "25 Sep 2026 10:20", st: ["s-ok", "Ready for review"], legal: "Byte Point Solutions LLP", gstin: "29AAKFB4521Q1Z8", pan: "AAKFB4521Q", constitution: "LLP", addr: "#14, Koppikar Road, Hubballi 580020, Karnataka", biz: "Computer retail, AMC & installations", vol: "₹3–5 L / month", cats: ["Laptops", "Storage", "Networking", "Printers"],
+      checks: [["ok", "GSTIN verified via GST portal check", "Active · Regular taxpayer · legal name matches “Byte Point Solutions LLP” · state 29 · ref GSTCHK-88231, 26 Sep 09:14", "View response"], ["ok", "Registered address matches GST record", "Koppikar Road, Hubballi 580020 · principal place of business", ""], ["ok", "GST registration certificate", "PDF · 2 pages · uploaded 25 Sep", "Open"], ["ok", "Trade / shop licence", "Hubballi-Dharwad Municipal Corporation · valid to Mar 2027", "Open"], ["ok", "Contact verified", "Email & mobile verified by OTP", ""], ["ok", "Duplicate check", "No existing account with this GSTIN, PAN or phone", ""], ["muted", "Bank proof", "Not required — prepaid account, refunds go to original payment method", ""]] },
+    nandi: { name: "Nandi Tech Traders", who: "Girish N", city: "Bengaluru", age: "2 d", sub: "24 Sep 2026 16:05", st: ["s-warn", "GSTIN name mismatch"], legal: "Nandi Tech Traders", gstin: "29AAFCN9082H1ZT", pan: "AAFCN9082H", constitution: "Private limited (per portal)", addr: "SP Road, Bengaluru 560002", biz: "Component reseller", vol: "₹8–10 L / month", cats: ["Components", "Storage"],
+      checks: [["bad", "GSTIN verified via GST portal check", "Active, but legal name on portal is “Nandi Technologies Pvt Ltd” — application says “Nandi Tech Traders”", "View response"], ["warn", "Registered address", "Portal address is Jayanagar 560041; application gives SP Road 560002 (additional place of business?)", ""], ["ok", "GST registration certificate", "Uploaded", "Open"], ["bad", "Authorisation", "No board resolution / authorisation letter for applicant", ""], ["ok", "Contact verified", "Email & mobile verified by OTP", ""], ["ok", "Duplicate check", "No existing account", ""]] },
+    ganesh: { name: "Sri Ganesh Computers", who: "Manjunath H", city: "Mandya", age: "3 d", sub: "23 Sep 2026 11:48", st: ["s-muted", "Awaiting applicant"], legal: "Sri Ganesh Computers", gstin: "29BDSPM4410F1Z9", pan: "BDSPM4410F", constitution: "Proprietorship", addr: "V V Road, Mandya 571401", biz: "Retail & repairs", vol: "₹1–2 L / month", cats: ["Accessories", "Storage"],
+      checks: [["ok", "GSTIN verified via GST portal check", "Active · name matches", "View response"], ["warn", "GST registration certificate", "Missing — reminder sent automatically 24 Sep & 26 Sep", ""], ["warn", "Trade / shop licence", "Missing", ""], ["ok", "Contact verified", "Mobile verified · email pending", ""], ["ok", "Duplicate check", "No existing account", ""]] },
+  };
+  let curApp = "bp";
+  const renderApps = () => {
+    $("#app-list").innerHTML = Object.entries(APPS).map(([id, a]) => `<div class="pick ${id === curApp ? "active" : ""}" data-app="${id}"><span class="avatar sm sq" style="background:${id === "bp" ? "#7c3aed" : id === "nandi" ? "#0b8ec9" : "#b45309"}">${init(a.name)}</span><div class="grow"><div class="p-t">${a.name}</div><div class="p-s">${a.city} · submitted ${a.age} ago</div><div class="mt-4"><span class="status ${a.st[0]}">${a.st[1]}</span></div></div></div>`).join("");
+    const a = APPS[curApp]; const allOk = a.checks.every((c) => c[0] === "ok" || c[0] === "muted");
+    const ico = { ok: "check", bad: "x", warn: "alert", muted: "minus" };
+    $("#app-detail").innerHTML = `<div style="padding:20px">
+      <div class="row-between mb-16" style="align-items:flex-start"><div><div class="row gap-8"><h2 style="font-size:19px">${a.name}</h2><span class="status ${a.st[0]}">${a.st[1]}</span></div><div class="small muted mt-4">Applicant ${a.who} · submitted ${a.sub} · reviewer Anita Rao · due ${curApp === "bp" ? "29 Sep" : curApp === "nandi" ? "28 Sep" : "paused (awaiting applicant)"}</div></div>
+        <span class="badge b-outline">A27 · completeness auto-checked · approval is never automatic</span></div>
+      <div class="grid" style="grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:20px">
+        <div>
+          <h4 class="mb-8">Application</h4>
+          <dl class="kv mb-16"><dt>Legal name</dt><dd>${a.legal}</dd><dt>Constitution</dt><dd>${a.constitution}</dd><dt>GSTIN</dt><dd class="mono">${a.gstin}</dd><dt>PAN</dt><dd class="mono">${a.pan}</dd><dt>Address</dt><dd>${a.addr}</dd><dt>Business</dt><dd>${a.biz}</dd><dt>Expected volume</dt><dd>${a.vol}</dd><dt>Interested in</dt><dd><div class="row wrap gap-4">${a.cats.map((c) => `<span class="badge">${c}</span>`).join("")}</div></dd></dl>
+          <h4 class="mb-8">Decision</h4>
+          <div class="col gap-12">
+            <div class="form-grid">
+              <div class="field"><label for="ap-list">Assign price list</label><select class="select" id="ap-list"><option>Dealer Standard</option><option>Dealer Gold (needs manager approval)</option></select></div>
+              <div class="field"><label for="ap-terms">Payment terms</label><input class="input" id="ap-terms" value="Prepaid only" readonly><span class="hint">Credit not enabled in Phase 1</span></div>
+            </div>
+            <div class="field"><label class="req" for="ap-reason">Reason (sent to applicant for rejections; always audited)</label><textarea class="textarea" id="ap-reason" placeholder="${allOk ? "e.g. GSTIN and documents verified; retail shop confirmed via trade licence." : "e.g. GSTIN legal name doesn't match the application — please apply under the registered name or upload an authorisation letter."}"></textarea><span class="err hidden" id="ap-err">A reason is mandatory for approve, reject and request-info decisions.</span></div>
+            <div class="row gap-8"><button class="btn btn-danger" data-ap="reject">Reject</button><button class="btn" data-ap="info">Request info</button><span class="ml-auto"></span><button class="btn btn-ok" data-ap="approve" ${allOk ? "" : "disabled"}>${ic("check", "ic-sm")} Approve</button></div>
+            ${allOk ? "" : `<div class="small text-warn">Approve is disabled until every required check passes.</div>`}
+          </div>
+        </div>
+        <div>
+          <div class="row-between mb-8"><h4>Verification checklist</h4><button class="btn btn-xs" data-toast="GST portal re-checked · response unchanged">${ic("refresh", "ic-sm")} Re-run GSTIN check</button></div>
+          <div class="panel" style="padding:4px 14px">${a.checks.map((c) => `<div class="chk"><span class="ci ${c[0]}">${ic(ico[c[0]])}</span><div><div class="c-t">${c[1]}</div><div class="c-s">${c[2]}</div></div>${c[3] ? `<button class="btn btn-xs btn-ghost" data-toast="Opens document viewer (watermarked, access logged)">${c[3]}</button>` : "<span></span>"}</div>`).join("")}</div>
+          <p class="small muted mt-8">A typed GSTIN alone is not verification — the check stores the portal response, time and reference.</p>
+        </div>
+      </div></div>`;
+  };
+  $("#app-list").addEventListener("click", (e) => { const p = e.target.closest("[data-app]"); if (p) { curApp = p.dataset.app; renderApps(); } });
+  $("#app-detail").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-ap]"); if (!b) return; const r = $("#ap-reason");
+    if (!r.value.trim()) { r.classList.add("is-error"); $("#ap-err").classList.remove("hidden"); r.focus(); return; }
+    const a = APPS[curApp]; const listSel = ($("#ap-list") || {}).value || "Dealer Standard";
+    a.st = { approve: ["s-ok", "Approved"], reject: ["s-bad", "Rejected"], info: ["s-warn", "Info requested"] }[b.dataset.ap];
+    renderApps();
+    TX.toast({ approve: `${a.name} approved · ${listSel.replace(" (needs manager approval)", " requested")} · owner invite sent`, reject: `${a.name} rejected · reason emailed to applicant`, info: `Information requested from ${a.who} · SLA paused` }[b.dataset.ap]);
+  });
+  renderApps();
+  if (location.hash === "#d-360") open360(C[0]);
+});
+</script>
+</body>
+</html>

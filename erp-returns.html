@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Returns, RMA &amp; warranty · Tradex ERP</title>
+  <link rel="stylesheet" href="assets/tradex.css">
+  <style>
+    .rma-pipe { grid-template-columns: repeat(8, 1fr); }
+    .rma-pipe .stage { cursor: pointer; transition: background .12s; }
+    .rma-pipe .stage:hover { background: #fafbff; }
+    .rma-pipe .stage.active { background: var(--brand-50); box-shadow: inset 0 -2px 0 var(--brand); }
+    .rma-table th, .rma-table td { padding-left: 8px; padding-right: 8px; }
+    .rma-table tbody tr { cursor: pointer; }
+    .match { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 650; white-space: nowrap; }
+    .match .ic { width: 13px; height: 13px; }
+    .match.ok { color: var(--ok-tx); } .match.bad { color: var(--bad-tx); } .match.pending { color: var(--warn-tx); } .match.na { color: var(--tx-4); font-weight: 500; }
+    .flag-pill { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; color: #6b3fd6; background: #f1ecff; border: 1px dashed #b9a6ff; padding: 1px 7px; border-radius: 999px; white-space: nowrap; margin-top: 3px; }
+    .flag-pill .ic { width: 11px; height: 11px; }
+    .il { display: inline-flex; align-items: center; gap: 4px; }
+    .type-b { font-size: 11px; height: 20px; }
+    .table td.mono, .table .mono.strong { white-space: nowrap; }
+    /* Drawer */
+    .rsteps { display: flex; gap: 4px; margin-top: 14px; }
+    .rsteps .rs { flex: 1; text-align: center; font-size: 11px; font-weight: 650; color: var(--tx-4); padding-top: 8px; border-top: 3px solid var(--line); }
+    .rsteps .rs.done { color: var(--ok-tx); border-color: var(--ok); }
+    .rsteps .rs.cur { color: var(--brand-700); border-color: var(--brand); }
+    .rsteps .rs.rej { color: var(--bad-tx); border-color: var(--bad); }
+    .dsec { margin-top: 20px; }
+    .dsec h4 { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .dsec h4 .ic { width: 16px; height: 16px; color: var(--tx-3); }
+    .m3 { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; }
+    .m3 > div { padding: 12px 14px; border-right: 1px solid var(--line-2); }
+    .m3 > div:last-child { border-right: 0; }
+    .m3 .l { font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--tx-3); }
+    .m3 .v { font-family: ui-monospace, monospace; font-size: 13.5px; font-weight: 700; margin-top: 4px; }
+    .m3 .bad .v { color: var(--bad-tx); }
+    .insp { list-style: none; margin: 0; padding: 0; border: 1px solid var(--line); border-radius: var(--r); }
+    .insp li { display: grid; grid-template-columns: 1fr 150px 90px; gap: 10px; padding: 9px 14px; border-bottom: 1px solid var(--line-2); font-size: 13px; align-items: center; }
+    .insp li:last-child { border-bottom: 0; }
+    .insp .res { font-weight: 650; font-size: 12.5px; display: inline-flex; align-items: center; gap: 4px; }
+    .insp .res .ic { width: 14px; height: 14px; }
+    .decide { border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; background: #fff; }
+    .decide .dh { padding: 12px 16px; border-bottom: 1px solid var(--line-2); display: flex; justify-content: space-between; align-items: center; gap: 8px; background: #fafbfc; }
+    .decide .db { padding: 14px 16px; }
+    .decide .df { padding: 10px 16px; border-top: 1px solid var(--line-2); display: flex; gap: 8px; justify-content: flex-end; }
+    .tot { display: grid; grid-template-columns: 1fr auto; gap: 6px 16px; font-size: 13px; }
+    .tot .g { font-size: 15px; font-weight: 750; border-top: 1px solid var(--line); padding-top: 8px; }
+    .disp-opt { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: flex-start; padding: 9px 12px; border: 1px solid var(--line); border-radius: var(--r); margin-bottom: 6px; font-size: 13px; cursor: pointer; }
+    .disp-opt:has(input:checked) { border-color: var(--brand); box-shadow: var(--ring); }
+    .disp-opt input { accent-color: var(--brand); margin-top: 3px; }
+    .photos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .photos .ph { aspect-ratio: 4 / 3; }
+    .drawer .tabs { margin: 0 -22px; padding: 0 12px; position: sticky; top: -22px; background: #fff; z-index: 3; }
+    .drawer-foot { justify-content: space-between; }
+  </style>
+</head>
+<body data-app="erp" data-page="returns">
+<main>
+  <div class="page-head">
+    <div>
+      <div class="crumbs"><span>Sell &amp; serve</span><i data-icon="chevron-right"></i><span>Returns &amp; warranty</span></div>
+      <h1>Returns, RMA &amp; warranty</h1>
+      <p class="sub">Returns policy v2026.2 (7 days new · 10 days refurbished/open box) · Warranty policy WTY v2026.1 · quarantine zone Q-WH-01 at Central Warehouse</p>
+    </div>
+    <div class="actions">
+      <button class="btn"><i data-icon="download"></i> Export</button>
+      <button class="btn" data-toast="Scan the parcel label or RMA number to receive into quarantine"><i data-icon="scan"></i> Receive return</button>
+      <button class="btn btn-primary" data-toast="New RMA started · link it to an order and serial first"><i data-icon="plus"></i> New RMA</button>
+    </div>
+  </div>
+
+  <section class="grid g-6">
+    <div class="kpi"><div class="k-label"><i data-icon="undo"></i> <span>Open RMAs</span></div><div class="k-value">23</div><div class="k-foot"><span>6 need a decision today</span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="lock"></i> <span>In quarantine</span></div><div class="k-value">9</div><div class="k-foot"><span>6 awaiting inspection</span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="rupee"></i> <span>Refunds pending</span></div><div class="k-value">5</div><div class="k-foot"><span class="text-bad strong">1 failed</span> · ₹1.18 L total</div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="clock"></i> <span>Avg. resolution</span></div><div class="k-value">3.4 d</div><div class="k-foot"><span class="delta down-good"><i data-icon="trending-down"></i> −0.8 d</span><span>target 5 d</span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="shield"></i> <span>Warranty claims</span></div><div class="k-value">7</div><div class="k-foot"><span>4 with manufacturers</span></div></div>
+    <div class="kpi"><div class="k-label"><i data-icon="activity"></i> <span>Return rate (30 d)</span></div><div class="k-value">1.9%</div><div class="k-foot"><span>Refurb 2.8% · new 1.4%</span></div></div>
+  </section>
+
+  <section class="card mt-16" data-tabset>
+    <div class="tabs" style="padding:0 12px">
+      <button class="tab active" data-tab="rma"><i data-icon="undo" class="ic-sm"></i> RMA queue <span class="count">23</span></button>
+      <button class="tab" data-tab="refunds"><i data-icon="rupee" class="ic-sm"></i> Refunds pending <span class="count">5</span></button>
+      <button class="tab" data-tab="warranty"><i data-icon="shield" class="ic-sm"></i> Warranty claims <span class="count">7</span></button>
+      <button class="tab" data-tab="supplier"><i data-icon="building" class="ic-sm"></i> Supplier RMAs <span class="count">3</span></button>
+      <button class="tab" data-tab="quarantine"><i data-icon="lock" class="ic-sm"></i> Quarantine <span class="count">9</span></button>
+    </div>
+
+    <!-- ============ RMA QUEUE ============ -->
+    <div class="tab-panel active" data-panel="rma">
+      <div class="pipeline rma-pipe" id="pipe" style="border-bottom:1px solid var(--line-2)" data-anno="1A · §10.1 Return / RMA state machine"></div>
+      <div class="table-toolbar" data-anno="1A · A22 Rule routes each request to a review queue">
+        <div class="input-icon" style="width:240px"><i data-icon="search"></i><input class="input input-sm" id="q" placeholder="RMA, order, serial, customer…" aria-label="Search returns" style="width:100%"></div>
+        <div class="row gap-6" id="types">
+          <span class="chip active" data-type="">All types</span><span class="chip" data-type="return">Return</span><span class="chip" data-type="replacement">Replacement</span><span class="chip" data-type="warranty">Warranty</span><span class="chip" data-type="doa">DOA</span>
+        </div>
+        <label class="switch small ml-auto"><input type="checkbox" id="flagged"> Review flags only</label>
+      </div>
+      <div class="bulkbar"><b><span class="bulk-count">0</span> selected</b><button class="btn btn-sm" data-toast="Assigned to Anita R.">Assign…</button><button class="btn btn-sm" data-toast="Reverse pickups requested for authorised RMAs">Book reverse pickup</button><button class="btn btn-sm" data-toast="Export started">Export</button><span class="ml-auto small" style="color:#9aa6bf">Bulk actions never approve refunds — each refund is decided individually</span></div>
+      <div class="table-wrap">
+        <table class="table rma-table">
+          <thead><tr><th class="check-col"><input type="checkbox" data-check-all aria-label="Select all"></th><th>RMA</th><th>Product · unit</th><th>Order · customer</th><th>Type</th><th>State</th><th>Serial match</th><th>Policy</th><th>Age · owner · SLA</th></tr></thead>
+          <tbody id="rma-body"></tbody>
+        </table>
+      </div>
+      <div class="pager"><span id="pager">Showing 12 of 23 open · resolved/rejected shown for the last 7 days</span><div class="pages"><button class="active">1</button><button>2</button></div></div>
+    </div>
+
+    <!-- ============ REFUNDS PENDING ============ -->
+    <div class="tab-panel" data-panel="refunds">
+      <div style="padding:16px" class="col gap-12">
+        <div class="row gap-12">
+          <div class="callout c-info small grow" data-anno="1A · T18/T19 One refund per request · query before retry"><i data-icon="shield"></i><div><b>Refund state machine:</b> requested → approved → submitted → pending at provider → completed / failed. Support can request; <b>finance approves and executes</b>. A repeated approve returns the existing refund (idempotency key = refund id); a timed-out refund is <b>queried at the provider before any retry</b>.</div></div>
+        </div>
+        <div class="card" style="border-radius:var(--r)">
+          <div class="table-wrap"><table class="table compact">
+            <thead><tr><th>Refund</th><th>Source</th><th>Customer</th><th class="r">Amount</th><th>Method</th><th>Refund state</th><th>Provider ref</th><th>Age</th><th>Owner</th><th></th></tr></thead>
+            <tbody id="ref-body"></tbody>
+          </table></div>
+        </div>
+        <div class="callout c-ok small"><i data-icon="copy"></i><div><b>Duplicate prevented today:</b> RF-0279 was approved twice (10:12 and 10:13, two browser tabs). The second command returned the existing refund — one provider refund, one credit note.</div></div>
+      </div>
+    </div>
+
+    <!-- ============ WARRANTY CLAIMS ============ -->
+    <div class="tab-panel" data-panel="warranty">
+      <div style="padding:16px" class="col gap-12">
+        <div class="callout c-warn small" data-anno="1A · A23 Eligibility check · never auto-promise acceptance"><i data-icon="info"></i><div>Eligibility is matched automatically from <b>invoice date + serial + policy version</b>. The system never promises that a manufacturer will accept a claim — customers see “claim logged with ASUS India”, not “approved”.</div></div>
+        <div class="card" style="border-radius:var(--r)">
+          <div class="table-wrap"><table class="table compact">
+            <thead><tr><th>Claim</th><th>Product · serial</th><th>Warranty provider</th><th>Coverage check</th><th>Where</th><th>External ref</th><th>Status · customer update</th></tr></thead>
+            <tbody id="wty-body"></tbody>
+          </table></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ SUPPLIER RMAs ============ -->
+    <div class="tab-panel" data-panel="supplier">
+      <div style="padding:16px" class="col gap-12">
+        <div class="card" style="border-radius:var(--r)">
+          <div class="card-head"><div><h3>Returns to vendors</h3><div class="sub">Units go back under the supplier's own warranty or DOA terms · vendors see only their own RMAs in the vendor portal</div></div><button class="btn btn-sm" data-toast="New supplier RMA draft created"><i data-icon="plus" class="ic-sm"></i> Supplier RMA</button></div>
+          <div class="table-wrap"><table class="table compact">
+            <thead><tr><th>Supplier RMA</th><th>Vendor</th><th>Units</th><th>Reason</th><th>Supplier terms</th><th>State</th><th class="r">Expected credit</th><th>Linked</th></tr></thead>
+            <tbody>
+              <tr><td class="mono strong">SRMA-0031</td><td>RenewTech Refurbishers <span class="small muted">V-022</span></td><td class="small">1 × Dell Latitude 5420 · <span class="mono">U-000781</span></td><td class="small">Battery health 71% (sold as ≥ 85%)</td><td class="small">90-day supplier warranty · received 2 Sep → valid to 1 Dec</td><td><span class="status s-muted">Draft</span></td><td class="r">₹30,500</td><td class="small mono">RMA-0094</td></tr>
+              <tr><td class="mono strong">SRMA-0029</td><td>Prime IT Distributors <span class="small muted">V-014</span></td><td class="small">3 × Seagate BarraCuda 2 TB</td><td class="small">DOA at inbound QC (GRN-0438)</td><td class="small">DOA replacement within 15 days</td><td><span class="status s-info">Shipped to vendor</span></td><td class="r">Replacement</td><td class="small mono">GRN-0438</td></tr>
+              <tr><td class="mono strong">SRMA-0027</td><td>CamWorld Imports <span class="small muted">V-031</span></td><td class="small">1 × Canon EF 16-35 mm · <span class="mono">U-000760</span></td><td class="small">AF motor fault after customer return</td><td class="small">6-month supplier warranty</td><td><span class="status s-ok">Credit note received</span></td><td class="r">₹52,000 · CN-CW-2231</td><td class="small mono">RMA-0088</td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ QUARANTINE ============ -->
+    <div class="tab-panel" data-panel="quarantine">
+      <div style="padding:16px" class="col gap-12">
+        <div class="callout c-info small" data-anno="1A · T17 Returned stock is never sellable until disposition"><i data-icon="lock"></i><div>Returned and RTO units enter <b>quarantine</b> — they are not available to sell on the website or at branches until an inspector records a disposition. Storage devices need a data-erasure certificate before they leave quarantine.</div></div>
+        <div class="card" style="border-radius:var(--r)">
+          <div class="table-wrap"><table class="table compact">
+            <thead><tr><th>Unit</th><th>Product</th><th>Source</th><th>Location</th><th>Days</th><th>Data erasure</th><th>Next step</th></tr></thead>
+            <tbody id="q-body"></tbody>
+          </table></div>
+          <div class="pager"><span>Showing 7 of 9 units · 2 more from GRN-0441 inbound QC</span><div class="pages"><button class="active">1</button><button>2</button></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RMA DETAIL DRAWER ============ -->
+  <div class="drawer" id="d-rma"><div class="drawer-card wide">
+    <div class="drawer-head" style="display:block">
+      <div class="row-between">
+        <div><div class="small muted" id="rd-meta"></div><div class="row gap-8 mt-4"><h2 class="mono" id="rd-id" style="font-size:22px"></h2><span id="rd-type"></span><span id="rd-flag"></span></div></div>
+        <button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button>
+      </div>
+      <div class="rsteps" id="rd-steps"></div>
+    </div>
+    <div class="drawer-body" data-tabset>
+      <div class="tabs">
+        <button class="tab active" data-tab="rd-case">Case &amp; unit</button>
+        <button class="tab" data-tab="rd-insp">Inspection</button>
+        <button class="tab" data-tab="rd-dec">Decisions</button>
+        <button class="tab" data-tab="rd-wty">Warranty &amp; supplier</button>
+        <button class="tab" data-tab="rd-time">Timeline</button>
+      </div>
+      <div class="tab-panel active" data-panel="rd-case" id="rp-case"></div>
+      <div class="tab-panel" data-panel="rd-insp" id="rp-insp"></div>
+      <div class="tab-panel" data-panel="rd-dec" id="rp-dec"></div>
+      <div class="tab-panel" data-panel="rd-wty" id="rp-wty"></div>
+      <div class="tab-panel" data-panel="rd-time" id="rp-time"></div>
+    </div>
+    <div class="drawer-foot">
+      <div class="row gap-8">
+        <button class="btn btn-sm" data-toast="Message sent to customer (template rma_update v2)"><i data-icon="send" class="ic-sm"></i> Update customer</button>
+        <button class="btn btn-sm" data-toast="Reverse pickup booked · Delhivery RVP"><i data-icon="truck" class="ic-sm"></i> Reverse pickup</button>
+        <button class="btn btn-sm btn-danger" data-toast="Rejection needs a reason and policy clause — opened form"><i data-icon="x-circle" class="ic-sm"></i> Reject…</button>
+      </div>
+      <div class="row gap-8">
+        <button class="btn btn-sm" data-toast="RMA label printed"><i data-icon="printer" class="ic-sm"></i> RMA label</button>
+        <button class="btn btn-sm btn-primary" onclick="TX.activateTab('rd-dec')">Go to decisions <i data-icon="arrow-right" class="ic-sm"></i></button>
+      </div>
+    </div>
+  </div></div>
+</main>
+<script src="assets/tradex.js"></script>
+<script>
+TX.ready(() => {
+  const $ = TX.$, $$ = TX.$$, ic = TX.icon, fmt = TX.fmt, P = TX.byId;
+  
+
+  const ST = ["requested", "reviewed", "authorised", "transit", "received", "inspected", "resolved"];
+  const STL = { requested: ["Requested", "s-warn"], reviewed: ["Reviewed", "s-info"], authorised: ["Authorised", "s-brand"], transit: ["In transit", "s-info"], received: ["Received", "s-brand"], inspected: ["Inspected", "s-brand"], resolved: ["Resolved", "s-ok"], rejected: ["Rejected", "s-bad"] };
+  const TY = { return: ["Return", ""], replacement: ["Replacement", "b-info"], warranty: ["Warranty", "b-brand"], doa: ["DOA", "b-bad"] };
+  const PIPE = { requested: 4, reviewed: 2, authorised: 3, transit: 3, received: 2, inspected: 4, resolved: 18, rejected: 2 };
+
+  // id, product, unit, serials [sold, declared, received], order, customer, type, state, match, policy, reason, age, sla[k,t], owner, paid, disc, extra
+  const R = [
+    { id: "RMA-0094", pid: "lap-01", unit: "U-000781", sn: ["5CD1287TQX", "5CD1287TQX", "5CD1287TQX"], order: "TXO-10412", cust: "Aditya Rao", type: "return", st: "inspected", match: "ok", pol: "Returns v2026.2 · 10 d refurb", reason: "Battery drains in ~2 h; listing said ≥ 85% health", age: "2 d", sla: ["warn", "Decide by 13:00"], owner: "Anita R.", paid: 38990, disc: 1000, storage: true, flagship: true, opened: "24 Sep, 18:20 · web return form", day: "day 4 of 10" },
+    { id: "RMA-0097", pid: "cam-06", unit: "U-000752", sn: ["SN 5104871", "SN 5104871", "SN 5098342"], order: "TXO-10398", cust: "Vinay Kamath", type: "return", st: "received", match: "bad", pol: "Returns v2026.2 · 10 d open box", reason: "Not as described — dust on sensor", age: "1 d", sla: ["warn", "Inspect by 17:00"], owner: "Anita R.", paid: 84990, disc: 0, flag: true, storage: false, opened: "23 Sep, 11:05 · WhatsApp → support", day: "day 8 of 10" },
+    { id: "RMA-0098", pid: "ssd-02", unit: null, sn: ["S4CR…9912", "pending", "—"], order: "TXO-10440", cust: "Kiran Hegde", type: "doa", st: "requested", match: "pending", pol: "DOA v2026.1 · 48 h", reason: "Not detected on any PC", age: "3 h", sla: ["ok", "Review by 14:00"], owner: "Karthik R.", paid: 5499, disc: 0, storage: true, opened: "26 Sep, 07:40 · web", day: "hour 30 of 48" },
+    { id: "RMA-0099", pid: "lap-04", unit: null, sn: ["K2NRCX0123", "K2NRCX0123", "—"], order: "TXO-10301", cust: "Farhan Ali", type: "warranty", st: "authorised", match: "ok", pol: "WTY v2026.1 · ASUS 1 yr", reason: "Keyboard backlight dead", age: "1 d", sla: ["ok", "Pickup booked"], owner: "Karthik R.", paid: 72990, disc: 0, storage: true, opened: "25 Sep, 12:10 · phone", day: "month 5 of 12" },
+    { id: "RMA-0100", pid: "mon-04", unit: "U-000701", sn: ["LG-27UL-4410", "LG-27UL-4410", "—"], order: "TXO-10276", cust: "Meera Joshi", type: "warranty", st: "transit", match: "ok", pol: "WTY v2026.1 · Tradex 3 m", reason: "Flickering at 60 Hz", age: "2 d", sla: ["ok", "Arrives 27 Sep"], owner: "Irfan M.", paid: 16990, disc: 0, storage: false, opened: "24 Sep, 10:00 · web", day: "month 2 of 3" },
+    { id: "RMA-0101", pid: "kb-01", unit: null, sn: ["n/a", "n/a", "n/a"], order: "TXO-10433", cust: "Rhea D'Souza", type: "return", st: "requested", match: "na", pol: "Returns v2026.2 · 7 d new", reason: "Changed mind — too loud", age: "5 h", sla: ["ok", "Review by 15:00"], owner: "Karthik R.", paid: 7499, disc: 0, storage: false, opened: "26 Sep, 05:30 · web", day: "day 3 of 7" },
+    { id: "RMA-0102", pid: "lap-02", unit: "U-000744", sn: ["PF3KD21X", "PF3KD21X", "—"], order: "TXO-10389", cust: "Sanjay Kulkarni", type: "replacement", st: "reviewed", match: "ok", pol: "Returns v2026.2 · 10 d refurb", reason: "Hinge loose on arrival", age: "6 h", sla: ["ok", "Authorise by 16:00"], owner: "Karthik R.", paid: 32490, disc: 0, storage: true, opened: "26 Sep, 04:40 · web", day: "day 2 of 10" },
+    { id: "RMA-0093", pid: "hp-01", unit: "U-000729", sn: ["SN 1836652", "SN 1836652", "SN 1836652"], order: "TXO-10371", cust: "Pallavi N.", type: "return", st: "inspected", match: "ok", pol: "Returns v2026.2 · 10 d open box", reason: "Left ear cup crackles", age: "4 d", sla: ["bad", "Refund failing"], owner: "Deepa K.", paid: 19990, disc: 0, storage: false, opened: "22 Sep, 09:10 · web", day: "day 6 of 10" },
+    { id: "RMA-0096", pid: "cam-03", unit: "U-000735", sn: ["SN 0331207", "SN 0331207", "—"], order: "TXO-10405", cust: "Joseph Mathew", type: "return", st: "transit", match: "pending", pol: "Returns v2026.2 · 10 d used", reason: "Shutter count higher than listed", age: "2 d", sla: ["ok", "Arrives 28 Sep"], owner: "Anita R.", paid: 48990, disc: 0, storage: false, opened: "24 Sep, 16:45 · web", day: "day 5 of 10" },
+    { id: "RMA-0095", pid: "ssd-01", unit: null, sn: ["2 sealed units", "2 sealed", "—"], order: "TXO-10402", cust: "Metro Computers (dealer)", type: "return", st: "authorised", match: "ok", pol: "Dealer v2026.1 · sealed only", reason: "Over-ordered · sealed boxes", age: "1 d", sla: ["ok", "Pickup 27 Sep"], owner: "Anita R.", paid: 13480, disc: 0, storage: true, dealer: true, opened: "25 Sep, 15:00 · dealer portal", day: "day 3 of 7" },
+    { id: "RMA-0090", pid: "gpu-02", unit: "U-000718", sn: ["GB3060-7781", "GB3060-7781", "GB3060-7781"], order: "TXO-10244", cust: "Rohit Shenoy", type: "warranty", st: "resolved", match: "ok", pol: "WTY v2026.1 · Tradex 6 m", reason: "Fan rattle — repaired in-house", age: "6 d", sla: ["none", "Closed 25 Sep"], owner: "Irfan M.", paid: 21990, disc: 0, storage: false, opened: "20 Sep · web", day: "month 3 of 6" },
+    { id: "RMA-0091", pid: "ms-01", unit: null, sn: ["n/a", "n/a", "n/a"], order: "TXO-10198", cust: "Tanvi Rao", type: "return", st: "rejected", match: "na", pol: "Returns v2026.2 · 7 d new", reason: "Requested on day 12 — outside window", age: "3 d", sla: ["none", "Closed · warranty route offered"], owner: "Karthik R.", paid: 11995, disc: 0, storage: false, opened: "23 Sep · web", day: "day 12 of 7" },
+  ];
+
+  /* Pipeline */
+  let fSt = "", fTy = "";
+  $("#pipe").innerHTML = Object.entries(PIPE).map(([k, n]) => `<div class="stage" data-st="${k}"><div class="s-n ${k === "rejected" ? "text-bad" : ""}">${n}</div><div class="s-l">${STL[k][0]}${k === "resolved" || k === "rejected" ? " · 7 d" : ""}</div></div>`).join("");
+  $("#pipe").addEventListener("click", (e) => { const s = e.target.closest(".stage"); if (!s) return; fSt = fSt === s.dataset.st ? "" : s.dataset.st; $$("#pipe .stage").forEach((x) => x.classList.toggle("active", x.dataset.st === fSt)); render(); });
+  $("#types").addEventListener("click", (e) => { const c = e.target.closest(".chip"); if (!c) return; fTy = c.dataset.type; $$("#types .chip").forEach((x) => x.classList.toggle("active", x === c)); render(); });
+  $("#q").addEventListener("input", render); $("#flagged").addEventListener("change", render);
+
+  const matchHTML = (m) => ({ ok: `<span class="match ok">${ic("check-circle")} Match</span>`, bad: `<span class="match bad">${ic("x-circle")} Mismatch</span>`, pending: `<span class="match pending">${ic("clock")} Pending</span>`, na: `<span class="match na">Not serialised</span>` }[m]);
+  const slaHTML = ([k, t]) => `<span class="small strong nowrap ${k === "bad" ? "text-bad" : k === "warn" ? "text-warn" : k === "ok" ? "text-ok" : "muted"}">${t}</span>`;
+  function render() {
+    const q = $("#q").value.trim().toLowerCase(), fl = $("#flagged").checked;
+    const list = R.filter((r) => (!fSt || r.st === fSt) && (!fTy || r.type === fTy) && (!fl || r.flag) && (!q || [r.id, r.order, r.cust, r.unit, P(r.pid).title, ...r.sn].join(" ").toLowerCase().includes(q)));
+    $("#rma-body").innerHTML = list.length ? list.map((r) => { const p = P(r.pid); return `<tr data-drawer="d-rma" data-id="${r.id}">
+      <td class="check-col"><input type="checkbox" aria-label="Select ${r.id}"></td>
+      <td><div class="cell-main mono">${r.id}</div>${r.flag ? `<span class="flag-pill" title="Rule A37 prompt for human review">${ic("flag")} Review flag</span>` : `<div class="cell-sub">${r.opened.split(" · ")[0]}</div>`}</td>
+      <td><div class="row gap-8">${TX.ph(p.img, "thumb")}<div style="max-width:175px"><div class="small strong truncate">${p.title}</div><div class="cell-sub nowrap">${TX.conditions[p.cond].label.replace("Refurbished · ", "Refurb ")}${r.unit ? ` · <span class="mono">${r.unit}</span>` : ""}</div></div></div></td>
+      <td><div class="small mono">${r.order}</div><div class="cell-sub truncate" style="max-width:130px">${r.cust}</div></td>
+      <td><span class="badge type-b ${TY[r.type][1]}">${TY[r.type][0]}</span></td>
+      <td><span class="status ${STL[r.st][1]}">${STL[r.st][0]}</span></td>
+      <td>${matchHTML(r.match)}</td>
+      <td class="small nowrap">${r.pol.split(" · ")[0]}<div class="cell-sub">${r.pol.split(" · ").slice(1).join(" · ")}</div></td>
+      <td><div class="small nowrap">${r.age} · ${r.owner}</div>${slaHTML(r.sla)}</td></tr>`; }).join("")
+      : `<tr><td colspan="9"><div class="empty">${ic("check-circle")}<h4>No RMAs in this view</h4><p>Nothing matches the selected state, type or flag filter.</p></div></td></tr>`;
+    $("#pager").textContent = fSt || fTy || q || fl ? `Showing ${list.length} matching` : "Showing 12 of 23 open · resolved/rejected shown for the last 7 days";
+  }
+  render();
+
+  /* Drawer */
+  let cur;
+  function renderRMA(r) {
+    cur = r; const p = P(r.pid);
+    const idx = ST.indexOf(r.st);
+    const after = (s) => r.st !== "rejected" && idx >= ST.indexOf(s);
+    $("#rd-id").textContent = r.id;
+    $("#rd-meta").textContent = `Opened ${r.opened} · ${r.cust} · order ${r.order}`;
+    $("#rd-type").innerHTML = `<span class="badge ${TY[r.type][1]}">${TY[r.type][0]}</span> <span class="status ${STL[r.st][1]}">${STL[r.st][0]}</span>`;
+    $("#rd-flag").innerHTML = r.flag ? `<span class="flag-pill">${ic("flag")} Review flag · A37</span>` : "";
+    $("#rd-steps").innerHTML = r.st === "rejected" ? ["Requested", "Reviewed", "Rejected"].map((s, i) => `<div class="rs ${i < 2 ? "done" : "rej"}">${s}</div>`).join("")
+      : ST.map((s, i) => `<div class="rs ${i < idx ? "done" : i === idx ? (s === "resolved" ? "done" : "cur") : ""}">${STL[s][0]}</div>`).join("");
+
+    // CASE
+    const snLbl = ["Sold (invoice)", "Declared by customer", "Received scan"];
+    $("#rp-case").innerHTML = `
+      ${r.flag ? `<div class="callout mt-16" style="background:#f6f2ff;border-color:#d9ccff;color:#3f2a8a" data-anno="P2 · A37 Suspicious-return flag · human decision"><i data-icon="flag"></i><div class="grow"><strong>Review flag raised by rule A37 — this is a prompt for review, not an accusation.</strong>
+        <ul style="margin:6px 0 0;padding-left:18px"><li>Serial received (${r.sn[2]}) differs from the unit sold (${r.sn[0]}).</li><li>Third return from this account in 60 days (previous two accepted, both valid).</li></ul>
+        <div class="small mt-4">Possible innocent causes: a unit swapped in our own dispatch, a mislabelled box, a family member returning a different order. The RMA must <b>not</b> be rejected automatically; a manager records the decision and reason.</div>
+        <div class="row gap-8 mt-8"><button class="btn btn-sm" data-toast="Checked dispatch records: TXO-10398 scan log shows SN 5104871 packed">Check our dispatch scan</button><button class="btn btn-sm" data-toast="Evidence request sent to customer (template rma_evidence v1)">Ask customer for photos</button><button class="btn btn-sm" data-toast="Escalated to Vikram S. with evidence">Escalate to manager</button><button class="btn btn-sm btn-ghost" data-toast="Flag cleared · reason recorded in audit log">Clear flag (reason)</button></div></div></div>` : ""}
+      <div class="dsec grid g-2">
+        <div>
+          <h4>${ic("receipt")} Original order &amp; unit</h4>
+          <div class="panel small"><div class="row gap-12 mb-8">${TX.ph(p.img, "thumb-lg")}<div><div class="strong">${p.title}</div><div class="row gap-6 mt-4">${TX.condBadge(p.cond)}${r.unit ? `<span class="badge b-brand">${ic("qr")} ${r.unit}</span>` : ""}</div></div></div>
+            <dl class="kv" style="grid-template-columns:130px 1fr"><dt>Order</dt><dd><a href="erp-orders.html">${r.order}</a> · delivered ${r.flagship ? "20 Sep" : r.st === "requested" ? "recently" : "on time"}</dd><dt>Paid for this line</dt><dd>${fmt(r.paid)}${r.disc ? ` · coupon share −${fmt(r.disc)}` : ""}</dd><dt>Warranty at sale</dt><dd>${p.warranty}</dd><dt>Policy at sale</dt><dd>${r.pol} · <span class="${r.day.includes("12 of 7") ? "text-bad" : "text-ok"}">${r.day}</span></dd><dt>Reason given</dt><dd>${r.reason}</dd></dl></div>
+        </div>
+        <div>
+          <h4>${ic("history")} Unit history</h4>
+          <ul class="timeline">
+            ${r.unit ? `<li class="done"><span class="t-dot">${ic("box")}</span><div class="t-title">Received ${r.flagship ? "GRN-0418 from RenewTech" : "on GRN"}</div><div class="t-meta">${r.flagship ? "2 Sep · supplier warranty 90 days" : "Inbound QC passed"}</div></li>
+            <li class="done"><span class="t-dot">${ic("award")}</span><div class="t-title">Inspected · ${TX.conditions[p.cond].label}</div><div class="t-meta">${r.flagship ? "IR-2240 · 3 Sep · battery 88% · 6 photos" : "Inspection report on file"}</div></li>` : ""}
+            <li class="done"><span class="t-dot">${ic("receipt")}</span><div class="t-title">Sold · ${r.order}</div><div class="t-meta">${r.flagship ? "17 Sep · web · price snapshot kept" : "price & warranty terms snapshot"}</div></li>
+            <li class="done"><span class="t-dot">${ic("truck")}</span><div class="t-title">Dispatched &amp; delivered</div><div class="t-meta">${r.flagship ? "18 → 20 Sep · serial scanned at pack" : "serial captured at pack"}</div></li>
+            <li class="current"><span class="t-dot">${ic("undo")}</span><div class="t-title">${r.id} · ${STL[r.st][0]}</div><div class="t-meta">${r.opened}</div></li>
+          </ul>
+        </div>
+      </div>
+      <div class="dsec" data-anno="1A · R19 T17 Serial matched to the original sale">
+        <h4>${ic("qr")} Serial match check</h4>
+        <div class="m3">${r.sn.map((s, i) => `<div class="${r.match === "bad" && i === 2 ? "bad" : ""}"><div class="l">${snLbl[i]}</div><div class="v">${s}</div></div>`).join("")}</div>
+        <div class="small mt-8 ${r.match === "bad" ? "text-bad strong" : r.match === "ok" ? "text-ok strong" : "muted"} il">${ic(r.match === "bad" ? "x-circle" : r.match === "ok" ? "check-circle" : "clock", "ic-sm")} ${r.match === "ok" ? (r.sn[2] === "—" ? "Customer-declared serial matches the sale · final check at receipt" : "All three match — this unit was sold on " + r.order) : r.match === "bad" ? "Received unit is not the unit sold — review before any refund" : r.match === "na" ? "Not a serialised product — SKU and batch checked instead" : "Waiting for customer upload / receipt scan"}</div>
+      </div>
+      <div class="dsec">
+        <h4>${ic("image")} Customer photos &amp; description</h4>
+        <div class="photos">${[...new Set(p.gallery)].slice(0, 3).map((g) => TX.ph(g, "")).join("")}${[...new Set(p.gallery)].length < 3 ? `<div class="panel small muted" style="display:grid;place-items:center;text-align:center">${ic("play")}<span>Customer video · 0:14</span></div>` : ""}<div class="panel small" style="display:flex;align-items:center">“${r.reason}.” — ${r.cust.split(" (")[0]}, ${r.opened.split(" · ")[0]}</div></div>
+        <div class="small muted mt-8">Photos are kept for the dispute window only (policy DP-3) — no unnecessary personal data is collected.</div>
+      </div>`;
+
+    // INSPECTION
+    const received = after("received");
+    $("#rp-insp").innerHTML = !received ? `<div class="empty">${ic("lock")}<h4>Unit not received yet</h4><p>Inspection opens when the parcel is scanned into quarantine at the warehouse. ${r.st === "transit" ? "Reverse pickup AWB 1490 2291 4410 is in transit." : ""}</p></div>` : `
+      <div class="dsec row-between"><div class="small"><b>Quarantine:</b> <span class="mono">Q-WH-01 / QR-04</span> · received ${r.flagship ? "26 Sep 09:20" : "25 Sep 16:10"} · not sellable</div><span class="badge b-warn">${ic("lock")} In quarantine</span></div>
+      <div class="dsec"><h4>${ic("clipboard")} Inspection form <span class="small muted" style="font-weight:500">· ${r.flagship ? "Meena K. · 26 Sep 09:50" : "in progress"}</span></h4>
+        <ul class="insp">
+          ${[
+            ["Serial / BIOS matches return", r.match === "bad" ? ["bad", "Mismatch"] : ["ok", "Match"], "Scan"],
+            ["Accessories returned", ["ok", "Complete"], "Charger · cable"],
+            ["Powers on · boots · all ports", ["ok", "Pass"], ""],
+            [r.flagship ? "Battery health (listed ≥ 85%)" : "Reported fault reproduced", r.flagship ? ["bad", "71% · fault"] : ["warn", "Pending"], r.flagship ? "Report attached" : ""],
+            ["Cosmetic vs grade at sale", ["ok", "Same as sale"], "4 photos"],
+            ["Customer-induced damage", ["ok", "None found"], ""],
+          ].map(([l, [k, t], n]) => `<li><span>${l}</span><span class="res ${k === "ok" ? "text-ok" : k === "bad" ? "text-bad" : "text-warn"}">${ic(k === "ok" ? "check-circle" : k === "bad" ? "x-circle" : "clock")} ${t}</span><span class="small muted">${n}</span></li>`).join("")}
+        </ul>
+        <div class="row gap-8 mt-12"><span class="small muted">Inspection photos</span>${[...new Set(p.gallery.concat([p.img]))].slice(0, 3).map((g) => TX.ph(g, "thumb")).join("")}<button class="btn btn-xs" data-toast="Bench camera opened">${ic("camera", "ic-sm")} Add</button></div>
+      </div>
+      <div class="dsec grid g-2">
+        <div class="field"><label for="grade">Grade outcome</label><select class="select" id="grade"><option>${r.flagship ? "Grade A cosmetic · battery below spec" : "Select outcome…"}</option><option>Grade A — resell as sold</option><option>Grade B — light wear</option><option>Needs repair</option><option>Unsellable / parts</option></select></div>
+        <div class="field"><label for="insp-n">Inspector notes</label><input class="input" id="insp-n" value="${r.flagship ? "Battery 71% after 212 cycles; no physical damage" : ""}"></div>
+      </div>
+      ${r.storage ? `<div class="dsec" data-anno="1A · §7.5 Data erasure before resale / release"><h4>${ic("drive")} Data-erasure step · storage device</h4>
+        <div class="panel"><div class="row-between"><div class="small"><b>Certified erasure required before this unit leaves quarantine</b> (resale, repair or return to supplier).<div class="muted mt-4">Method: NIST SP 800-88 purge · erasure station ES-01 · certificate stored against ${r.unit || "the serial"}</div></div>
+          <div class="col gap-6" style="align-items:flex-end"><span class="status s-warn">Not started</span><button class="btn btn-sm btn-primary" data-toast="Erasure job queued on ES-01 · certificate DE-${(r.unit || "0000").slice(-4)} on completion">Start erasure</button></div></div>
+          <div class="small text-warn mt-8 il">${ic("alert", "ic-sm")} Customer data is never inspected or copied — the drive is erased, not browsed.</div></div></div>` : ""}`;
+
+    // DECISIONS
+    const inspected = after("inspected");
+    const restock = r.dealer ? Math.round(r.paid * 0.05) : 0;
+    const refund = r.paid - r.disc - restock;
+    const refundCard = r.st === "rejected" ? `<div class="small"><b>No refund</b> — the RMA was rejected under the policy version that applied at sale.</div>` : r.type === "return" ? `
+      <div class="tot">
+        <span class="muted">Line price paid (incl. GST)</span><span>${fmt(r.paid)}</span>
+        <span class="muted">Allocated order discount</span><span>${r.disc ? "−" + fmt(r.disc) : "₹0"}</span>
+        ${r.dealer ? `<span class="muted">Restocking 5% (dealer policy)</span><span>−${fmt(restock)}</span>` : ""}
+        <span class="muted">Deductions for damage</span><span>₹0</span>
+        <span class="g">Refund amount</span><span class="g">${fmt(refund)}</span>
+      </div>
+      <div class="small muted mt-8">To original method · ${r.dealer ? "NEFT to dealer's verified bank account" : "UPI via Razorpay (pay_ONz4…)"} · credit note issued with the refund · uses the <b>original allocated</b> price, not today's price (T33).</div>`
+      : `<div class="small">${r.type === "warranty" ? "<b>No refund</b> — warranty repair or replacement. Refund only if the provider cannot repair and policy allows." : r.type === "doa" ? "<b>Replacement first</b> (DOA policy v2026.1). Refund only if no like-for-like unit is available." : "<b>No refund</b> — a replacement unit is allocated as a zero-value order line linked to this RMA."}</div>`;
+    const refundState = r.st === "rejected" ? `<span class="status s-bad">Not applicable</span>` : r.id === "RMA-0093" ? `<span class="status s-bad">Failed · 2 retries</span>` : r.st === "resolved" ? `<span class="status s-ok">Completed</span>` : inspected && r.type === "return" ? `<span class="status s-warn">Awaiting finance</span>` : `<span class="status s-muted">Not ready</span>`;
+    const dispOpts = [
+      ["resell-a", "Resell as Grade A", "Back to sellable at WH-BLR with a new inspection report"],
+      ["resell-b", "Resell as Grade B", "Regrade · new photos &amp; price required before listing"],
+      ["repair", "Repair", r.flagship ? "Battery replacement est. ₹3,200 · then re-inspect" : "In-house bench or authorised service"],
+      ["supplier", "Return to supplier", r.flagship ? "RenewTech · within 90-day supplier warranty → SRMA-0031" : "Under supplier warranty / DOA terms"],
+      ["scrap", "Scrap / parts", "Write-off above threshold needs manager approval"],
+    ];
+    $("#rp-dec").innerHTML = `
+      ${r.st === "rejected" ? `<div class="callout c-bad small mt-16"><i data-icon="x-circle"></i><div><b>RMA rejected</b> by ${r.owner} on 23 Sep · reason: requested on day 12, outside the 7-day window (Returns v2026.2 §3.1). No refund and no stock movement. Customer was offered the warranty route (${P(r.pid).warranty}) — the decision and message are in the audit log.</div></div>` : ""}
+      <div class="callout c-brand small mt-16" data-anno="1A · §10.5 Refund ≠ resale: two separate decisions"><i data-icon="split"></i><div><b>Two separate decisions.</b> Whether the customer gets money back (finance) and what happens to the unit (operations) are decided independently — a refund never makes the unit sellable.</div></div>
+      <div class="grid g-2 mt-16">
+        <div class="decide">
+          <div class="dh"><div><b>1 · Refund authorisation</b><div class="small muted">Finance · Deepa K.</div></div>${refundState}</div>
+          <div class="db">${refundCard}
+            ${r.id === "RMA-0093" ? `<div class="callout c-bad small mt-12"><i data-icon="alert"></i><div>Provider timed out twice. Next step queries refund <span class="mono">rfnd_OP2x7Lk</span> at Razorpay <b>before</b> any retry (T19).</div></div>` : ""}
+            ${r.flag ? `<div class="callout c-warn small mt-12"><i data-icon="flag"></i><div>Refund is on hold until the review flag is cleared by a manager.</div></div>` : ""}
+            ${r.type === "return" && r.st !== "rejected" ? `<div class="mt-12"><div class="upper muted mb-8">Refund state</div><div class="rsteps" style="margin-top:0">${["Requested", "Approved", "Submitted", "Pending", "Completed"].map((x, i) => `<div class="rs ${r.st === "resolved" ? "done" : r.id === "RMA-0093" ? (i < 2 ? "done" : i === 2 ? "rej" : "") : inspected && i === 0 ? "cur" : ""}">${x}</div>`).join("")}</div>
+              <div class="small muted mt-8">Support may request · finance approves &amp; executes · above the finance limit the owner approves (thresholds set by the client).</div></div>` : ""}
+          </div>
+          <div class="df"><button class="btn btn-sm" ${inspected ? "" : "disabled"} data-toast="Refund held with reason">Hold</button><button class="btn btn-sm btn-ok" ${inspected && r.type === "return" && !r.flag ? "" : "disabled"} data-toast="Refund RF-0284 approved · submitted to Razorpay · idempotency key RF-0284">Approve refund (finance)</button></div>
+        </div>
+        <div class="decide">
+          <div class="dh"><div><b>2 · Stock disposition</b><div class="small muted">Operations · Anita R. · unit ${r.unit || "(batch)"}</div></div>${inspected ? `<span class="status s-warn">Decision needed</span>` : `<span class="status s-muted">After inspection</span>`}</div>
+          <div class="db">
+            ${dispOpts.map(([v, t, d]) => `<label class="disp-opt"><input type="radio" name="disp" value="${v}" ${inspected ? "" : "disabled"} ${r.flagship && v === "supplier" ? "checked" : ""}><div><b>${t}</b><div class="small muted">${d}</div></div></label>`).join("")}
+            <div class="small mt-8"><b>Stock effect:</b> ${r.unit || "units"} stays in <span class="mono">Q-WH-01/QR-04</span> until this decision is approved${r.storage ? " and erasure is certified" : ""}.</div>
+          </div>
+          <div class="df"><button class="btn btn-sm btn-primary" ${inspected ? "" : "disabled"} data-toast="Disposition recorded · SRMA-0031 draft created for RenewTech">Record disposition</button></div>
+        </div>
+      </div>`;
+
+    // WARRANTY & SUPPLIER
+    const isW = r.type === "warranty";
+    const manu = ["ASUS", "Sony", "Canon", "Samsung", "LG", "Apple", "Dell", "Logitech", "Keychron", "Fujifilm", "GIGABYTE"].find((b) => p.warranty.startsWith(b));
+    $("#rp-wty").innerHTML = `
+      <div class="dsec" data-anno="1A · A23 Warranty eligibility · manufacturer vs Tradex">
+        <h4>${ic("shield")} Warranty claim tracking</h4>
+        <div class="grid g-2">
+          <div class="panel small ${manu ? "" : "muted"}"><div class="row-between"><b>Manufacturer warranty</b>${manu ? `<span class="badge b-brand">${manu} India</span>` : `<span class="badge">Not applicable</span>`}</div>
+            <div class="mt-8">${manu ? (isW ? `Claim <span class="mono">${manu.slice(0, 3).toUpperCase()}-IN-77${r.id.slice(-2)}</span> · authorised service centre, Bengaluru · <b>pickup booked 27 Sep</b> · typical turnaround 7–15 days` : `${p.warranty} — for faults after the return window, the customer is guided to the manufacturer (we can log the claim for them).`) : "Refurbished and used items are covered by Tradex's own warranty, not the manufacturer."}</div></div>
+          <div class="panel small ${manu ? "muted" : ""}"><div class="row-between"><b>Tradex warranty</b>${manu ? `<span class="badge">Not applicable</span>` : `<span class="badge b-accent">${p.warranty}</span>`}</div>
+            <div class="mt-8">${manu ? "New items rely on the brand warranty; Tradex handles returns within the policy window only." : isW ? "In-house bench repair or replacement from refurbished stock · customer SLA 10 working days" : `Valid from delivery · policy WTY v2026.1 snapshot on ${r.order}.`}</div></div>
+        </div>
+        ${isW ? `<ul class="timeline mt-16"><li class="done"><span class="t-dot">${ic("check")}</span><div class="t-title">Eligibility matched automatically</div><div class="t-meta">Invoice ${r.order} + serial + ${r.pol} → in warranty (${r.day})</div></li><li class="current"><span class="t-dot">${ic("truck")}</span><div class="t-title">${r.st === "transit" ? "Unit in transit to Tradex" : "Awaiting pickup to service centre"}</div><div class="t-meta">Customer told: “claim logged” — not “approved”</div></li><li><span class="t-dot">${ic("settings")}</span><div class="t-title">Diagnosis &amp; provider decision</div><div class="t-meta">Provider may accept, repair, replace or reject</div></li></ul>` : ""}
+      </div>
+      <div class="dsec">
+        <h4>${ic("building")} Supplier RMA</h4>
+        ${r.flagship ? `<div class="panel small"><div class="row-between"><div><b class="mono">SRMA-0031</b> · RenewTech Refurbishers (V-022) · <span class="status s-muted">Draft</span></div><button class="btn btn-xs" data-toast="SRMA-0031 sent to RenewTech · visible in their vendor portal">Send to vendor</button></div>
+          <div class="muted mt-4">Supplier warranty 90 days from GRN-0418 (2 Sep) → valid until 1 Dec · expected credit ₹30,500 or replacement unit · vendor sees only this RMA.</div></div>`
+        : `<div class="panel small muted">No supplier RMA. One is created only if the disposition is “Return to supplier”.</div>`}
+      </div>`;
+
+    // TIMELINE
+    const T = r.flagship ? [
+      ["done", "Return requested · web form", "24 Sep 18:20 · Aditya Rao · reason + 3 photos"],
+      ["done", "Rule A22 routed to review queue", "24 Sep 18:20 · within 10-day window · serial declared"],
+      ["done", "Reviewed & authorised", "25 Sep 10:05 · Karthik R. · reverse pickup booked"],
+      ["done", "Picked up · in transit", "25 Sep 15:30 · AWB 1490 2291 4388"],
+      ["done", "Received into quarantine Q-WH-01/QR-04", "26 Sep 09:20 · serial scan matched"],
+      ["done", "Inspected · battery 71%", "26 Sep 09:50 · Meena K. · 4 photos"],
+      ["current", "Awaiting refund approval & disposition", "Finance · Deepa K. / Ops · Anita R. · decide by 13:00"],
+    ] : [
+      ["done", "RMA opened", r.opened],
+      ["done", "Rule A22 routed to queue", `Policy ${r.pol}`],
+      [r.st === "rejected" ? "warn" : "current", STL[r.st][0], r.sla[1]],
+    ];
+    $("#rp-time").innerHTML = `<div class="dsec"><ul class="timeline">${T.map(([c, t, m]) => `<li class="${c}"><span class="t-dot">${ic(c === "done" ? "check" : c === "warn" ? "x" : "clock")}</span><div class="t-title">${t}</div><div class="t-meta">${m}</div></li>`).join("")}</ul></div>
+      <div class="dsec"><h4>${ic("shield")} Audit</h4><div class="small muted">Every decision records actor, time, policy version, evidence and reason. Customer messages use approved templates (rma_update v2).</div></div>`;
+    TX.hydrate($("#d-rma"));
+  }
+  document.addEventListener("click", (e) => { const tr = e.target.closest("#rma-body tr[data-id]"); if (tr && !e.target.closest("input,label")) { renderRMA(R.find((r) => r.id === tr.dataset.id)); TX.activateTab("rd-case"); } });
+  renderRMA(R.find((r) => r.id === (TX.param("rma") || "RMA-0094")));
+  if (TX.param("rma")) { TX.open("d-rma"); if (TX.param("tab")) TX.activateTab(TX.param("tab")); }
+
+  /* Refunds */
+  const REF = [
+    ["RF-0284", "RMA-0094", "Aditya Rao", 37990, "UPI · Razorpay", ["warn", "Requested"], "—", "2 h", "Deepa K.", "Approve"],
+    ["RF-0279", "RMA-0093", "Pallavi N.", 19990, "UPI · Razorpay", ["bad", "Failed · 2 retries"], "rfnd_OP2x7Lk", "3 h", "Deepa K.", "Check at provider"],
+    ["RF-0288", "TXO-10486 · line 3 cancel", "Metro Computers", 6396, "UPI · Razorpay", ["warn", "Requested"], "—", "22 min", "Deepa K.", "Approve"],
+    ["RF-0283", "RMA-0095", "Metro Computers (dealer)", 12806, "NEFT · dealer bank a/c", ["info", "Approved · in bank file"], "NEFT batch 26-09-A", "1 d", "Deepa K.", ""],
+    ["RF-0282", "RMA-0089", "Harsha V.", 8999, "Card · Visa ••4417", ["brand", "Pending at provider"], "rfnd_OOx91Ta", "2 d", "Auto-reconcile", ""],
+  ];
+  $("#ref-body").innerHTML = REF.map(([id, src, c, a, m, s, ref, age, own, act]) => `<tr>
+    <td class="mono strong">${id}</td><td class="small mono">${src}</td><td class="small">${c}</td><td class="r strong">${fmt(a)}</td><td class="small">${m}</td>
+    <td><span class="status s-${s[0]}">${s[1]}</span></td><td class="small mono">${ref}</td><td class="small">${age}</td><td class="small">${own}</td>
+    <td class="r">${act ? `<button class="btn btn-xs ${act === "Approve" ? "btn-ok" : ""}" data-toast="${act === "Approve" ? id + " approved by finance · submitted once" : "Queried Razorpay: refund rfnd_OP2x7Lk still pending — no retry issued"}">${act}</button>` : ""}</td></tr>`).join("");
+
+  /* Warranty claims */
+  const WC = [
+    ["WC-0051", "cam-02", "SN 4471029", "Sony India (manufacturer)", ["ok", "In warranty to 12 Feb 2027"], "Sony service centre, Koramangala", "SNY-IN-7781", ["info", "At service centre · day 9 of 15"], "Update sent 25 Sep"],
+    ["WC-0052", "lap-04", "K2NRCX0123", "ASUS India (manufacturer)", ["ok", "In warranty to 18 Apr 2027"], "Pickup 27 Sep", "ASU-IN-7799", ["brand", "Logged · pickup booked"], "“Claim logged with ASUS”"],
+    ["WC-0049", "gpu-02", "GB3060-7781", "Tradex 6-month", ["ok", "In warranty to 2 Jan 2027"], "In-house bench WH-BLR", "—", ["ok", "Repaired · returned"], "Closed 25 Sep"],
+    ["WC-0050", "mon-04", "LG-27UL-4410", "Tradex 3-month", ["ok", "In warranty to 30 Nov 2026"], "In transit to Tradex", "—", ["info", "Awaiting unit"], "Pickup done 25 Sep"],
+    ["WC-0047", "lens-02", "SN 7710452", "Tradex 3-month", ["bad", "Expired 14 Sep"], "—", "—", ["bad", "Not eligible · paid repair offered"], "Quote ₹4,500 sent"],
+    ["WC-0053", "cam-04", "SN 0923310", "Canon India (manufacturer)", ["warn", "Serial not on invoice — check"], "—", "—", ["warn", "Needs review"], "Asked for invoice copy"],
+  ];
+  $("#wty-body").innerHTML = WC.map(([id, pid, sn, prov, cov, where, ref, s, upd]) => { const p = P(pid); return `<tr>
+    <td class="mono strong">${id}</td><td><div class="row gap-8">${TX.ph(p.img, "thumb")}<div><div class="small strong truncate" style="max-width:160px">${p.title}</div><div class="cell-sub mono">${sn}</div></div></div></td>
+    <td class="small">${prov.includes("manufacturer") ? `<span class="badge b-brand">${prov.replace(" (manufacturer)", "")}</span><div class="tiny muted mt-4">manufacturer</div>` : `<span class="badge b-accent">${prov}</span><div class="tiny muted mt-4">Tradex</div>`}</td>
+    <td class="small ${cov[0] === "bad" ? "text-bad" : cov[0] === "warn" ? "text-warn" : "text-ok"} strong">${cov[1]}</td><td class="small">${where}</td><td class="small mono">${ref}</td>
+    <td><span class="status s-${s[0]}">${s[1]}</span><div class="cell-sub">${upd}</div></td></tr>`; }).join("");
+
+  /* Quarantine */
+  const Q = [
+    ["U-000781", "lap-01", "RMA-0094 · customer return", "Q-WH-01 / QR-04", "0", ["warn", "Required · not started"], "Disposition + erasure"],
+    ["U-000752", "cam-06", "RMA-0097 · customer return", "Q-WH-01 / QR-02", "1", ["muted", "Not a storage device"], "Review flag → inspection"],
+    ["U-000729", "hp-01", "RMA-0093 · customer return", "Q-WH-01 / QR-01", "3", ["muted", "Not a storage device"], "Resell Grade B (decided) · refund failing"],
+    ["—", "cam-04", "RTO · TXO-10452", "Arriving today", "—", ["muted", "n/a"], "Receive & inspect"],
+    ["U-000823", "lap-08", "Inbound QC · GRN-0441", "Q-WH-01 / QC-02", "0", ["ok", "Certified DE-0823"], "Grade & photograph"],
+    ["U-000824", "lap-08", "Inbound QC · GRN-0441", "Q-WH-01 / QC-02", "0", ["warn", "Running · 64%"], "Grade & photograph"],
+    ["U-000825", "tab-02", "Inbound QC · GRN-0441", "Q-WH-01 / QC-03", "0", ["bad", "Failed · retry"], "Re-run erasure or scrap drive"],
+  ];
+  $("#q-body").innerHTML = Q.map(([u, pid, src, loc, d, de, next]) => `<tr><td class="mono strong">${u}</td><td><div class="row gap-8">${TX.ph(P(pid).img, "thumb")}<span class="small strong truncate" style="max-width:220px">${P(pid).title}</span></div></td><td class="small">${src}</td><td class="small mono">${loc}</td><td class="small">${d}</td><td><span class="status s-${de[0]}">${de[1]}</span></td><td class="small">${next}</td></tr>`).join("");
+});
+</script>
+</body>
+</html>

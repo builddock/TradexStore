@@ -1,0 +1,750 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Your account · Tradex</title>
+  <link rel="stylesheet" href="assets/tradex.css">
+  <style>
+    .acc-head { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-top: 14px; }
+    .acc-head h1 { font-size: 24px; }
+    .acc-layout { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 24px; align-items: start; margin-top: 20px; }
+    .acc-side { position: sticky; top: 84px; display: flex; flex-direction: column; gap: 12px; }
+    .acc-nav { padding: 10px; }
+    .acc-nav .tabs { flex-direction: column; border: 0; gap: 1px; overflow: visible; }
+    .acc-nav .grp { padding: 10px 12px 4px; font-size: 10.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--tx-4); }
+    .acc-nav .tab { width: 100%; justify-content: flex-start; padding: 8px 12px; border-radius: var(--r-sm); color: var(--tx-2); font-weight: 550; }
+    .acc-nav .tab .ic { width: 17px; height: 17px; color: var(--tx-3); }
+    .acc-nav .tab:hover { background: var(--bg); }
+    .acc-nav .tab.active { background: var(--brand-50); color: var(--brand-700); font-weight: 650; }
+    .acc-nav .tab.active .ic { color: var(--brand); }
+    .acc-nav .tab.active::after { left: 0; right: auto; top: 7px; bottom: 7px; width: 3px; height: auto; border-radius: 0 3px 3px 0; }
+    .acc-nav .tab .count { margin-left: auto; }
+    .acc-nav .tab .count.hot { background: var(--accent); color: #fff; }
+    .panel-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+    .panel-head h2 { font-size: 20px; }
+    .panel-head p { color: var(--tx-3); margin-top: 3px; font-size: 13px; }
+    /* Overview */
+    .ov-stat { display: flex; flex-direction: column; gap: 4px; padding: 16px 18px; background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); text-align: left; cursor: pointer; transition: box-shadow .15s, border-color .15s; }
+    .ov-stat:hover { box-shadow: var(--sh-2); border-color: #d5dbe5; }
+    .ov-stat .n { font-size: 24px; font-weight: 750; letter-spacing: -0.02em; }
+    .ov-stat .l { font-size: 12.5px; color: var(--tx-3); display: flex; align-items: center; gap: 6px; }
+    .ov-stat .f { font-size: 12px; }
+    .mini-order { display: grid; grid-template-columns: 52px 1fr auto auto; gap: 14px; align-items: center; padding: 12px 20px; border-bottom: 1px solid var(--line-2); }
+    .mini-order:last-child { border-bottom: 0; }
+    .mini-order .thumb-lg.ph { width: 52px; height: 52px; }
+    /* Orders */
+    .ocard { background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; }
+    .ocard + .ocard { margin-top: 14px; }
+    .o-head { display: flex; gap: 32px; align-items: center; padding: 12px 20px; background: #f8f9fb; border-bottom: 1px solid var(--line-2); font-size: 11.5px; color: var(--tx-3); text-transform: uppercase; letter-spacing: .03em; font-weight: 600; }
+    .o-head b { display: block; color: var(--tx-1); font-size: 13px; text-transform: none; letter-spacing: 0; font-weight: 650; margin-top: 1px; }
+    .o-head .o-id { margin-left: auto; text-align: right; }
+    .o-head .o-id a { font-size: 12.5px; text-transform: none; letter-spacing: 0; }
+    .o-states { display: flex; gap: 22px; padding: 10px 20px; border-bottom: 1px solid var(--line-2); flex-wrap: wrap; font-size: 12px; align-items: center; }
+    .o-states .lbl { color: var(--tx-3); font-weight: 550; margin-right: 6px; }
+    .o-note { padding: 12px 20px 0; }
+    .o-ship { padding: 14px 20px; border-bottom: 1px solid var(--line-2); display: grid; grid-template-columns: minmax(0, 1fr) 190px; gap: 20px; }
+    .o-ship:last-child { border-bottom: 0; }
+    .o-ship .s-title { font-weight: 700; font-size: 14.5px; }
+    .o-ship .s-sub { font-size: 12.5px; color: var(--tx-3); margin-top: 1px; }
+    .o-item { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 14px; align-items: center; margin-top: 12px; }
+    .o-item .thumb-lg.ph { width: 64px; height: 64px; }
+    .o-item .i-title { font-weight: 600; font-size: 13.5px; color: var(--tx-1); }
+    .o-item .i-meta > span { display: inline-flex; align-items: center; gap: 4px; }
+    .o-item .i-meta { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; font-size: 12px; color: var(--tx-3); margin-top: 4px; }
+    .o-item .i-acts { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+    .o-acts { display: flex; flex-direction: column; gap: 8px; }
+    .soft-thumb { width: 64px; height: 64px; border-radius: var(--r-sm); background: linear-gradient(135deg, #e9eefc, #dbe4ff); display: grid; place-items: center; color: var(--brand-700); }
+    /* RMA list */
+    .rma-steps { display: flex; gap: 3px; align-items: center; }
+    .rma-steps i { width: 16px; height: 5px; border-radius: 3px; background: var(--line); display: block; }
+    .rma-steps i.on { background: var(--ok); }
+    .rma-steps i.cur { background: var(--brand); }
+    .rma-steps i.bad { background: var(--bad); }
+    .rma-steps i.warn { background: var(--warn); }
+    /* Address */
+    .addr { background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); padding: 18px; display: flex; flex-direction: column; gap: 8px; min-height: 220px; }
+    .addr.default { border-color: var(--brand-200); box-shadow: 0 0 0 1px var(--brand-100) inset; }
+    .addr .a-foot { margin-top: auto; display: flex; gap: 6px; padding-top: 8px; border-top: 1px solid var(--line-2); }
+    .addr-new { border: 2px dashed var(--line); background: transparent; align-items: center; justify-content: center; color: var(--tx-3); cursor: pointer; font-weight: 600; }
+    .addr-new:hover { border-color: var(--brand-200); color: var(--brand-700); background: var(--brand-50); }
+    /* Wishlist */
+    .wl-alert { display: flex; align-items: center; gap: 6px; font-size: 11.5px; font-weight: 650; padding: 5px 8px; border-radius: var(--r-sm); position: relative; z-index: 2; }
+    .wl-alert .ic { width: 13px; height: 13px; }
+    .wl-alert.drop { background: var(--ok-50); color: var(--ok-tx); }
+    .wl-alert.stock { background: var(--info-50); color: var(--info-tx); }
+    .wl-alert.low { background: var(--warn-50); color: var(--warn-tx); }
+    .wl-alert.same { background: var(--bg-2); color: var(--tx-2); }
+    /* Devices */
+    .dev-exp { min-width: 0; }
+    /* Consent */
+    .consent td:first-child { white-space: nowrap; }
+    .danger-zone { border-color: #f4c7c3; }
+    .danger-zone .card-head { background: #fff8f7; border-radius: var(--r-lg) var(--r-lg) 0 0; }
+    .ret-list li { display: flex; gap: 10px; padding: 6px 0; font-size: 13px; }
+    .ret-list { list-style: none; margin: 0; padding: 0; }
+    .ret-list .ic { margin-top: 2px; }
+    .guest-gate { display: grid; grid-template-columns: 1.1fr 1fr; gap: 20px; margin-top: 24px; }
+    .gate-hero { border-radius: var(--r-xl); overflow: hidden; position: relative; min-height: 420px; color: #fff; display: flex; flex-direction: column; justify-content: flex-end; padding: 32px; }
+    .gate-hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .gate-hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(7,12,24,.1) 20%, rgba(7,12,24,.88) 100%); }
+    .gate-hero > div { position: relative; z-index: 1; }
+    .gate-hero li { margin: 6px 0; color: #d5dcec; }
+    .sess-row td { vertical-align: top; }
+    .kv.tight { grid-template-columns: 116px 1fr; }
+  </style>
+</head>
+<body data-app="store" data-page="account">
+<main>
+  <div class="container">
+    <div class="crumbs mt-16"><a href="store-home.html">Home</a><i data-icon="chevron-right"></i><span>Your account</span></div>
+
+    <!-- ============================ GUEST: sign-in prompt ============================ -->
+    <div class="only-guest">
+      <div class="guest-gate" data-anno="1A · Guest sees sign-in prompt · no private data without auth">
+        <div class="gate-hero">
+          <img src="assets/img/hero-desk-min.jpg" alt="">
+          <div>
+            <span class="badge b-brand">Your Tradex account</span>
+            <h1 class="mt-12" style="font-size:30px;color:#fff">Sign in to see your orders, returns and warranties</h1>
+            <ul class="mt-12" style="padding-left:18px">
+              <li>Track every shipment and download GST invoices</li>
+              <li>Start returns, replacements and warranty claims by serial number</li>
+              <li>Wishlist price-drop and back-in-stock alerts</li>
+            </ul>
+          </div>
+        </div>
+        <div class="col gap-16">
+          <div class="card card-pad col gap-12">
+            <h3>Sign in</h3>
+            <div class="field"><label for="g-phone">Mobile number</label><div class="input-group"><span class="addon">+91</span><input class="input" id="g-phone" placeholder="98450 12321" inputmode="numeric"></div><span class="hint">We'll send a 6-digit one-time code. Email & password also works.</span></div>
+            <a class="btn btn-primary btn-block" href="store-login.html#signin">Continue</a>
+            <div class="row-between small"><a href="store-login.html#register">Create an account</a><a href="store-login.html#dealer">Business? Apply for dealer pricing</a></div>
+          </div>
+          <div class="card card-pad col gap-12" data-anno="1A · Guest order access via secure link / OTP (§6.5)">
+            <div class="row gap-8"><i data-icon="package" class="text-brand"></i><h3>Bought as a guest?</h3></div>
+            <p class="small subtle">Open the secure order link we sent by SMS/email, or verify with the phone number used at checkout. We never show addresses, invoices or serials without verification.</p>
+            <div class="form-grid">
+              <div class="field"><label for="g-ord">Order number</label><input class="input" id="g-ord" placeholder="TXO-10482"></div>
+              <div class="field"><label for="g-ph2">Phone used at checkout</label><input class="input" id="g-ph2" placeholder="+91 ••••• •••21"></div>
+            </div>
+            <button class="btn btn-soft" data-toast="One-time code sent to +91 ••••• •••21">Send code & view order</button>
+          </div>
+        </div>
+      </div>
+      <div class="grid g-3 mt-16">
+        <a class="card card-pad row gap-12" href="store-order.html" style="color:inherit;text-decoration:none"><span class="li-icon" style="width:40px;height:40px;border-radius:10px;display:grid;place-items:center;background:var(--brand-50);color:var(--brand)"><i data-icon="truck"></i></span><div><b>Track an order</b><div class="small muted">Order number + phone verification</div></div></a>
+        <a class="card card-pad row gap-12" href="store-help.html#returns" style="color:inherit;text-decoration:none"><span class="li-icon" style="width:40px;height:40px;border-radius:10px;display:grid;place-items:center;background:var(--brand-50);color:var(--brand)"><i data-icon="undo"></i></span><div><b>Returns & warranty policy</b><div class="small muted">7 days · 10 days on refurbished</div></div></a>
+        <a class="card card-pad row gap-12" href="store-dealer.html" style="color:inherit;text-decoration:none"><span class="li-icon" style="width:40px;height:40px;border-radius:10px;display:grid;place-items:center;background:var(--vendor-50);color:#07695b"><i data-icon="briefcase"></i></span><div><b>Business buyers</b><div class="small muted">Dealer pricing, 5+ / 10+ tiers, GST invoices</div></div></a>
+      </div>
+    </div>
+
+    <!-- ============================ SIGNED IN ============================ -->
+    <div class="hide-guest">
+      <div class="acc-head">
+        <div class="row gap-16">
+          <div class="avatar lg" id="acc-av">PN</div>
+          <div>
+            <h1 id="acc-hello">Hello, Priya</h1>
+            <p class="muted small" id="acc-sub">Customer since Mar 2026 · priya.nair@example.com · +91 98450 •••21</p>
+          </div>
+        </div>
+        <div class="row gap-8">
+          <span class="badge b-ok dot">2-step verification on</span>
+          <span class="badge b-outline"><i data-icon="whatsapp"></i> Order updates on WhatsApp</span>
+          <a class="btn btn-sm" href="store-help.html"><i data-icon="help"></i> Help centre</a>
+        </div>
+      </div>
+
+      <div class="only-dealer">
+        <div class="callout c-brand mt-16" data-anno="1A · R03 Dealer user: personal settings here, business records in Dealer zone">
+          <i data-icon="briefcase"></i>
+          <div class="grow"><strong>You're signed in as Arun Kumar, owner of Metro Computers (Dealer Gold).</strong> This page holds your personal login, security and consent settings. Business orders, invoices, price lists and team members live in the Dealer zone.</div>
+          <a class="btn btn-sm btn-primary" href="store-dealer.html">Open dealer zone</a>
+        </div>
+      </div>
+
+      <div class="acc-layout" data-tabset id="acc-tabs">
+        <!-- Left navigation (tabs, deep-linkable by #hash) -->
+        <aside class="acc-side">
+          <div class="card acc-nav" data-anno="1A · Deep-linkable account sections">
+            <nav class="tabs" aria-label="Account sections">
+              <div class="grp">Shopping</div>
+              <button class="tab active" data-tab="overview"><i data-icon="dashboard"></i> Overview</button>
+              <button class="tab" data-tab="orders"><i data-icon="package"></i> Orders <span class="count">7</span></button>
+              <button class="tab" data-tab="returns"><i data-icon="undo"></i> Returns & warranty <span class="count hot">1</span></button>
+              <button class="tab" data-tab="wishlist"><i data-icon="heart"></i> Wishlist <span class="count" id="wl-count">6</span></button>
+              <div class="grp">Records</div>
+              <button class="tab" data-tab="invoices"><i data-icon="receipt"></i> Invoices & credit notes</button>
+              <button class="tab" data-tab="devices"><i data-icon="shield"></i> Devices & warranty</button>
+              <div class="grp">Settings</div>
+              <button class="tab" data-tab="addresses"><i data-icon="pin"></i> Addresses</button>
+              <button class="tab" data-tab="profile"><i data-icon="key"></i> Profile & security</button>
+              <button class="tab" data-tab="privacy"><i data-icon="lock"></i> Privacy & messages</button>
+            </nav>
+          </div>
+          <div class="panel small">
+            <b>Need help with an order?</b>
+            <p class="muted mt-4">Chat 9 AM–9 PM, or WhatsApp us any time — we reply within office hours.</p>
+            <div class="row gap-8 mt-8"><button class="btn btn-sm btn-wa" data-wa><i data-icon="whatsapp"></i> WhatsApp</button><a class="btn btn-sm" href="store-help.html">Help</a></div>
+          </div>
+        </aside>
+
+        <div class="acc-content">
+
+          <!-- ============================ OVERVIEW ============================ -->
+          <section class="tab-panel active" data-panel="overview">
+            <div class="grid g-4" data-anno="1A · Account home: what needs attention first">
+              <button class="ov-stat" data-goto="orders"><span class="l"><i data-icon="package"></i> Open orders</span><span class="n">3</span><span class="f text-brand">1 out for delivery today</span></button>
+              <button class="ov-stat" data-goto="returns"><span class="l"><i data-icon="undo"></i> Returns & claims</span><span class="n">3</span><span class="f text-warn">1 needs your photos</span></button>
+              <button class="ov-stat" data-goto="wishlist"><span class="l"><i data-icon="heart"></i> Wishlist alerts</span><span class="n">2</span><span class="f text-ok">Price drops since you saved</span></button>
+              <button class="ov-stat" data-goto="devices"><span class="l"><i data-icon="shield"></i> Under warranty</span><span class="n">4</span><span class="f muted">Next expiry 4 Feb 2027</span></button>
+            </div>
+
+            <div class="grid mt-16" style="grid-template-columns: minmax(0,1.5fr) minmax(0,1fr)">
+              <div class="card">
+                <div class="card-head"><div><h3>Needs your attention</h3><div class="sub">Sorted by urgency</div></div></div>
+                <div class="list-row"><span class="li-icon warn"><i data-icon="image"></i></span><div class="grow"><b>Add a photo of the drive label — RMA-0092</b><div class="small muted">Seagate BarraCuda 2 TB warranty claim can't be reviewed until the serial label photo is uploaded.</div></div><a class="btn btn-sm btn-primary" href="store-returns.html#requests">Upload</a></div>
+                <div class="list-row"><span class="li-icon warn"><i data-icon="clock"></i></span><div class="grow"><b>Payment being verified — TXO-10488</b><div class="small muted">UPI payment not yet confirmed by your bank. Don't pay again; the router is held until 12:40 (R-5536).</div></div><button class="btn btn-sm" data-goto="orders">View</button></div>
+                <div class="list-row"><span class="li-icon brand"><i data-icon="undo"></i></span><div class="grow"><b>Return window closes tomorrow — TXO-10471</b><div class="small muted">Keychron K2 & USB-C hub can be returned or replaced until 28 Sep.</div></div><a class="btn btn-sm" href="store-returns.html">Start return</a></div>
+                <div class="list-row"><span class="li-icon"><i data-icon="rupee"></i></span><div class="grow"><b>Refund of ₹19,990 is on its way — RMA-0093</b><div class="small muted">Delayed at the payment provider; retried automatically. Expected by 30 Sep. No action needed.</div></div><button class="btn btn-sm btn-ghost" data-goto="returns">Details</button></div>
+              </div>
+              <div class="card">
+                <div class="card-head"><h3>Account & security</h3><button class="btn btn-sm btn-ghost" data-goto="profile">Manage</button></div>
+                <div class="card-body col gap-12">
+                  <dl class="kv tight">
+                    <dt>Mobile</dt><dd>+91 98450 •••21 <span class="badge b-ok">Verified</span></dd>
+                    <dt>Email</dt><dd>priya.nair@example.com <span class="badge b-ok">Verified</span></dd>
+                    <dt>2-step sign-in</dt><dd>On · SMS code</dd>
+                    <dt>Default address</dt><dd>Home · Koramangala 560034</dd>
+                    <dt>Messages</dt><dd>Order updates on WhatsApp · marketing off</dd>
+                  </dl>
+                  <div class="callout c-info small"><i data-icon="info"></i><div>Tradex will never ask for your OTP, card PIN or UPI PIN by phone or WhatsApp.</div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card mt-16">
+              <div class="card-head"><div><h3>Recent orders</h3><div class="sub">Order, payment and delivery are tracked separately</div></div><button class="btn btn-sm btn-ghost" data-goto="orders">All orders <i data-icon="arrow-right"></i></button></div>
+              <div id="ov-orders"></div>
+            </div>
+
+            <div class="band dealer mt-16 hide-dealer" style="padding:20px 24px">
+              <div class="row gap-16"><i data-icon="briefcase" class="ic-xl"></i><div><h3 style="color:#fff">Buying for a shop or company?</h3><p class="small mt-4">Apply for a dealer account: private price lists, 5+ / 10+ quantity tiers and GST invoices with your GSTIN.</p></div></div>
+              <a class="btn btn-accent" href="store-login.html#dealer">Apply as dealer</a>
+            </div>
+          </section>
+
+          <!-- ============================ ORDERS ============================ -->
+          <section class="tab-panel" data-panel="orders">
+            <div class="panel-head">
+              <div><h2>Your orders</h2><p>Order, payment, delivery and refund each show their own status — a paid order can still be waiting for dispatch.</p></div>
+              <a class="btn btn-sm" href="store-order.html"><i data-icon="truck"></i> Track by order number</a>
+            </div>
+            <div class="filterbar" data-anno="1A · Order history filters (client-side in mockup)">
+              <div class="input-icon" style="width:300px"><i data-icon="search"></i><input class="input" id="o-q" placeholder="Search order no., product or serial" aria-label="Search orders" style="height:34px"></div>
+              <div class="seg" id="o-seg">
+                <button class="active" data-f="all">All <span class="muted">7</span></button>
+                <button data-f="open">Open <span class="muted">3</span></button>
+                <button data-f="delivered">Delivered <span class="muted">2</span></button>
+                <button data-f="cancelled">Cancelled <span class="muted">1</span></button>
+                <button data-f="returns">Returns & refunds <span class="muted">1</span></button>
+              </div>
+              <select class="select" id="o-range" aria-label="Time range"><option value="6m">Last 6 months</option><option value="2026">2026</option><option value="2025">2025</option></select>
+              <span class="small muted ml-auto" id="o-count">Showing 7 orders</span>
+            </div>
+            <div id="orders-list"></div>
+            <div class="empty card hidden" id="orders-empty"><i data-icon="package"></i><h4>No orders match</h4><p>Try a different filter or time range. Orders placed in a store appear here once linked to your phone number.</p><button class="btn btn-sm mt-12" id="o-reset">Clear filters</button></div>
+            <div class="row-between mt-16 small muted"><span>Branch purchases made with your phone number are linked automatically · older orders from before Mar 2026 are in the previous system</span><button class="btn btn-sm" data-toast="Loaded 5 more orders">Load older orders</button></div>
+          </section>
+
+          <!-- ============================ RETURNS ============================ -->
+          <section class="tab-panel" data-panel="returns">
+            <div class="panel-head">
+              <div><h2>Returns, replacements & warranty claims</h2><p>Each request (RMA) has its own status — separate from the order and the refund.</p></div>
+              <a class="btn btn-accent" href="store-returns.html"><i data-icon="plus"></i> Start a new request</a>
+            </div>
+            <div class="callout c-warn mb-16"><i data-icon="alert"></i><div class="grow"><strong>Action needed on RMA-0092:</strong> add a clear photo of the label on your Seagate drive so we can match the serial to your purchase.</div><a class="btn btn-sm" href="store-returns.html#requests">Upload photo</a></div>
+            <div class="card" data-anno="1A · R19 RMA states: requested → reviewed → authorised → pickup → received → inspected → resolved">
+              <div class="table-wrap"><table class="table">
+                <thead><tr><th>Request</th><th>Item</th><th>Status</th><th>Progress</th><th>Updated</th><th></th></tr></thead>
+                <tbody id="rma-rows"></tbody>
+              </table></div>
+              <div class="card-foot"><span class="small muted">Received items are kept in quarantine and inspected before any refund, replacement or repair is released.</span><a class="small strong" href="store-help.html#returns">Returns policy v2026.3 →</a></div>
+            </div>
+          </section>
+
+          <!-- ============================ WISHLIST ============================ -->
+          <section class="tab-panel" data-panel="wishlist">
+            <div class="panel-head">
+              <div><h2>Wishlist</h2><p>We'll alert you when a saved item drops in price or comes back in stock.</p></div>
+              <div class="row gap-8"><button class="btn btn-sm" data-toast="Share link copied · wishlist is view-only for others"><i data-icon="link"></i> Share</button><button class="btn btn-sm btn-primary" id="wl-addall"><i data-icon="cart"></i> Add available items to cart</button></div>
+            </div>
+            <div class="card card-pad mb-16" data-anno="1A · Price-drop & back-in-stock alerts (respect channel consent)">
+              <div class="row wrap gap-24">
+                <label class="switch"><input type="checkbox" checked> Price-drop alerts</label>
+                <label class="switch"><input type="checkbox" checked> Back-in-stock alerts</label>
+                <span class="divider-v"></span>
+                <span class="small muted">Send via</span>
+                <label class="check"><input type="checkbox" checked> Email</label>
+                <label class="check"><input type="checkbox" disabled> WhatsApp <span class="badge b-outline">marketing opted out</span></label>
+                <button class="link-btn small ml-auto" data-goto="privacy">Change message consent</button>
+              </div>
+            </div>
+            <div class="pgrid cols-3" id="wl-grid" style="grid-template-columns:repeat(3,minmax(0,1fr))"></div>
+            <p class="small muted mt-12">Prices shown are live and include GST. A price-drop alert compares today's price with the price when you saved the item.</p>
+          </section>
+
+          <!-- ============================ INVOICES ============================ -->
+          <section class="tab-panel" data-panel="invoices">
+            <div class="panel-head">
+              <div><h2>Invoices & credit notes</h2><p>GST tax invoices are issued per shipment at dispatch. Refunds are documented with a credit note.</p></div>
+              <div class="row gap-8"><select class="select" style="width:auto;height:34px" aria-label="Financial year"><option>FY 2026-27</option><option>FY 2025-26</option></select><button class="btn btn-sm" data-toast="Preparing ZIP of 6 PDFs…"><i data-icon="download"></i> Download all</button></div>
+            </div>
+            <div class="card" data-anno="1A · GST invoices & credit notes linked to order / RMA">
+              <div class="table-wrap"><table class="table">
+                <thead><tr><th>Document</th><th>Type</th><th>For</th><th>Date</th><th class="r">Taxable value</th><th class="r">GST (CGST+SGST)</th><th class="r">Total</th><th></th></tr></thead>
+                <tbody id="inv-rows"></tbody>
+              </table></div>
+              <div class="card-foot"><span class="small muted">Seller: Tradex Electronics Pvt Ltd · GSTIN 29AAHCT4471K1Z2 · Place of supply: Karnataka (29)</span><span class="small muted">Invoices are retained for 8 years as required by GST law</span></div>
+            </div>
+            <div class="grid g-2 mt-16">
+              <div class="callout c-info"><i data-icon="info"></i><div><strong>Need input tax credit?</strong> Add your GSTIN at checkout before paying — it can't be added to an invoice once issued. Regular business buyers should <a href="store-login.html#dealer">apply as a dealer</a>.</div></div>
+              <div class="callout"><i data-icon="alert"></i><div><strong>Invoice looks wrong?</strong> Raise a correction request within 30 days. We'll issue a credit note and a corrected invoice — we never edit an issued invoice. <button class="link-btn" data-toast="Correction request SUP-7742 created">Request correction</button></div></div>
+            </div>
+          </section>
+
+          <!-- ============================ DEVICES ============================ -->
+          <section class="tab-panel" data-panel="devices">
+            <div class="panel-head">
+              <div><h2>Registered devices & warranty</h2><p>Serial-numbered products you bought from Tradex. Warranty claims are matched to the exact unit we sold.</p></div>
+              <button class="btn btn-sm" data-open="m-register"><i data-icon="plus"></i> Register an in-store purchase</button>
+            </div>
+            <div class="card" data-anno="1A · R19 Serial ↔ sale link · warranty provider & expiry per unit">
+              <div class="table-wrap"><table class="table" style="table-layout:fixed">
+                <colgroup><col style="width:30%"><col style="width:15%"><col style="width:16%"><col style="width:12%"><col style="width:19%"><col style="width:8%"></colgroup>
+                <thead><tr><th>Device</th><th>Serial / unit</th><th>Warranty</th><th>Coverage</th><th>Status</th><th></th></tr></thead>
+                <tbody id="dev-rows"></tbody>
+              </table></div>
+              <div class="card-foot"><span class="small muted">Serial numbers are partly hidden for your security. Full serials appear on your invoice and warranty card.</span><a class="small strong" href="store-help.html#warranty">Manufacturer vs Tradex warranty →</a></div>
+            </div>
+            <div class="callout c-brand mt-16"><i data-icon="history"></i><div><strong>Replacement history is kept.</strong> When a unit is replaced under warranty, both the original and the replacement serial stay on your record, so the remaining warranty carries over correctly.</div></div>
+          </section>
+
+          <!-- ============================ ADDRESSES ============================ -->
+          <section class="tab-panel" data-panel="addresses">
+            <div class="panel-head">
+              <div><h2>Addresses</h2><p>Delivery dates, COD eligibility and pickup for returns depend on the PIN code.</p></div>
+              <button class="btn btn-sm btn-primary" data-open="m-address"><i data-icon="plus"></i> Add address</button>
+            </div>
+            <div class="grid g-3" data-anno="1A · PIN serviceability checked per address (§6.5)">
+              <div class="addr default">
+                <div class="row-between"><span class="row gap-6"><i data-icon="home" class="text-brand"></i><b>Home</b></span><span class="badge b-brand">Default</span></div>
+                <div class="small"><b>Priya Nair</b><br>Flat 3B, Lakeview Residency, 5th Cross<br>1st Block, Koramangala<br>Bengaluru, Karnataka 560034<br>+91 98450 •••21</div>
+                <div class="small"><span class="status s-ok">Next-day delivery</span> · <span class="text-ok">COD available</span> · Return pickup ✓</div>
+                <div class="a-foot"><button class="btn btn-xs" data-open="m-address">Edit</button><button class="btn btn-xs btn-ghost" data-toast="Address removed" disabled>Remove</button></div>
+              </div>
+              <div class="addr">
+                <div class="row-between"><span class="row gap-6"><i data-icon="building" class="text-brand"></i><b>Office</b></span><span class="badge b-outline">GSTIN on invoice</span></div>
+                <div class="small"><b>Priya Nair · Northwind Analytics LLP</b><br>4th Floor, Prestige Tech Park, Tower B<br>Whitefield Main Road<br>Bengaluru, Karnataka 560066<br>GSTIN 29AAKFN1234C1Z9 <span class="text-ok">✓ verified</span></div>
+                <div class="small"><span class="status s-ok">Next-day delivery</span> · Weekdays 9–6 only</div>
+                <div class="a-foot"><button class="btn btn-xs" data-open="m-address">Edit</button><button class="btn btn-xs btn-ghost" data-toast="Office set as default">Set default</button><button class="btn btn-xs btn-ghost" data-toast="Address removed">Remove</button></div>
+              </div>
+              <div class="addr">
+                <div class="row-between"><span class="row gap-6"><i data-icon="pin" class="text-brand"></i><b>Parents — Hunsur</b></span><span class="badge b-warn">Limited service</span></div>
+                <div class="small"><b>R. Nair</b><br>#212, Kalkunike Layout<br>Hunsur, Mysuru District<br>Karnataka 571105<br>+91 94480 •••07</div>
+                <div class="callout c-warn small" style="padding:8px 10px"><i data-icon="alert"></i><div>Laptops & cameras: 3–5 days by insured courier. <b>COD and return pickup not available</b> — drop returns at our Mysuru store.</div></div>
+                <div class="a-foot"><button class="btn btn-xs" data-open="m-address">Edit</button><button class="btn btn-xs btn-ghost" data-toast="Office set as default">Set default</button><button class="btn btn-xs btn-ghost" data-toast="Address removed">Remove</button></div>
+              </div>
+            </div>
+            <div class="grid g-3 mt-16">
+              <button class="addr addr-new" data-open="m-address" style="min-height:120px"><i data-icon="plus" class="ic-lg"></i> Add a new address</button>
+              <div class="panel small span-2"><b>Store pickup</b><p class="muted mt-4">Choose “Pick up at store” at checkout for SP Road, Koramangala or Mysuru. We hold the item for 3 days after the “ready for pickup” message. Bring the order OTP and a photo ID.</p></div>
+            </div>
+          </section>
+
+          <!-- ============================ PROFILE & SECURITY ============================ -->
+          <section class="tab-panel" data-panel="profile">
+            <div class="panel-head"><div><h2>Profile & security</h2><p>Changing your phone or email needs a code sent to both the old and the new contact.</p></div></div>
+            <div class="grid g-2">
+              <div class="card">
+                <div class="card-head"><h3>Personal details</h3><button class="btn btn-sm" data-toast="Profile saved">Save</button></div>
+                <div class="card-body">
+                  <div class="form-grid">
+                    <div class="field"><label for="p-fn">First name</label><input class="input" id="p-fn" value="Priya"></div>
+                    <div class="field"><label for="p-ln">Last name</label><input class="input" id="p-ln" value="Nair"></div>
+                    <div class="field full"><label for="p-ph">Mobile number</label><div class="row gap-8"><div class="input-group grow"><span class="addon">+91</span><input class="input" id="p-ph" value="98450 12321" readonly></div><span class="badge b-ok">Verified</span><button class="btn btn-sm" data-open="m-otp">Change</button></div><span class="hint">Used for sign-in codes, delivery OTP and order-access verification.</span></div>
+                    <div class="field full"><label for="p-em">Email</label><div class="row gap-8"><input class="input grow" id="p-em" value="priya.nair@example.com" readonly><span class="badge b-ok">Verified</span><button class="btn btn-sm" data-open="m-otp">Change</button></div></div>
+                    <div class="field"><label for="p-lang">Message language</label><select class="select" id="p-lang"><option>English</option><option>ಕನ್ನಡ (Kannada)</option><option>हिन्दी (Hindi)</option></select></div>
+                    <div class="field"><label for="p-gst">GSTIN for invoices <span class="muted">(optional)</span></label><input class="input" id="p-gst" placeholder="Add at checkout for business purchases" disabled></div>
+                  </div>
+                </div>
+              </div>
+              <div class="card" data-anno="1A · Secure auth: OTP / password + 2-step, session control">
+                <div class="card-head"><h3>Sign-in & security</h3><span class="badge b-ok dot">Strong</span></div>
+                <div class="list-row"><span class="li-icon"><i data-icon="key"></i></span><div class="grow"><b>Password</b><div class="small muted">Last changed 12 Mar 2026</div></div><button class="btn btn-sm" data-toast="Password reset link sent to priya.nair@example.com">Change</button></div>
+                <div class="list-row"><span class="li-icon ok"><i data-icon="shield"></i></span><div class="grow"><b>2-step verification</b><div class="small muted">Code by SMS to +91 •••21 when signing in on a new device</div></div><label class="switch" aria-label="2-step verification"><input type="checkbox" checked data-toast="2-step verification setting updated"></label></div>
+                <div class="list-row"><span class="li-icon"><i data-icon="smartphone"></i></span><div class="grow"><b>Authenticator app</b><div class="small muted">Optional · stronger than SMS codes</div></div><button class="btn btn-sm" data-toast="Scan the QR code in your authenticator app">Set up</button></div>
+                <div class="list-row"><span class="li-icon"><i data-icon="lock"></i></span><div class="grow"><b>Backup codes</b><div class="small muted">8 of 10 unused · use if you lose access to your phone</div></div><button class="btn btn-sm" data-toast="New backup codes generated · old codes no longer work">Regenerate</button></div>
+                <div class="list-row"><span class="li-icon"><i data-icon="bell"></i></span><div class="grow"><b>New sign-in alerts</b><div class="small muted">Email + SMS when a new device signs in</div></div><label class="switch" aria-label="Sign-in alerts"><input type="checkbox" checked></label></div>
+              </div>
+            </div>
+            <div class="card mt-16">
+              <div class="card-head"><div><h3>Where you're signed in</h3><div class="sub">Sign out anything you don't recognise, then change your password</div></div><button class="btn btn-sm btn-danger" data-toast="Signed out of 2 other sessions">Sign out all other sessions</button></div>
+              <div class="table-wrap"><table class="table">
+                <thead><tr><th>Device</th><th>Location (approx.)</th><th>Last active</th><th></th></tr></thead>
+                <tbody>
+                  <tr class="sess-row"><td><div class="row"><i data-icon="laptop"></i><div><div class="cell-main">Chrome on Windows 11</div><div class="cell-sub">This device</div></div></div></td><td>Bengaluru, KA</td><td><span class="status s-ok">Active now</span></td><td class="r"><span class="badge b-brand">Current</span></td></tr>
+                  <tr class="sess-row"><td><div class="row"><i data-icon="smartphone"></i><div><div class="cell-main">Safari on iPhone</div><div class="cell-sub">Signed in 14 Sep 2026</div></div></div></td><td>Bengaluru, KA</td><td>Yesterday, 21:14</td><td class="r"><button class="btn btn-xs" data-toast="Session signed out">Sign out</button></td></tr>
+                  <tr class="sess-row"><td><div class="row"><i data-icon="monitor"></i><div><div class="cell-main">Firefox on macOS</div><div class="cell-sub">Signed in 2 Aug 2026 · 2-step passed</div></div></div></td><td>Mysuru, KA</td><td>2 Sep 2026</td><td class="r"><button class="btn btn-xs" data-toast="Session signed out">Sign out</button></td></tr>
+                </tbody>
+              </table></div>
+              <div class="card-foot"><span class="small muted">Recent security activity: sign-in with SMS code · 26 Sep 09:12 · Chrome on Windows · Bengaluru</span><button class="link-btn small" data-toast="Security activity log opened">View full log</button></div>
+            </div>
+          </section>
+
+          <!-- ============================ PRIVACY & MESSAGES ============================ -->
+          <section class="tab-panel" data-panel="privacy">
+            <div class="panel-head"><div><h2>Privacy & messages</h2><p>Your choices about how we contact you, and control over your personal data under India's DPDP Act.</p></div><a class="btn btn-sm" href="store-help.html#privacy">Privacy notice v2026.2</a></div>
+
+            <div class="card" data-anno="1A/1B · R11 Opt-in records per channel & purpose · marketing opt-out">
+              <div class="card-head"><div><h3>Communication preferences</h3><div class="sub">Service messages keep you informed about orders you placed. Marketing needs your explicit permission and can be withdrawn at any time.</div></div><button class="btn btn-sm btn-danger" id="stop-mkt"><i data-icon="bell"></i> Stop all marketing</button></div>
+              <div class="table-wrap"><table class="table consent">
+                <thead><tr><th>Channel</th><th>Purpose</th><th>Your choice</th><th>Record</th><th class="r">Allow</th></tr></thead>
+                <tbody>
+                  <tr><td><div class="row gap-8"><i data-icon="whatsapp" style="color:#1faa59"></i><b>WhatsApp</b></div></td><td>Order, delivery & return updates<div class="cell-sub">Service messages · approved templates</div></td><td><span class="status s-ok">Opted in</span></td><td class="small muted">12 Mar 2026 · checkout checkbox · +91 •••21</td><td class="r"><label class="switch" aria-label="WhatsApp order updates"><input type="checkbox" checked></label></td></tr>
+                  <tr><td><div class="row gap-8"><i data-icon="whatsapp" style="color:#1faa59"></i><b>WhatsApp</b></div></td><td>Offers, restock & price-drop alerts<div class="cell-sub">Marketing</div></td><td><span class="status s-muted">Opted out</span></td><td class="small muted">2 Sep 2026 · you replied “STOP”</td><td class="r"><label class="switch" aria-label="WhatsApp marketing"><input type="checkbox" class="mkt"></label></td></tr>
+                  <tr><td><div class="row gap-8"><i data-icon="smartphone"></i><b>SMS</b></div></td><td>Sign-in codes, delivery OTP<div class="cell-sub">Essential for security</div></td><td><span class="status s-info">Always on</span></td><td class="small muted">Required to operate your account</td><td class="r"><label class="switch" aria-label="SMS essential"><input type="checkbox" checked disabled></label></td></tr>
+                  <tr><td><div class="row gap-8"><i data-icon="smartphone"></i><b>SMS</b></div></td><td>Offers & sale announcements<div class="cell-sub">Marketing</div></td><td><span class="status s-muted">Never opted in</span></td><td class="small muted">—</td><td class="r"><label class="switch" aria-label="SMS marketing"><input type="checkbox" class="mkt"></label></td></tr>
+                  <tr><td><div class="row gap-8"><i data-icon="mail"></i><b>Email</b></div></td><td>Order confirmations & invoices<div class="cell-sub">Service messages</div></td><td><span class="status s-ok">On</span></td><td class="small muted">Account email · verified</td><td class="r"><label class="switch" aria-label="Email service"><input type="checkbox" checked disabled></label></td></tr>
+                  <tr><td><div class="row gap-8"><i data-icon="mail"></i><b>Email</b></div></td><td>Newsletter, deals & wishlist alerts<div class="cell-sub">Marketing</div></td><td><span class="status s-ok">Opted in</span></td><td class="small muted">12 Mar 2026 · registration form · v2026.1</td><td class="r"><label class="switch" aria-label="Email marketing"><input type="checkbox" class="mkt" checked></label></td></tr>
+                  <tr><td><div class="row gap-8"><i data-icon="phone"></i><b>Phone</b></div></td><td>Call-backs from support<div class="cell-sub">Only when you request one</div></td><td><span class="status s-info">On request</span></td><td class="small muted">No sales calls</td><td class="r">—</td></tr>
+                </tbody>
+              </table></div>
+              <div class="card-foot"><span class="small muted">Saving our WhatsApp number doesn't subscribe you to anything. Changes apply within 24 hours. We keep a record of each choice as proof of consent.</span><button class="link-btn small nowrap" data-open="m-consent-log">Consent history</button></div>
+            </div>
+
+            <div class="grid g-2 mt-16">
+              <div class="card" data-anno="1A · DPDP right to access · export of personal data">
+                <div class="card-head"><h3>Download your data</h3><span class="badge b-outline">Right to access</span></div>
+                <div class="card-body col gap-12">
+                  <p class="small subtle">Get a copy of your profile, addresses, orders, returns, messages consent records and wishlist as a ZIP (JSON + PDF invoices).</p>
+                  <div id="export-state">
+                    <button class="btn btn-primary" id="export-btn"><i data-icon="download"></i> Request my data</button>
+                  </div>
+                  <p class="tiny muted">Link valid 7 days · sent to your verified email · we'll ask for a sign-in code first.</p>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-head"><h3>Your other rights</h3></div>
+                <div class="list-row"><span class="li-icon"><i data-icon="edit"></i></span><div class="grow"><b>Correct your details</b><div class="small muted">Name, contact, addresses</div></div><button class="btn btn-sm" data-goto="profile">Edit</button></div>
+                <div class="list-row"><span class="li-icon"><i data-icon="users"></i></span><div class="grow"><b>Nominate someone</b><div class="small muted">To exercise your rights if you cannot</div></div><button class="btn btn-sm" data-toast="Nominee form opened">Nominate</button></div>
+                <div class="list-row"><span class="li-icon"><i data-icon="flag"></i></span><div class="grow"><b>Raise a grievance</b><div class="small muted">Grievance officer replies within 48 h</div></div><a class="btn btn-sm" href="store-help.html#grievance">Contact</a></div>
+              </div>
+            </div>
+
+            <div class="card danger-zone mt-16" data-anno="1A · §19.3 Delete account ≠ delete statutory records">
+              <div class="card-head"><div><h3 class="text-bad">Delete account</h3><div class="sub">Permanently removes your profile and sign-in. Some records must be kept by law.</div></div><button class="btn btn-danger" data-open="m-delete"><i data-icon="trash"></i> Delete my account</button></div>
+              <div class="card-body grid g-2">
+                <div><div class="upper muted mb-8">Deleted</div><ul class="ret-list">
+                  <li><i data-icon="check" class="ic-sm text-ok"></i> Profile, password, saved addresses</li>
+                  <li><i data-icon="check" class="ic-sm text-ok"></i> Wishlist, alerts, marketing preferences</li>
+                  <li><i data-icon="check" class="ic-sm text-ok"></i> Chat transcripts older than 90 days</li></ul></div>
+                <div><div class="upper muted mb-8">Kept (anonymised where possible)</div><ul class="ret-list">
+                  <li><i data-icon="lock" class="ic-sm text-warn"></i> Tax invoices & credit notes — 8 years (GST law)</li>
+                  <li><i data-icon="lock" class="ic-sm text-warn"></i> Warranty & serial records — until warranty ends</li>
+                  <li><i data-icon="lock" class="ic-sm text-warn"></i> Payment & refund records, open disputes</li></ul></div>
+              </div>
+            </div>
+          </section>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================ MODALS ============================ -->
+  <div class="modal" id="m-address"><div class="modal-card lg">
+    <div class="modal-head"><h3>Add / edit address</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="field"><label for="a-name" class="req">Full name</label><input class="input" id="a-name" value="Priya Nair"></div>
+        <div class="field"><label for="a-ph" class="req">Mobile</label><div class="input-group"><span class="addon">+91</span><input class="input" id="a-ph" value="98450 12321"></div></div>
+        <div class="field"><label for="a-pin" class="req">PIN code</label><div class="row gap-8"><input class="input" id="a-pin" value="571105" style="max-width:140px"><button class="btn btn-sm" id="pin-check">Check</button></div><span class="hint" id="pin-res">Enter a PIN to check delivery options</span></div>
+        <div class="field"><label for="a-city">City / district</label><input class="input" id="a-city" value="Hunsur, Mysuru" readonly></div>
+        <div class="field full"><label for="a-l1" class="req">House / flat, building, street</label><input class="input" id="a-l1" value="#212, Kalkunike Layout"></div>
+        <div class="field full"><label for="a-l2">Area, landmark</label><input class="input" id="a-l2" placeholder="Near Government PU College"></div>
+        <div class="field"><label>Address type</label><div class="seg"><button class="active">Home</button><button>Office</button><button>Other</button></div></div>
+        <div class="field"><label>&nbsp;</label><label class="check"><input type="checkbox"> Make this my default address</label></div>
+      </div>
+    </div>
+    <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-primary" data-close data-toast="Address saved">Save address</button></div>
+  </div></div>
+
+  <div class="modal" id="m-register"><div class="modal-card">
+    <div class="modal-head"><h3>Register an in-store purchase</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-body col gap-16">
+      <p class="small subtle">Bought at SP Road, Koramangala or Mysuru with a different phone number? Link it here. We match the serial against the store invoice before adding it.</p>
+      <div class="field"><label for="r-inv">Store invoice number</label><input class="input" id="r-inv" value="INV/SPR/2627/001203"></div>
+      <div class="field"><label for="r-ser">Device serial number</label><input class="input is-error mono" id="r-ser" value="PF2K7XQ4"><span class="err"><i data-icon="x-circle" class="ic-sm"></i> This serial doesn't match any item on INV/SPR/2627/001203. Check the label on the device or the box.</span></div>
+      <div class="callout c-info small"><i data-icon="info"></i><div>Tip: laptop serials are on the underside label or in BIOS; cameras under the battery door.</div></div>
+    </div>
+    <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-primary" data-toast="Verifying serial against sale…">Verify & register</button></div>
+  </div></div>
+
+  <div class="modal" id="m-otp"><div class="modal-card">
+    <div class="modal-head"><h3>Change mobile number</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-body col gap-16">
+      <div class="field"><label for="o-new">New mobile number</label><div class="input-group"><span class="addon">+91</span><input class="input" id="o-new" placeholder="New number"></div></div>
+      <div class="grid g-2">
+        <div class="field"><label for="o-c1">Code sent to current number (•••21)</label><input class="input mono" id="o-c1" placeholder="6 digits"></div>
+        <div class="field"><label for="o-c2">Code sent to new number</label><input class="input mono" id="o-c2" placeholder="6 digits"></div>
+      </div>
+      <p class="small muted">Lost access to your old number? Contact support with a photo ID — we'll verify before changing it.</p>
+    </div>
+    <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-primary" data-close data-toast="Mobile number updated · sign-in alert sent">Confirm change</button></div>
+  </div></div>
+
+  <div class="modal" id="m-consent-log"><div class="modal-card lg">
+    <div class="modal-head"><div><h3>Consent history</h3><div class="small muted">Every change to your message preferences is recorded with time and source</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-body">
+      <table class="table compact">
+        <thead><tr><th>When</th><th>Channel · purpose</th><th>Change</th><th>Source</th><th>Notice version</th></tr></thead>
+        <tbody>
+          <tr><td>2 Sep 2026, 19:41</td><td>WhatsApp · marketing</td><td><span class="status s-muted">Opted out</span></td><td>Reply “STOP” to template promo_restock_v3</td><td>—</td></tr>
+          <tr><td>14 Jun 2026, 11:02</td><td>WhatsApp · marketing</td><td><span class="status s-ok">Opted in</span></td><td>Wishlist alert prompt (web)</td><td>v2026.1</td></tr>
+          <tr><td>12 Mar 2026, 16:20</td><td>Email · marketing</td><td><span class="status s-ok">Opted in</span></td><td>Registration form checkbox</td><td>v2026.1</td></tr>
+          <tr><td>12 Mar 2026, 16:20</td><td>WhatsApp · service</td><td><span class="status s-ok">Opted in</span></td><td>Checkout checkbox · TXO-10112</td><td>v2026.1</td></tr>
+          <tr><td>12 Mar 2026, 16:18</td><td>Privacy notice</td><td><span class="status s-info">Accepted</span></td><td>Account created</td><td>v2026.1 → v2026.2 notified 1 Aug</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="modal-foot"><button class="btn" data-close>Close</button></div>
+  </div></div>
+
+  <div class="modal" id="m-delete"><div class="modal-card lg">
+    <div class="modal-head"><h3>Delete your Tradex account?</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-body col gap-16">
+      <div class="callout c-bad"><i data-icon="alert-octagon"></i><div><strong>You can't delete your account yet.</strong> These need to finish first so we can deliver, refund or repair correctly:</div></div>
+      <div class="table-wrap"><table class="table compact">
+        <tbody>
+          <tr><td><b>TXO-10488</b> · payment being verified</td><td class="r"><span class="status s-warn">Open order</span></td></tr>
+          <tr><td><b>TXO-10482</b> · 1 shipment not yet dispatched</td><td class="r"><span class="status s-warn">Open order</span></td></tr>
+          <tr><td><b>TXO-10466</b> · out for delivery</td><td class="r"><span class="status s-warn">Open order</span></td></tr>
+          <tr><td><b>RMA-0092</b> · warranty claim waiting for your photo</td><td class="r"><span class="status s-warn">Open request</span></td></tr>
+          <tr><td><b>RMA-0093</b> · refund ₹19,990 pending</td><td class="r"><span class="status s-warn">Refund pending</span></td></tr>
+        </tbody>
+      </table></div>
+      <div class="grid g-2">
+        <div class="panel small"><b>After deletion we remove</b><p class="muted mt-4">Your profile, login, addresses, wishlist, alerts and marketing preferences. You'll be signed out everywhere.</p></div>
+        <div class="panel small"><b>We're required to keep</b><p class="muted mt-4">Tax invoices and credit notes (8 years, GST law), warranty/serial records until the warranty ends, and payment/refund records. These are kept separately with restricted access and are not used for marketing.</p></div>
+      </div>
+      <p class="small muted">Once eligible, deletion is confirmed with a code sent to your phone. You can cancel within 14 days by signing in; after that it can't be undone.</p>
+    </div>
+    <div class="modal-foot"><button class="btn" data-close>Keep my account</button><button class="btn btn-danger" disabled>Continue to delete</button></div>
+  </div></div>
+
+  <div class="drawer" id="d-rma"><div class="drawer-card">
+    <div class="drawer-head"><div><div class="upper muted">Return request</div><h3 id="dr-title">RMA-0093</h3><div class="small muted" id="dr-sub"></div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="drawer-body" id="dr-body"></div>
+    <div class="drawer-foot"><a class="btn" href="store-help.html#returns">Policy</a><button class="btn btn-primary" data-toast="Support ticket SUP-7744 opened with this RMA attached">Contact support</button></div>
+  </div></div>
+</main>
+<script src="assets/tradex.js"></script>
+<script>
+TX.ready(() => {
+  const $ = TX.$, $$ = TX.$$, fmt = TX.fmt, ic = TX.icon;
+  // Prototype deep link: ?view=guest|consumer|dealer (same as the toolbar's "View as")
+  const pv = TX.param("view"); if (["guest", "consumer", "dealer"].includes(pv)) TX.setView(pv);
+
+  /* ---------- Name by buyer context ---------- */
+  const setName = () => {
+    const d = TX.view === "dealer";
+    $("#acc-av").textContent = d ? "AK" : "PN";
+    $("#acc-av").style.background = d ? "#0e9f8a" : "";
+    $("#acc-hello").textContent = d ? "Hello, Arun" : "Hello, Priya";
+    $("#acc-sub").textContent = d ? "Metro Computers · owner · arun@metrocomputers.example · +91 98860 •••44" : "Customer since Mar 2026 · priya.nair@example.com · +91 98450 •••21";
+  };
+  setName(); document.addEventListener("tx:view", setName);
+
+  /* ---------- Tabs: deep links + in-page shortcuts ---------- */
+  const go = (id) => { TX.activateTab(id); history.replaceState(null, "", "#" + id); window.scrollTo({ top: 0, behavior: "smooth" }); };
+  window.addEventListener("hashchange", () => TX.activateTab(location.hash.slice(1)));
+  document.addEventListener("click", (e) => {
+    const g = e.target.closest("[data-goto]"); if (g) { e.preventDefault(); go(g.dataset.goto); }
+    const t = e.target.closest(".acc-nav .tab"); if (t) history.replaceState(null, "", "#" + t.dataset.tab);
+  });
+
+  /* ---------- Orders ---------- */
+  const st = (label, text, cls) => `<span><span class="lbl">${label}</span><span class="status ${cls}">${text}</span></span>`;
+  const item = (it) => {
+    if (it.custom) return `<div class="o-item"><div class="soft-thumb">${ic(it.icon, "ic-lg")}</div><div><div class="i-title">${it.title}</div><div class="i-meta"><span>Qty ${it.qty}</span><span>${fmt(it.price)}</span>${it.note || ""}</div>${it.acts ? `<div class="i-acts">${it.acts}</div>` : ""}</div></div>`;
+    const p = TX.byId(it.id);
+    return `<div class="o-item">${TX.ph(p.img, "thumb-lg", "")}<div><a class="i-title" href="store-product.html?id=${p.id}">${TX.esc(p.title)}</a>
+      <div class="i-meta">${TX.condBadge(p.cond)}<span>Qty ${it.qty || 1}</span><span>${fmt(p.price * (it.qty || 1))}</span><span>${ic("shield", "ic-sm")} ${p.warranty}</span>${it.note || ""}</div>
+      ${it.acts ? `<div class="i-acts">${it.acts}</div>` : ""}</div></div>`;
+  };
+  const buyAgain = (id) => `<button class="btn btn-xs" data-add="${id}">${ic("refresh", "ic-sm")} Buy again</button>`;
+  const ORDERS = [
+    { id: "TXO-10488", date: "26 Sep 2026", total: 22990, to: "Priya Nair · Home", pay: "UPI", f: "open",
+      states: [["Order", "Awaiting payment", "s-warn"], ["Payment", "Verifying with bank", "s-warn"], ["Delivery", "Not started", "s-muted"]],
+      note: `<div class="callout c-warn"><i data-icon="clock"></i><div><strong>Payment verification pending.</strong> Your bank hasn't confirmed this UPI payment yet — please don't pay again. The router is held for you until 12:40 (reservation R-5536). If it isn't confirmed, any amount debited returns automatically in 5–7 working days.</div></div>`,
+      ships: [{ title: "Not yet dispatched", sub: "Dispatch starts once payment is confirmed", items: [{ id: "net-01", qty: 1 }], acts: `<button class="btn btn-sm btn-primary" data-toast="Checked with bank · still pending · we'll message you">Check payment status</button><button class="btn btn-sm btn-danger" data-toast="Cancellation requested · any debit will be refunded">Cancel order</button>` }] },
+    { id: "TXO-10482", date: "24 Sep 2026", total: 38990 + 3495 + 8999 * 2, to: "Priya Nair · Home", pay: "UPI · priya@okhdfc", f: "open",
+      states: [["Order", "Partially fulfilled", "s-info"], ["Payment", "Paid", "s-ok"], ["Delivery", "1 of 2 shipments dispatched", "s-brand"]],
+      ships: [
+        { title: "Shipment 1 of 2 · Arriving Tue, 29 Sep", sub: "Dispatched 25 Sep from Central Warehouse · Delhivery AWB 1490 2211 7783", items: [{ id: "lap-01", qty: 1, note: `<a href="store-refurbished.html" class="small">Unit U-000842 · inspection report</a>` }, { id: "ms-02", qty: 1 }], acts: `<a class="btn btn-sm btn-primary" href="store-order.html?id=TXO-10482">Track package</a><button class="btn btn-sm" data-toast="Invoice INV/BLR/2627/004812 downloaded">Invoice</button>` },
+        { title: "Shipment 2 of 2 · Packed", sub: "At SP Road Branch · dispatch expected today by 6 PM", items: [{ id: "ssd-01", qty: 2 }], acts: `<a class="btn btn-sm" href="store-order.html?id=TXO-10482">Track</a><span class="small muted">Invoice issued at dispatch</span>` }] },
+    { id: "TXO-10466", date: "23 Sep 2026", total: 94999, to: "Priya Nair · Office", pay: "HDFC credit card ••42 · 6-month no-cost EMI", f: "open",
+      states: [["Order", "Confirmed", "s-ok"], ["Payment", "Paid", "s-ok"], ["Delivery", "Out for delivery", "s-brand"]],
+      ships: [{ title: "Out for delivery · today by 7 PM", sub: "Blue Dart · high-value item: share the delivery OTP only after you have the sealed package", items: [{ id: "cam-05", qty: 1 }], acts: `<a class="btn btn-sm btn-primary" href="store-order.html?id=TXO-10466">Track package</a><button class="btn btn-sm" data-toast="Delivery OTP resent by SMS">Resend delivery OTP</button>` }] },
+    { id: "TXO-10471", date: "19 Sep 2026", total: 7499 + 2999 + 14999, to: "Priya Nair · Home", pay: "UPI", f: "delivered",
+      states: [["Order", "Fulfilled", "s-ok"], ["Payment", "Paid", "s-ok"], ["Delivery", "Delivered 21 Sep", "s-ok"], ["Returns", "Window open until 28 Sep", "s-warn"]],
+      ships: [{ title: "Delivered Mon, 21 Sep", sub: "Signed by Priya · Koramangala", items: [
+        { id: "kb-01", qty: 1, acts: `<a class="btn btn-xs btn-primary" href="store-returns.html?order=TXO-10471">Return or replace</a>${buyAgain("kb-01")}<button class="btn btn-xs btn-ghost" data-toast="Review form opened">Write a review</button>` },
+        { id: "hub-02", qty: 1, acts: `<a class="btn btn-xs" href="store-returns.html?order=TXO-10471">Return or replace</a>${buyAgain("hub-02")}` },
+        { custom: true, icon: "file", title: "Microsoft Windows 11 Pro — digital licence (ESD)", qty: 1, price: 14999, note: `<span class="badge b-outline">Non-returnable · key revealed 21 Sep</span>` }],
+        acts: `<button class="btn btn-sm" data-toast="Invoice INV/BLR/2627/004590 downloaded">Invoice</button><a class="btn btn-sm btn-ghost" href="store-help.html">Get help</a>` }] },
+    { id: "TXO-10447", date: "15 Sep 2026", total: 84990, to: "Priya Nair · Home", pay: "HDFC credit card ••42", f: "cancelled",
+      states: [["Order", "Cancelled", "s-bad"], ["Payment", "Refunded ₹84,990", "s-ok"], ["Delivery", "Not dispatched", "s-muted"]],
+      note: `<div class="callout c-info"><i data-icon="info"></i><div><strong>Cancelled by Tradex on 16 Sep.</strong> The reserved unit failed our pre-dispatch check (hinge noise), and no other unit matched the listing. Full refund of ₹84,990 completed 18 Sep to HDFC credit card ••42 · ref RFND-88213.</div></div>`,
+      ships: [{ title: "Cancelled before dispatch", sub: "No invoice was issued · payment receipt available", items: [{ id: "lap-03", qty: 1 }], acts: `<a class="btn btn-sm btn-primary" href="store-listing.html?q=macbook+air">See similar units</a><button class="btn btn-sm" data-toast="Payment receipt downloaded">Receipt</button>` }] },
+    { id: "TXO-10431", date: "8 Sep 2026", total: 19990, to: "Priya Nair · Home", pay: "UPI · priya@okhdfc", f: "returns",
+      states: [["Order", "Returned", "s-muted"], ["Payment", "Refund pending", "s-warn"], ["Delivery", "Delivered 10 Sep", "s-ok"], ["Return", "RMA-0093 · approved", "s-ok"]],
+      note: `<div class="callout c-warn"><i data-icon="rupee"></i><div><strong>Refund of ₹19,990 is taking longer than usual.</strong> Your return passed inspection on 24 Sep and the refund was approved. The payment provider didn't accept it the first time; we've retried automatically and our finance team is following up. Expected by 30 Sep — no action needed.</div></div>`,
+      ships: [{ title: "Returned · received 22 Sep", sub: "Inspected 24 Sep · passed · credit note CN/BLR/2627/000219", items: [{ id: "hp-01", qty: 1 }], acts: `<button class="btn btn-sm" data-drawer-rma="RMA-0093">View return</button><button class="btn btn-sm" data-toast="Credit note CN/BLR/2627/000219 downloaded">Credit note</button>` }] },
+    { id: "TXO-10398", date: "2 Aug 2026", total: 84990, to: "Priya Nair · Home", pay: "Net banking · SBI", f: "delivered",
+      states: [["Order", "Closed", "s-muted"], ["Payment", "Paid", "s-ok"], ["Delivery", "Delivered 4 Aug", "s-ok"], ["Warranty", "Tradex · until 4 Feb 2027", "s-info"]],
+      ships: [{ title: "Delivered Tue, 4 Aug", sub: "Return window closed 14 Aug · warranty repairs available", items: [{ id: "cam-01", qty: 1, note: `<span class="small">Unit U-000731 · shutter count 18,204 at sale</span>`, acts: `<a class="btn btn-xs btn-primary" href="store-returns.html?type=warranty">Request warranty repair</a><button class="btn btn-xs" data-toast="Inspection report opened">Inspection report</button><button class="btn btn-xs btn-ghost" data-toast="Review form opened">Write a review</button>` }], acts: `<button class="btn btn-sm" data-toast="Invoice INV/MYS/2627/000877 downloaded">Invoice</button>` }] },
+  ];
+  const orderHTML = (o) => `<article class="ocard" data-f="${o.f}" data-text="${(o.id + " " + o.ships.flatMap((s) => s.items.map((i) => i.custom ? i.title : TX.byId(i.id).title)).join(" ")).toLowerCase()}">
+    <div class="o-head"><div>Order placed<b>${o.date}</b></div><div>Total<b>${fmt(o.total)}</b></div><div>Ship to<b>${o.to}</b></div><div>Paid via<b>${o.pay}</b></div>
+      <div class="o-id">Order # ${o.id}<div class="row gap-8" style="justify-content:flex-end"><a href="store-order.html?id=${o.id}">Order details</a></div></div></div>
+    <div class="o-states">${o.states.map((s) => st(...s)).join("")}</div>
+    ${o.note ? `<div class="o-note">${o.note}</div>` : ""}
+    ${o.ships.map((s) => `<div class="o-ship"><div><div class="s-title">${s.title}</div><div class="s-sub">${s.sub}</div>${s.items.map(item).join("")}</div><div class="o-acts">${s.acts || ""}</div></div>`).join("")}
+  </article>`;
+  $("#orders-list").innerHTML = ORDERS.map(orderHTML).join("");
+  TX.hydrate($("#orders-list"));
+  $$("#orders-list .o-acts").forEach((a) => $$(".btn", a).forEach((b) => b.classList.add("btn-block")));
+
+  let fKey = "all";
+  const applyOrders = () => {
+    const q = $("#o-q").value.trim().toLowerCase(), range = $("#o-range").value;
+    let n = 0;
+    $$("#orders-list .ocard").forEach((c) => {
+      const ok = (fKey === "all" || c.dataset.f === fKey) && (!q || c.dataset.text.includes(q)) && range !== "2025";
+      c.classList.toggle("hidden", !ok); if (ok) n++;
+    });
+    $("#orders-empty").classList.toggle("hidden", n > 0);
+    $("#o-count").textContent = `Showing ${n} order${n === 1 ? "" : "s"}`;
+  };
+  $$("#o-seg button").forEach((b) => b.addEventListener("click", () => { fKey = b.dataset.f; applyOrders(); }));
+  $("#o-q").addEventListener("input", applyOrders);
+  $("#o-range").addEventListener("change", applyOrders);
+  $("#o-reset").addEventListener("click", () => { $("#o-q").value = ""; $("#o-range").value = "6m"; fKey = "all"; $$("#o-seg button").forEach((b, i) => b.classList.toggle("active", i === 0)); applyOrders(); });
+
+  // Overview: recent orders compact
+  const recent = [["TXO-10466", "cam-05", "Out for delivery · today by 7 PM", "s-brand", "Paid"], ["TXO-10482", "lap-01", "1 of 2 shipments dispatched", "s-brand", "Paid"], ["TXO-10488", "net-01", "Awaiting payment confirmation", "s-warn", "Verifying"]];
+  $("#ov-orders").innerHTML = recent.map(([id, pid, s, cls, pay]) => { const p = TX.byId(pid); return `<div class="mini-order">${TX.ph(p.img, "thumb-lg")}<div><div class="strong">${TX.esc(p.title)}${id === "TXO-10482" ? " + 2 more" : ""}</div><div class="small muted">${id} · Payment: ${pay}</div></div><span class="status ${cls}">${s}</span><a class="btn btn-sm" href="store-order.html?id=${id}">Track</a></div>`; }).join("");
+
+  /* ---------- Returns (RMA) ---------- */
+  const STEPS = ["Requested", "Reviewed", "Authorised", "Pickup", "Received", "Inspected", "Resolved"];
+  const RMAS = [
+    { id: "RMA-0093", pid: "hp-01", ord: "TXO-10431", type: "Return for refund", status: ["Resolved · refund pending", "s-warn"], at: 7, mark: "warn", upd: "26 Sep", act: "View" },
+    { id: "RMA-0092", pid: "hdd-01", ord: "TXO-10365", type: "Warranty claim", status: ["Action needed · add photo", "s-warn"], at: 1, mark: "warn", upd: "25 Sep", act: "Upload" },
+    { id: "RMA-0090", pid: "ram-01", ord: "TXO-10365", type: "Replacement", status: ["Replacement dispatched", "s-brand"], at: 6, upd: "24 Sep", act: "Track" },
+    { id: "RMA-0086", pid: "ms-03", ord: "TXO-10340", type: "Dead on arrival", status: ["Resolved · replaced", "s-ok"], at: 7, upd: "2 Jul", act: "View" },
+    { id: "RMA-0081", pid: "usb-01", ord: "TXO-10322", type: "Return for refund", status: ["Rejected · damage not covered", "s-bad"], at: 6, mark: "bad", upd: "18 Jun", act: "Appeal" },
+  ];
+  const bars = (r) => STEPS.map((_, i) => { const n = i + 1; let c = n < r.at ? "on" : n === r.at ? (r.mark || (r.at === 7 ? "on" : "cur")) : ""; return `<i class="${c}" title="${STEPS[i]}"></i>`; }).join("");
+  $("#rma-rows").innerHTML = RMAS.map((r) => { const p = TX.byId(r.pid); return `<tr data-rma="${r.id}" style="cursor:pointer">
+    <td class="nowrap"><div class="cell-main mono">${r.id}</div><div class="cell-sub">${r.type}</div></td>
+    <td><div class="row">${TX.ph(p.img, "thumb")}<div style="min-width:0"><div class="cell-main truncate" style="max-width:210px">${TX.esc(p.title)}</div><div class="cell-sub">${r.ord}</div></div></div></td>
+    <td><span class="status ${r.status[1]}">${r.status[0]}</span></td>
+    <td><div class="rma-steps" aria-label="Step ${r.at} of 7: ${STEPS[r.at - 1]}">${bars(r)}</div><div class="cell-sub mt-4">${STEPS[r.at - 1]}</div></td>
+    <td class="small muted nowrap">${r.upd}</td><td class="r"><button class="btn btn-xs ${r.act === "Upload" ? "btn-primary" : ""}">${r.act}</button></td></tr>`; }).join("");
+
+  const fillRma = (id) => {
+    const r = RMAS.find((x) => x.id === id); if (!r) return; const p = TX.byId(r.pid);
+    $("#dr-title").textContent = r.id; $("#dr-sub").textContent = `${r.type} · ${r.ord} · ${p.title}`;
+    const tl = STEPS.map((s, i) => { const n = i + 1; const cls = n < r.at || (n === r.at && !r.mark && r.at === 7) ? "done" : n === r.at ? (r.mark === "bad" || r.mark === "warn" ? "warn" : "current") : ""; return `<li class="${cls}"><span class="t-dot">${cls === "done" ? ic("check") : ""}</span><div class="t-title">${s}</div><div class="t-meta">${cls ? (n === r.at ? r.status[0] : "Completed") : "Pending"}</div></li>`; }).join("");
+    $("#dr-body").innerHTML = `<div class="row mb-16">${TX.ph(p.img, "thumb-lg")}<div><b>${TX.esc(p.title)}</b><div class="small muted">${TX.condBadge(p.cond)} · ${p.warranty}</div></div></div>
+      ${r.id === "RMA-0093" ? `<div class="callout c-warn mb-16"><i data-icon="rupee"></i><div><strong>Refund ₹19,990 · pending at provider.</strong> Approved 24 Sep after inspection. First attempt was declined by the provider; retried automatically (2×). Finance is following up · expected by 30 Sep to UPI priya@okhdfc.</div></div>` : ""}
+      ${r.id === "RMA-0081" ? `<div class="callout c-bad mb-16"><i data-icon="x-circle"></i><div><strong>Rejected after inspection.</strong> The USB connector was bent — physical damage isn't covered. Inspection photos are attached. You can appeal within 15 days or collect the item from SP Road.</div></div>` : ""}
+      ${r.id === "RMA-0092" ? `<div class="callout c-warn mb-16"><i data-icon="image"></i><div><strong>Waiting for you:</strong> a photo of the drive label showing the serial number (ZFL•••9QX).</div></div>` : ""}
+      <ul class="timeline">${tl}</ul>
+      <div class="panel small mt-8"><b>Why inspection?</b> Returned items go to a separate quarantine shelf and are checked by a technician before any refund, replacement or resale. This makes sure the serial matches your purchase and protects your data.</div>`;
+    TX.hydrate($("#dr-body"));
+  };
+  const openRma = (id) => { fillRma(id); TX.open("d-rma"); };
+  fillRma("RMA-0093"); // so #d-rma deep link opens with content
+  document.addEventListener("click", (e) => {
+    const tr = e.target.closest("tr[data-rma]"); if (tr) { const b = e.target.closest("button"); if (b && b.textContent === "Upload") { location.href = "store-returns.html#requests"; return; } openRma(tr.dataset.rma); }
+    const b = e.target.closest("[data-drawer-rma]"); if (b) openRma(b.dataset.drawerRma);
+  });
+
+  /* ---------- Wishlist ---------- */
+  const defaults = ["lap-03", "mon-03", "lap-06", "cam-05", "hp-02", "gpu-01"];
+  let fav = TX.store.get("fav", []); const ids = fav.length ? fav : defaults;
+  const alerts = {
+    "lap-03": ["drop", "trending-down", "Price dropped ₹3,000 since you saved"],
+    "mon-03": ["drop", "trending-down", "Price dropped ₹2,010 since 2 Sep"],
+    "lap-06": ["stock", "bell", "Back-in-stock alert on · partner stock only"],
+    "hp-02": ["low", "clock", "Only 2 units left · each unit graded"],
+    "gpu-01": ["same", "info", "Price unchanged since you saved"],
+    "cam-05": ["same", "info", "Price unchanged since you saved"],
+  };
+  const wl = ids.map((id) => { const p = TX.byId(id); const a = alerts[id] || (p.stock === "low" ? ["low", "clock", `Only ${p.qty} left`] : ["same", "info", "Price unchanged since you saved"]);
+    return TX.cardHTML(p).replace('<div class="p-body">', `<div class="p-body"><div class="wl-alert ${a[0]}">${ic(a[1])} ${a[2]}</div>`).replace('class="p-fav "', 'class="p-fav on"'); }).join("");
+  $("#wl-grid").innerHTML = wl; $("#wl-count").textContent = ids.length;
+  $("#wl-addall").addEventListener("click", () => { const av = ids.filter((id) => ["in", "low"].includes(TX.byId(id).stock)); const c = TX.cart(); av.forEach((id) => (c[id] = (c[id] || 0) + 1)); TX.setCart(c); TX.toast(`${av.length} available items added · ${ids.length - av.length} partner-stock item left in wishlist`); });
+
+  /* ---------- Invoices ---------- */
+  const INV = [
+    ["INV/BLR/2627/004812", "Tax invoice", "TXO-10482 · shipment 1", "25 Sep 2026", 38990 + 3495],
+    ["—", "Pending", "TXO-10482 · shipment 2", "At dispatch", null],
+    ["INV/BLR/2627/004655", "Tax invoice", "TXO-10466", "24 Sep 2026", 94999],
+    ["CN/BLR/2627/000219", "Credit note", "RMA-0093 · against …004301", "24 Sep 2026", -19990],
+    ["INV/BLR/2627/004590", "Tax invoice", "TXO-10471", "20 Sep 2026", 25497],
+    ["INV/BLR/2627/004301", "Tax invoice", "TXO-10431", "9 Sep 2026", 19990],
+    ["INV/MYS/2627/000877", "Tax invoice", "TXO-10398", "3 Aug 2026", 84990],
+  ];
+  $("#inv-rows").innerHTML = INV.map(([no, type, forr, d, tot]) => {
+    if (tot === null) return `<tr><td class="muted">—</td><td><span class="badge">Not yet issued</span></td><td>${forr}</td><td class="muted">${d}</td><td class="r muted" colspan="3">Issued when the shipment is dispatched</td><td></td></tr>`;
+    const tax = tot - tot / 1.18; const cls = type === "Credit note" ? "b-warn" : "b-brand";
+    const sf = (v) => (v < 0 ? "−" + fmt(-v) : fmt(v));
+    return `<tr><td class="mono strong nowrap">${no}</td><td><span class="badge ${cls}">${type}</span></td><td>${forr}</td><td class="nowrap">${d}</td><td class="r">${sf(tot / 1.18)}</td><td class="r">${sf(tax)}<div class="cell-sub">9% + 9%</div></td><td class="r strong nowrap ${tot < 0 ? "text-ok" : ""}">${sf(tot)}</td><td class="r"><button class="btn btn-xs" data-toast="${no} downloaded (PDF)">${ic("download", "ic-sm")} PDF</button></td></tr>`;
+  }).join("") + `<tr><td class="muted">—</td><td><span class="badge b-outline">Receipt only</span></td><td>TXO-10447 (cancelled)</td><td>16 Sep 2026</td><td class="r muted" colspan="3">Cancelled before dispatch · no tax invoice issued</td><td class="r"><button class="btn btn-xs" data-toast="Payment receipt downloaded">Receipt</button></td></tr>`;
+
+  /* ---------- Devices ---------- */
+  const DEV = [
+    ["lap-01", "Service tag 7H2•••2", "Unit U-000842", "TXO-10482 · 24 Sep", ["Tradex", "6 months · seller warranty"], null, ["Pending", "s-info"], "Starts on delivery (29 Sep)"],
+    ["cam-05", "3MA•••418", "", "TXO-10466 · 23 Sep", ["Fujifilm India", "2 years · manufacturer"], null, ["Pending", "s-info"], "Starts on delivery · register with Fujifilm"],
+    ["kb-01", "K2B3-•••873", "", "TXO-10471 · 21 Sep", ["Keychron via Tradex", "1 year"], 98, ["Active", "s-ok"], "Until 21 Sep 2027"],
+    ["cam-01", "0520•••771", "Unit U-000731", "TXO-10398 · 4 Aug", ["Tradex", "6 months · seller warranty"], 71, ["Active", "s-ok"], "130 days left · to 4 Feb 2027"],
+    ["hdd-01", "ZFL•••9QX", "", "TXO-10365 · 22 Jul", ["Seagate", "2 years · manufacturer"], 91, ["Claim open", "s-warn"], "RMA-0092 · needs your photo"],
+    ["ms-03", "2240•••CD", "Replaced 2231•••AB", "TXO-10340 · 29 Jun", ["Logitech", "1 year · manufacturer"], 76, ["Active", "s-ok"], "Replaced once under RMA-0086"],
+    ["hp-01", "1581•••206", "", "TXO-10431 · 10 Sep", ["Sony India", "1 year · manufacturer"], 0, ["Returned", "s-muted"], "RMA-0093 · no longer yours"],
+  ];
+  $("#dev-rows").innerHTML = DEV.map(([id, ser, unit, bought, [prov, dur], pct, [stt, cls], sub]) => { const p = TX.byId(id);
+    const meter = pct === null ? `<span class="small muted">—</span>` : `<div class="dev-exp"><div class="meter thin ${pct > 50 ? "m-ok" : pct > 0 ? "m-warn" : ""}"><span style="width:${pct}%"></span></div><div class="cell-sub mt-4">${pct ? pct + "% left" : "Ended"}</div></div>`;
+    const act = cls === "s-muted" ? "" : cls === "s-warn" ? `<a class="btn btn-xs btn-primary" href="store-returns.html#requests">Open</a>` : cls === "s-info" ? `<button class="btn btn-xs" disabled>Card</button>` : `<a class="btn btn-xs" href="store-returns.html?type=warranty">Claim</a>`;
+    return `<tr><td><div class="row">${TX.ph(p.img, "thumb")}<div style="min-width:0"><div class="cell-main truncate">${TX.esc(p.title)}</div><div class="cell-sub">${TX.conditions[p.cond].label} · ${bought}</div></div></div></td>
+    <td><div class="mono">${ser}</div>${unit ? `<div class="cell-sub">${unit}</div>` : ""}</td>
+    <td><div class="cell-main">${prov}</div><div class="cell-sub">${dur}</div></td><td>${meter}</td><td><span class="status ${cls}">${stt}</span>${sub ? `<div class="cell-sub">${sub}</div>` : ""}</td><td class="r">${act}</td></tr>`; }).join("");
+
+  /* ---------- Privacy ---------- */
+  $("#stop-mkt").addEventListener("click", () => { $$("input.mkt").forEach((i) => (i.checked = false)); TX.toast("All marketing stopped · service messages continue"); });
+  $("#export-btn").addEventListener("click", () => {
+    $("#export-state").innerHTML = `<div class="callout c-ok"><i data-icon="check-circle"></i><div><strong>Request received · 27 Sep, 11:42.</strong> We're preparing your data. You'll get an email with a secure download link within 48 hours.</div></div>`;
+    TX.hydrate($("#export-state")); TX.toast("Data export requested");
+  });
+  $("#pin-check").addEventListener("click", () => {
+    const v = $("#a-pin").value.trim();
+    $("#pin-res").innerHTML = /^56\d{4}$/.test(v) ? `<span class="text-ok">✓ Serviceable · next-day delivery · COD available · return pickup ✓</span>` : /^57\d{4}$/.test(v) ? `<span class="text-warn">⚠ Serviceable in 3–5 days · COD and return pickup not available</span>` : `<span class="text-bad">✕ We don't deliver to this PIN yet</span>`;
+  });
+});
+</script>
+</body>
+</html>
