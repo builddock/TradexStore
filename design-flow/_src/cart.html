@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><title>TRADEXSTORE | High-Performance IT &amp; Custom Hardware</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base { html, body { margin: 0; padding: 0; } body { overscroll-behavior: none; } main > :first-child { margin-top: 0 !important; } main > :last-child { margin-bottom: 0 !important; } } ::-webkit-scrollbar { display: none; }</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "secondary": "#00687a", "surface-tint": "#0059c5", "inverse-primary": "#aec6ff", "on-secondary-fixed": "#001f26", "on-tertiary-container": "#ffffff", "error-container": "#ffdad6", "surface-container-highest": "#dae2fd", "surface-container": "#eaedff", "tertiary-fixed": "#cce5ff", "on-tertiary-fixed-variant": "#004b73", "tertiary-fixed-dim": "#93ccff", "secondary-fixed": "#acedff", "inverse-on-surface": "#eef0ff", "primary-container": "#0070f3", "tertiary": "#006296", "on-primary-fixed-variant": "#004397", "on-secondary-fixed-variant": "#004e5c", "on-error": "#ffffff", "inverse-surface": "#283044", "on-primary-fixed": "#001a43", "outline-variant": "#c1c6d7", "on-secondary-container": "#006172", "surface-variant": "#dae2fd", "surface-container-lowest": "#ffffff", "on-surface": "#131b2e", "on-primary": "#ffffff", "surface-bright": "#faf8ff", "surface-container-low": "#f2f3ff", "primary": "#0058c3", "background": "#faf8ff", "on-error-container": "#93000a", "outline": "#727786", "secondary-container": "#57dffe", "on-tertiary": "#ffffff", "on-surface-variant": "#414754", "on-tertiary-fixed": "#001d31", "surface": "#faf8ff", "primary-fixed": "#d8e2ff", "tertiary-container": "#007cbc", "on-secondary": "#ffffff", "on-background": "#131b2e", "on-primary-container": "#ffffff", "primary-fixed-dim": "#aec6ff", "surface-container-high": "#e2e7ff", "surface-dim": "#d2d9f4", "error": "#ba1a1a", "secondary-fixed-dim": "#4cd7f6" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "margin": "2rem", "space-xs": "0.25rem", "space-md": "1rem", "space-sm": "0.5rem", "space-lg": "1.5rem", "space-xl": "2.5rem", "gutter-mobile": "1rem", "gutter": "1.5rem", "margin-mobile": "1rem" }, "fontFamily": { "body-sm": ["Geist"], "headline-lg": ["Space Grotesk"], "headline-sm": ["Space Grotesk"], "label-sm": ["Geist"], "headline-md": ["Space Grotesk"], "tech-mono": ["Space Grotesk"], "headline-xl": ["Space Grotesk"], "label-md": ["Geist"], "body-md": ["Geist"], "headline-lg-mobile": ["Space Grotesk"], "headline-xl-mobile": ["Space Grotesk"], "body-lg": ["Geist"] }, "fontSize": { "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "headline-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "600" }], "headline-sm": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }], "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "600" }], "tech-mono": ["13px", { "lineHeight": "18px", "letterSpacing": "0.04em", "fontWeight": "500" }], "headline-xl": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.03em", "fontWeight": "700" }], "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }], "body-md": ["16px", { "lineHeight": "24px", "letterSpacing": "-0.005em", "fontWeight": "400" }], "headline-lg-mobile": ["26px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "600" }], "headline-xl-mobile": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "body-lg": ["18px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "400" }] } } } };</script></head><body class="bg-background font-body-md text-body-md text-on-surface antialiased min-h-screen flex flex-col"><header class="fixed top-0 left-0 w-full z-50 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="bg-surface-container-high text-on-surface px-space-lg py-space-xs"><div class="max-w-[1440px] mx-auto flex items-center justify-between font-tech-mono text-tech-mono"><div class="flex items-center gap-space-md"><span class="flex items-center gap-space-xs font-label-md text-label-md text-primary"><span class="material-symbols-outlined text-[16px]">bolt</span> EXPRESS TECH DISPATCH</span><span class="text-on-surface-variant hidden md:inline">Orders placed before 16:00 EST ship same-day from Austin Hub</span></div><div class="flex items-center gap-space-lg"><span class="flex items-center gap-space-xs text-on-surface-variant"><span class="material-symbols-outlined text-[16px] text-secondary">local_shipping</span> Free 2-Day Air on Orders Over $150</span><span class="hidden lg:inline-flex items-center gap-space-xs bg-surface-container-lowest px-space-sm py-0.5 rounded text-on-surface font-label-sm text-label-sm"><span class="w-1.5 h-1.5 rounded-full bg-primary-container animate-pulse"></span> GLOBAL INVENTORY ONLINE</span></div></div></div><div class="h-20 max-w-[1440px] mx-auto px-space-lg flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-md shrink-0"><a class="flex items-center gap-space-sm" data-path="home" href="#"><img alt="Brand logo. - Primary color: #0070f3
+- Font: spaceGrotesk
+- Mode: light
+- Roundness: rounded-md
+" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1Xhseiu4gNUiw1MR_YLiNQK14F7mGG9J6FMdfxzUjmo5GI_wauRNCEQCFOJgYSAtS28CKzSolcdg-s189987hmzAjPUeZlLQyLSYP8NwUG0JWIGTlTEcTe1mPobWd0oX1c5wfeRXO3bwfjgbZHbX3uett--xFe_NukzDOpaHeaX0hYU6HxGGql9SR9G2_U-WkukHvqJA__j6oqXgJmPA01JgoZgG5HJrPNc8dV0Lerz6Dql8SNnEjyrpw"/><span class="font-headline-sm text-headline-sm uppercase tracking-tight text-on-surface">TRADEX<span class="text-primary-container">STORE</span></span></a></div><div class="hidden xl:flex items-center flex-1 max-w-xl mx-space-md"><div class="relative flex items-center w-full bg-surface-container-lowest rounded-lg shadow-[0_1px_3px_0_rgba(15,23,42,0.04)] px-space-md py-space-xs gap-space-sm"><button class="flex items-center gap-space-xs text-on-surface-variant font-label-sm text-label-sm hover:text-on-surface shrink-0" type="button"><span>All Systems</span><span class="material-symbols-outlined text-[18px]">expand_more</span></button><div class="w-px h-5 bg-outline-variant"></div><span class="material-symbols-outlined text-outline shrink-0">search</span><input class="w-full bg-transparent font-body-sm text-body-sm text-on-surface placeholder:text-outline focus:outline-none" placeholder="Search GPUs, custom switches, barebones kits, cables..." type="text"/><kbd class="hidden sm:inline-flex items-center px-1.5 py-0.5 font-tech-mono text-label-sm bg-surface-container-low text-on-surface-variant rounded shadow-sm">⌘K</kbd></div></div><nav class="hidden lg:flex items-center gap-space-lg shrink-0" data-active-classes="text-primary-container font-label-md text-label-md underline underline-offset-8 decoration-2"><a class="text-on-surface-variant font-label-md text-label-md hover:text-on-surface transition-colors" data-path="home" href="#">Home</a><a class="text-on-surface-variant font-label-md text-label-md hover:text-on-surface transition-colors" data-path="catalog" href="#">Catalog</a><a class="text-on-surface-variant font-label-md text-label-md hover:text-on-surface transition-colors" data-path="drops-&amp;-deals" href="#">Drops &amp; Deals</a><a class="text-on-surface-variant font-label-md text-label-md hover:text-on-surface transition-colors" data-path="battlestations" href="#">Battlestations</a><a class="text-on-surface-variant font-label-md text-label-md hover:text-on-surface transition-colors" data-path="support" href="#">Support</a></nav><div class="flex items-center gap-space-md shrink-0"><button class="hidden sm:flex items-center gap-space-xs px-space-sm py-1 rounded hover:bg-surface-container-high transition-colors font-tech-mono text-label-sm text-on-surface-variant hover:text-on-surface" type="button"><span class="material-symbols-outlined text-[18px]">currency_exchange</span><span>USD</span></button><a class="hidden sm:flex p-space-xs text-on-surface-variant hover:text-on-surface rounded hover:bg-surface-container-high transition-colors" data-path="order-tracking" href="#" title="Order Tracking"><span class="material-symbols-outlined text-[22px]">package_2</span></a><a class="relative p-space-xs text-on-surface-variant hover:text-on-surface rounded hover:bg-surface-container-high transition-colors" data-path="wishlist" href="#" title="Wishlist"><span class="material-symbols-outlined text-[22px]">favorite</span><span class="absolute top-0.5 right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-secondary text-on-secondary font-tech-mono text-[10px]">4</span></a><a class="flex items-center gap-space-sm pl-space-sm pr-space-md py-1.5 rounded-lg bg-surface-container-lowest hover:bg-surface-container-high transition-all shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" data-path="cart" href="#"><div class="relative"><span class="material-symbols-outlined text-primary-container text-[22px]">shopping_bag</span><span class="absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-primary-container text-on-primary font-tech-mono text-[10px]">3</span></div><div class="flex flex-col text-left leading-none"><span class="font-label-sm text-[10px] text-on-surface-variant uppercase">Total</span><span class="font-tech-mono text-label-md text-on-surface">$404.43</span></div></a><div class="relative flex items-center pl-space-xs"><button aria-label="Account menu" class="relative flex items-center focus:outline-none" type="button"><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1XM0UYvJmA_CRUVNSz5iRIvyx1PGF3j_euXdEORyYAYnKW0Or_doOhf9PiXRmQT7mDDXBzLeHFsKId1RkzwtIHux9Ze0TuOarKj-_EL_v_ZpkVk_qw8fk1tK8jDAT8u4Uh2SoDpi2aJ_j_7IzjcS_oitCbAhet7IwAdqIw4qSKb7Sj6ujoiMWGPbzbaeD2ATPxGxY0Y__NQ-VzXZZxUjtHFP4_4ishd6MfAdM5HrsUW8IQdT-WhuLyNfA"/><span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-secondary-container ring-2 ring-surface"></span></button></div></div></div></header><main class="w-full pt-20 bg-background flex-1"><div class="max-w-[1440px] mx-auto px-space-lg py-space-xl"><div class="flex flex-col w-full">
+<!-- Status & Step Pipeline -->
+<div class="w-full mb-space-xl">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-space-md mb-space-lg">
+<div>
+<div class="flex items-center gap-space-xs font-tech-mono text-label-sm text-secondary uppercase tracking-widest mb-space-xs">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span>System Order Staging // Ver 4.9.1</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Review Hardware Staging</h1>
+</div>
+<div class="flex items-center gap-space-sm font-tech-mono text-label-sm text-on-surface-variant bg-surface-container px-space-md py-space-xs rounded-lg">
+<span class="material-symbols-outlined text-[18px] text-primary">lock</span>
+<span>256-Bit Hardware Encrypted Pipeline</span>
+</div>
+</div>
+<!-- Stepper Steps -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-space-sm">
+<!-- Step 1: Active -->
+<div class="relative bg-surface-container-lowest p-space-md rounded-xl shadow-sm overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-primary"></div>
+<div class="flex items-center justify-between mb-space-xs">
+<span class="font-tech-mono text-label-sm text-primary font-semibold">01 // STAGE</span>
+<span class="material-symbols-outlined text-primary text-[20px]">shopping_cart_checkout</span>
+</div>
+<p class="font-headline-sm text-label-md text-on-surface font-semibold">Tech Bag</p>
+<span class="font-body-sm text-[12px] text-primary">3 Hardware Lines Active</span>
+</div>
+<!-- Step 2 -->
+<div class="bg-surface-container-low p-space-md rounded-xl opacity-80">
+<div class="flex items-center justify-between mb-space-xs">
+<span class="font-tech-mono text-label-sm text-on-surface-variant">02 // ROUTING</span>
+<span class="material-symbols-outlined text-outline text-[20px]">local_shipping</span>
+</div>
+<p class="font-headline-sm text-label-md text-on-surface-variant">Shipping Details</p>
+<span class="font-body-sm text-[12px] text-on-surface-variant">Express Air Eligible</span>
+</div>
+<!-- Step 3 -->
+<div class="bg-surface-container-low p-space-md rounded-xl opacity-80">
+<div class="flex items-center justify-between mb-space-xs">
+<span class="font-tech-mono text-label-sm text-on-surface-variant">03 // GATEWAY</span>
+<span class="material-symbols-outlined text-outline text-[20px]">shield_person</span>
+</div>
+<p class="font-headline-sm text-label-md text-on-surface-variant">Payment &amp; Security</p>
+<span class="font-body-sm text-[12px] text-on-surface-variant">Instant 1-Tap Ready</span>
+</div>
+<!-- Step 4 -->
+<div class="bg-surface-container-low p-space-md rounded-xl opacity-80">
+<div class="flex items-center justify-between mb-space-xs">
+<span class="font-tech-mono text-label-sm text-on-surface-variant">04 // DISPATCH</span>
+<span class="material-symbols-outlined text-outline text-[20px]">task_alt</span>
+</div>
+<p class="font-headline-sm text-label-md text-on-surface-variant">Confirmation</p>
+<span class="font-body-sm text-[12px] text-on-surface-variant">Telemetry &amp; Tracking</span>
+</div>
+</div>
+</div>
+<!-- Main Grid: 65% Cart / 35% Sticky Summary -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-xl items-start">
+<!-- Left Column: Cart Architecture & Addons (65%) -->
+<div class="lg:col-span-8 flex flex-col gap-space-lg">
+<!-- Free Shipping Dynamic Progress Tracker -->
+<div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm relative overflow-hidden">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm mb-space-sm">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed shrink-0">
+<span class="material-symbols-outlined text-[24px]">flight_takeoff</span>
+</div>
+<div>
+<div class="flex items-center gap-space-xs">
+<p class="font-headline-sm text-headline-sm text-on-surface">You unlocked FREE 2-Day Air Shipping!</p>
+<span class="text-[18px]">🚀</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Cart threshold exceeded ($150.00 min) • Priority logistics hub Austin, TX assigned</p>
+</div>
+</div>
+<span class="font-tech-mono text-label-md text-secondary font-semibold bg-secondary-fixed/50 px-space-sm py-1 rounded self-start sm:self-auto">
+            100% REACHED
+          </span>
+</div>
+<!-- Progress Bar Meter -->
+<div class="w-full bg-surface-container-high h-2.5 rounded-full overflow-hidden">
+<div class="bg-gradient-to-r from-secondary to-primary-container h-full rounded-full w-full transition-all duration-700"></div>
+</div>
+</div>
+<!-- Hardware Staging Items Container -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm p-space-lg flex flex-col gap-space-lg">
+<div class="flex items-center justify-between pb-space-sm bg-surface-container-low -mx-space-lg -mt-space-lg px-space-lg py-space-md rounded-t-xl">
+<span class="font-headline-sm text-headline-sm text-on-surface">Staged Hardware Components (3)</span>
+<span class="font-tech-mono text-label-sm text-on-surface-variant">SERIALIZED FOR DISPATCH</span>
+</div>
+<!-- Item 1: Mechanical Keyboard -->
+<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-space-md p-space-md bg-surface-container-low/60 rounded-xl transition-all hover:bg-surface-container-low" id="cart-item-1">
+<div class="flex items-center gap-space-md">
+<div class="w-24 h-24 rounded-lg bg-surface-container-lowest overflow-hidden shrink-0 flex items-center justify-center p-space-xs">
+<img class="w-full h-full object-contain" data-alt="Close up studio shot of the Vortex Titan Pro 75 mechanical keyboard showing linear cyan custom switches, clean white and slate keycaps, subtle cyan backlighting on brushed aluminum chassis, product photography, dramatic lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZWa4-krhoZHp4sQmk3D2bbRrhWinIKAPnjeJtKthDT_2BhRULkUIRQMPsdC2mWaQIAfs-6aNjvXq0emw2LrKYNcvBCe6rJ0JmPJTEYucfKmtwF70k8GOrRn52XtOYGjH8YRhSMzR9eyJcWaZKJW2gO30UuZ-LIVYd2KFnYixK1EmkJl6IS7TWAPW0eRu3vkEX5B2WqhWmUbpIhWzROA9QxyCgJxymIiedwF-03nKaOjR0E0i1HGU"/>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs mb-1">
+<span class="font-tech-mono text-[11px] bg-secondary-fixed text-on-secondary-fixed px-space-xs py-0.5 rounded font-semibold uppercase">In Stock</span>
+<span class="font-tech-mono text-[11px] text-primary">Fast Dispatch</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Vortex Titan Pro 75% Mechanical Keyboard</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Switch: Linear Cyan (Pre-lubed Krytox 205g0) • ANSI Layout • Anodized Grey</p>
+<div class="flex items-center gap-space-sm mt-space-xs font-tech-mono text-label-sm text-outline">
+<span>SKU: KB-VT75-CYN</span>
+<span>•</span>
+<span>1000Hz Polling</span>
+</div>
+</div>
+</div>
+<div class="flex sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto gap-space-md shrink-0">
+<span class="font-headline-md text-headline-md text-on-surface font-semibold">$169.00</span>
+<div class="flex items-center gap-space-sm">
+<div class="flex items-center bg-surface-container-lowest rounded-lg p-1 shadow-sm">
+<button class="w-7 h-7 flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors rounded" onclick="updateQty('qty-1', -1)" type="button">
+<span class="material-symbols-outlined text-[16px]">remove</span>
+</button>
+<input class="w-8 text-center font-tech-mono text-label-md text-on-surface bg-transparent focus:outline-none" id="qty-1" readonly="" type="text" value="1"/>
+<button class="w-7 h-7 flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors rounded" onclick="updateQty('qty-1', 1)" type="button">
+<span class="material-symbols-outlined text-[16px]">add</span>
+</button>
+</div>
+<button class="p-2 text-outline hover:text-error transition-colors rounded-lg hover:bg-error-container/20" onclick="removeItem('cart-item-1')" title="Remove Component" type="button">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Item 2: Thunderbolt 4 Dock -->
+<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-space-md p-space-md bg-surface-container-low/60 rounded-xl transition-all hover:bg-surface-container-low" id="cart-item-2">
+<div class="flex items-center gap-space-md">
+<div class="w-24 h-24 rounded-lg bg-surface-container-lowest overflow-hidden shrink-0 flex items-center justify-center p-space-xs">
+<img class="w-full h-full object-contain" data-alt="High performance aluminum Thunderbolt 4 docking hub with multiple ports, dual HDMI 2.1, 2.5G ethernet, clean matte space gray finish, high key minimal studio hardware photo." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6OQFBmKolyZkJrqH-qkb_Dk4rYYjyrCD6ZBCa9GetEu51O6S3-1TPCxZDRZ9xKbRE44kSkXKlNkaEbiTca7yypDiIaclTchKixhgCncu6zvdFf2TMxSzIFqM5C6IVJSmDsZwVfySLGj11RrDfJx76YlU3tVIdeydFjGO20loPuvG5rEKBKHKaY3faeyiA3RU_g1a6v2irJ_W4yUFB__nfxH1yPO6QC9wEHgtyZ_XDc4vbN-3JMeY"/>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs mb-1">
+<span class="font-tech-mono text-[11px] bg-secondary-fixed text-on-secondary-fixed px-space-xs py-0.5 rounded font-semibold uppercase">In Stock</span>
+<span class="font-tech-mono text-[11px] text-error font-medium">Only 3 Units Left</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Titan 12-in-1 Thunderbolt 4 Dock</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Space Gray • 100W Power Delivery Ultra Hub • Dual 4K@120Hz Output</p>
+<div class="flex items-center gap-space-sm mt-space-xs font-tech-mono text-label-sm text-outline">
+<span>SKU: DK-TB4-12X</span>
+<span>•</span>
+<span>Intel JHL8440 Controller</span>
+</div>
+</div>
+</div>
+<div class="flex sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto gap-space-md shrink-0">
+<span class="font-headline-md text-headline-md text-on-surface font-semibold">$179.00</span>
+<div class="flex items-center gap-space-sm">
+<div class="flex items-center bg-surface-container-lowest rounded-lg p-1 shadow-sm">
+<button class="w-7 h-7 flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors rounded" onclick="updateQty('qty-2', -1)" type="button">
+<span class="material-symbols-outlined text-[16px]">remove</span>
+</button>
+<input class="w-8 text-center font-tech-mono text-label-md text-on-surface bg-transparent focus:outline-none" id="qty-2" readonly="" type="text" value="1"/>
+<button class="w-7 h-7 flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors rounded" onclick="updateQty('qty-2', 1)" type="button">
+<span class="material-symbols-outlined text-[16px]">add</span>
+</button>
+</div>
+<button class="p-2 text-outline hover:text-error transition-colors rounded-lg hover:bg-error-container/20" onclick="removeItem('cart-item-2')" title="Remove Component" type="button">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Item 3: Braided 240W Cable (Qty 2) -->
+<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-space-md p-space-md bg-surface-container-low/60 rounded-xl transition-all hover:bg-surface-container-low" id="cart-item-3">
+<div class="flex items-center gap-space-md">
+<div class="w-24 h-24 rounded-lg bg-surface-container-lowest overflow-hidden shrink-0 flex items-center justify-center p-space-xs">
+<img class="w-full h-full object-contain" data-alt="Heavy duty obsidian black braided USB-C cable coiled neatly, zinc alloy connector tips with etched 240W logo, high speed technical accessory aesthetic, cool studio lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuClqsXEFHmTNZvihSDd3ldNTyVr6rair2Mfd2YMAvAQIIm4Tf_3ayy34Y-IqZ1iIN7xZLDmc-R6ZDFC9xvQTS38TXKU6X-QsKlkp4evMuME86VdlBz1P5kP0WCjXImUVrXktlek_tEoeLPQXDLJMR4sstWvjM2JDCfpQaysz6nmFgYS4G1XdF5akAXsExDYnIMBWeKUs3GkA06vTaVgH6DakUFw1frwE_VzjS24fxdVBhP7ptUJ0pI"/>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs mb-1">
+<span class="font-tech-mono text-[11px] bg-secondary-fixed text-on-secondary-fixed px-space-xs py-0.5 rounded font-semibold uppercase">In Stock</span>
+<span class="font-tech-mono text-[11px] text-on-surface-variant">$24.99 each</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Braided 240W USB-C 2m Cable (Pack of 2)</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Obsidian Black • 40Gbps Sync • E-Marker 5A Chipset Verified</p>
+<div class="flex items-center gap-space-sm mt-space-xs font-tech-mono text-label-sm text-outline">
+<span>SKU: CB-240W-2M-BLK</span>
+<span>•</span>
+<span>Kevlar Braided Core</span>
+</div>
+</div>
+</div>
+<div class="flex sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto gap-space-md shrink-0">
+<span class="font-headline-md text-headline-md text-on-surface font-semibold">$49.98</span>
+<div class="flex items-center gap-space-sm">
+<div class="flex items-center bg-surface-container-lowest rounded-lg p-1 shadow-sm">
+<button class="w-7 h-7 flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors rounded" onclick="updateQty('qty-3', -1)" type="button">
+<span class="material-symbols-outlined text-[16px]">remove</span>
+</button>
+<input class="w-8 text-center font-tech-mono text-label-md text-on-surface bg-transparent focus:outline-none" id="qty-3" readonly="" type="text" value="2"/>
+<button class="w-7 h-7 flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors rounded" onclick="updateQty('qty-3', 1)" type="button">
+<span class="material-symbols-outlined text-[16px]">add</span>
+</button>
+</div>
+<button class="p-2 text-outline hover:text-error transition-colors rounded-lg hover:bg-error-container/20" onclick="removeItem('cart-item-3')" title="Remove Component" type="button">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Promo Code & Token Staging Section -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm p-space-lg flex flex-col md:flex-row items-start md:items-center justify-between gap-space-md">
+<div>
+<span class="font-headline-sm text-headline-sm text-on-surface block">Enterprise &amp; Community Vouchers</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Apply developer, bulk, or seasonal promo keys</span>
+</div>
+<div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-space-sm w-full md:w-auto">
+<!-- Applied Voucher Pill -->
+<div class="flex items-center justify-between gap-space-sm bg-primary-fixed text-on-primary-fixed px-space-md py-2 rounded-lg font-tech-mono text-label-md">
+<span class="flex items-center gap-1 font-semibold">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+              TRADEX10 (-$20.00)
+            </span>
+<button class="hover:text-error flex items-center transition-colors" title="Remove code" type="button">
+<span class="material-symbols-outlined text-[16px]">close</span>
+</button>
+</div>
+<div class="flex items-center bg-surface-container-low rounded-lg p-1">
+<input class="bg-transparent px-space-sm font-body-sm text-body-sm text-on-surface placeholder:text-outline focus:outline-none w-32 uppercase font-tech-mono" placeholder="Promo code" type="text"/>
+<button class="bg-surface-container-highest hover:bg-surface-container text-on-surface font-label-md text-label-md px-space-sm py-1 rounded transition-colors" type="button">
+              Apply
+            </button>
+</div>
+</div>
+</div>
+<!-- Cross-Sell / Rig Upgrades Carousel Section -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm p-space-lg">
+<div class="flex items-center justify-between mb-space-md">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-secondary text-[24px]">precision_manufacturing</span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Complete Your Rig // Recommended Staging Add-ons</h2>
+</div>
+<span class="font-tech-mono text-label-sm text-on-surface-variant hidden sm:inline">NO EXTRA SHIPPING COST</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md">
+<!-- Addon 1 -->
+<div class="bg-surface-container-low p-space-md rounded-xl flex flex-col justify-between hover:shadow-md transition-all">
+<div>
+<div class="h-28 rounded-lg bg-surface-container-lowest mb-space-sm overflow-hidden flex items-center justify-center p-space-xs">
+<img class="w-full h-full object-contain" data-alt="Titanium CNC machined custom switch and keycap puller, minimalist high end mechanical keyboard tool with laser etched logos." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBqnpmxFkJ8svfDp8Ipff22gzRQETWrQBQokK63Eu3BHqzjyqptqEuHdhNSVpKb2bniykE37s8af__NUgb3d7ZzWQsc9399iC_SAQLf4u0-TCms5Dg8tV5njlTk4K7gpYJ5wAOKCqn5QqzJUsj5WBrflm_sSviqg6Hk1nEL5En12Y9IG8ZcRne45RyYgitEkWRlPUWSj2Uuc78Lky75P2-QZzbcCdmawgYI-_YSaQF9xzvsHLC8vNs"/>
+</div>
+<h4 class="font-headline-sm text-label-md text-on-surface font-semibold">Precision 2-in-1 Keycap Puller</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">CNC aluminum, scratch-guard wire claws</p>
+</div>
+<div class="flex items-center justify-between mt-space-md pt-space-xs">
+<span class="font-headline-sm text-headline-sm text-on-surface">+$14.00</span>
+<button class="flex items-center gap-1 bg-surface-container-highest hover:bg-primary-container hover:text-on-primary-container text-on-surface font-label-md text-label-md px-space-sm py-1.5 rounded-lg transition-all" type="button">
+<span class="material-symbols-outlined text-[16px]">add</span> Add
+              </button>
+</div>
+</div>
+<!-- Addon 2 -->
+<div class="bg-surface-container-low p-space-md rounded-xl flex flex-col justify-between hover:shadow-md transition-all">
+<div>
+<div class="h-28 rounded-lg bg-surface-container-lowest mb-space-sm overflow-hidden flex items-center justify-center p-space-xs">
+<img class="w-full h-full object-contain" data-alt="Professional microfiber optical screen cleaning spray kit with anti-static solution bottle and high density cloths for OLED monitors." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDeqONOadjoofnzKdSq-CNaguCGtHKsENPP2EsHeNInpaC9l0IteM1SJekulH0sILeiEa0emdC-EP2L6ajmDEKOSyCrkTv5JnOXBc9oGQEQRREO1lbYhakO-O5o1dZjoivJnln9ahC3dEt3YBTqE2aciRbFXeFsUjcauXLypOJseukuRMjzxU-wWzFD69u5Zv7QOdfNppnLhnKpGvXCJAt9tgI475OL83fQ0_2WcTGwlAnHhUif16I"/>
+</div>
+<h4 class="font-headline-sm text-label-md text-on-surface font-semibold">Screen &amp; Sensor Cleaning Kit</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Anti-static, streak-free formula for displays</p>
+</div>
+<div class="flex items-center justify-between mt-space-md pt-space-xs">
+<span class="font-headline-sm text-headline-sm text-on-surface">+$12.00</span>
+<button class="flex items-center gap-1 bg-surface-container-highest hover:bg-primary-container hover:text-on-primary-container text-on-surface font-label-md text-label-md px-space-sm py-1.5 rounded-lg transition-all" type="button">
+<span class="material-symbols-outlined text-[16px]">add</span> Add
+              </button>
+</div>
+</div>
+<!-- Addon 3 -->
+<div class="bg-surface-container-low p-space-md rounded-xl flex flex-col justify-between hover:shadow-md transition-all">
+<div>
+<div class="h-28 rounded-lg bg-surface-container-lowest mb-space-sm overflow-hidden flex items-center justify-center p-space-xs">
+<img class="w-full h-full object-contain" data-alt="Dense 4mm sound dampening desk mat with topographic circuit line pattern, stitched edges, water resistant slate surface for tech workspace." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBncAP0SDTW6FGshk42VWeFV4WZIdKrB6d_X8Eia1o3QnvowtM1cDvLDAN2x-0BaGkpiyrBooJLDfWPb94_sBMuhPpfn5jSEi9AkBJsBLoYVmYgbUpQ2XOm5vEz_Fd0kP-CADkJfoman8rgDMsIX3y4Yjg61F0YFA25nO7TtDTPec3vV8dgFkO6LkNb--gvHb--Edpc3W-iu9a4ET08StUvHep2S97YYe6TbJqDdZRbhlhOjLi-Vys"/>
+</div>
+<h4 class="font-headline-sm text-label-md text-on-surface font-semibold">Sound Dampening Desk Mat (XL)</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">900x400mm • 4mm acoustic absorbent rubber</p>
+</div>
+<div class="flex items-center justify-between mt-space-md pt-space-xs">
+<span class="font-headline-sm text-headline-sm text-on-surface">+$29.00</span>
+<button class="flex items-center gap-1 bg-surface-container-highest hover:bg-primary-container hover:text-on-primary-container text-on-surface font-label-md text-label-md px-space-sm py-1.5 rounded-lg transition-all" type="button">
+<span class="material-symbols-outlined text-[16px]">add</span> Add
+              </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Sticky Order Summary & Checkout (35%) -->
+<div class="lg:col-span-4 sticky top-24 flex flex-col gap-space-md">
+<!-- Summary Box -->
+<div class="bg-surface-container-lowest rounded-xl shadow-lg p-space-lg flex flex-col">
+<div class="flex items-center justify-between pb-space-sm mb-space-md bg-surface-container-high -mx-space-lg -mt-space-lg px-space-lg py-space-md rounded-t-xl">
+<span class="font-headline-sm text-headline-sm text-on-surface">Order Summary</span>
+<span class="font-tech-mono text-[12px] bg-surface-container-lowest text-on-surface px-space-xs py-0.5 rounded font-semibold">TXD-EST-9082</span>
+</div>
+<!-- Ledger Items -->
+<div class="space-y-space-sm font-body-sm text-body-sm">
+<div class="flex items-center justify-between">
+<span class="text-on-surface-variant">Cart Subtotal (4 components)</span>
+<span class="font-tech-mono text-on-surface font-medium">$397.98</span>
+</div>
+<div class="flex items-center justify-between text-secondary">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">sell</span>
+              TRADEX10 Coupon Discount
+            </span>
+<span class="font-tech-mono font-semibold">-$20.00</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="flex items-center gap-1 text-on-surface-variant">
+<span>Express 2-Day Air</span>
+<span class="font-tech-mono text-[10px] bg-secondary-fixed text-on-secondary-fixed px-1 rounded font-bold">LOCKED</span>
+</span>
+<span class="font-tech-mono text-secondary font-semibold">FREE</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span>Estimated Sales Tax</span>
+<span class="font-tech-mono text-[11px] text-outline">(CA ~ 7.25%)</span>
+</div>
+<span class="font-tech-mono text-on-surface font-medium">$26.45</span>
+</div>
+</div>
+<!-- Total Calculation Divider -->
+<div class="my-space-md bg-surface-container-high h-px w-full"></div>
+<!-- Total Block -->
+<div class="flex items-baseline justify-between mb-space-xs">
+<div>
+<span class="font-headline-sm text-headline-sm text-on-surface">Total Amount</span>
+<p class="font-body-sm text-[12px] text-on-surface-variant">Includes all duties &amp; expedited handling</p>
+</div>
+<div class="text-right">
+<span class="font-headline-xl text-headline-lg text-primary font-bold tracking-tight">$404.43</span>
+<p class="font-tech-mono text-[11px] text-secondary font-medium">Earns 404 Tradex Points</p>
+</div>
+</div>
+<!-- Fast 1-Tap Checkout -->
+<div class="mt-space-md space-y-space-xs">
+<p class="font-tech-mono text-[11px] uppercase tracking-wider text-outline text-center">Instant 1-Tap Express Pay</p>
+<div class="grid grid-cols-2 gap-space-xs">
+<button class="flex items-center justify-center gap-space-xs bg-inverse-surface text-inverse-on-surface hover:opacity-90 font-label-md text-label-md py-2.5 rounded-lg transition-all shadow-sm" type="button">
+<span class="font-headline-sm text-label-md font-bold tracking-tight flex items-center">
+<svg class="h-4 w-4 fill-current mr-1" viewbox="0 0 170 170"><path d="M150.37 130.25c-2.45 5.66-5.35 10.87-8.71 15.66-4.58 6.53-8.33 11.05-11.22 13.56-4.48 4.12-9.28 6.23-14.42 6.35-3.69 0-8.14-1.05-13.32-3.18-5.19-2.12-9.97-3.17-14.34-3.17-4.58 0-9.49 1.05-14.75 3.17-5.26 2.13-9.5 3.24-12.74 3.35-4.35.13-9.16-1.9-14.42-6.08-3.69-3.04-7.69-7.85-12-14.42-6-9.13-10.74-19.46-14.23-30.98-3.48-11.53-5.23-22.38-5.23-32.55 0-14.47 3.59-26.44 10.78-35.91 7.19-9.47 16.27-14.34 27.24-14.61 5.43 0 11.1 1.48 17.02 4.45 5.92 2.97 9.77 4.51 11.55 4.62 1.34 0 5.43-1.65 12.28-4.94 6.84-3.3 12.87-4.7 18.08-4.22 13.59.87 24.34 6.13 32.25 15.79-11.85 7.19-17.65 17.08-17.41 29.68.22 9.87 4.13 18.23 11.73 25.07 7.6 6.84 16.59 10.64 26.96 11.4-2.17 6.64-4.89 13.59-8.15 20.85zM119.22 33.15c0-7.39 2.65-14.48 7.95-21.27 5.3-6.79 11.96-11.19 19.98-13.2 1.09 7.82-.98 15.13-6.2 21.93-5.22 6.8-12.18 11.33-20.89 13.59-.22-.35-.45-.7-.68-1.05h-.16z"></path></svg>
+                Apple Pay
+              </span>
+</button>
+<button class="flex items-center justify-center gap-space-xs bg-surface-container-high hover:bg-surface-variant text-on-surface font-label-md text-label-md py-2.5 rounded-lg transition-all shadow-sm" type="button">
+<span class="font-headline-sm text-label-md font-bold tracking-tight flex items-center">
+<span class="text-primary font-bold mr-1">G</span>Pay
+              </span>
+</button>
+</div>
+</div>
+<div class="relative flex items-center justify-center my-space-md">
+<div class="h-px bg-surface-container-high w-full"></div>
+<span class="bg-surface-container-lowest px-space-sm font-tech-mono text-[10px] text-outline uppercase tracking-wider absolute">Or Standard Staging</span>
+</div>
+<!-- Primary Proceed Action Button -->
+<button class="w-full bg-primary-container hover:bg-primary text-on-primary-container font-headline-sm text-label-md font-bold py-3.5 px-space-md rounded-lg shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-space-sm group" type="button">
+<span>PROCEED TO CHECKOUT</span>
+<span class="font-tech-mono font-normal opacity-90">• $404.43</span>
+<span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+<!-- Dispatch Info Banner -->
+<div class="mt-space-md p-space-sm bg-surface-container-low rounded-lg flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-secondary text-[20px] shrink-0">speed</span>
+<span class="font-body-sm text-[12px] text-on-surface-variant">
+<strong class="text-on-surface">Orders ship within 12 hours.</strong> Tier 1 Tradex VIP Perks Active on this session.
+          </span>
+</div>
+</div>
+<!-- Trust, Security & Guarantee Badges Card -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm p-space-md space-y-space-md">
+<div class="flex items-start gap-space-sm">
+<div class="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined text-[20px]">verified_user</span>
+</div>
+<div>
+<h5 class="font-headline-sm text-label-md text-on-surface font-semibold">2-Yr Zero-Fault Instant Swap</h5>
+<p class="font-body-sm text-[12px] text-on-surface-variant mt-0.5">Rapid RMA hardware replacement without waiting for return shipment inspection.</p>
+</div>
+</div>
+<div class="flex items-start gap-space-sm">
+<div class="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center text-secondary shrink-0">
+<span class="material-symbols-outlined text-[20px]">published_with_changes</span>
+</div>
+<div>
+<h5 class="font-headline-sm text-label-md text-on-surface font-semibold">30-Day Hassle-Free Returns</h5>
+<p class="font-body-sm text-[12px] text-on-surface-variant mt-0.5">Test switches and fitment in your setup. 100% refund guarantee with prepaid labels.</p>
+</div>
+</div>
+<div class="flex items-start gap-space-sm">
+<div class="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center text-primary-container shrink-0">
+<span class="material-symbols-outlined text-[20px]">lock</span>
+</div>
+<div>
+<h5 class="font-headline-sm text-label-md text-on-surface font-semibold">Bank-Grade 256-Bit SSL Encryption</h5>
+<p class="font-body-sm text-[12px] text-on-surface-variant mt-0.5">End-to-end tokenized processing directly authenticated via secure hardware key vaults.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script>
+  function updateQty(id, delta) {
+    const input = document.getElementById(id);
+    if (!input) return;
+    let val = parseInt(input.value, 10) || 1;
+    val = Math.max(1, Math.min(10, val + delta));
+    input.value = val;
+  }
+
+  function removeItem(elementId) {
+    const el = document.getElementById(elementId);
+    if (el) {
+      el.style.opacity = '0';
+      el.style.transform = 'translateX(20px)';
+      el.style.transition = 'all 0.3s ease';
+      setTimeout(() => {
+        el.remove();
+      }, 300);
+    }
+  }
+</script></div></main><footer class="w-full bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)] pt-space-xl pb-space-lg mt-auto"><div class="max-w-[1440px] mx-auto px-space-lg"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-space-lg pb-space-xl mb-space-xl"><div class="flex items-start gap-space-md"><div class="w-12 h-12 rounded-lg bg-surface-container-high flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-primary-container text-[28px]">verified</span></div><div><h4 class="font-headline-sm text-headline-sm text-on-surface">3-Year Zero-Fault Guarantee</h4><p class="font-body-sm text-body-sm text-on-surface-variant mt-space-xs">Full hardware replacement and artisan solder support on custom components.</p></div></div><div class="flex items-start gap-space-md"><div class="w-12 h-12 rounded-lg bg-surface-container-high flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-primary-container text-[28px]">airplanemode_active</span></div><div><h4 class="font-headline-sm text-headline-sm text-on-surface">Free Express Dispatch</h4><p class="font-body-sm text-body-sm text-on-surface-variant mt-space-xs">Priority 2-Day domestic shipping with tamper-evident acoustic packaging.</p></div></div><div class="flex items-start gap-space-md"><div class="w-12 h-12 rounded-lg bg-surface-container-high flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-primary-container text-[28px]">tune</span></div><div><h4 class="font-headline-sm text-headline-sm text-on-surface">Lab Calibrated &amp; Tuned</h4><p class="font-body-sm text-body-sm text-on-surface-variant mt-space-xs">Every board lubed with Krytox 205g0 and tested for 1000Hz polling latency.</p></div></div><div class="flex items-start gap-space-md"><div class="w-12 h-12 rounded-lg bg-surface-container-high flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-primary-container text-[28px]">support_agent</span></div><div><h4 class="font-headline-sm text-headline-sm text-on-surface">Enthusiast Desk Support</h4><p class="font-body-sm text-body-sm text-on-surface-variant mt-space-xs">Direct line to hardware engineers and firmware developers 24/7/365.</p></div></div></div><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-space-xl pb-space-xl"><div class="lg:col-span-2 space-y-space-md"><div class="flex items-center gap-space-sm"><span class="font-headline-sm text-headline-sm uppercase tracking-tight text-on-surface">TRADEX<span class="text-primary-container">STORE</span></span><span class="font-tech-mono text-[11px] px-space-xs py-0.5 rounded bg-surface-container text-on-surface">SPEC LAB 2.4</span></div><p class="font-body-sm text-body-sm text-on-surface-variant max-w-sm">Engineered IT infrastructure, competition-grade mechanical inputs, and calibrated battlestation hardware for developers, makers, and enthusiasts.</p><form class="flex items-center max-w-md bg-surface-container rounded-lg p-space-xs gap-space-xs"><input class="w-full bg-transparent px-space-sm font-body-sm text-body-sm text-on-surface placeholder:text-outline focus:outline-none" placeholder="Enter engineering email for drops..." type="email"/><button class="bg-primary-container hover:bg-primary text-on-primary font-label-md text-label-md px-space-md py-2 rounded-lg transition-all shrink-0" type="button">Subscribe</button></form></div><div><h5 class="font-label-md text-label-md text-on-surface uppercase mb-space-md">Hardware Inventory</h5><ul class="space-y-space-sm font-body-sm text-body-sm"><li class="text-on-surface-variant hover:text-on-surface cursor-pointer">Barebones &amp; PCBS</li><li class="text-on-surface-variant hover:text-on-surface cursor-pointer">Custom Lubed Switches</li><li class="text-on-surface-variant hover:text-on-surface cursor-pointer">Anodized Aluminum Cases</li><li class="text-on-surface-variant hover:text-on-surface cursor-pointer">High-Bandwidth PCIe Gen5</li><li class="text-on-surface-variant hover:text-on-surface cursor-pointer">Acoustic Desk Mats</li></ul></div><div><h5 class="font-label-md text-label-md text-on-surface uppercase mb-space-md">Technical Support</h5><ul class="space-y-space-sm font-body-sm text-body-sm"><li class="text-on-surface-variant hover:text-on-surface cursor-pointer">QMK / VIA Firmware Flasher</li><li class="text-on-surface-variant hover:text-on-surface cursor-pointer">Warranty Registration</li><li class="text-on-surface-variant hover:text-on-surface cursor-pointer">Real-Time Order Tracking</li><li class="text-on-surface-variant hover:text-on-surface cursor-pointer">Acoustic Sound Profiles</li><li class="text-on-surface-variant hover:text-on-surface cursor-pointer">RMA &amp; Lab Returns</li></ul></div><div><h5 class="font-label-md text-label-md text-on-surface uppercase mb-space-md">Corporate &amp; Legal</h5><ul class="space-y-space-sm font-body-sm text-body-sm"><li class="text-on-surface-variant hover:text-on-surface cursor-pointer">Enterprise B2B Invoicing</li><li class="text-on-surface-variant hover:text-on-surface cursor-pointer">Supply Chain Transparency</li><li class="text-on-surface-variant hover:text-on-surface cursor-pointer">Privacy Architecture</li><li class="text-on-surface-variant hover:text-on-surface cursor-pointer">Terms of Hardware Sale</li><li class="text-on-surface-variant hover:text-on-surface cursor-pointer">Security Advisory Board</li></ul></div></div><div class="flex flex-col sm:flex-row items-center justify-between pt-space-lg gap-space-md font-tech-mono text-tech-mono text-on-surface-variant"><p>© 2025 TRADEXSTORE TECHNOLOGIES INC. ALL RIGHTS RESERVED.</p><div class="flex items-center gap-space-md"><span class="flex items-center gap-space-xs"><span class="w-2 h-2 rounded-full bg-secondary-container"></span>SYSTEM STATUS: OPTIMAL</span><span>NODE: US-CENTRAL-1</span></div></div></div></footer></body></html>

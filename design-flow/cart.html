@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TradexStore — Review Hardware Staging | Cart &amp; Checkout</title>
+<meta name="description" content="Review your staged TradexStore hardware, apply vouchers, and check out with express pay.">
+<meta name="color-scheme" content="light">
+<link rel="icon" href="assets/img/logo-tradex-full.png">
+<link rel="stylesheet" href="assets/css/fonts.css">
+<link rel="stylesheet" href="assets/css/icons.css">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/app.css">
+</head>
+<body data-page="cart">
+
+<div id="chrome-header"></div>
+
+<main id="main">
+  <div class="container">
+
+    <div class="page-head" style="align-items:center">
+      <div>
+        <span class="t-eyebrow">System Order Staging // Ver 4.9.1</span>
+        <h1 class="t-display" style="margin-top:0.375rem">Review Hardware Staging</h1>
+      </div>
+      <span class="badge badge-tonal badge-wrap">
+        <span class="ms ms-sm" aria-hidden="true">lock</span>256-Bit Hardware Encrypted Pipeline
+      </span>
+    </div>
+
+    <div class="steps" id="steps-root" role="list"></div>
+
+    <div class="cart-layout">
+
+      <!-- ===================== left column ===================== -->
+      <div>
+        <div class="threshold" id="threshold-root"></div>
+
+        <div class="panel" style="margin-top:1rem">
+          <div class="panel-head">
+            <span class="panel-title">Staged Hardware Components (<span id="lines-count">3</span>)</span>
+            <span class="t-mono-sm t-dim">SERIALIZED FOR DISPATCH</span>
+          </div>
+          <div id="lines-root"></div>
+        </div>
+
+        <div class="panel coupon-row" id="coupon-row" style="margin-top:1rem"></div>
+
+        <div class="panel" style="margin-top:1rem">
+          <div class="panel-head">
+            <span class="panel-title">
+              <span class="ms ms-sm" aria-hidden="true">precision_manufacturing</span>
+              Complete Your Rig // Recommended Staging Add-ons
+            </span>
+            <span class="badge badge-tonal">No extra shipping cost</span>
+          </div>
+          <div class="addons" id="addons-root"></div>
+        </div>
+      </div>
+
+      <!-- ===================== right column ===================== -->
+      <div>
+        <div class="panel summary" id="summary-root"></div>
+        <div style="margin-top:1rem" id="assurances-root"></div>
+      </div>
+
+    </div>
+
+    <div class="trust-row" id="trust-row-root"></div>
+
+  </div>
+</main>
+
+<div id="checkout-bar" class="checkout-bar"></div>
+<div id="chrome-footer"></div>
+<div id="chrome-drawer"></div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>
