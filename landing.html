@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TradexStore — Engineered IT Hardware, Custom Builds &amp; Battlestation Gear</title>
+<meta name="description" content="TradexStore — engineered IT infrastructure, competition-grade mechanical inputs and calibrated battlestation hardware. Enter the store to explore the full catalog.">
+<meta name="color-scheme" content="light">
+<link rel="canonical" href="https://tradex.builddocks.in/">
+<link rel="icon" href="design-flow/assets/img/logo-tradex-full.png">
+
+<!-- design system shared with the design-flow prototype -->
+<link rel="stylesheet" href="design-flow/assets/css/fonts.css">
+<link rel="stylesheet" href="design-flow/assets/css/icons.css">
+<link rel="stylesheet" href="design-flow/assets/css/tokens.css">
+<link rel="stylesheet" href="design-flow/assets/css/app.css">
+
+<style>
+  /* ------------------------------------------------------------------------
+     Landing-page additions. Everything else comes from the shared sheets.
+     ------------------------------------------------------------------------ */
+
+  /* the utility bar carries three messages; drop the extras once it gets tight */
+  @media (max-width: 900px) {
+    .utility-bar .u-item.u-extra { display: none; }
+    .sys-pill { display: none; }
+  }
+
+  @media (max-width: 767px) {
+    .act-store { display: none; }
+  }
+
+  /* closing call to action — inverts the light surface ramp */
+  .landing-cta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-lg);
+    flex-wrap: wrap;
+    padding: var(--s-xl);
+    border: var(--border);
+    border-radius: var(--r-xl);
+    background:
+      radial-gradient(110% 140% at 92% 6%, rgba(0, 112, 243, 0.42) 0%, transparent 62%),
+      linear-gradient(148deg, var(--inverse-surface-deep) 0%, var(--inverse-surface) 100%);
+    color: var(--inverse-on-surface);
+  }
+
+  .landing-cta .t-eyebrow { color: var(--secondary-fixed); }
+  .landing-cta-title { color: #fff; margin-top: 0.375rem; }
+  .landing-cta-copy {
+    color: rgba(238, 240, 255, 0.78);
+    font-size: var(--size-body-lg);
+    max-width: 56ch;
+    margin-top: 0.5rem;
+  }
+
+  .landing-cta-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--s-sm);
+    flex-wrap: wrap;
+  }
+
+  .landing-cta .btn-secondary {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.32);
+    color: #fff;
+  }
+  .landing-cta .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.16);
+    border-color: var(--secondary-fixed);
+    color: var(--secondary-fixed);
+  }
+
+  @media (max-width: 767px) {
+    .landing-cta { padding: var(--s-lg); }
+    .landing-cta-actions { width: 100%; }
+    .landing-cta-actions .btn { flex: 1 1 100%; }
+  }
+</style>
+</head>
+<body data-page="landing">
+
+<!-- ===================== utility bar ===================== -->
+<div class="utility-bar">
+  <div class="container">
+    <span class="u-item"><span class="ms ms-sm" aria-hidden="true">bolt</span><span><strong>Express tech dispatch</strong> — orders placed before 16:00 EST ship same-day from the Austin hub</span></span>
+    <span class="u-item u-extra"><span class="ms ms-sm" aria-hidden="true">local_shipping</span><span>Free 2-day air over $150</span></span>
+    <span class="u-item u-extra"><span class="ms ms-sm" aria-hidden="true">lock</span><span>Global inventory online</span></span>
+  </div>
+</div>
+
+<!-- ===================== header ===================== -->
+<header class="site-header">
+  <div class="container header-inner">
+
+    <button class="btn-icon menu-toggle" type="button" data-drawer-open aria-label="Open navigation">
+      <span class="ms ms-lg" aria-hidden="true">menu</span>
+    </button>
+
+    <a class="brand" href="design-flow/home.html" aria-label="TradexStore home">
+      <img class="brand-logo" src="design-flow/assets/img/logo-tradex-full.png" alt="TradexStore" width="140" height="30">
+    </a>
+
+    <button class="sys-pill" type="button">All Systems<span class="ms ms-sm" aria-hidden="true">expand_more</span></button>
+
+    <form class="field header-search" role="search" action="design-flow/catalog.html" method="get">
+      <span class="ms ms-sm" aria-hidden="true">search</span>
+      <input type="search" id="global-search" name="q" placeholder="Search hardware, SKUs, specs…" aria-label="Search catalogue">
+      <span class="kbd">&#8984;K</span>
+    </form>
+
+    <nav class="main-nav" aria-label="Primary">
+      <a href="design-flow/home.html">Home</a>
+      <a href="design-flow/catalog.html">Catalog</a>
+      <a href="design-flow/home.html#deals">Drops &amp; Deals</a>
+      <a href="design-flow/product.html">Battlestations</a>
+      <a href="design-flow/index.html">Design Flow</a>
+    </nav>
+
+    <div class="header-actions">
+      <a class="btn btn-primary act-store" href="design-flow/home.html">
+        Enter store<span class="ms ms-sm" aria-hidden="true">arrow_forward</span>
+      </a>
+      <a class="cart-button" href="design-flow/cart.html" aria-label="Open the tech bag">
+        <span class="cart-icon"><span class="ms" aria-hidden="true">shopping_bag</span></span>
+        <span class="cart-total"><span>Proceed to</span><span>Tech Bag</span></span>
+      </a>
+    </div>
+
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ===================== hero ===================== -->
+  <section class="container section-tight">
+    <div class="hero">
+      <div class="hero-inner">
+        <div>
+          <div class="row row-wrap" style="gap:0.5rem">
+            <span class="badge badge-primary"><span class="ms ms-sm" aria-hidden="true">verified</span>Official store // tradex.builddocks.in</span>
+            <span class="t-mono-sm t-dim">Spec Lab Rev 2.4</span>
+          </div>
+
+          <h1 class="t-display hero-title">
+            Engineering-grade IT hardware, <span class="accent">without the compromise</span>
+          </h1>
+
+          <p class="t-body-lg hero-copy">
+            Barebones, anodized chassis, PCIe Gen5 silicon, calibrated panels and competition-grade
+            mechanicals — stocked for people who read the spec sheet before the price tag. Every
+            listing carries real thermal, acoustic and throughput data.
+          </p>
+
+          <div class="hero-actions">
+            <a class="btn btn-primary btn-lg" href="design-flow/home.html">
+              Enter the store<span class="ms ms-sm" aria-hidden="true">arrow_forward</span>
+            </a>
+            <a class="btn btn-secondary btn-lg" href="design-flow/catalog.html">
+              <span class="ms ms-sm" aria-hidden="true">tune</span>Browse the catalog
+            </a>
+            <span class="hero-note"><span class="dot"></span>Four connected screens · no build step</span>
+          </div>
+        </div>
+
+        <div class="hero-visual">
+          <div class="media">
+            <span class="badge badge-light hero-float">
+              <span class="ms ms-sm" aria-hidden="true">thermostat</span>TDP 175W liquid metal
+            </span>
+            <img src="design-flow/assets/img/product-01.png"
+                 alt="Titanium grey high-performance laptop workstation angled on an architectural minimalist desk surface."
+                 width="512" height="279" fetchpriority="high">
+          </div>
+          <div class="hero-specs">
+            <div class="spec-tile">
+              <span class="k">Inventory</span>
+              <div class="v">336 SKUs</div>
+              <div class="s">Live from Austin hub</div>
+            </div>
+            <div class="spec-tile">
+              <span class="k">Dispatch</span>
+              <div class="v">&lt; 24 HRS</div>
+              <div class="s">Same-day before 16:00</div>
+            </div>
+            <div class="spec-tile">
+              <span class="k">Warranty</span>
+              <div class="v">3 YEARS</div>
+              <div class="s">Zero-fault coverage</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== start here / screens ===================== -->
+  <section class="container section-tight">
+    <div class="section-head">
+      <div>
+        <span class="t-eyebrow">// Start Here</span>
+        <h2 class="t-h1" style="margin-top:0.375rem">Four screens, one connected store</h2>
+      </div>
+      <a class="link-arrow" href="design-flow/home.html">
+        Open Home Discovery<span class="ms ms-sm" aria-hidden="true">arrow_forward</span>
+      </a>
+    </div>
+
+    <div class="flow-rail">
+      <a class="node" href="design-flow/home.html"><span class="ms ms-sm" aria-hidden="true">arrow_forward</span>Home Discovery</a>
+      <span class="ms ms-sm" aria-hidden="true">chevron_right</span>
+      <a class="node" href="design-flow/catalog.html"><span class="ms ms-sm" aria-hidden="true">arrow_forward</span>Product Catalog</a>
+      <span class="ms ms-sm" aria-hidden="true">chevron_right</span>
+      <a class="node" href="design-flow/product.html"><span class="ms ms-sm" aria-hidden="true">arrow_forward</span>Product Detail</a>
+      <span class="ms ms-sm" aria-hidden="true">chevron_right</span>
+      <a class="node" href="design-flow/cart.html"><span class="ms ms-sm" aria-hidden="true">arrow_forward</span>Cart &amp; Checkout</a>
+    </div>
+
+    <div class="flow-grid">
+      <a class="flow-card" href="design-flow/home.html">
+        <div class="flow-frame">
+          <span class="flow-step">STEP 01</span>
+          <img src="design-flow/assets/img/flow-home.png" alt="Home Discovery screen: drop hero, categories, flash deals and battlestation showcase." loading="lazy" width="512" height="352">
+        </div>
+        <div class="flow-body">
+          <h3>Home Discovery</h3>
+          <p>Limited drop hero, core subsystems, flash deals and the lab showcase rig.</p>
+          <div class="flow-tags">
+            <span class="badge badge-light">Hero</span>
+            <span class="badge badge-light">Categories</span>
+            <span class="badge badge-light">Flash Deals</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="flow-card" href="design-flow/catalog.html">
+        <div class="flow-frame">
+          <span class="flow-step">STEP 02</span>
+          <img src="design-flow/assets/img/flow-catalog.png" alt="Product Catalog screen: filter rail, grid and list views with spec-led sorting." loading="lazy" width="512" height="352">
+        </div>
+        <div class="flow-body">
+          <h3>Product Catalog</h3>
+          <p>Filter rail, grid/list switching, pagination and spec-led sorting across 142 silicons.</p>
+          <div class="flow-tags">
+            <span class="badge badge-light">Filters</span>
+            <span class="badge badge-light">Grid / List</span>
+            <span class="badge badge-light">Sorting</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="flow-card" href="design-flow/product.html">
+        <div class="flow-frame">
+          <span class="flow-step">STEP 03</span>
+          <img src="design-flow/assets/img/flow-product.png" alt="Product Detail screen: gallery, switch lab, spec table and sticky buybox." loading="lazy" width="512" height="352">
+        </div>
+        <div class="flow-body">
+          <h3>Product Detail</h3>
+          <p>Gallery, switch lab, thermal spec table and the sticky buybox with live totals.</p>
+          <div class="flow-tags">
+            <span class="badge badge-light">Spec Sheet</span>
+            <span class="badge badge-light">Switch Lab</span>
+            <span class="badge badge-light">Buybox</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="flow-card" href="design-flow/cart.html">
+        <div class="flow-frame">
+          <span class="flow-step">STEP 04</span>
+          <img src="design-flow/assets/img/flow-cart.png" alt="Cart and Checkout screen: line items, coupon engine, order summary and checkout steps." loading="lazy" width="512" height="352">
+        </div>
+        <div class="flow-body">
+          <h3>Cart &amp; Checkout</h3>
+          <p>Persisted tech bag, coupon engine, tax rules and the free-shipping threshold bar.</p>
+          <div class="flow-tags">
+            <span class="badge badge-light">Coupon</span>
+            <span class="badge badge-light">Totals</span>
+            <span class="badge badge-light">Checkout</span>
+          </div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ===================== categories ===================== -->
+  <section class="container section-tight">
+    <div class="section-head">
+      <div>
+        <span class="t-eyebrow">// System Subsystems</span>
+        <h2 class="t-h1" style="margin-top:0.375rem">Explore Core Categories</h2>
+      </div>
+      <a class="link-arrow" href="design-flow/catalog.html">
+        View Full Catalog<span class="ms ms-sm" aria-hidden="true">arrow_forward</span>
+      </a>
+    </div>
+
+    <div class="grid-categories">
+      <a class="category-card" href="design-flow/catalog.html">
+        <div class="media"><img src="design-flow/assets/img/product-02.png" alt="High-end slim gaming and workstation laptop with magnesium alloy chassis." loading="lazy" width="512" height="279"></div>
+        <div><div class="category-name">Laptops</div><div class="category-count">28 Configs</div></div>
+      </a>
+      <a class="category-card" href="design-flow/catalog.html">
+        <div class="media"><img src="design-flow/assets/img/product-03.png" alt="Custom mechanical keyboard with CNC milled aluminum case and PBT keycaps." loading="lazy" width="512" height="279"></div>
+        <div><div class="category-name">Keyboards</div><div class="category-count">64 Artisan Builds</div></div>
+      </a>
+      <a class="category-card" href="design-flow/catalog.html">
+        <div class="media"><img src="design-flow/assets/img/product-04.png" alt="Curved ultrawide OLED gaming monitor with slim bezel." loading="lazy" width="512" height="279"></div>
+        <div><div class="category-name">Monitors</div><div class="category-count">19 HDR Displays</div></div>
+      </a>
+      <a class="category-card" href="design-flow/catalog.html">
+        <div class="media"><img src="design-flow/assets/img/product-05.png" alt="Studio audiophile DAC amplifier with open-back planar magnetic headphones." loading="lazy" width="512" height="279"></div>
+        <div><div class="category-name">Audio &amp; DAC</div><div class="category-count">32 Hi-Res Nodes</div></div>
+      </a>
+      <a class="category-card" href="design-flow/catalog.html">
+        <div class="media"><img src="design-flow/assets/img/product-06.png" alt="Graphics card GPU cooling assembly and motherboard chipset heatsink." loading="lazy" width="512" height="279"></div>
+        <div><div class="category-name">PC Components</div><div class="category-count">142 Silicons</div></div>
+      </a>
+      <a class="category-card" href="design-flow/catalog.html">
+        <div class="media"><img src="design-flow/assets/img/product-07.png" alt="Heavy felt desk mat with stitched edges beside a CNC aluminum wrist rest." loading="lazy" width="512" height="279"></div>
+        <div><div class="category-name">Desk Mats &amp; Acc</div><div class="category-count">51 Accessories</div></div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ===================== trust ===================== -->
+  <section class="container section-tight">
+    <div class="trust-strip">
+      <div class="feature">
+        <span class="icon-tile"><span class="ms" aria-hidden="true">verified_user</span></span>
+        <div>
+          <div class="feature-title">3-Year Factory Warranty</div>
+          <p class="feature-text">Complete zero-fault coverage on PCBs, displays, and thermal hardware.</p>
+        </div>
+      </div>
+      <div class="feature">
+        <span class="icon-tile"><span class="ms" aria-hidden="true">rocket_launch</span></span>
+        <div>
+          <div class="feature-title">Global Dispatch &lt; 24h</div>
+          <p class="feature-text">Real-time automated fulfillment from Austin and Frankfurt hubs with tracking.</p>
+        </div>
+      </div>
+      <div class="feature">
+        <span class="icon-tile"><span class="ms" aria-hidden="true">swap_horizontal_circle</span></span>
+        <div>
+          <div class="feature-title">30-Day Zero Friction</div>
+          <p class="feature-text">Hassle-free hardware exchanges or full refunds with prepaid return shipping.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="container">
+    <div class="trust-row">
+      <div class="feature">
+        <span class="icon-tile"><span class="ms" aria-hidden="true">verified</span></span>
+        <div>
+          <div class="feature-title">3-Year Zero-Fault Guarantee</div>
+          <p class="feature-text">Full hardware replacement and artisan solder support on custom components.</p>
+        </div>
+      </div>
+      <div class="feature">
+        <span class="icon-tile"><span class="ms" aria-hidden="true">airplanemode_active</span></span>
+        <div>
+          <div class="feature-title">Free Express Dispatch</div>
+          <p class="feature-text">Priority 2-day domestic shipping with tamper-evident acoustic packaging.</p>
+        </div>
+      </div>
+      <div class="feature">
+        <span class="icon-tile"><span class="ms" aria-hidden="true">tune</span></span>
+        <div>
+          <div class="feature-title">Lab Calibrated &amp; Tuned</div>
+          <p class="feature-text">Every board lubed with Krytox 205g0 and tested for 1000Hz polling latency.</p>
+        </div>
+      </div>
+      <div class="feature">
+        <span class="icon-tile"><span class="ms" aria-hidden="true">support_agent</span></span>
+        <div>
+          <div class="feature-title">Enthusiast Desk Support</div>
+          <p class="feature-text">Direct line to hardware engineers and firmware developers 24/7/365.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== closing call to action ===================== -->
+  <section class="container section-tight">
+    <div class="landing-cta">
+      <div>
+        <span class="t-eyebrow">// Ready When You Are</span>
+        <h2 class="t-h1 landing-cta-title">Step into the store</h2>
+        <p class="landing-cta-copy">
+          Home Discovery is the front door: drop stock, subsystems, flash pricing and the full
+          battlestation rig. Your tech bag carries across every screen.
+        </p>
+      </div>
+      <div class="landing-cta-actions">
+        <a class="btn btn-primary btn-lg" href="design-flow/home.html">
+          Enter the store<span class="ms ms-sm" aria-hidden="true">arrow_forward</span>
+        </a>
+        <a class="btn btn-secondary btn-lg" href="design-flow/index.html">
+          <span class="ms ms-sm" aria-hidden="true">grid_view</span>View the design flow
+        </a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ===================== footer ===================== -->
+<footer class="site-footer">
+  <div class="container footer-main">
+    <div>
+      <div class="footer-brand-row">
+        <img class="brand-logo" src="design-flow/assets/img/logo-tradex-full.png" alt="TradexStore" width="140" height="30">
+        <span class="badge badge-light">SPEC LAB 2.4</span>
+      </div>
+      <p class="footer-text" style="margin-top:0.75rem">
+        Engineered IT infrastructure, competition-grade mechanical inputs, and calibrated
+        battlestation hardware for developers, makers, and enthusiasts.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="design-flow/home.html">
+          Enter the store<span class="ms ms-sm" aria-hidden="true">arrow_forward</span>
+        </a>
+        <a class="btn btn-secondary" href="design-flow/catalog.html">
+          <span class="ms ms-sm" aria-hidden="true">grid_view</span>Browse the catalog
+        </a>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <h3>Hardware Inventory</h3>
+      <ul>
+        <li><a href="design-flow/catalog.html">Barebones &amp; PCBS</a></li>
+        <li><a href="design-flow/catalog.html">Custom Lubed Switches</a></li>
+        <li><a href="design-flow/catalog.html">Anodized Aluminum Cases</a></li>
+        <li><a href="design-flow/catalog.html">High-Bandwidth PCIe Gen5</a></li>
+        <li><a href="design-flow/catalog.html">Acoustic Desk Mats</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h3>Technical Support</h3>
+      <ul>
+        <li><a href="design-flow/product.html">QMK / VIA Firmware Flasher</a></li>
+        <li><a href="design-flow/product.html">Warranty Registration</a></li>
+        <li><a href="design-flow/cart.html">Real-Time Order Tracking</a></li>
+        <li><a href="design-flow/product.html">Acoustic Sound Profiles</a></li>
+        <li><a href="design-flow/index.html">RMA &amp; Lab Returns</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h3>Corporate &amp; Legal</h3>
+      <ul>
+        <li><a href="design-flow/index.html">Enterprise B2B Invoicing</a></li>
+        <li><a href="design-flow/index.html">Supply Chain Transparency</a></li>
+        <li><a href="design-flow/index.html">Privacy Architecture</a></li>
+        <li><a href="design-flow/index.html">Terms of Hardware Sale</a></li>
+        <li><a href="design-flow/index.html">Security Advisory Board</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="container footer-bar">
+    <span>&copy; 2026 TRADEXSTORE TECHNOLOGIES INC. ALL RIGHTS RESERVED.</span>
+    <span class="status-online">
+      <span class="ms ms-sm" aria-hidden="true">check_circle</span>SYSTEM STATUS: OPTIMAL &nbsp; NODE: US-CENTRAL-1
+    </span>
+  </div>
+</footer>
+
+<!-- ===================== mobile navigation ===================== -->
+<div class="drawer-scrim" data-drawer-close></div>
+<aside class="drawer" id="site-drawer" aria-hidden="true" aria-label="Navigation">
+  <div class="row">
+    <img class="brand-logo" src="design-flow/assets/img/logo-tradex-full.png" alt="TradexStore" width="140" height="30">
+    <button class="btn-icon spacer" type="button" data-drawer-close aria-label="Close navigation">
+      <span class="ms ms-lg" aria-hidden="true">close</span>
+    </button>
+  </div>
+
+  <nav>
+    <a href="design-flow/home.html">Home<span class="ms ms-sm" aria-hidden="true">arrow_forward</span></a>
+    <a href="design-flow/catalog.html">Catalog<span class="ms ms-sm" aria-hidden="true">arrow_forward</span></a>
+    <a href="design-flow/home.html#deals">Drops &amp; Deals<span class="ms ms-sm" aria-hidden="true">arrow_forward</span></a>
+    <a href="design-flow/product.html">Battlestations<span class="ms ms-sm" aria-hidden="true">arrow_forward</span></a>
+    <a href="design-flow/index.html">Design Flow<span class="ms ms-sm" aria-hidden="true">arrow_forward</span></a>
+  </nav>
+
+  <div class="stack-sm">
+    <span class="t-eyebrow">Dispatch</span>
+    <p class="t-body-sm t-muted">Orders placed before 16:00 EST ship same-day from the Austin hub.</p>
+  </div>
+
+  <a class="btn btn-primary btn-block" href="design-flow/home.html">
+    Enter the store<span class="ms ms-sm" aria-hidden="true">arrow_forward</span>
+  </a>
+</aside>
+
+<script>
+  // Minimal chrome behaviour for the landing page: the nav drawer and the
+  // command-K search affordance, mirroring the design-flow prototype.
+  (function () {
+    'use strict';
+
+    var drawer = document.getElementById('site-drawer');
+    var scrim = document.querySelector('.drawer-scrim');
+
+    function setOpen(open) {
+      if (!drawer) return;
+      drawer.classList.toggle('is-open', open);
+      if (scrim) scrim.classList.toggle('is-open', open);
+      drawer.setAttribute('aria-hidden', open ? 'false' : 'true');
+      document.body.style.overflow = open ? 'hidden' : '';
+    }
+
+    Array.prototype.forEach.call(document.querySelectorAll('[data-drawer-open]'), function (b) {
+      b.addEventListener('click', function () { setOpen(true); });
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-drawer-close]'), function (b) {
+      b.addEventListener('click', function () { setOpen(false); });
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') setOpen(false);
+      if ((e.metaKey || e.ctrlKey) && String(e.key).toLowerCase() === 'k') {
+        var input = document.getElementById('global-search');
+        if (input) { e.preventDefault(); input.focus(); input.select(); }
+      }
+    });
+  })();
+</script>
+
+</body>
+</html>
+
