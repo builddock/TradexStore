@@ -143,4 +143,23 @@ Open decisions blocking the most tasks:
 - Scope question recorded as D-223 (OPEN). BP keeps mobile-web acceptance in Phase 2; the mockup now shows the
   responsive layouts either way.
 - Tracker unchanged (361 tasks; next task T-0-M01-03); `status.py --check`: 0 issues.
+- Follow-up (same day, user report: checkout review items not responsive):
+  - A deep state crawl was added. It covers every tab, checkout/returns step, state switch, modal, drawer and
+    guest/consumer/dealer view, plus URL variants.
+  - It checks for page overflow, squeezed text, spill and clipping at 360/768 px.
+  - Fixed:
+    - checkout review items and summary lines;
+    - stepper labels and tablet payment tabs;
+    - cart saved rows and empty state;
+    - account menu tables, list rows and field rows;
+    - order lookup/status tiles; login form rows;
+    - help store cards and tables; compare header; product breadcrumb, gallery buttons and spec columns;
+    - dealer status panels; returns request rows.
+  - Shared phone rules:
+    - rows with buttons or notes wrap;
+    - store data tables scroll with minimum column widths;
+    - the dealer tag and delivery line are shortened on phones.
+  - Result: 0 issues on all 13 store pages (~1,000 page states); 0 overflow at 13 widths 320–1920 px;
+    0 JS errors; desktop 1440 px unchanged except live timers, a 1 px checkout summary shift and the active
+    "Refurbished" link.
 
