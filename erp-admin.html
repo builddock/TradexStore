@@ -51,6 +51,53 @@
     .env .e-h { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
     .event-json { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 11.5px; line-height: 1.6; background: var(--ink-900); color: #c9d2e3; border-radius: var(--r); padding: 12px 14px; white-space: pre-wrap; }
     .event-json .k { color: #8fa8ff; } .event-json .o { color: #ff9b9b; } .event-json .n { color: #7ee2a8; } .event-json .d { color: #6b7894; }
+
+    /* Tablet and phone (≤ 980 px) — desktop and laptop unchanged */
+    @media (max-width: 980px) {
+      .pad { padding: 16px; }
+      .kv.tight { grid-template-columns: 112px minmax(0, 1fr); }
+      /* Diffs with inline column templates: field name above the old → new values, like the shared diff view */
+      .diff { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important; }
+      /* Permission matrix and contract checklist scroll sideways; the requirement column keeps a readable width */
+      .perm-tbl td:first-child { min-width: 200px; }
+      #contract td:first-child { min-width: 180px; }
+      /* Delegation: active delegation and the form first, then emergency access and history */
+      [data-panel="delegation"] > .pad > .grid { grid-template-columns: minmax(0, 1fr) !important; }
+      [data-panel="delegation"] .deleg .card-head > .row { flex-wrap: nowrap; min-width: 0; }
+      [data-panel="delegation"] .deleg .card-head > .row > div:last-child { min-width: 0; }
+      /* Company details: two columns on tablets, one on phones */
+      [data-panel="locations"] .card-body > .grid:has(> .kv) { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 16px 24px !important; }
+      /* Integration cards: the logo stays beside the name */
+      #int-grid .card-head > .row { flex-wrap: nowrap; min-width: 0; }
+      #int-grid .card-head > .row > div { min-width: 0; }
+      /* Contract checklist: its screen-reader labels stay inside the scrolling box instead of widening the page */
+      [data-panel="integrations"] .table-wrap { position: relative; }
+      /* System: environments / backups and the support table + maintenance calendar use the full width */
+      [data-panel="system"] > .pad > .grid.g-2, [data-panel="system"] .card > .grid.g-2 { grid-template-columns: minmax(0, 1fr); }
+      [data-panel="system"] .card > .grid.g-2 > .table-wrap { border-right: 0 !important; border-bottom: 1px solid var(--line-2); }
+    }
+
+    /* Phone (≤ 760 px) */
+    @media (max-width: 760px) {
+      .pad { padding: 12px; }
+      [data-panel="locations"] .card-body > .grid:has(> .kv) { grid-template-columns: minmax(0, 1fr) !important; gap: 14px !important; }
+      .zone .z-h { flex-wrap: wrap; gap: 4px; }
+      /* Production and staging one above the other */
+      .env { grid-template-columns: minmax(0, 1fr); }
+      /* Separation-of-duties rows: the status badge lines up under the text */
+      .list-row > .grow ~ .badge { margin-left: 48px; }
+      /* Delegation scope limits: fields wide and tall enough for their values */
+      [data-panel="delegation"] .check > input[aria-label="Discount limit"] { width: 64px !important; height: 28px; padding: 0 8px; }
+      [data-panel="delegation"] .check > input[aria-label="Write-off limit"] { width: 96px !important; height: 28px; padding: 0 8px; }
+      .event-json { overflow-wrap: anywhere; }
+    }
+
+    /* Small phones (≤ 420 px) */
+    @media (max-width: 420px) {
+      .page-head .actions > .badge { white-space: normal; height: auto; min-height: 22px; padding-top: 2px; padding-bottom: 2px; }
+    }
+      @media (max-width: 980px) { #perm-body td:first-child { min-width: 240px; } }
+    @media (max-width: 760px) { .av-stack { flex: none; } }
   </style>
 </head>
 <body data-app="erp" data-page="admin">

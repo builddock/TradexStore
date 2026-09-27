@@ -52,6 +52,39 @@
     .timeline li.current .t-dot { background: var(--vendor); box-shadow: var(--ring); }
     .bottom-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr) minmax(0, 1fr); gap: 16px; }
     .feed-mini .row-between { font-size: 12.5px; }
+
+    /* ---- Responsive (desktop ≥ 981 px unchanged) ------------------------------------------------ */
+    @media (max-width: 980px) {
+      /* Action items + scorecard, submissions + announcements: one column, in reading order */
+      .dash-grid { grid-template-columns: minmax(0, 1fr); }
+      /* Coming up + data scope side by side; the locked marketplace preview takes its own row */
+      .bottom-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .bottom-grid > .locked { grid-column: 1 / -1; }
+      .see { grid-template-columns: minmax(0, 1fr); }
+      /* The decorative store icon sits wholly outside the card (clipped, never visible); drop its box so the card has no hidden overflow */
+      .locked .lk-art { display: none; }
+    }
+    @media (max-width: 760px) {
+      /* Approval status: logo + details on top, the preview-state switch underneath */
+      .vstatus { grid-template-columns: auto minmax(0, 1fr); gap: 12px 14px; align-items: start; padding: 16px; }
+      .vstatus .v-logo { width: 44px; height: 44px; border-radius: 10px; font-size: 16px; }
+      .v-facts { gap: 6px 12px; }
+      .v-facts span { align-items: flex-start; }
+      .v-facts .ic { flex: none; margin-top: 2px; }
+      .v-state { grid-column: 1 / -1; align-items: flex-start; padding-top: 12px; border-top: 1px solid var(--line-2); }
+      .v-state .seg { max-width: 100%; overflow-x: auto; scrollbar-width: none; }
+      /* Action items: severity pill, then the text at full width, then the action */
+      .exc { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+      .exc .sev { justify-self: start; }
+      .exc .e-act { grid-column: 1; }
+      .exc .e-meta span { align-items: flex-start; }
+      .exc .e-meta .ic { margin-top: 2px; }
+      /* Scorecard */
+      .score-big { padding: 14px 16px; }
+      .score-row { grid-template-columns: minmax(0, 1fr) 136px; gap: 12px; padding: 11px 16px; }
+      .bottom-grid { grid-template-columns: minmax(0, 1fr); }
+      .see { gap: 16px; }
+    }
   </style>
 </head>
 <body data-app="vendor" data-page="dashboard">

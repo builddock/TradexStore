@@ -32,7 +32,7 @@ MEET (16:37, 17:07, 17:11) · MK `store-home.html`, `store-listing.html`, `store
 | 4 | Mockup **sample values are not requirements** (prices, names, IDs, 7/10-day windows, "42-point", ₹999 free delivery, 15-min reservation, ₹50,000 COD limit, ₹10,000 dealer minimum, EMI banks, store hours, 4-hour partner confirmation, 30-day cart retention, provider names Razorpay/Delhivery). Each maps to the decision cited where it appears | 00-conventions §1.1 |
 | 5 | API IDs come from `06-api.md`. Where `06-api.md` cites a merged decision this file cites the surviving ID: D-140 → **D-129**, D-143 → **D-121**, D-144 → **D-131**, D-148 → **D-137**, D-120 → **D-104** | DECISIONS.md (MERGED rows) |
 | 6 | **Global prerequisite decisions** are not repeated on every line: D-003 (framework, PROPOSED-DEFAULT), **D-049 (UI sign-off, OPEN)**, D-103 (design-system technology, OPEN), D-102 (deployables/hostnames), D-083 (session/token), D-080 (API conventions), D-079 (idempotency transport), D-051 (accessibility scope, PROPOSED-DEFAULT), D-050 (languages). Every page therefore carries `REQUIRES_DECISION (D-049 · global)`; the "core status" given per page is the status once the global blockers are decided | DECISIONS.md; 06-api §1.15 status rule |
-| 7 | Every UI item ships with loading, empty, error, desktop/laptop viewport and accessibility states (BP §22.5). Phase 1 acceptance is on agreed desktop/laptop browsers; dedicated mobile layouts, touch flows and mobile performance are Phase 2 (M28, D-085). The mockup's basic responsive CSS rules may be kept but are not a Phase 1 acceptance criterion | BP §5.1, §6, §6.7 step 8, §23.1 (T29 is Phase 2); MEET 17:07 (web before app), 17:11 (UI quality, mobile responsiveness noted as a shortcoming) |
+| 7 | Every UI item ships with loading, empty, error, desktop/laptop viewport and accessibility states (BP §22.5). Phase 1 acceptance is on agreed desktop/laptop browsers; dedicated mobile layouts, touch flows and mobile performance are Phase 2 (M28, D-085). The mockup is responsive (tablet/phone patterns in §2.5, added 27 Sep 2026 at the user's request); whether they become Phase 1 acceptance criteria is D-223 | BP §5.1, §6, §6.7 step 8, §23.1 (T29 is Phase 2); MEET 17:07 (web before app), 17:11 (UI quality, mobile responsiveness noted as a shortcoming) |
 | 8 | Conditional and mockup-only features are built only behind their decision (feature flag per D-077); when disabled the UI element is **absent**, not greyed out (API returns `FEATURE_DISABLED`) | BP §5.2; 06-api §1.7; 02-architecture §4.2 rule 12 |
 | 9 | Page sections (§4.x) use a fixed template: header table → UI sections (in mockup order) → components → forms & fields → actions (action → API → result) → tables/filters/search/pagination → modals/drawers → validation → states (loading/empty/error) → permissions → API dependencies → backend/database dependencies → related pages → conditional/mockup-only items → status | Brief |
 
@@ -349,6 +349,36 @@ Suggestions never show dealer prices (BR-M21-06). Empty/zero-suggestion: dropdow
 hidden; submit still works. Sources: BP §6.4; MK shell "Suggestions"; D-032; E-search_synonym.
 
 ---
+
+
+### 2.5 Responsive layouts (MOCKUP since 2026-09-27 · Phase 1 scope D-223)
+
+The mockup storefront works on desktop, tablet and phone. Desktop behaviour above is unchanged; the rows below
+describe what changes at smaller widths. If D-223 keeps the BP split, these layouts may still ship but are not Phase 1
+acceptance criteria; if it moves mobile web into Phase 1, they are the specification (task T-1A.9-M09-12).
+
+| # | Area | Tablet (761–980 px) | Phone (≤ 760 px; ≤ 420 px small) | MK reference |
+|---|---|---|---|---|
+| 1 | Breakpoints | desktop ≥ 981 · tablet 761–980 · phone ≤ 760 · small phone ≤ 420 | — | `assets/tradex.css` "Responsive" |
+| 2 | Prototype toolbar | Collapses into "Prototype menu" ≤ 1360 px (store) | Brand + menu only | review aid, not built |
+| 3 | Category bar | Priority hiding at 1420/1240/1100 px (`data-p`, less-used links move into "All categories"); ≤ 980: swipeable pills, "All categories" opens the menu drawer, mega menu disabled | same | `buildStoreShell` |
+| 4 | Header | Menu (☰) button; account/orders/wishlist/cart icon-only; delivery chip hidden | Row 1 menu · logo · account · cart; row 2 full-width search; row 3 "Deliver to <PIN>" (`.s-mdeliver`) | `.s-burger`, `.s-mdeliver` |
+| 5 | Menu drawer `#s-drawer` | Slide-in dialog: signed-in user or sign-in, delivery PIN, quick links (orders, wishlist, dealer zone, help), category accordions with the same sub-links as the mega menu, other links | same | `initStoreDrawer`; dialog with focus trap, Esc, focus return, `aria-expanded` |
+| 6 | Bottom tab bar | — | Fixed bar: Home · Categories (opens drawer) · Deals (guest/consumer) or Dealer (dealer) · Account · Cart (count) | `.s-tabbar`; fixed UI above it uses `--s-bottom` (60 px; product buy bar 68 px; cart 126 px) |
+| 7 | Modals | Centred | Bottom sheets (max 92 vh, sticky head/foot) | shared CSS |
+| 8 | Off-canvas panels | `TX.openSheet(id)` panels: dialog, focus trap, Esc, backdrop, scroll lock; close automatically when the window grows past 980 px | same | listing filters, account menu |
+| 9 | Help widget, compare tray, toasts | — | Sit above the bottom bar; help button icon-only; compare slots hidden ≤ 420 px | shared CSS |
+| 10 | P-S01 Home | Hero one column, promo tiles stack | Hero/promo text over image, trust strip and category tiles 2–3 per row, brand row swipeable | `store-home.html` |
+| 11 | P-S02 Listing | "Filters" button (active-filter count) opens the filter panel with a "Show N results" footer | Product grid 2 per row, compact cards (dealer tag and delivery line shortened, flags wrap) | `store-listing.html` |
+| 12 | P-S03 Product | Gallery above details | Swipeable thumbnails; sticky buy bar (price, Add to cart, Buy now); spec names 36 % | `store-product.html` `#m-buybar` |
+| 13 | P-S05 Compare | Table scrolls sideways with the spec-name column pinned; hint line | same | `store-compare.html` |
+| 14 | P-S06 Cart | Lines stack | Sticky bar with total + Checkout; saved-for-later rows wrap | `store-cart.html` `.m-cobar` |
+| 15 | P-S07 Checkout | Payment method tabs become a horizontal row; summary below the steps | Steps stack; stepper shows labels for the current step only; review items as thumbnail + name + meta with quantity and total on a second line; Place order full width | `store-checkout.html` |
+| 16 | P-S08 Order | — | Shipment tracker vertical; status tiles and lookup form stack | `store-order.html` |
+| 17 | P-S09 Account | — | "Account menu" button (shows the current section) opens the section menu as a panel; tables scroll inside cards | `store-account.html` |
+| 18 | P-S04, P-S10–P-S13 | Two-column layouts stack | Forms one column; request stepper and tables scroll sideways | respective pages |
+| 19 | Tables (all store pages) | Scroll sideways inside their card with minimum widths by column count (480/640/800/960 px) and per-cell minimums, so text is never squeezed | same | shared CSS |
+| 20 | Images and banners | Keep aspect ratio; crops follow the frame | same | shared CSS |
 
 ## 3. Design system — `frontend/design-system/`
 

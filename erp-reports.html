@@ -59,6 +59,66 @@
     .share-bar > i { display: block; height: 100%; background: var(--series-1); }
     .note-list { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; font-size: 12.5px; color: var(--tx-2); }
     .xl-cell { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 11.5px; background: var(--bg); border: 1px solid var(--line-2); border-radius: 4px; padding: 1px 5px; }
+
+    /* Tablet and phone (≤ 980 px) — desktop layout above is unchanged */
+    @media (max-width: 980px) {
+      /* Catalogue: two tiles per row */
+      .rep-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .rep .r-foot { flex-wrap: wrap; row-gap: 6px; }
+      /* Opened report header: title block, then freshness and actions, all left-aligned */
+      .rep-head > div:first-child { flex: 1 1 100%; min-width: 0; }
+      .rep-head > div:first-child > .row { flex-wrap: wrap; row-gap: 6px; }
+      .rep-head > .col { flex: 1 1 100%; min-width: 0; align-items: flex-start !important; }
+      .rep-head .fresh { align-items: flex-start; text-align: left; }
+      .rep-head > .col .row { justify-content: flex-start; }
+      .state-bar { flex-wrap: wrap; row-gap: 8px; }
+      /* Chart and definitions stack so the chart is drawn at the full card width */
+      .rep-main { grid-template-columns: minmax(0, 1fr); }
+      .rep-main .card-head { flex-wrap: wrap; row-gap: 10px; }
+      .rep-main .card-head > div:first-child { flex: 1 1 260px; min-width: 0; }
+      /* Export rules and recent exports stack */
+      #exports { grid-template-columns: minmax(0, 1fr) !important; }
+    }
+
+    /* Phone (≤ 760 px) */
+    @media (max-width: 760px) {
+      .rep-grid { grid-template-columns: minmax(0, 1fr); }
+      .card-head > .input-icon { flex: 1 1 100%; width: 100% !important; }
+      #rep-groups > .ml-auto { flex: 1 1 100%; margin-left: 0; }
+      .rep-open-bar { margin-top: 20px; }
+      .rep-open-bar .ot:not(.ghost) { flex: none; }
+      .rep-open-bar .ot.ghost { min-width: 0; line-height: 1.3; }
+      .rep-head { gap: 12px; padding: 14px 16px 12px; }
+      .rep-head h2 { font-size: 18px; }
+      .rep-filters { padding: 12px 16px; }
+      .rep-filters .seg { flex: 1 1 auto; }
+      .rep-filters .seg > button { flex: 1 1 auto; }
+      .rep-filters .select { flex: 1 1 120px; min-width: 0; }
+      .rep-body { padding: 12px 12px 16px; }
+      /* Preview-state and tax switches: full-width rows, all options visible */
+      .state-bar > .upper { flex: 1 1 100%; }
+      #state { display: grid; grid-template-columns: repeat(4, auto); flex: 1 1 100%; }
+      #state > button { padding-left: 7px; padding-right: 7px; }
+      .state-bar > .ml-auto { margin-left: 0; }
+      /* Chart grouping: its own row beside the ⓘ, all four options visible */
+      .rep-main .card-head > .row { flex: 1 1 100%; }
+      #groupby { display: grid; grid-template-columns: repeat(4, auto); flex: 1 1 calc(100% - 40px); overflow: visible; }
+      #groupby > button { padding-left: 8px; padding-right: 8px; }
+      /* Daily trend on a narrow chart: keep the first, middle and last date on the axis so labels never overlap */
+      #chart svg text.ax-label[text-anchor="middle"]:not(:nth-child(4 of text.ax-label[text-anchor="middle"])) { display: none; }
+      /* Date-basis strip: one line of five chips that wraps only on very narrow screens */
+      .date-basis { display: flex; flex-wrap: wrap; }
+      .date-basis span { flex: 1 1 auto; padding: 4px 5px; }
+      .note-list li { overflow-wrap: anywhere; }
+    }
+
+    /* Small phones (≤ 420 px) */
+    @media (max-width: 420px) {
+      #state, #groupby { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      #state > button { white-space: normal; line-height: 1.25; }
+      .defs dd, .date-basis { margin-left: 0; }
+      .date-basis span { padding: 4px 4px; }
+    }
   </style>
 </head>
 <body data-app="erp" data-page="reports">
@@ -503,7 +563,7 @@ TX.ready(() => {
     } else {
       $("#ch-title").textContent = `Net sales by ${DATA[group].title}`;
       const rows = rowsFor();
-      TX.charts.hbar(host, { title: `Net sales by ${DATA[group].title}`, seriesName: `Net sales (${tl})`, labelHeader: DATA[group].label, labelWidth: 168, format: (v) => TX.fmtK(Math.round(v)),
+      TX.charts.hbar(host, { title: `Net sales by ${DATA[group].title}`, seriesName: `Net sales (${tl})`, labelHeader: DATA[group].label, labelWidth: matchMedia("(max-width: 760px)").matches ? 132 : 168, format: (v) => TX.fmtK(Math.round(v)),
         items: rows.map((r) => ({ label: r.k.replace("Refurbished · ", "Refurb "), value: tax === "in" ? r.net * (1 + GST) : r.net })) });
     }
   }

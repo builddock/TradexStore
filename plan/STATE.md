@@ -12,9 +12,9 @@ the codebase and passing tests win, then `TASKS.md`; fix this file to match.
 | Current phase | **0 — Discovery & proof** |
 | Current stage | 0 |
 | Current task | — (none in progress). Next eligible: **T-0-M01-03** Discovery questionnaire & next-meeting pack |
-| Last session | 2026-09-28 — ERP/vendor mockup: contextual help (ⓘ) and guided workflows (user request) |
+| Last session | 2026-09-28 — ERP/vendor mockup made responsive (tablet · phone; desktop unchanged) and plan documented (user request) |
 | Application code present | No (`frontend/`, `backend/`, `infra/`, `tests/` not yet created) |
-| UI prototype | Mockup v0.1 (32 screens) at repo root — **awaiting client sign-off (D-049)**. Storefront pages responsive (desktop · tablet · phone) since 2026-09-27; Phase 1 mobile scope is D-223. ERP workspace and vendor portal have contextual help (ⓘ, help panel, glossary) and 8 operational ERP pages have guided workflows since 2026-09-28 (D-224) |
+| UI prototype | Mockup v0.1 (32 screens) at repo root — **awaiting client sign-off (D-049)**. Storefront pages responsive (desktop · tablet · phone) since 2026-09-27; Phase 1 mobile scope is D-223. ERP workspace and vendor portal have contextual help (ⓘ, help panel, glossary) and 8 operational ERP pages have guided workflows since 2026-09-28 (D-224). ERP and vendor pages responsive (tablet · phone, desktop unchanged) since 2026-09-28; Phase 1 scope is D-226 |
 | Blocking decisions for Phase 1A start | D-001 (operational core), D-003 (storefront framework), D-004 (staff UI), D-005 (hosting), D-049 (UI sign-off) — see `DECISIONS.md` |
 
 ## 2. Task counts
@@ -111,8 +111,8 @@ Open decisions blocking the most tasks:
 | 6 | 2026-09-27 | **Cross-stage notes** — T-1A.8-M08-07 internal notes need `E-internal_note` (1A.9) and D-134; T-1A.8-M08-09 bulk message needs the 1A.13 notification core (D-145); T-1A.14-M17-11 Export button needs API-M18-03 (1A.15); supplier-RMA drafts only after 1A.11/1A.12; media backup part of T-1A.1-M26-02 verified in 1A.4 | plan | OPEN (handled inside the task blocks) |
 | 7 | 2026-09-27 | **Minor document inconsistencies** — invitation-expiry decision cited as D-040 in `07` but D-083 in `03`/`11`; `11` §9.5/§12.2 still list AG-02/AG-03 (now API-M24-10/-11); `12-phases.md` §3/§10 initial status counts are pre-D-210 (status.py is authoritative); API-M14-55 roles differ between `06`/`07` and `04c`; vendor nav badges source API-M14-03 (`04c`) vs API-M18-15 (`06`) | plan | OPEN (low) |
 | 8 | 2026-09-28 | **Mockup sample-data inconsistencies** found while writing the ERP help (left unchanged — samples only): P-E02 "Awaiting payment" tile 12 vs saved view 3, "Overdue dispatch" 2 vs 1 overdue row; P-E03 "Ready to ship" count 8 vs 6 rows, Overdue tile 2 vs 1; P-E07 "2 pending changes" with one shown; P-E08 Reserved tile 186 units vs 186 holds / 412 units, "3 bins frozen" vs 1 shown; P-E09 Open POs 14 vs stage bar 19, buyer self-approval ₹1 L vs "creator can't approve"; P-E12 GST series still flags the gap the close checklist says was explained; P-E15 Thresholds callout cites "D-07" (plan: D-024); P-E02 cancel form disables every line on partly shipped orders although BP §10.1/§10.3 allow cancelling unshipped lines | mockup | OPEN — tidy in the next mockup revision (T-0-M09-03) |
-| 9 | 2026-09-28 | ERP and vendor pages still overflow sideways on phones (≈130–435 px at 390 px, unchanged from v0.1) — staff mobile is Phase 2 (04c X16, BP §5.1) | mockup | ACCEPTED (Phase 2) |
-| 10 | 2026-09-28 | P-E15 `#integrations` has a 36 px horizontal overflow at 1024 px (already in v0.1; the source could not be isolated — no element box crosses the edge) | mockup | OPEN — minor |
+| 9 | 2026-09-28 | ERP and vendor pages overflowed sideways on phones (≈130–435 px at 390 px, v0.1) | mockup | RESOLVED 2026-09-28 — responsive layouts (04b §2.24); scope D-226 |
+| 10 | 2026-09-28 | P-E15 `#integrations` has a 36 px horizontal overflow at 1024 px (already in v0.1). Cause: screen-reader-only "Done" labels in the contract checklist are absolutely positioned without a positioned ancestor; fixed for ≤ 980 px (`.table-wrap { position: relative }`); desktop left untouched on the user's instruction (no desktop changes) | mockup | OPEN — minor, desktop |
 
 ## 14. Session log (append-only; newest last)
 ### 2026-09-27 — plan creation

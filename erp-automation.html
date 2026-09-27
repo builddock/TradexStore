@@ -39,6 +39,46 @@
     .health-row > div:last-child { border-right: 0; }
     .health-row b { font-size: 18px; display: block; }
     .health-row span { font-size: 11.5px; color: var(--tx-3); }
+
+    /* Tablet and phone (≤ 980 px) — desktop and laptop unchanged */
+    @media (max-width: 980px) {
+      /* Value chart first, then "Health right now", each full width */
+      .top-grid { grid-template-columns: minmax(0, 1fr); }
+      /* Failed-job evidence: timeline above the request / response record */
+      #ev-88213 > .grid { grid-template-columns: minmax(0, 1fr) !important; }
+      /* Tables scroll sideways; wordy columns keep a readable width */
+      #rules-body td:last-child { min-width: 180px; }
+      #runs-tbl td:last-child { min-width: 240px; }
+      #apr-body td.r.small { min-width: 140px; }
+    }
+
+    /* Phone (≤ 760 px) */
+    @media (max-width: 760px) {
+      /* Formula on its own line, the time-study note under it */
+      #ch-value + .row { flex-wrap: wrap; row-gap: 8px; }
+      #ch-value + .row > .formula { flex: 1 1 100%; overflow-wrap: anywhere; }
+      #ch-value + .row > .small { max-width: none !important; }
+      .health-row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .health-row > div { padding: 10px 12px; }
+      /* Rule drawer: badges wrap, the kill-switch button drops under its text, definitions read label-above-value */
+      #d-rule .drawer-head .row { flex-wrap: wrap; row-gap: 6px; }
+      .killbox { flex-wrap: wrap; row-gap: 10px; }
+      .killbox > .grow { flex: 1 1 calc(100% - 48px); }
+      .killbox > .btn { margin-left: 48px; }
+      #dr-spec, #dr-spec tbody, #dr-spec tr, #dr-spec th, #dr-spec td { display: block; width: auto; }
+      #dr-spec th { border-bottom: 0; padding-bottom: 2px; }
+      #dr-spec td { padding-top: 4px; }
+    }
+
+    /* Small phones (≤ 420 px) */
+    @media (max-width: 420px) {
+      .page-head .actions > .badge { white-space: normal; height: auto; min-height: 22px; padding-top: 2px; padding-bottom: 2px; }
+      /* Health figures as a short list: value, then label */
+      .health-row { grid-template-columns: minmax(0, 1fr); }
+      .health-row > div { display: flex; align-items: baseline; gap: 10px; padding: 9px 16px; border-right: 0; border-bottom: 1px solid var(--line-2); }
+      .health-row > div:last-child { border-bottom: 0; }
+      .health-row b { flex: 0 0 44px; font-size: 16px; }
+    }
   </style>
 </head>
 <body data-app="erp" data-page="automation">

@@ -111,7 +111,7 @@ D-048, D-078).
 | 12 | Live refresh of queues, inbox, scan station and notification bell follows D-146 (no polling interval is invented) | D-146 | REQUIRES_DECISION |
 | 13 | Money comes from the API in minor units/fixed decimal and is displayed in INR with an explicit tax basis (incl./excl. GST) | BP §8.1, §14.4; D-059, D-104, D-016 | DOCUMENTED · REQUIRES_DECISION (D-104, D-016) |
 | 14 | Business dates and times are displayed in the business-day timezone | D-124 | REQUIRES_DECISION |
-| 15 | Every UI item includes loading, empty, error, desktop/laptop viewport and accessibility states | BP §22.5; D-051 | DOCUMENTED |
+| 15 | Every UI item includes loading, empty, error, desktop/laptop viewport and accessibility states. Tablet/phone layouts exist in the mockup since 2026-09-28 (§2.24); whether they are Phase 1 acceptance criteria is D-226 | BP §22.5; D-051; D-226 | DOCUMENTED · tablet/phone REQUIRES_DECISION (D-226) |
 | 16 | Mockup sample values (names, prices, IDs, windows, thresholds, provider names, hours) are not requirements | 00-conventions §1.1 | DOCUMENTED |
 | 17 | Prototype toolbar, "Phase notes" annotations (`data-anno`) and `index.html` are not product features | 00-conventions §1.1 | DOCUMENTED |
 | 18 | Mockup toasts simulate outcomes; the product renders the actual API response (result, approval request, error envelope with `correlation_id`) | 06-api §1.7; D-080 | DOCUMENTED |
@@ -263,6 +263,72 @@ Guidance-related additions on the operational screens; each keeps every v0.1 fea
 | P-E12 | New read-only drawer `d-um` for an unmatched reconciliation item: what it means, how to resolve it, the action and a link to the related tab | Resolution texts in MK are illustrative; real matching rules per D-011/D-012 (finance) |
 | P-E02, P-E06, P-E08, P-E12 and others | Layout: detail headers, button rows and card footers wrap at laptop widths; wide tables inside scroll wrappers; stacked grids on tablets | No horizontal page overflow at 1024–1440 px on the changed tabs |
 
+
+### 2.24 Responsive layouts — ERP workspace and vendor portal (MOCKUP since 2026-09-28 · Phase 1 scope D-226)
+
+Added at the user's request. **Desktop and laptop (≥ 981 px) are unchanged** (verified pixel-identical against the
+previous mockup); the rows below apply at tablet (761–980 px) and phone (≤ 760 px) widths. Nothing is removed or hidden
+at small widths — wide content scrolls inside its own container. Scope for Phase 1: D-226; implementation tasks
+T-1A.16-M24-07 (ERP) and T-1B.1-M14-17 (vendor), both CONDITIONAL. MK: `assets/tradex.css` block "Workspace
+responsive", `assets/tradex.js` `buildWorkspaceShell` (menu/search buttons), `wrapTables`, `TX.openSheet`; page-level
+rules in each page's `<style>` inside `@media (max-width: 980px | 760px | 420px)`.
+
+**Shared behaviour**
+
+| # | Element | Tablet (761–980 px) | Phone (≤ 760 px) | Notes |
+|---|---|---|---|---|
+| 1 | Sidebar / menu | Becomes a slide-in panel (`#ws-side`, max 300 px / 86 vw) opened by a ☰ button at the left of the top bar; close button in the panel | same | Uses the shared off-canvas pattern: `role="dialog"`, `aria-modal`, focus moves into the panel, focus trap, `Esc` and backdrop close, focus returns to ☰, `aria-expanded`; closes automatically when the window grows past 980 px. Navigation items, counts, organisation card and system-health card unchanged |
+| 2 | Top bar | Same controls; search box flexible, `Ctrl K` hint hidden; account shows the avatar only | Search becomes an icon button opening a full-width search row under the bar (`Esc` closes); location scope and New / Submit product become icon buttons with accessible names; notifications, help, account icons | Dropdown menus (scope, New, notifications, account) open full width under the bar on phones |
+| 3 | Page head | Title, subtitle and actions wrap | Title 21 px; action buttons wrap into full rows | — |
+| 4 | KPI tiles | `.g-6` → 3 per row, `.g-3/4/5` → 2 | 2 per row, compact (sparkline hidden, footer wraps) | Values unchanged |
+| 5 | Tabs, saved views | Tab bars scroll sideways (active tab scrolled into view); "About this tab" stays pinned at the end | same, icon only | — |
+| 6 | Tables | Every data table sits in a sideways-scrolling container (bare tables are wrapped automatically, except tables holding drop-down menus); minimum table width by column count (600/760/920/1060 px) and cell minimums (text 136 px, numbers 96 px); edge shadows show more content to the side | Cell padding 10 px | No column is hidden; the page itself never scrolls sideways |
+| 7 | Toolbars, filters, bulk bar | Search fields take a full row; chips, selects and buttons wrap | same | — |
+| 8 | Status pipelines / stage bars | One line, scroll sideways (stage min 116 px) | same | — |
+| 9 | List + detail (`.split`, `.ed-grid`, page-specific two-pane layouts) and side panels | Stack: list (max 420 px tall, own scroll) above the selected record, side panels below the main content | same | Selecting a list item updates the detail below |
+| 10 | Support inbox | Conversation list, thread and customer panel stack (the customer panel, hidden 981–1200 px as before, is shown below the thread) | same | — |
+| 11 | Drawers | Full width (max 760 px); head wraps | Padding 16 px; footer actions wrap | — |
+| 12 | Modals | Centred | Bottom sheets (max 92 vh, sticky head and foot) | shared with the storefront |
+| 13 | Exception rows | Actions move under the text | One column: severity, text, then actions | — |
+| 14 | Diff views | Field name above old → new | same | — |
+| 15 | "How it works" strips (§2.21 #6) | 3 steps per row | Swipeable row of step cards (78 % width, snap) | — |
+| 16 | Help panel (§2.21 #2) | Side panel | Bottom sheet (modal, focus trap) | — |
+| 17 | Scan boxes, forms | Two-column forms stay two columns where they fit | One column; scan input takes a full row; form fields use 16 px text (prevents iOS zoom on focus) | — |
+| 18 | Charts | Drawn at the host's width; redrawn when the host width changes by ≥ 8 px (window resize, device rotation) | Chart hosts take the full card width; long date axes thinned where labels would overlap (values stay in tooltip and "Table view") | `TX.charts` `followWidth` |
+| 19 | Drop-down menus | A drop-down that is the first page action opens to the right | Top-bar menus open full width under the bar; card-header selects never exceed the screen width | — |
+| 20 | Screen-reader-only text in tables | Kept inside the table's scroll box (`.table-wrap { position: relative }`) so it cannot widen the page | same | — |
+| 21 | Drawer headers | Title block shrinks, badges wrap; close button stays top-right | same; sticky drawer tab bars follow the 16 px phone padding | — |
+
+**Per-screen behaviour** (in addition to the shared rows; page rules live in each page's `<style>` inside
+`@media (max-width: 980px | 760px | 420px)` and never apply on desktop)
+
+| Page | MK file | Tablet / phone behaviour | Markup / script changes |
+|---|---|---|---|
+| P-E01 | `erp-dashboard.html` | Needs attention first; approvals and order pipeline side by side on tablets, stacked on phones; charts full width; stock health and automation side by side with recent activity below (tablet); top-products product column ≥ 260 px in its scrolling table; line-chart date labels thinned on phones | CSS only |
+| P-E02 | `erp-orders.html` | KPI sparklines drop under long deltas; order drawer header badges wrap with Copy link and close top-right; drawer tabs edge-to-edge and sticky on phones; label/value panels use the shared label column; assisted-order results on two lines (title, then price/availability + Add) | CSS only |
+| P-E03 | `erp-fulfilment.html` | Scan-station comparison: check name row, then allocated / scanned / ✓ on phones; Problems filter scrolls sideways, severity above the title, actions below; scan log two lines per entry | CSS only |
+| P-E04 | `erp-returns.html` | Case drawer: 7-step bar as two rows (4 + 3) on phones so the current step stays visible; photos 3 per row with the customer description below; each inspection result beside its check with the note underneath; sticky drawer tabs follow the 16 px phone padding; decision cards' headers/footers wrap | CSS only |
+| P-E05 | `erp-support.html` | Inbox stacks: conversation list (max 360 px, scrolls) → thread (messages scroll inside, composer stays close) → customer panel (sections two columns on tablets); thread header on two lines on phones, Send pinned right; answer library one column; draft-basket item column ≥ 240 px; availability menu opens to the right | CSS only |
+| P-E06 | `erp-catalog.html` | All diffs: field name row above current → proposed; steppers show every label on tablets, only the current label on phones; "Price entry" switch as two equal halves; import results filter scrolls with "Retry failed rows" below | CSS only |
+| P-E07 | `erp-pricing.html` | Approval diff: field name row, then live and proposed side by side; tier editor shows cost and floor on a second line; descriptive table columns ≥ 180 px | CSS only |
+| P-E08 | `erp-inventory.html` | Transfer-line and supplier-feed columns get readable minimum widths inside the scrolling tables | CSS only |
+| P-E09 | `erp-purchasing.html` | Three-way match grid and duplicate-invoice grid scroll sideways inside their card with minimum column widths (like tables) | CSS only |
+| P-E10 | `erp-customers.html` | Merge review: field name row with Record A / Record B / After merge in three columns (tablet), one column with small A / B / After labels (phone); business-account header and status labels wrap; summary strips two per row on phones; dealer application stacks (application + decision, then checklist; buttons under their text); Customer 360 drawer lists put status under the text | CSS only |
+| P-E11 | `erp-vendors.html` | Applications/Submissions: list above the detail; on phones checks and business model above the decision record; check rows put the action/field name under the description; Marketplace prerequisites: number, then title, owner, status stacked; settlement preview table scrolls sideways but stays non-interactive; vendor drawer header wraps | CSS only |
+| P-E12 | `erp-finance.html` | Daily-close checklist keeps 5 columns with a wider status column on tablets, 3 columns on phones; wider minimums for note/item/refund-state columns; close header padding follows the phone padding | CSS only |
+| P-E13 | `erp-reports.html` | Report catalogue 4 → 2 → 1 per row; report header badges, freshness and actions wrap; chart and definitions stack (chart full width), exports sections stack; filter selects two per row and the period switch stretches; preview-state and grouping switches become grids (2 × 2 at ≤ 420 px); line-chart date labels thinned to first/middle/last on phones (all values in tooltip and Table view) | CSS + one script value: bar-chart label column 132 px instead of 168 px on phones (`matchMedia("(max-width: 760px)")`) |
+| P-E14 | `erp-automation.html` | Value chart above "Health right now"; health figures 3-up, then a value-and-label list at ≤ 420 px; formula on its own line; failed-job timeline above the HTTP record (which scrolls for long URLs); rule drawer definitions label-above-value on phones | CSS only |
+| P-E15 | `erp-admin.html` | Company details 3 → 2 → 1 columns; Delegation one column; System: environment and backup cards full width, Production/Staging stacked on phones, severity table above the maintenance calendar; permission matrix and contract checklist scroll sideways with a readable first column; diffs as field row above before/after | CSS only |
+| P-V01 | `vendor-dashboard.html` | Action items then scorecard, submissions then announcements (one column); "Coming up" and "What you can see" side by side on tablets with the marketplace preview full width below, one column on phones; account card: logo + details, preview-state switch on its own row; action items read severity → text → button; score rows `1fr 136px` | CSS only |
+| P-V02 | `vendor-products.html` | Submit form one column with the side panel (checklist, "What happens next", permitted scope) below it — checklist and timeline side by side on tablets; section headers keep number + title together; grade cards 3 per row (tablet) / stacked (phone); rubric on phones: each criterion as a heading row with Grade A / Grade B cells under it; photos 4–5 per row (tablet) / 2 (phone); sticky action bar stays sticky, status line first then full-width buttons (phone); bulk upload: template + upload cards side by side with the API card below (tablet), one column and result counts 2×2 (phone); live-vs-pending comparison as field name above old → new | CSS only |
+| P-V03 | `vendor-availability.html` | Status strip 3 per row (feed clock spans two) on tablet, 2 per row on phones (feed clock full width); feed tab: freshness card above the usage rules, freshness states stack on phones; CSV/API sub-tabs one column; pilot task cards: icon · details · actions (tablet) → actions as full-width buttons under the details, customer block below (phone); PO and RTV drawer headers: badges wrap, close button top-right; evidence photos 2 per row | CSS only |
+| P-V04 | `vendor-account.html` | Identity card: Tradex contacts under the business facts; card headers wrap (title ≥ 240 px, button below); Users, Marketplace and Bank tabs stack (users → role matrix → security; sample statement → flow → decisions; current account + history → change request); "SAMPLE" watermark scales; bank blocks 2 × 2 (label above value) on phones; wider minimums for document/terms name columns | CSS only |
+
+Verification of the mockup (2026-09-28): every ERP and vendor page crawled at 390 and 768 px in every state (tabs,
+saved views, modals, drawers and their tabs, menu panel, phone search, notifications) — no horizontal page overflow,
+no squeezed, spilling or clipped content; desktop and laptop pages pixel-compared at 1440/1280/1024 px against the
+previous mockup in every tab.
+
 ---
 
 ## 3. Workspace shell (MK `assets/tradex.js` `buildWorkspaceShell("erp")`)
@@ -294,7 +360,7 @@ Guidance-related additions on the operational screens; each keeps every v0.1 fea
 
 | # | Element | MK content | Behaviour | → API | Label | Status |
 |---|---|---|---|---|---|---|
-| 1 | Global search | Input placeholder "Search orders, SKUs, serials, customers, POs…", `Ctrl K` hint | Keyboard shortcut focuses the input; results grouped by type (order, SKU, serial, customer, PO, product) with title/subtitle/link; **only object types and records the user may see** (object-level authorisation, location scope); serial/manufacturer-serial lookup reuses API-M06-06 semantics; empty result state "No matches in your scope" | API-M21-03 (+ API-M06-06 for serial scans) | MOCKUP; BP §18.2, §19.1; BR-M21-07 | NOT_STARTED |
+| 1 | Global search | Input placeholder "Search orders, SKUs, serials, customers, POs…", `Ctrl K` hint; on phones an icon button opens it as a full-width row (§2.24 #2) | Keyboard shortcut focuses the input; results grouped by type (order, SKU, serial, customer, PO, product) with title/subtitle/link; **only object types and records the user may see** (object-level authorisation, location scope); serial/manufacturer-serial lookup reuses API-M06-06 semantics; empty result state "No matches in your scope" | API-M21-03 (+ API-M06-06 for serial scans) | MOCKUP; BP §18.2, §19.1; BR-M21-07 | NOT_STARTED |
 | 2 | Location scope switcher | Button "All locations" ▾; menu "Scope": All locations, then each location with type icon (warehouse/branch) and code | Lists locations the user may see (API-M03-02 is `loc`-scoped; full list for R-owner/R-ops_admin). Semantics — global filter vs default for page filters, persistence per user, availability of "All locations" for branch-scoped roles, relation to page-level location filters on P-E01/P-E02/P-E03/P-E08 — not specified | API-M03-02 | MOCKUP; BP §3.1, §9.5; D-029 | REQUIRES_DECISION (D-170, D-029) |
 | 3 | "New" menu (primary) | Assisted order → P-E02 `#assisted`; Purchase order → P-E09 `#new-po`; Goods receipt (GRN) → P-E09 `#receive`; Stock transfer → P-E08 `#transfers` (MK opens the tab; the create form is `m-transfer`); Product draft → P-E06 `#editor`; Bulk import → P-E06 `#import` | Each item shown only if the user may perform the create operation; the target screen performs the call (server re-authorises) | via targets: API-M10-18, API-M07-04, API-M07-09, API-M06-13, API-M04-16, API-M04-30 | MOCKUP; BP §19.1 | NOT_STARTED |
 | 4 | Notifications (bell + unread pip) | Menu (360 px): "Notifications", "Mark all read"; items with icon + text linking to the relevant screen (samples: payment captured not confirmed → P-E12; cycle-count variance → P-E08#counts; vendor submissions waiting → P-E11; courier sync failed → P-E14) | Lists own in-app notifications (unread first); each item links to its entity; "Mark all read" marks all; routine notifications stay in staff queues, owner receives digest + urgent material exceptions only; refresh per D-146; staff notification events per D-058 | API-M20-01, API-M20-02 | MOCKUP; BP §12.5, §12.3 (Notification: recipient, urgency, dedup, frequency cap) | REQUIRES_DECISION (D-146, D-058) |

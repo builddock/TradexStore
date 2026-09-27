@@ -54,6 +54,35 @@
     .drawer .tabs { margin: 0 -22px; padding: 0 12px; position: sticky; top: -22px; background: #fff; z-index: 3; }
     .drawer-foot { justify-content: space-between; }
     #rd-next { margin-top: 12px; }
+    /* Phones: the RMA drawer reflows; desktop and tablet keep the layout above */
+    @media (max-width: 760px) {
+      /* The sticky drawer tab bar follows the drawer's 16 px phone padding */
+      .drawer .tabs { margin: 0 -16px; padding: 0 8px; top: -16px; }
+      /* Drawer header: RMA number, type and review flag wrap; the close button stays top-right */
+      #d-rma .drawer-head > .row-between > div:first-child { flex: 1 1 0; min-width: 0; }
+      #d-rma .drawer-head .row { flex-wrap: wrap; row-gap: 6px; }
+      /* 7-step case bar: two rows (4 + 3) so every label and the current step stay in view */
+      #rd-steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px 4px; }
+      #rd-steps:not(:has(> :nth-child(4))) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      /* Serial match: three compact columns; long serials may break */
+      .m3 > div { padding: 10px; min-width: 0; }
+      .m3 .v { overflow-wrap: anywhere; }
+      /* Customer photos: three per row; the customer's description takes the full row below */
+      .photos { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .photos > .panel { padding: 10px 12px; }
+      .photos > .panel:last-child { grid-column: 1 / -1; }
+      /* Inspection list: check and result on one line, the note underneath */
+      .insp li { grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; padding: 9px 12px; }
+      .insp li > :nth-child(3) { grid-column: 1 / -1; }
+      .insp li > :nth-child(3):empty { display: none; }
+      /* Decision cards: status and buttons wrap instead of squeezing the title */
+      .decide .dh, .decide .df { flex-wrap: wrap; }
+      .decide .dh > div:first-child { flex: 1 1 160px; min-width: 0; }
+    }
+    @media (max-width: 420px) {
+      .decide .dh, .decide .db, .decide .df { padding-left: 12px; padding-right: 12px; }
+      .decide .rsteps { gap: 2px; }
+    }
   </style>
 </head>
 <body data-app="erp" data-page="returns">
