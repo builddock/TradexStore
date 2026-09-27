@@ -73,49 +73,49 @@
   <div class="page-head">
     <div>
       <div class="crumbs"><a href="vendor-dashboard.html">Vendor portal</a><i data-icon="chevron-right"></i><span>Availability &amp; orders</span></div>
-      <h1>Availability &amp; orders</h1>
+      <h1 data-help="page">Availability &amp; orders</h1>
       <p class="sub">Declare what you hold, confirm Tradex purchase orders, fulfil pilot tasks and resolve returns — for RenewTech (V-022) only.</p>
     </div>
     <div class="actions">
       <button class="btn" data-toast="Downloaded renewtech_availability_2026-09-26.csv (38 offers)"><i data-icon="download"></i> Export current feed</button>
-      <button class="btn btn-vendor" data-goto="feed" data-focus="#feed-form"><i data-icon="refresh"></i> Update availability</button>
+      <button class="btn btn-vendor" data-goto="feed" data-focus="#feed-form" data-help="act-update"><i data-icon="refresh"></i> Update availability</button>
     </div>
   </div>
 
   <!-- Status strip -->
   <section class="card strip" data-anno="1B · §9.7 Freshness deadline per supplier">
     <div id="strip-fresh">
-      <div class="s-l">Availability feed</div>
+      <div class="s-l" data-help="strip-feed">Availability feed</div>
       <div class="row gap-8"><span class="s-n text-warn countdown" data-countdown="21599" data-fmt="clock">05:59:59</span><span class="badge b-warn">until stale</span></div>
       <div class="small muted">Updated 25 Sep 16:45 · CSV</div>
     </div>
-    <div><div class="s-l">Offers declared</div><div class="s-n">38</div><div class="small muted">214 supplier-held units</div></div>
-    <div><div class="s-l">POs awaiting you</div><div class="s-n text-warn">1</div><div class="small muted">PO-2026-0192 · by 18:00</div></div>
-    <div><div class="s-l">Pilot tasks due</div><div class="s-n">2</div><div class="small muted">1 needs confirmation &lt; 4 h</div></div>
-    <div><div class="s-l">Returns awaiting you</div><div class="s-n">1</div><div class="small muted">RTV-0031 · due 28 Sep</div></div>
+    <div><div class="s-l" data-help="strip-offers">Offers declared</div><div class="s-n">38</div><div class="small muted">214 supplier-held units</div></div>
+    <div><div class="s-l" data-help="strip-pos">POs awaiting you</div><div class="s-n text-warn">1</div><div class="small muted">PO-2026-0192 · by 18:00</div></div>
+    <div><div class="s-l" data-help="strip-tasks">Pilot tasks due</div><div class="s-n">2</div><div class="small muted">1 needs confirmation &lt; 4 h</div></div>
+    <div><div class="s-l" data-help="strip-returns">Returns awaiting you</div><div class="s-n">1</div><div class="small muted">RTV-0031 · due 28 Sep</div></div>
   </section>
 
   <div data-tabset class="mt-16">
     <div class="tabs">
-      <button class="tab active" data-tab="feed"><i data-icon="package"></i> Availability feed</button>
-      <button class="tab" data-tab="pos"><i data-icon="clipboard"></i> Purchase orders <span class="count">1 to confirm</span></button>
-      <button class="tab" data-tab="tasks"><i data-icon="truck"></i> Fulfilment tasks <span class="badge b-info sq" style="height:18px;font-size:10.5px">Pilot</span> <span class="count">2</span></button>
-      <button class="tab" data-tab="returns"><i data-icon="undo"></i> Returns to vendor <span class="count">3 open</span></button>
+      <button class="tab active" data-tab="feed" data-help="tab-feed"><i data-icon="package"></i> Availability feed</button>
+      <button class="tab" data-tab="pos" data-help="tab-pos"><i data-icon="clipboard"></i> Purchase orders <span class="count">1 to confirm</span></button>
+      <button class="tab" data-tab="tasks" data-help="tab-tasks"><i data-icon="truck"></i> Fulfilment tasks <span class="badge b-info sq" style="height:18px;font-size:10.5px">Pilot</span> <span class="count">2</span></button>
+      <button class="tab" data-tab="returns" data-help="tab-returns"><i data-icon="undo"></i> Returns to vendor <span class="count">3 open</span></button>
     </div>
 
     <!-- ===================== FEED ===================== -->
     <div class="tab-panel active" data-panel="feed">
       <div class="grid mt-16" style="grid-template-columns:minmax(0,1.35fr) minmax(0,1fr)">
         <div class="card" data-anno="1B · T14 Stale feed pauses delivery promises">
-          <div class="card-head"><div><h3>Feed freshness</h3><div class="sub">Freshness window agreed for RenewTech: 24 hours (terms v3 §6.1)</div></div>
+          <div class="card-head"><div><h3 data-help="fresh">Feed freshness</h3><div class="sub">Freshness window agreed for RenewTech: 24 hours (terms v3 §6.1)</div></div>
             <div class="seg" id="fresh-seg" aria-label="Preview feed state"><button class="active" data-s="fresh">Fresh</button><button data-s="stale">Stale</button><button data-s="susp">Suspended</button></div></div>
           <div class="card-body col gap-16" id="fresh-body"></div>
         </div>
         <div class="card" data-anno="1B · R08 Supplier stock is never Tradex stock">
-          <div class="card-head"><h3>How your availability is used</h3><span class="badge b-vendor">Policy</span></div>
+          <div class="card-head"><h3 data-help="rules">How your availability is used</h3><span class="badge b-vendor">Policy</span></div>
           <div class="card-body">
             <ul class="rules">
-              <li><i data-icon="shield"></i><div><b>Supplier stock is never counted as Tradex stock.</b> Customers see it only as “Ships in 4–6 days · partner stock” — never “In stock”.</div></li>
+              <li><i data-icon="shield"></i><div><b data-help="g.partner-stock">Supplier stock is never counted as Tradex stock.</b> Customers see it only as “Ships in 4–6 days · partner stock” — never “In stock”.</div></li>
               <li><i data-icon="warehouse"></i><div>It becomes Tradex stock only after goods are received and inspected at a Tradex warehouse (GRN + QC).</div></li>
               <li><i data-icon="layers"></i><div>Tradex holds back a safety buffer of <b>2 units</b> per offer before promising delivery.</div></li>
               <li><i data-icon="clipboard"></i><div>Quantities you confirm on a PO are deducted from your declared availability automatically.</div></li>
@@ -127,25 +127,25 @@
       </div>
 
       <div class="card mt-16" id="feed-form" data-anno="1B · §11.3 Routine refresh auto-accepted within bounds">
-        <div class="card-head"><div><h3>Update availability</h3><div class="sub">Three ways in — all go through the same validation and freshness clock</div></div></div>
+        <div class="card-head"><div><h3 data-help="feed-update">Update availability</h3><div class="sub">Three ways in — all go through the same validation and freshness clock</div></div></div>
         <div data-tabset>
           <div class="tabs pills" style="padding:12px 20px 0">
-            <button class="tab active" data-tab="m-form"><i data-icon="edit"></i> Edit in portal</button>
-            <button class="tab" data-tab="m-csv"><i data-icon="file"></i> CSV upload</button>
-            <button class="tab" data-tab="m-api"><i data-icon="key"></i> API</button>
+            <button class="tab active" data-tab="m-form" data-help="tab-m-form"><i data-icon="edit"></i> Edit in portal</button>
+            <button class="tab" data-tab="m-csv" data-help="tab-m-csv"><i data-icon="file"></i> CSV upload</button>
+            <button class="tab" data-tab="m-api" data-help="tab-m-api"><i data-icon="key"></i> API</button>
           </div>
 
           <div class="tab-panel active" data-panel="m-form">
             <div class="table-toolbar mt-8">
               <div class="input-icon" style="width:260px"><i data-icon="search"></i><input class="input input-sm" id="f-q" placeholder="Search your code or product" aria-label="Search offers"></div>
               <span class="small muted">Showing 9 of 38 offers · edited rows are highlighted</span>
-              <button class="btn btn-sm ml-auto" id="confirm-all" data-anno="1B · Confirm unchanged also restarts the clock"><i data-icon="check-circle"></i> Confirm all unchanged</button>
+              <button class="btn btn-sm ml-auto" id="confirm-all" data-help="confirm-all" data-anno="1B · Confirm unchanged also restarts the clock"><i data-icon="check-circle"></i> Confirm all unchanged</button>
             </div>
             <div class="table-wrap"><table class="table">
-              <thead><tr><th>Offer</th><th>Your code · confirmed</th><th class="c">Supplier-held qty</th><th class="c">Lead days</th><th>Customer sees</th><th style="min-width:190px">Check</th></tr></thead>
+              <thead><tr><th>Offer</th><th data-help="col-fcode">Your code · confirmed</th><th class="c" data-help="col-fqty">Supplier-held qty</th><th class="c" data-help="col-flead">Lead days</th><th data-help="col-fsees">Customer sees</th><th style="min-width:190px" data-help="col-fcheck">Check</th></tr></thead>
               <tbody id="feed-body"></tbody>
             </table></div>
-            <div class="card-foot"><span class="small muted" id="feed-foot"></span><div class="row gap-8"><button class="btn btn-sm btn-ghost" id="feed-reset">Discard changes</button><button class="btn btn-sm btn-vendor" id="feed-save"><i data-icon="check"></i> Save &amp; refresh feed</button></div></div>
+            <div class="card-foot"><span class="small muted" id="feed-foot"></span><div class="row gap-8"><button class="btn btn-sm btn-ghost" id="feed-reset">Discard changes</button><button class="btn btn-sm btn-vendor" id="feed-save" data-help="feed-save"><i data-icon="check"></i> Save &amp; refresh feed</button></div></div>
           </div>
 
           <div class="tab-panel" data-panel="m-csv">
@@ -156,7 +156,7 @@
                 <div class="small muted">Rows for codes not in your approved offers are rejected. A file older than the last update (by <span class="mono">as_of</span>) is ignored.</div>
               </div>
               <div>
-                <h4 class="mb-8">Recent CSV uploads</h4>
+                <h4 class="mb-8" data-help="csv-recent">Recent CSV uploads</h4>
                 <div class="table-wrap"><table class="table compact">
                   <thead><tr><th>Uploaded</th><th class="r">Rows</th><th>Result</th></tr></thead>
                   <tbody>
@@ -172,7 +172,7 @@
           <div class="tab-panel" data-panel="m-api">
             <div class="card-body grid g-2" data-anno="1B · API key scoped to availability only · masked">
               <div class="col gap-12">
-                <div class="field"><label>Live API key</label>
+                <div class="field"><label data-help="api-key">Live API key</label>
                   <div class="keybox"><i data-icon="key" class="ic-sm"></i><span class="mono grow" id="api-key">rtk_live_••••••••••••••••••••7f3a</span>
                     <button class="btn btn-xs" id="key-show" aria-label="Reveal key"><i data-icon="eye"></i> Reveal</button>
                     <button class="btn btn-xs" data-toast="Key copied to clipboard · it will be cleared in 60 s" aria-label="Copy key"><i data-icon="copy"></i></button>
@@ -195,7 +195,7 @@ Idempotency-Key: <span class="s">rt-20260926-1045</span>
     { <span class="s">"code"</span>: <span class="s">"RT-LAT5420-A"</span>, <span class="s">"qty"</span>: 22, <span class="s">"lead_days"</span>: 3 },
     { <span class="s">"code"</span>: <span class="s">"RT-LG27UL-B"</span>,  <span class="s">"qty"</span>: 31, <span class="s">"lead_days"</span>: 3 } ] }</div>
                 <div class="table-wrap"><table class="table compact">
-                  <thead><tr><th>Recent calls</th><th>Result</th></tr></thead>
+                  <thead><tr><th data-help="api-calls">Recent calls</th><th>Result</th></tr></thead>
                   <tbody>
                     <tr><td class="mono small">25 Sep 16:45 · PUT · 38 items</td><td><span class="status s-ok">200 OK</span></td></tr>
                     <tr><td class="mono small">25 Sep 04:45 · PUT · 38 items</td><td><span class="status s-ok">200 OK</span></td></tr>
@@ -213,7 +213,7 @@ Idempotency-Key: <span class="s">rt-20260926-1045</span>
     <div class="tab-panel" data-panel="pos">
       <div class="callout c-info mt-16" data-anno="1A/1B · §9.3 PO confirmation → ASN with serials → GRN & QC">
         <i data-icon="info"></i>
-        <div><strong>Purchase orders are Tradex's orders to you.</strong> Confirm, partially confirm or reject each line with a reason before the confirmation deadline. Ship against an advance shipping notice (ASN) with serial numbers — Tradex receives against it (GRN) and inspects every unit before it becomes sellable.</div>
+        <div><strong data-help="po-flow">Purchase orders are Tradex's orders to you.</strong> Confirm, partially confirm or reject each line with a reason before the confirmation deadline. Ship against an advance shipping notice (ASN) with serial numbers — Tradex receives against it (GRN) and inspects every unit before it becomes sellable.</div>
       </div>
       <div class="card mt-16">
         <div class="table-toolbar">
@@ -221,7 +221,7 @@ Idempotency-Key: <span class="s">rt-20260926-1045</span>
           <span class="small muted ml-auto">Prices are your agreed supplier prices, ex-GST</span>
         </div>
         <div class="table-wrap"><table class="table">
-          <thead><tr><th>PO</th><th>Issued</th><th>Lines</th><th class="r">Value</th><th>Deliver to</th><th>Deadline</th><th>Status</th><th class="r"></th></tr></thead>
+          <thead><tr><th data-help="g.po">PO</th><th>Issued</th><th>Lines</th><th class="r">Value</th><th>Deliver to</th><th data-help="col-po-deadline">Deadline</th><th data-help="col-po-status">Status</th><th class="r"></th></tr></thead>
           <tbody id="po-body"></tbody>
         </table></div>
       </div>
@@ -231,16 +231,16 @@ Idempotency-Key: <span class="s">rt-20260926-1045</span>
     <div class="tab-panel" data-panel="tasks">
       <div class="callout c-brand mt-16" data-anno="1B pilot · §3.2 Company sale with supplier fulfilment" style="background:var(--vendor-50);border-color:#c4ebe3;color:#07463d">
         <i data-icon="truck"></i>
-        <div><strong>Supplier-fulfilment pilot · 4 SKUs · since 15 Sep 2026.</strong> Tradex sells to the customer; you ship on Tradex's behalf with Tradex's invoice and packing slip. Confirm each task within <b>4 hours</b> or it returns to Tradex for reallocation. You see only the minimum data needed to ship — the courier label carries the full address.</div>
+        <div><strong data-help="pilot">Supplier-fulfilment pilot · 4 SKUs · since 15 Sep 2026.</strong> Tradex sells to the customer; you ship on Tradex's behalf with Tradex's invoice and packing slip. Confirm each task within <b>4 hours</b> or it returns to Tradex for reallocation. You see only the minimum data needed to ship — the courier label carries the full address.</div>
       </div>
       <div class="card mt-16" style="overflow:hidden" data-anno="1B · §11.2 Minimum customer data: name, city, masked phone/PIN">
         <div class="mini-kpi">
-          <div><div class="n">96%</div><div class="l">Confirmed within 4 h · target 95%</div></div>
-          <div><div class="n">91%</div><div class="l">Handed to courier same day · target 90%</div></div>
-          <div><div class="n">23</div><div class="l">Tasks this month</div></div>
-          <div><div class="n text-warn">1</div><div class="l">Reassigned to Tradex (expired)</div></div>
+          <div><div class="n">96%</div><div class="l" data-help="tk-confirm">Confirmed within 4 h · target 95%</div></div>
+          <div><div class="n">91%</div><div class="l" data-help="tk-courier">Handed to courier same day · target 90%</div></div>
+          <div><div class="n">23</div><div class="l" data-help="tk-month">Tasks this month</div></div>
+          <div><div class="n text-warn">1</div><div class="l" data-help="tk-expired">Reassigned to Tradex (expired)</div></div>
         </div>
-        <div class="table-toolbar"><div class="seg"><button class="active">Open · 2</button><button>Shipped · 1</button><button>Expired · 1</button><button>All</button></div><span class="small muted ml-auto">Times in IST · confirmation clock pauses 21:00–08:00</span></div>
+        <div class="table-toolbar"><div class="seg"><button class="active">Open · 2</button><button>Shipped · 1</button><button>Expired · 1</button><button>All</button></div><span class="small muted ml-auto" data-help="task-clock">Times in IST · confirmation clock pauses 21:00–08:00</span></div>
 
         <div class="task">
           <span class="li-icon warn" style="width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--warn-50);color:var(--warn-tx)"><i data-icon="clock"></i></span>
@@ -248,7 +248,7 @@ Idempotency-Key: <span class="s">rt-20260926-1045</span>
             <div class="row gap-8"><span class="t-id mono">FT-0041</span><span class="status s-warn">Awaiting your confirmation</span><span class="timer"><i data-icon="clock"></i> <span class="countdown" data-countdown="8040" data-fmt="hm">2h 14m</span> left</span></div>
             <div class="row mt-8"><div data-ph="lap-dell" class="thumb"></div><div><div class="strong">1 × Dell Latitude 5420 14" · Refurbished Grade A</div><div class="small muted">RT-LAT5420-A · Tradex order TXO-10488 · promised delivery Tue, 29 Sep</div></div></div>
           </div>
-          <dl class="pii"><dt>Ship to</dt><dd>Priya N.</dd><dt>City</dt><dd>Bengaluru, Karnataka</dd><dt>Phone</dt><dd class="mono">+91 98••• ••321</dd><dt>PIN</dt><dd class="mono">560•••</dd></dl>
+          <dl class="pii"><dt data-help="task-pii">Ship to</dt><dd>Priya N.</dd><dt>City</dt><dd>Bengaluru, Karnataka</dd><dt>Phone</dt><dd class="mono">+91 98••• ••321</dd><dt>PIN</dt><dd class="mono">560•••</dd></dl>
           <div class="t-act"><button class="btn btn-sm btn-vendor" data-toast="FT-0041 confirmed · courier pickup booked for today 16:00">Confirm — can ship today</button><button class="btn btn-sm btn-danger" data-open="m-decline">Can't fulfil</button></div>
         </div>
         <div class="task">
@@ -285,12 +285,12 @@ Idempotency-Key: <span class="s">rt-20260926-1045</span>
     <div class="tab-panel" data-panel="returns">
       <div class="callout c-info mt-16" data-anno="1B · R19 Supplier RMA with evidence & resolution">
         <i data-icon="info"></i>
-        <div><strong>Returns to vendor (RTV)</strong> are raised by Tradex when a unit fails inbound QC or a warranty claim falls under your warranty. Respond within <b>3 working days</b> (terms v3 §9) with a resolution or a dispute with evidence. Customer identity is never shared — only the unit, serial and evidence.</div>
+        <div><strong data-help="rtv-rule">Returns to vendor (RTV)</strong> are raised by Tradex when a unit fails inbound QC or a warranty claim falls under your warranty. Respond within <b>3 working days</b> (terms v3 §9) with a resolution or a dispute with evidence. Customer identity is never shared — only the unit, serial and evidence.</div>
       </div>
       <div class="card mt-16">
         <div class="table-toolbar"><div class="seg" id="rtv-seg"><button class="active" data-v="open">Open · 3</button><button data-v="all">All · 4</button></div><span class="small muted ml-auto">Linked GRN / RMA references are Tradex documents</span></div>
         <div class="table-wrap"><table class="table">
-          <thead><tr><th>RTV</th><th>Source</th><th>Unit</th><th>Issue &amp; evidence</th><th>Requested</th><th>Due</th><th>Status</th></tr></thead>
+          <thead><tr><th data-help="g.rtv">RTV</th><th data-help="col-rtv-src">Source</th><th>Unit</th><th>Issue &amp; evidence</th><th data-help="col-rtv-req">Requested</th><th data-help="col-rtv-due">Due</th><th data-help="col-rtv-status">Status</th></tr></thead>
           <tbody id="rtv-body"></tbody>
         </table></div>
       </div>
@@ -301,17 +301,17 @@ Idempotency-Key: <span class="s">rt-20260926-1045</span>
   <div class="drawer" id="d-po"><div class="drawer-card wide">
     <div class="drawer-head">
       <div><div class="row gap-8"><span class="mono strong">PO-2026-0192</span><span class="status s-warn">Awaiting your confirmation</span><span class="badge b-bad"><i data-icon="clock"></i> Confirm by today 18:00</span></div>
-        <h3 class="mt-4">Purchase order from Tradex Electronics Pvt Ltd</h3><div class="small muted">Issued 26 Sep 2026 09:10 by Anita Rao (Purchasing) · 2 lines · 10 units</div></div>
+        <h3 class="mt-4" data-help="d-po">Purchase order from Tradex Electronics Pvt Ltd</h3><div class="small muted">Issued 26 Sep 2026 09:10 by Anita Rao (Purchasing) · 2 lines · 10 units</div></div>
       <button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button>
     </div>
     <div class="drawer-body col gap-16">
       <div class="grid g-2">
         <dl class="kv"><dt>Deliver to</dt><dd>Tradex Central Warehouse (WH-BLR)<div class="small muted" style="font-weight:400">Plot 22, Bommasandra Industrial Area, Bengaluru 560099</div></dd><dt>Receiving hours</dt><dd>Mon–Sat, 09:30–17:30</dd><dt>Requested ship-by</dt><dd>Fri, 2 Oct 2026</dd></dl>
-        <dl class="kv"><dt>Bill to</dt><dd>Tradex Electronics Pvt Ltd<div class="small muted mono" style="font-weight:400">GSTIN 29AAGCT4821K1Z5</div></dd><dt>Payment terms</dt><dd>Net 30 from GRN (terms v3)</dd><dt>Price basis</dt><dd>Agreed supplier prices, ex-GST</dd></dl>
+        <dl class="kv"><dt>Bill to</dt><dd>Tradex Electronics Pvt Ltd<div class="small muted mono" style="font-weight:400">GSTIN 29AAGCT4821K1Z5</div></dd><dt data-help="po-terms">Payment terms</dt><dd>Net 30 from GRN (terms v3)</dd><dt>Price basis</dt><dd>Agreed supplier prices, ex-GST</dd></dl>
       </div>
       <div class="card">
         <div class="table-wrap"><table class="table po-lines">
-          <thead><tr><th>Line</th><th class="r">Ordered</th><th>Your decision &amp; reason</th><th class="c">Confirm qty</th><th>Your ship-by</th></tr></thead>
+          <thead><tr><th>Line</th><th class="r">Ordered</th><th data-help="po-decision">Your decision &amp; reason</th><th class="c">Confirm qty</th><th data-help="po-shipby">Your ship-by</th></tr></thead>
           <tbody id="po-lines"></tbody>
           <tfoot><tr><td colspan="2">Confirmed value (ex-GST)</td><td colspan="3" class="r" id="po-total"></td></tr></tfoot>
         </table></div>
@@ -322,22 +322,22 @@ Idempotency-Key: <span class="s">rt-20260926-1045</span>
         <ul class="timeline"><li class="current"><span class="t-dot"><i data-icon="clock"></i></span><div class="t-title">Awaiting your confirmation</div><div class="t-meta">Reminder sent 26 Sep 13:00 by email &amp; WhatsApp</div></li>
           <li class="done"><span class="t-dot"><i data-icon="check"></i></span><div class="t-title">Issued by Anita Rao</div><div class="t-meta">26 Sep 09:10 · approved within buyer limit</div></li></ul></div>
     </div>
-    <div class="drawer-foot"><button class="btn btn-danger" data-open="m-reject">Reject whole PO</button><button class="btn" data-close data-toast="Draft response saved">Save draft</button><button class="btn btn-vendor" id="po-confirm"><i data-icon="check"></i> Send confirmation</button></div>
+    <div class="drawer-foot"><button class="btn btn-danger" data-open="m-reject" data-help="m-reject">Reject whole PO</button><button class="btn" data-close data-toast="Draft response saved">Save draft</button><button class="btn btn-vendor" id="po-confirm" data-help="po-send"><i data-icon="check"></i> Send confirmation</button></div>
   </div></div>
 
   <!-- RTV drawer -->
   <div class="drawer" id="d-rtv"><div class="drawer-card wide">
     <div class="drawer-head">
       <div><div class="row gap-8"><span class="mono strong">RTV-0031</span><span class="status s-warn">Awaiting your response</span><span class="badge b-warn">Due 28 Sep</span></div>
-        <h3 class="mt-4">LG 27UL550 27" 4K · Refurbished Grade B</h3><div class="small muted">Inbound QC failure · GRN-0436 (PO-2026-0183) · unit U-000842 · serial 104NTXRJK231</div></div>
+        <h3 class="mt-4" data-help="d-rtv">LG 27UL550 27" 4K · Refurbished Grade B</h3><div class="small muted">Inbound QC failure · GRN-0436 (PO-2026-0183) · unit U-000842 · serial 104NTXRJK231</div></div>
       <button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button>
     </div>
     <div class="drawer-body col gap-16">
-      <div class="callout c-bad"><i data-icon="alert-octagon"></i><div><strong>Failed inbound QC:</strong> backlight bleed in the lower-left corner exceeds Grade B limits (rubric v2.1, “minor, corners only” at 50% brightness). Unit is in Tradex quarantine — not sellable.</div></div>
-      <div><h4 class="mb-8">Evidence from Tradex QC <span class="small muted" style="font-weight:500">· Mohammed Irfan · 21 Sep 15:40</span></h4>
+      <div class="callout c-bad"><i data-icon="alert-octagon"></i><div><strong data-help="rtv-qc">Failed inbound QC:</strong> backlight bleed in the lower-left corner exceeds Grade B limits (rubric v2.1, “minor, corners only” at 50% brightness). Unit is in Tradex quarantine — not sellable.</div></div>
+      <div><h4 class="mb-8" data-help="rtv-evidence">Evidence from Tradex QC <span class="small muted" style="font-weight:500">· Mohammed Irfan · 21 Sep 15:40</span></h4>
         <div class="ev"><div data-ph="mon-setup"></div><div data-ph="mon-curved"></div><div data-ph="mon-curved2"></div><div data-ph="mon-pink"></div></div>
         <div class="small muted mt-8">4 photos · dark-screen test at 50% and 100% brightness · QC checklist PDF</div></div>
-      <div><h4 class="mb-8">Your resolution</h4>
+      <div><h4 class="mb-8" data-help="rtv-resolution">Your resolution</h4>
         <div class="grid g-2">
           <label class="res-opt"><input type="radio" name="res" checked><div><b>Send a replacement unit</b><div class="small muted">Ship within 5 working days on a new ASN</div></div></label>
           <label class="res-opt"><input type="radio" name="res"><div><b>Issue a credit note</b><div class="small muted">₹11,520 + GST against invoice RT/26-27/0398</div></div></label>
@@ -350,12 +350,12 @@ Idempotency-Key: <span class="s">rt-20260926-1045</span>
         <ul class="timeline"><li class="current"><span class="t-dot"><i data-icon="clock"></i></span><div class="t-title">Waiting for RenewTech</div><div class="t-meta">Raised 22 Sep 10:05 · 3 working days</div></li>
           <li class="done"><span class="t-dot"><i data-icon="check"></i></span><div class="t-title">Quarantined at WH-BLR</div><div class="t-meta">21 Sep 15:40 · 5 of 6 units on GRN-0436 passed</div></li></ul></div>
     </div>
-    <div class="drawer-foot"><button class="btn" data-close>Later</button><button class="btn btn-vendor" data-close data-toast="Response sent for RTV-0031 · Tradex purchasing notified">Send response</button></div>
+    <div class="drawer-foot"><button class="btn" data-close>Later</button><button class="btn btn-vendor" data-help="rtv-send" data-close data-toast="Response sent for RTV-0031 · Tradex purchasing notified">Send response</button></div>
   </div></div>
 
   <!-- Modals -->
   <div class="modal" id="m-reject"><div class="modal-card">
-    <div class="modal-head"><h3>Reject PO-2026-0192</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-head"><h3 data-help="m-reject">Reject PO-2026-0192</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
     <div class="modal-body col gap-12">
       <div class="field"><label class="req" for="rj-r">Reason</label><select class="select" id="rj-r"><option>Stock no longer available</option><option>Price has changed</option><option>Model discontinued</option><option>Quality hold on this batch</option><option>Cannot meet ship-by date</option><option>Other</option></select></div>
       <div class="field"><label for="rj-n">Details for Tradex purchasing</label><textarea class="textarea" id="rj-n" placeholder="Optional, but helps Tradex source elsewhere quickly"></textarea></div>
@@ -365,16 +365,16 @@ Idempotency-Key: <span class="s">rt-20260926-1045</span>
   </div></div>
 
   <div class="modal" id="m-asn"><div class="modal-card lg">
-    <div class="modal-head"><div><h3>Advance shipping notice · PO-2026-0189</h3><div class="small muted">10 × HP EliteBook 840 G8 14" · Grade A · ship-by 29 Sep</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-head"><div><h3 data-help="m-asn">Advance shipping notice · PO-2026-0189</h3><div class="small muted">10 × HP EliteBook 840 G8 14" · Grade A · ship-by 29 Sep</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
     <div class="modal-body">
       <div class="form-grid">
         <div class="field"><label class="req" for="asn-d">Dispatch date</label><input class="input" id="asn-d" value="28 Sep 2026"></div>
         <div class="field"><label class="req" for="asn-c">Carrier</label><select class="select" id="asn-c"><option>Blue Dart</option><option>Delhivery</option><option>Safexpress</option><option>Own vehicle</option></select></div>
-        <div class="field"><label class="req" for="asn-a">AWB / LR number</label><input class="input mono" id="asn-a" value="81234 55670"></div>
+        <div class="field"><label class="req" for="asn-a" data-help="asn-awb">AWB / LR number</label><input class="input mono" id="asn-a" value="81234 55670"></div>
         <div class="field"><label class="req" for="asn-b">Boxes</label><input class="input" id="asn-b" value="2"></div>
-        <div class="field"><label class="req" for="asn-i">Your tax invoice no.</label><input class="input mono" id="asn-i" value="RT/26-27/0421"><span class="hint">PDF attached · ₹3,19,000 + GST ₹57,420</span></div>
-        <div class="field"><label class="req" for="asn-e">E-way bill no.</label><input class="input mono" id="asn-e" value="1812 4509 7731"><span class="hint">Required for consignments above ₹50,000</span></div>
-        <div class="field full" id="asn-sf"><label class="req" for="asn-s">Serial numbers (one per line — scan or paste)</label>
+        <div class="field"><label class="req" for="asn-i" data-help="asn-invoice">Your tax invoice no.</label><input class="input mono" id="asn-i" value="RT/26-27/0421"><span class="hint">PDF attached · ₹3,19,000 + GST ₹57,420</span></div>
+        <div class="field"><label class="req" for="asn-e" data-help="g.eway">E-way bill no.</label><input class="input mono" id="asn-e" value="1812 4509 7731"><span class="hint">Required for consignments above ₹50,000</span></div>
+        <div class="field full" id="asn-sf"><label class="req" for="asn-s" data-help="asn-serials">Serial numbers (one per line — scan or paste)</label>
           <textarea class="textarea mono" id="asn-s" style="min-height:150px">5CG1301K7Q
 5CG1301K8V
 5CG1301K9A
@@ -392,15 +392,15 @@ Idempotency-Key: <span class="s">rt-20260926-1045</span>
   </div></div>
 
   <div class="modal" id="m-evidence"><div class="modal-card lg">
-    <div class="modal-head"><div><h3>Shipment evidence · FT-0040</h3><div class="small muted">TXO-10483 · 1 × LG 27UL550 · Delhivery (Tradex account)</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-head"><div><h3 data-help="m-evidence">Shipment evidence · FT-0040</h3><div class="small muted">TXO-10483 · 1 × LG 27UL550 · Delhivery (Tradex account)</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
     <div class="modal-body col gap-16">
       <div class="form-grid">
         <div class="field"><label class="req" for="ev-awb">AWB number</label><input class="input mono" id="ev-awb" value="1490 2213 5601"><span class="hint">Pre-filled from the Tradex label</span></div>
-        <div class="field"><label class="req" for="ev-sn">Serial shipped (scan)</label><input class="input mono" id="ev-sn" value="104NTXRJK305"><span class="hint text-ok" style="color:var(--ok-tx)">✓ Matches a Grade B unit on your approved offer</span></div>
+        <div class="field"><label class="req" for="ev-sn" data-help="ev-serial">Serial shipped (scan)</label><input class="input mono" id="ev-sn" value="104NTXRJK305"><span class="hint text-ok" style="color:var(--ok-tx)">✓ Matches a Grade B unit on your approved offer</span></div>
         <div class="field"><label for="ev-w">Packed weight</label><div class="input-group"><input class="input" id="ev-w" value="7.4"><span class="addon">kg</span></div></div>
         <div class="field"><label>Handover time</label><input class="input" value="26 Sep 2026, 16:20" aria-label="Handover time"></div>
       </div>
-      <div><div class="label mb-8">Packing photos (min 2)</div>
+      <div><div class="label mb-8" data-help="ev-photos">Packing photos (min 2)</div>
         <div class="row gap-8"><div data-ph="mon-setup" class="thumb-lg"></div><div data-ph="pc-setup-white" class="thumb-lg"></div><div class="dropzone" style="padding:12px 18px;flex:1"><div class="small"><b style="color:var(--tx-1)">Add photo</b> · sealed box with label visible</div></div></div></div>
       <label class="check"><input type="checkbox" checked> Tradex invoice and packing slip enclosed; no RenewTech price list or branding inside the box</label>
     </div>
@@ -408,7 +408,7 @@ Idempotency-Key: <span class="s">rt-20260926-1045</span>
   </div></div>
 
   <div class="modal" id="m-decline"><div class="modal-card">
-    <div class="modal-head"><h3>Can't fulfil FT-0041</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-head"><h3 data-help="m-decline">Can't fulfil FT-0041</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
     <div class="modal-body col gap-12">
       <div class="field"><label class="req" for="dc-r">Reason</label><select class="select" id="dc-r"><option>Unit no longer available</option><option>Failed our final check</option><option>Cannot ship today</option><option>Other</option></select></div>
       <div class="callout c-info small"><i data-icon="info"></i><div>The task returns to Tradex immediately so the customer's delivery date can be protected. Your availability for RT-LAT5420-A will be reduced by 1.</div></div>
@@ -417,10 +417,10 @@ Idempotency-Key: <span class="s">rt-20260926-1045</span>
   </div></div>
 
   <div class="modal" id="m-rotate"><div class="modal-card">
-    <div class="modal-head"><h3>Rotate API key?</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-head"><h3 data-help="m-rotate">Rotate API key?</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
     <div class="modal-body col gap-12">
       <p class="subtle">A new key is created and shown once. The current key keeps working for <b>24 hours</b> so you can update your system, then it is revoked.</p>
-      <div class="field"><label for="otp">OTP sent to +91 98••• ••077</label><input class="input mono" id="otp" placeholder="6-digit code" style="max-width:180px"></div>
+      <div class="field"><label for="otp" data-help="g.otp">OTP sent to +91 98••• ••077</label><input class="input mono" id="otp" placeholder="6-digit code" style="max-width:180px"></div>
     </div>
     <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-danger" data-close data-toast="New key created · old key revoked in 24 h · logged in audit trail">Rotate key</button></div>
   </div></div>

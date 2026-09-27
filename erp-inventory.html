@@ -16,7 +16,7 @@
     .formula .term.atp { background: var(--brand-50); border-color: var(--brand-200); color: var(--brand-800); }
     .formula .term.aside { background: #fff; border-style: dashed; color: var(--tx-3); }
     .formula .op { color: var(--tx-3); font-size: 20px; }
-    .stock-t td, .stock-t th { padding-left: 10px; padding-right: 10px; }
+    .stock-t td, .stock-t th { padding-left: 8px; padding-right: 8px; }
     .stock-t td.atp, .stock-t th.atp { background: #f5f7ff; }
     .stock-t tbody tr.sku-row { cursor: pointer; }
     .stock-t tbody tr.sku-row.open td { background: var(--brand-50); }
@@ -54,6 +54,24 @@
     .stat-tile .n { font-size: 22px; font-weight: 700; }
     .stat-tile .l { font-size: 12px; color: var(--tx-3); }
     .sec-row { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 16px; align-items: start; }
+    /* Guided help: tab intros sit above cards here (the page tabs are not inside a card) */
+    .page-tabs > .tab-panel > .tab-intro { border: 1px solid var(--line-2); border-radius: var(--r); margin-bottom: 16px; }
+    .ns-pad { padding: 12px 16px 0; }
+    .ns-pad + .table-wrap, .ns-pad + .table { margin-top: 12px; }
+    #t-next { margin-top: 2px; }
+    @media (max-width: 980px) {
+      .sec-row, .unit-grid { grid-template-columns: minmax(0, 1fr); }
+    }
+    @media (max-width: 760px) {
+      .thr, .fresh-bar { grid-template-columns: minmax(0, 1fr); }
+      .fresh-bar > div + div { border-left: 0; border-top: 1px solid var(--line); }
+      .scanbox { flex-wrap: wrap; }
+      .scanbox .input { flex: 1 1 180px; min-width: 0; }
+      .card-head .seg { max-width: 100%; overflow-x: auto; scrollbar-width: none; }
+      .card-head .seg > * { flex: none; }
+      .card-foot > .row, #sn-out .row { flex-wrap: wrap; }
+      .ns-pad { padding: 12px 12px 0; }
+    }
   </style>
 </head>
 <body data-app="erp" data-page="inventory">
@@ -61,49 +79,67 @@
   <div class="page-head">
     <div>
       <div class="crumbs"><span>Stock</span><i data-icon="chevron-right"></i><span>Inventory & serials</span></div>
-      <h1>Inventory & serials</h1>
-      <p class="sub">One stock authority for web, branches & WhatsApp · website availability is a projection of this ledger · last movement 10:41 · sync lag 14 s</p>
+      <h1 data-help="page">Inventory & serials</h1>
+      <p class="sub"><span data-help="authority">One stock authority</span> for web, branches & WhatsApp · website availability is a projection of this ledger · last movement 10:41 · sync lag 14 s</p>
     </div>
     <div class="actions">
-      <select class="select" style="width:auto;height:38px" aria-label="Location scope"><option>All locations</option><option>WH-BLR · Central Warehouse</option><option>BR-SPR · SP Road</option><option>BR-KRM · Koramangala</option><option>BR-MYS · Mysuru</option></select>
-      <button class="btn" data-toast="Stock snapshot export queued · includes movement totals for reconciliation"><i data-icon="download"></i> Export</button>
-      <a class="btn" href="#counts"><i data-icon="clipboard"></i> Start count</a>
-      <button class="btn btn-primary" data-open="m-transfer"><i data-icon="transfer"></i> New transfer</button>
+      <select class="select" style="width:auto;height:38px" aria-label="Location scope" data-help="act-scope"><option>All locations</option><option>WH-BLR · Central Warehouse</option><option>BR-SPR · SP Road</option><option>BR-KRM · Koramangala</option><option>BR-MYS · Mysuru</option></select>
+      <button class="btn" data-help="act-export" data-toast="Stock snapshot export queued · includes movement totals for reconciliation"><i data-icon="download"></i> Export</button>
+      <a class="btn" href="#counts" data-help="act-count"><i data-icon="clipboard"></i> Start count</a>
+      <button class="btn btn-primary" data-open="m-transfer" data-help="act-transfer"><i data-icon="transfer"></i> New transfer</button>
     </div>
   </div>
 
+  <section class="flow" data-flow="inventory" aria-labelledby="flow-h" data-anno="1A · §9.2 Stock events · guided">
+    <div class="flow-head">
+      <div><h2 class="flow-title" id="flow-h" data-help="flow"><i data-icon="route"></i> How stock moves</h2>
+        <p class="flow-sub">Stock arrives, becomes sellable, is held for orders and leaves on dispatch (steps 1–4). Transfers and counts keep the numbers right (steps 5–6). Click a step to see it.</p></div>
+      <button class="btn btn-ghost btn-sm flow-toggle" data-flow-toggle aria-expanded="true" aria-controls="flow-steps"><span class="when-open">Hide guide</span><span class="when-closed">Show how it works</span></button>
+    </div>
+    <ol class="flow-steps" id="flow-steps">
+      <li class="flow-step"><button type="button" class="flow-btn" data-go-tab="movements" data-mvq="GRN"><span class="fs-n">1</span><span class="fs-t">Receive &amp; inspect</span><span class="fs-d">Goods arrive on a goods receipt (GRN) and wait for inspection. Only units that pass become sellable; failures stay in quarantine.</span><span class="fs-f"><span class="fs-c warn">14 in inbound QC</span><span class="fs-who">Warehouse · QC</span></span></button></li>
+      <li class="flow-step"><button type="button" class="flow-btn" data-go-tab="stock"><span class="fs-n">2</span><span class="fs-t">Put away as sellable</span><span class="fs-d">Accepted units go to a bin and count as sellable. What can be promised (ATP) is worked out per product and location.</span><span class="fs-f"><span class="fs-c">4,812 sellable units</span><span class="fs-who">Warehouse</span></span></button></li>
+      <li class="flow-step"><button type="button" class="flow-btn" data-go-tab="reservations"><span class="fs-n">3</span><span class="fs-t">Hold for orders</span><span class="fs-d">Each order reserves units (or one exact unit). A hold lowers ATP only; unpaid holds expire by themselves.</span><span class="fs-f"><span class="fs-c warn">186 holds · 9 expire soon</span><span class="fs-who">Automatic · checkout</span></span></button></li>
+      <li class="flow-step"><button type="button" class="flow-btn" data-go-tab="movements" data-mvtype="Dispatch"><span class="fs-n">4</span><span class="fs-t">Pick &amp; dispatch</span><span class="fs-d">Units are scanned out of their bin. Dispatch lowers stock and uses up the hold in the same step.</span><span class="fs-f"><span class="fs-c ok">Last dispatch 10:41</span><span class="fs-who">Pack station</span></span></button></li>
+      <li class="flow-step"><button type="button" class="flow-btn" data-go-tab="transfers"><span class="fs-n">5</span><span class="fs-t">Move between locations</span><span class="fs-d">Transfers travel “in transit” (not sellable) and count at the branch only after its receiving scan.</span><span class="fs-f"><span class="fs-c bad">41 in transit · 1 short</span><span class="fs-who">Operations · branches</span></span></button></li>
+      <li class="flow-step is-attn"><button type="button" class="flow-btn" data-go-tab="counts"><span class="fs-n">6</span><span class="fs-t">Count &amp; correct</span><span class="fs-d">Bins are counted regularly. Differences are reviewed, and only approved ones change stock.</span><span class="fs-f"><span class="fs-c warn">3 variances to approve</span><span class="fs-who">Counter · manager</span></span></button></li>
+    </ol>
+    <div class="flow-foot"><span><i data-icon="lock"></i> Never sellable, shown apart: <button type="button" class="hp-link" data-go-tab="stock" data-sf="q">quarantine</button> (23 units) and <button type="button" class="hp-link" data-go-tab="supplier">supplier stock</button> (not ours until received).</span><span>Trace one unit: <button type="button" class="hp-link" data-go-tab="serials">Serial lookup</button> · every change: <button type="button" class="hp-link" data-go-tab="movements">Movements</button></span></div>
+  </section>
+
   <section class="grid g-6 mb-24" data-anno="1A · R08/R14 Enterprise stock position">
-    <div class="kpi"><div class="k-label"><i data-icon="box"></i> <span>Sellable on-hand</span></div><div class="k-value">4,812</div><div class="k-foot"><span>₹3.94 Cr at cost</span></div></div>
-    <div class="kpi"><div class="k-label"><i data-icon="lock"></i> Reserved</div><div class="k-value">186</div><div class="k-foot"><span>9 expire in 15 min</span></div></div>
-    <div class="kpi"><div class="k-label"><i data-icon="check-circle"></i> <span>Available (ATP)</span></div><div class="k-value">4,471</div><div class="k-foot"><span>after 155 buffer units</span></div></div>
-    <div class="kpi"><div class="k-label"><i data-icon="alert-octagon"></i> Quarantine</div><div class="k-value">23</div><div class="k-foot"><span>9 returns · 14 inbound QC</span></div></div>
-    <div class="kpi"><div class="k-label"><i data-icon="truck"></i> In transit</div><div class="k-value">41</div><div class="k-foot"><span>3 transfers · 1 discrepancy</span></div></div>
-    <div class="kpi"><div class="k-label"><i data-icon="alert"></i> <span>Low-stock SKUs</span></div><div class="k-value text-warn">18</div><div class="k-foot"><a href="erp-purchasing.html#suggestions">12 PO suggestions →</a></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-sellable"><i data-icon="box"></i> <span>Sellable on-hand</span></div><div class="k-value">4,812</div><div class="k-foot"><span>₹3.94 Cr at cost</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-reserved"><i data-icon="lock"></i> Reserved</div><div class="k-value">186</div><div class="k-foot"><span>9 expire in 15 min</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-atp"><i data-icon="check-circle"></i> <span>Available (ATP)</span></div><div class="k-value">4,471</div><div class="k-foot"><span>after 155 buffer units</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-quarantine"><i data-icon="alert-octagon"></i> Quarantine</div><div class="k-value">23</div><div class="k-foot"><span>9 returns · 14 inbound QC</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-transit"><i data-icon="truck"></i> In transit</div><div class="k-value">41</div><div class="k-foot"><span>3 transfers · 1 discrepancy</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-low"><i data-icon="alert"></i> <span>Low-stock SKUs</span></div><div class="k-value text-warn">18</div><div class="k-foot"><a href="erp-purchasing.html#suggestions">12 PO suggestions →</a></div></div>
   </section>
 
   <div data-tabset class="page-tabs">
     <div class="tabs">
-      <button class="tab active" data-tab="stock"><i data-icon="warehouse"></i> Stock by SKU</button>
-      <button class="tab" data-tab="serials"><i data-icon="scan"></i> Serials</button>
-      <button class="tab" data-tab="movements"><i data-icon="history"></i> Movements</button>
-      <button class="tab" data-tab="transfers"><i data-icon="transfer"></i> Transfers <span class="count">5</span></button>
-      <button class="tab" data-tab="counts"><i data-icon="clipboard"></i> Counts <span class="count">3</span></button>
-      <button class="tab" data-tab="reservations"><i data-icon="lock"></i> Reservations <span class="count">186</span></button>
-      <button class="tab" data-tab="supplier"><i data-icon="building"></i> Supplier stock <span class="count">1 stale</span></button>
+      <button class="tab active" data-tab="stock" data-help="tab-stock"><i data-icon="warehouse"></i> Stock by product</button>
+      <button class="tab" data-tab="serials" data-help="tab-serials"><i data-icon="scan"></i> Serial lookup</button>
+      <button class="tab" data-tab="movements" data-help="tab-movements"><i data-icon="history"></i> Movements</button>
+      <button class="tab" data-tab="transfers" data-help="tab-transfers"><i data-icon="transfer"></i> Transfers <span class="count">5</span></button>
+      <button class="tab" data-tab="counts" data-help="tab-counts"><i data-icon="clipboard"></i> Stock counts <span class="count">3</span></button>
+      <button class="tab" data-tab="reservations" data-help="tab-reservations"><i data-icon="lock"></i> Order holds <span class="count">186</span></button>
+      <button class="tab" data-tab="supplier" data-help="tab-supplier"><i data-icon="building"></i> Supplier stock <span class="count">1 stale</span></button>
     </div>
 
     <!-- ================================================================== -->
     <!-- STOCK                                                                -->
     <!-- ================================================================== -->
     <div class="tab-panel active" data-panel="stock">
+      <div class="tab-intro"><i data-icon="info"></i><div><b>How much of each product (SKU) you have, where it is, and how many units can still be promised to customers.</b> Click a row to see its split by location and to recalculate the <b data-help="atp-card">ATP example</b> below.<span class="ti-next">Amber ATP or a “Low” flag means the SKU is at or below its reorder point — open its reorder suggestion. Red quarantine and blue transit numbers cannot be sold yet.</span></div></div>
       <div class="card mb-16" data-anno="1A · R08 §9.2 ATP formula (one stock authority)">
-        <div class="card-head"><div><h3>How available-to-promise is calculated</h3><div class="sub">Per SKU × location × stock owner · worked example for <b id="fx-name">Dell Latitude 5420 (LAP01-RA)</b> — click any row to recalculate</div></div><span class="badge b-brand">Stock authority: Tradex ERP</span></div>
+        <div class="card-head"><div><h3 data-help="atp-card">How available-to-promise is calculated</h3><div class="sub">Per SKU × location × stock owner · worked example for <b id="fx-name">Dell Latitude 5420 (LAP01-RA)</b> — click any row to recalculate</div></div><span class="badge b-brand">Stock authority: Tradex ERP</span></div>
         <div class="card-body">
           <div class="row-between wrap gap-16">
             <div class="formula" id="fx">
             </div>
             <div class="small subtle" style="max-width:360px">
-              <div class="mono strong mb-8" style="font-size:13px;color:var(--tx-1)">ATP = max(0, sellable − reserved − buffer)</div>
+              <div class="mono strong mb-8" style="font-size:13px;color:var(--tx-1)" data-help="g.atp">ATP = max(0, sellable − reserved − buffer)</div>
               <div><i data-icon="check-circle" class="ic-sm text-ok ii"></i> Sellable on-hand already <b>excludes</b> quarantine, damaged, repair and in-transit units — they are not subtracted twice.</div>
               <div class="mt-4"><i data-icon="x-circle" class="ic-sm text-bad ii"></i> Open POs and supplier availability are <b>never</b> counted as company stock.</div>
             </div>
@@ -117,7 +153,7 @@
         <select class="select" id="s-cat" aria-label="Category"><option value="">All categories</option></select>
         <button class="chip" data-f="low" id="c-low"><i data-icon="alert"></i> Low stock</button>
         <button class="chip" data-f="q" id="c-q"><i data-icon="alert-octagon"></i> Has quarantine</button>
-        <button class="chip" data-f="t" id="c-t"><i data-icon="truck"></i> In transit</button>
+        <button class="chip" data-f="t" id="c-t" data-help="stock-filters"><i data-icon="truck"></i> In transit</button>
         <span class="small muted ml-auto" id="s-count"></span>
       </div>
       <div class="card">
@@ -125,8 +161,8 @@
           <table class="table compact stock-t">
             <thead><tr>
               <th style="width:30px"></th><th>Product · SKU</th>
-              <th class="r" data-tip="Excludes quarantine & in-transit">Sellable</th><th class="r">Reserved</th><th class="r">Buffer</th><th class="r atp">ATP</th>
-              <th class="r" data-tip="Quarantine · not sellable">Quar.</th><th class="r" data-tip="Not sellable until received">Transit</th><th class="r" data-tip="Reorder point">ROP</th><th>Web shows</th><th>Flags</th>
+              <th class="r" data-tip="Excludes quarantine & in-transit" data-help="col-sellable">Sellable</th><th class="r" data-help="col-reserved">Reserved</th><th class="r" data-help="col-buffer">Buffer</th><th class="r atp" data-help="col-atp">ATP</th>
+              <th class="r" data-tip="Quarantine · not sellable" data-help="col-quar">Quar.</th><th class="r" data-tip="Not sellable until received" data-help="col-transit">Transit</th><th class="r" data-tip="Reorder point" data-help="col-rop">ROP</th><th data-help="col-web">Web shows</th><th data-help="col-flags">Flags</th>
             </tr></thead>
             <tbody id="stock-body"></tbody>
           </table>
@@ -140,12 +176,13 @@
     <!-- SERIALS                                                              -->
     <!-- ================================================================== -->
     <div class="tab-panel" data-panel="serials">
+      <div class="tab-intro"><i data-icon="info"></i><div><b>Find any single serialised unit and see its whole life</b> — purchase order, receipt, inspection, sale, return and re-grade. Scan or type a unit ID (U-…), the manufacturer serial or an order number, or try one of the examples.<span class="ti-next">The <b>Next step</b> box above the unit says what must happen now. The manufacturer serial stays masked unless you reveal it with a reason.</span></div></div>
       <div class="scanbox mb-12" data-anno="1A · §9.4 Scan internal ID or manufacturer serial">
         <i data-icon="scan" class="ic-lg" style="color:var(--brand)"></i>
         <input class="input" id="sn-q" value="U-000812" aria-label="Serial or unit ID" placeholder="Scan or type U-0008xx, manufacturer serial or order no.">
-        <button class="btn btn-primary" id="sn-go">Look up</button>
+        <button class="btn btn-primary" id="sn-go" data-help="sn-lookup">Look up</button>
       </div>
-      <div class="row wrap gap-6 mb-16 small"><span class="muted">Try:</span>
+      <div class="row wrap gap-6 mb-16 small"><span class="muted" data-help="sn-samples">Try:</span>
         <button class="chip" data-sn="U-000812">U-000812 · returned → quarantine</button>
         <button class="chip" data-sn="U-000815">U-000815 · sellable</button>
         <button class="chip" data-sn="U-000807">U-000807 · sold</button>
@@ -159,20 +196,21 @@
     <!-- MOVEMENTS                                                            -->
     <!-- ================================================================== -->
     <div class="tab-panel" data-panel="movements">
-      <div class="callout c-brand mb-16" data-anno="1A · Append-only ledger reconciles to balances (§17.6)"><i data-icon="lock"></i><div><strong>Immutable ledger.</strong> Every quantity change is a movement with an event type, reference document and actor. Movements are never edited or deleted — corrections are posted as reversing entries with a reason and approver. Balances on the Stock tab are the sum of this ledger.</div></div>
+      <div class="tab-intro"><i data-icon="info"></i><div><b>The stock ledger: every change to stock, one line each, newest first.</b> Filter by event type, or search for a SKU, serial or document number.<span class="ti-next">Use it to answer “why did this number change?” — each line names the document and the person. Nothing here is ever edited; a mistake is fixed with a reversing line.</span></div></div>
+      <div class="callout c-brand mb-16" data-anno="1A · Append-only ledger reconciles to balances (§17.6)"><i data-icon="lock"></i><div><strong data-help="ledger">Immutable ledger.</strong> Every quantity change is a movement with an event type, reference document and actor. Movements are never edited or deleted — corrections are posted as reversing entries with a reason and approver. Balances on the Stock tab are the sum of this ledger.</div></div>
       <div class="filterbar">
         <div class="input-icon" style="width:260px"><i data-icon="search"></i><input class="input" id="mv-q" placeholder="SKU, serial, document…" aria-label="Search movements" style="height:34px;width:100%"></div>
         <select class="select" id="mv-type" aria-label="Event type"><option value="">All event types</option></select>
         <select class="select" aria-label="Location"><option>All locations</option><option>WH-BLR</option><option>BR-SPR</option><option>BR-KRM</option><option>BR-MYS</option></select>
         <div class="seg"><button class="active">Today</button><button>7 days</button><button>30 days</button></div>
-        <button class="btn btn-sm ml-auto" data-toast="Ledger export queued (CSV, signed hash for audit)"><i data-icon="download"></i> Export ledger</button>
+        <button class="btn btn-sm ml-auto" data-help="mv-export" data-toast="Ledger export queued (CSV, signed hash for audit)"><i data-icon="download"></i> Export ledger</button>
       </div>
       <div class="card">
         <div class="table-wrap"><table class="table compact">
-          <thead><tr><th>Time · ID</th><th>Event</th><th>SKU · unit</th><th>From → to</th><th>Disposition change</th><th class="r">Units</th><th class="r" data-tip="Effect on sellable on-hand">Δ Sellable</th><th>Reference</th><th>Actor</th></tr></thead>
+          <thead><tr><th>Time · ID</th><th data-help="mv-types">Event</th><th>SKU · unit</th><th>From → to</th><th data-help="col-mv-disp">Disposition change</th><th class="r">Units</th><th class="r" data-tip="Effect on sellable on-hand" data-help="col-mv-delta">Δ Sellable</th><th data-help="col-mv-ref">Reference</th><th data-help="col-mv-actor">Actor</th></tr></thead>
           <tbody id="mv-body"></tbody>
         </table></div>
-        <div class="pager"><span>Showing 17 of 1,284 movements today · ledger total reconciles with balances <span class="badge b-ok">✓ checked 10:40</span></span><div class="pages"><button class="active">1</button><button>2</button><button>3</button><button aria-label="Next page">›</button></div></div>
+        <div class="pager"><span>Showing 17 of 1,284 movements today · <span data-help="mv-reconcile">ledger total reconciles with balances</span> <span class="badge b-ok">✓ checked 10:40</span></span><div class="pages"><button class="active">1</button><button>2</button><button>3</button><button aria-label="Next page">›</button></div></div>
       </div>
     </div>
 
@@ -180,10 +218,11 @@
     <!-- TRANSFERS                                                            -->
     <!-- ================================================================== -->
     <div class="tab-panel" data-panel="transfers">
+      <div class="tab-intro"><i data-icon="info"></i><div><b>Stock moving between the warehouse and branches.</b> A transfer is requested, approved, picked and shipped; while travelling the units are <b data-help="g.transfer">in transit</b> and cannot be sold anywhere.<span class="ti-next">Resolve discrepancies first (units shipped but not received — TR-0214 below), then approve waiting requests.</span></div></div>
       <div class="card mb-16">
-        <div class="card-head"><div><h3>Stock transfers</h3><div class="sub">Internal transfers never create or destroy enterprise stock · in-transit is not available at the destination until received</div></div><button class="btn btn-sm btn-primary" data-open="m-transfer"><i data-icon="plus"></i> New transfer</button></div>
+        <div class="card-head"><div><h3 data-help="transfers-table">Stock transfers</h3><div class="sub">Internal transfers never create or destroy enterprise stock · in-transit is not available at the destination until received</div></div><button class="btn btn-sm btn-primary" data-open="m-transfer"><i data-icon="plus"></i> New transfer</button></div>
         <div class="table-wrap"><table class="table">
-          <thead><tr><th>Transfer</th><th>Route</th><th class="r">Lines</th><th class="r">Units</th><th class="r">Value (cost)</th><th>Status</th><th>Requested by</th><th>Updated</th></tr></thead>
+          <thead><tr><th>Transfer</th><th>Route</th><th class="r">Lines</th><th class="r">Units</th><th class="r">Value (cost)</th><th data-help="tr-status">Status</th><th>Requested by</th><th>Updated</th></tr></thead>
           <tbody>
             <tr class="selected"><td class="mono strong">TR-0214</td><td><span class="tr-route">WH-BLR <i data-icon="arrow-right"></i> BR-MYS</span></td><td class="r">3</td><td class="r">8</td><td class="r">₹1,21,268</td><td><span class="sev serious"><i data-icon="alert"></i> Partly received · −1</span></td><td>Vikram S.</td><td>Today 09:52</td></tr>
             <tr><td class="mono strong">TR-0213</td><td><span class="tr-route">WH-BLR <i data-icon="arrow-right"></i> BR-KRM</span></td><td class="r">4</td><td class="r">22</td><td class="r">₹1,88,400</td><td><span class="status s-info">In transit · ETA 13:00</span></td><td>Anita R.</td><td>Today 08:30</td></tr>
@@ -197,7 +236,7 @@
 
       <div class="sec-row">
         <div class="card" data-anno="1A · T16 Partial transfer stays visible">
-          <div class="card-head"><div><h3>TR-0214 · WH-BLR → Mysuru Branch</h3><div class="sub">Shipped 25 Sep 17:10 · vehicle KA-09-MH-4471 · received 26 Sep 09:52 by Mysuru desk (scan)</div></div><span class="sev serious"><i data-icon="alert"></i> Discrepancy −1</span></div>
+          <div class="card-head"><div><h3 data-help="tr-detail">TR-0214 · WH-BLR → Mysuru Branch</h3><div class="sub">Shipped 25 Sep 17:10 · vehicle KA-09-MH-4471 · received 26 Sep 09:52 by Mysuru desk (scan)</div></div><span class="sev serious"><i data-icon="alert"></i> Discrepancy −1</span></div>
           <div class="card-body" style="padding-bottom:6px">
             <div class="stepper mb-16">
               <div class="step done"><span class="dot"><i data-icon="check" class="ic-sm"></i></span> Requested</div>
@@ -206,23 +245,24 @@
               <div class="step current"><span class="dot">4</span> Partial</div>
               <div class="step"><span class="dot">5</span> Closed</div>
             </div>
+            <div class="next-step mb-12"><i data-icon="arrow-right"></i><div class="grow"><b>Next step:</b> find the 1 missing Samsung T7. Receive it if it turns up; otherwise investigate, then record a loss for approval or return it to source. TR-0214 closes when every line matches.</div><button type="button" class="btn btn-xs" data-go-tab="movements" data-mvq="TR-0214">See it in the ledger</button></div>
           </div>
-          <table class="table compact">
-            <thead><tr><th>SKU</th><th class="r">Shipped</th><th class="r">Received</th><th class="r">In transit</th><th>Line status</th></tr></thead>
+          <div class="table-wrap"><table class="table compact">
+            <thead><tr><th>SKU</th><th class="r">Shipped</th><th class="r">Received</th><th class="r" data-help="col-tr-transit">In transit</th><th data-help="tr-line-status">Line status</th></tr></thead>
             <tbody>
               <tr><td><div class="row" style="gap:8px"><div data-ph="lap-dell" class="thumb"></div><div><div class="cell-main">Dell Latitude 5420 <span class="mono muted small">LAP01-RA</span></div><div class="cell-sub">Serials scanned: U-000816 · U-000819 · U-000821</div></div></div></td><td class="r">3</td><td class="r">3</td><td class="r">0</td><td><span class="status s-ok">Matched</span></td></tr>
               <tr><td><div class="row" style="gap:8px"><div data-ph="ssd-blue" class="thumb"></div><div><div class="cell-main">Samsung T7 1 TB <span class="mono muted small">SSD01-N</span></div><div class="cell-sub">Not serialised · carton count</div></div></div></td><td class="r">4</td><td class="r">3</td><td class="r text-bad strong">1</td><td><span class="status s-bad">Short 1 · investigating</span></td></tr>
               <tr><td><div class="row" style="gap:8px"><div data-ph="mouse-white" class="thumb"></div><div><div class="cell-main">Logitech G305 White <span class="mono muted small">MS02-N</span></div><div class="cell-sub">Not serialised</div></div></div></td><td class="r">1</td><td class="r">1</td><td class="r">0</td><td><span class="status s-ok">Matched</span></td></tr>
             </tbody>
-          </table>
+          </table></div>
           <div class="card-body">
-            <div class="callout c-warn"><i data-icon="alert"></i><div><strong>1 × Samsung T7 1 TB (₹6,850 at cost) remains in transit.</strong> It stays on the enterprise ledger under “in transit WH-BLR → BR-MYS”; Mysuru ATP increased only by the 7 units received. Resolve by receiving it, recording a loss (needs approval) or returning it to source.</div></div>
+            <div class="callout c-warn"><i data-icon="alert"></i><div><strong data-help="tr-short">1 × Samsung T7 1 TB (₹6,850 at cost) remains in transit.</strong> It stays on the enterprise ledger under “in transit WH-BLR → BR-MYS”; Mysuru ATP increased only by the 7 units received. Resolve by receiving it, recording a loss (needs approval) or returning it to source.</div></div>
           </div>
-          <div class="card-foot"><span class="small muted">Discrepancy case DSC-0031 · owner Irfan M. · due 27 Sep</span><div class="row gap-8"><button class="btn btn-sm" data-toast="Late receipt scan opened for TR-0214">Receive late unit</button><button class="btn btn-sm" data-toast="Driver & packing photos requested · case DSC-0031">Investigate</button><button class="btn btn-sm btn-danger" data-toast="Loss write-off submitted · needs manager approval (value ₹6,850)" data-toast-icon="alert">Record loss…</button></div></div>
+          <div class="card-foot"><span class="small muted"><span data-help="g.discrepancy">Discrepancy case</span> DSC-0031 · owner Irfan M. · due 27 Sep</span><div class="row gap-8"><button class="btn btn-sm" data-toast="Late receipt scan opened for TR-0214">Receive late unit</button><button class="btn btn-sm" data-toast="Driver & packing photos requested · case DSC-0031">Investigate</button><button class="btn btn-sm btn-danger" data-help="tr-loss" data-toast="Loss write-off submitted · needs manager approval (value ₹6,850)" data-toast-icon="alert">Record loss…</button></div></div>
         </div>
         <div class="col gap-16">
           <div class="card card-pad">
-            <h4 class="mb-12">Enterprise balance check · SSD01-N</h4>
+            <h4 class="mb-12" data-help="tr-balance">Enterprise balance check · SSD01-N</h4>
             <table class="table compact">
               <tbody>
                 <tr><td>WH-BLR sellable</td><td class="r">56 → 52</td></tr>
@@ -234,7 +274,7 @@
             <div class="small muted mt-8">Transfers move stock between buckets; totals only change through an approved adjustment.</div>
           </div>
           <div class="card card-pad small col gap-8">
-            <h4>Transfer rules (sample — to confirm)</h4>
+            <h4 data-help="tr-rules">Transfer rules (sample — to confirm)</h4>
             <div class="subtle">Branches can see all locations' ATP and <b>request</b> stock; they can't promise another branch's stock to a customer.</div>
             <div class="subtle">Approval: ops admin above ₹2 L value; branch manager below.</div>
             <div class="subtle">Serialised units must be scanned at dispatch and receipt.</div>
@@ -247,41 +287,44 @@
     <!-- COUNTS                                                               -->
     <!-- ================================================================== -->
     <div class="tab-panel" data-panel="counts">
-      <div class="callout c-bad mb-16" data-anno="§9.6 Never overwrite quantity"><i data-icon="alert-octagon"></i><div><strong>Counts never overwrite quantity.</strong> A count records what was observed. Approved variances post an <b>adjustment movement</b> with reason, evidence and approver; unapproved variances change nothing. Bins being counted are frozen or intervening movements are reconciled.</div></div>
+      <div class="tab-intro"><i data-icon="info"></i><div><b>Counting shelves (bins) and fixing differences the controlled way.</b> A counter records what is physically there; each difference becomes a <b data-help="g.variance">variance</b> that someone else approves before stock changes.<span class="ti-next">Finish the open count sheet, then approve or recount the variances on the right — who may approve depends on the value (thresholds at the bottom).</span></div></div>
+      <div class="callout c-bad mb-16" data-anno="§9.6 Never overwrite quantity"><i data-icon="alert-octagon"></i><div><strong data-help="count-rule">Counts never overwrite quantity.</strong> A count records what was observed. Approved variances post an <b>adjustment movement</b> with reason, evidence and approver; unapproved variances change nothing. Bins being counted are frozen or intervening movements are reconciled.</div></div>
 
       <div class="grid g-4 mb-16">
-        <div class="stat-tile"><div class="l">CC-0038 · WH-BLR zone A</div><div class="n">62%</div><div class="meter thin mt-8"><span style="width:62%"></span></div><div class="small muted mt-4">Blind count · 3 bins frozen</div></div>
-        <div class="stat-tile"><div class="l">Variances awaiting approval</div><div class="n text-warn">3</div><div class="small muted mt-4">−₹47,912 net · ₹64,088 gross</div></div>
-        <div class="stat-tile"><div class="l">Auto-accepted within tolerance</div><div class="n">5</div><div class="small muted mt-4">≤ 1 unit and ≤ ₹1,000</div></div>
-        <div class="stat-tile"><div class="l">Stock accuracy (30 d)</div><div class="n text-ok">98.7%</div><div class="small muted mt-4">A-class weekly · B monthly · C quarterly</div></div>
+        <div class="stat-tile"><div class="l" data-help="ct-progress">CC-0038 · WH-BLR zone A</div><div class="n">62%</div><div class="meter thin mt-8"><span style="width:62%"></span></div><div class="small muted mt-4">Blind count · 3 bins frozen</div></div>
+        <div class="stat-tile"><div class="l" data-help="ct-variances">Variances awaiting approval</div><div class="n text-warn">3</div><div class="small muted mt-4">−₹47,912 net · ₹64,088 gross</div></div>
+        <div class="stat-tile"><div class="l" data-help="ct-tolerance">Auto-accepted within tolerance</div><div class="n">5</div><div class="small muted mt-4">≤ 1 unit and ≤ ₹1,000</div></div>
+        <div class="stat-tile"><div class="l" data-help="ct-accuracy">Stock accuracy (30 d)</div><div class="n text-ok">98.7%</div><div class="small muted mt-4">A-class weekly · B monthly · C quarterly</div></div>
       </div>
 
-      <div class="grid" style="grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start">
+      <div class="grid stack-md" style="grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start">
         <div class="card">
-          <div class="card-head"><div><h3>Count sheet · CC-0038</h3><div class="sub">Counter: Mohammed Irfan · started 09:15 · expected quantities hidden from counter (blind count)</div></div><span class="badge b-info dot">Counting</span></div>
-          <table class="table compact">
-            <thead><tr><th style="width:64px">Bin</th><th>SKU</th><th class="r">Counted</th><th>Serial check</th><th></th></tr></thead>
+          <div class="card-head"><div><h3 data-help="count-sheet">Count sheet · CC-0038</h3><div class="sub">Counter: Mohammed Irfan · started 09:15 · expected quantities hidden from counter (blind count)</div></div><span class="badge b-info dot">Counting</span></div>
+          <div class="ns-pad"><div class="next-step"><i data-icon="arrow-right"></i><div class="grow"><b>Next step:</b> scan the last bin, A-16 (frozen until the count is submitted), then submit the count. Differences go to Variance review — no stock changes yet.</div><button type="button" class="btn btn-xs" data-toast="Scanner ready for bin A-16"><i data-icon="scan" class="ic-sm"></i> Scan A-16</button></div></div>
+          <div class="table-wrap"><table class="table compact">
+            <thead><tr><th style="width:64px">Bin</th><th>SKU</th><th class="r">Counted</th><th data-help="col-serial-check">Serial check</th><th></th></tr></thead>
             <tbody id="cs-body"></tbody>
-          </table>
-          <div class="card-foot"><span class="small muted">Scanning a bin locks it until the count is submitted</span><button class="btn btn-sm btn-primary" data-toast="Count submitted · 3 variances sent for review (no stock changed yet)">Submit count</button></div>
+          </table></div>
+          <div class="card-foot"><span class="small muted">Scanning a bin locks it until the count is submitted</span><button class="btn btn-sm btn-primary" data-help="ct-submit" data-toast="Count submitted · 3 variances sent for review (no stock changed yet)">Submit count for review</button></div>
         </div>
         <div class="card" data-anno="1A · A24 Variance approval by value">
-          <div class="card-head"><div><h3>Variance review</h3><div class="sub">Reviewer sees expected vs counted, value and reason</div></div><span class="badge b-warn">3 open</span></div>
-          <table class="table compact">
-            <thead><tr><th>SKU · bin</th><th class="r">Exp.</th><th class="r">Cnt.</th><th class="r">Var.</th><th class="r">Value</th><th>Approval</th></tr></thead>
+          <div class="card-head"><div><h3 data-help="variance-review">Variance review</h3><div class="sub">Reviewer sees expected vs counted, value and reason</div></div><span class="badge b-warn">3 open</span></div>
+          <div class="ns-pad"><div class="next-step"><i data-icon="arrow-right"></i><div class="grow"><b>Next step:</b> approve the variances within your limit, or request a recount. The LG monitor (−3, ₹42,300) is above the manager limit and goes to owner/finance.</div><button type="button" class="btn btn-xs" data-go-tab="movements" data-mvtype="Adjustment">See posted adjustments</button></div></div>
+          <div class="table-wrap"><table class="table compact">
+            <thead><tr><th>SKU · bin</th><th class="r">Exp.</th><th class="r">Cnt.</th><th class="r" data-help="col-var">Var.</th><th class="r">Value</th><th data-help="col-approval">Approval</th></tr></thead>
             <tbody>
               <tr><td><div class="cell-main">Samsung T7 1 TB</div><div class="cell-sub">A-14 · reason: <b>Unknown</b></div></td><td class="r">14</td><td class="r">12</td><td class="r qty-neg">−2</td><td class="r">₹13,700</td><td><span class="status s-warn">Manager</span><div class="cell-sub">Anita R. · due 16:00</div></td></tr>
               <tr><td><div class="cell-main">LG 27UL550 27" 4K</div><div class="cell-sub">B-03 · reason: <b>Water damage</b> · 4 photos</div></td><td class="r">7</td><td class="r">4</td><td class="r qty-neg">−3</td><td class="r">₹42,300</td><td><span class="status s-bad">Owner / finance</span><div class="cell-sub">Above manager limit</div></td></tr>
               <tr><td><div class="cell-main">Logitech M190</div><div class="cell-sub">A-11 · reason: <b>Receiving error GRN-0436</b></div></td><td class="r">244</td><td class="r">256</td><td class="r qty-pos">+12</td><td class="r">₹8,088</td><td><span class="status s-warn">Manager</span><div class="cell-sub">Link to GRN evidence</div></td></tr>
               <tr><td><div class="cell-main">Kingston FURY 16 GB</div><div class="cell-sub">A-12</div></td><td class="r">121</td><td class="r">120</td><td class="r qty-neg">−1</td><td class="r">₹2,284</td><td><span class="status s-ok">Warehouse lead</span><div class="cell-sub">Approved 10:02 · MV-771604</div></td></tr>
             </tbody>
-          </table>
-          <div class="card-foot"><span class="small muted">Staff submit · managers approve within threshold · large or unexplained losses go to owner/finance</span><div class="row gap-8"><button class="btn btn-sm" data-toast="Recount requested for A-14 by a second counter">Request recount</button><button class="btn btn-sm btn-ok" data-toast="Approved · adjustment movement MV-771640 posted with reason & approver">Approve selected</button></div></div>
+          </table></div>
+          <div class="card-foot"><span class="small muted">Staff submit · managers approve within threshold · large or unexplained losses go to owner/finance</span><div class="row gap-8"><button class="btn btn-sm" data-toast="Recount requested for A-14 by a second counter">Request recount</button><button class="btn btn-sm btn-ok" data-help="ct-approve" data-toast="Approved · adjustment movement MV-771640 posted with reason & approver">Approve &amp; post adjustment</button></div></div>
         </div>
       </div>
 
       <div class="card mt-16">
-        <div class="card-head"><div><h3>Adjustment approval thresholds</h3><div class="sub">Quantity and value both considered · <b>sample values — exact ₹ limits to be supplied by the client (§18)</b></div></div><a class="btn btn-sm" href="erp-admin.html#thresholds"><i data-icon="settings"></i> Edit in Settings</a></div>
+        <div class="card-head"><div><h3 data-help="thresholds">Adjustment approval thresholds</h3><div class="sub">Quantity and value both considered · <b>sample values — exact ₹ limits to be supplied by the client (§18)</b></div></div><a class="btn btn-sm" href="erp-admin.html#thresholds"><i data-icon="settings"></i> Edit in Settings</a></div>
         <div class="card-body">
           <div class="thr">
             <div><b>Warehouse lead</b><div class="v">≤ ₹5,000</div><div class="small muted">and ≤ 2 units · explained reason</div></div>
@@ -297,24 +340,25 @@
     <!-- RESERVATIONS                                                         -->
     <!-- ================================================================== -->
     <div class="tab-panel" data-panel="reservations">
+      <div class="tab-intro"><i data-icon="info"></i><div><b>Stock held for orders that have not been dispatched yet (reservations).</b> A hold lowers what can be promised (ATP), but the units stay on the shelf; unpaid holds are released automatically when their time runs out.<span class="ti-next">Watch the amber countdowns and any payment-race exception — a payment that arrives after its hold expired needs a person to decide.</span></div></div>
       <div class="grid g-4 mb-16">
-        <div class="stat-tile"><div class="l">Active holds</div><div class="n">186</div><div class="small muted">412 units · reduce ATP only</div></div>
-        <div class="stat-tile"><div class="l">Expiring in 15 min</div><div class="n text-warn">9</div><div class="small muted">released by job if unpaid</div></div>
-        <div class="stat-tile"><div class="l">Serial-specific holds</div><div class="n">14</div><div class="small muted">unique refurbished units</div></div>
-        <div class="stat-tile"><div class="l">Payment-race exceptions</div><div class="n text-bad">1</div><div class="small muted"><a href="erp-dashboard.html">TXO-10477 · see Control centre</a></div></div>
+        <div class="stat-tile"><div class="l" data-help="rs-active">Active holds</div><div class="n">186</div><div class="small muted">412 units · reduce ATP only</div></div>
+        <div class="stat-tile"><div class="l" data-help="rs-expiring">Expiring in 15 min</div><div class="n text-warn">9</div><div class="small muted">released by job if unpaid</div></div>
+        <div class="stat-tile"><div class="l" data-help="rs-serial">Serial-specific holds</div><div class="n">14</div><div class="small muted">unique refurbished units</div></div>
+        <div class="stat-tile"><div class="l" data-help="rs-race">Payment-race exceptions</div><div class="n text-bad">1</div><div class="small muted"><a href="erp-dashboard.html">TXO-10477 · see Control centre</a></div></div>
       </div>
       <div class="card mb-16" data-anno="1A · A05/A06 Time-limited holds & expiry job">
-        <div class="card-head"><div><h3>Active holds</h3><div class="sub">A reservation reduces available-to-promise, not physical on-hand · dispatch consumes it atomically</div></div>
+        <div class="card-head"><div><h3 data-help="holds-table">Active holds</h3><div class="sub">A reservation reduces available-to-promise, not physical on-hand · dispatch consumes it atomically</div></div>
           <div class="seg" id="rs-seg"><button class="active" data-c="">All channels</button><button data-c="Website">Website</button><button data-c="WhatsApp">WhatsApp</button><button data-c="Assisted">Assisted</button><button data-c="Dealer">Dealer</button><button data-c="Branch POS">Branch POS</button></div></div>
         <div class="table-wrap"><table class="table compact">
-          <thead><tr><th>Hold · created</th><th>Order</th><th>Channel</th><th>SKU</th><th class="r">Qty</th><th>Unit</th><th>Location</th><th>Expires in</th><th>State</th><th></th></tr></thead>
+          <thead><tr><th>Hold · created</th><th>Order</th><th>Channel</th><th>SKU</th><th class="r">Qty</th><th data-help="col-rs-unit">Unit</th><th>Location</th><th data-help="col-expires">Expires in</th><th data-help="col-rs-state">State</th><th></th></tr></thead>
           <tbody id="rs-body"></tbody>
         </table></div>
       </div>
-      <div class="grid" style="grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);align-items:start">
+      <div class="grid stack-md" style="grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);align-items:start">
         <div class="card">
-          <div class="card-head"><div><h3>Released by job · reservation-expiry</h3><div class="sub">Runs every 5 min · skips holds with a payment in progress · idempotent per hold</div></div><span class="status s-ok">Healthy</span></div>
-          <table class="table compact">
+          <div class="card-head"><div><h3 data-help="expiry-job">Released by job · reservation-expiry</h3><div class="sub">Runs every 5 min · skips holds with a payment in progress · idempotent per hold</div></div><span class="status s-ok">Healthy</span></div>
+          <div class="table-wrap"><table class="table compact">
             <thead><tr><th>Run</th><th class="r">Released</th><th class="r">Skipped</th><th>Notes</th></tr></thead>
             <tbody>
               <tr><td>10:40</td><td class="r">2</td><td class="r">1</td><td class="small">R-5537 skipped — UPI collect pending (grace 5 min)</td></tr>
@@ -323,19 +367,19 @@
               <tr><td>10:05</td><td class="r">1</td><td class="r">0</td><td class="small text-bad">R-5521 released 10:02 (unit re-sold 10:03); payment captured 10:04 → exception TXO-10477: reserve alternate U-000815 at SP Road or refund</td></tr>
               <tr><td>09:30</td><td class="r">14</td><td class="r">0</td><td class="small">Batch after gateway outage recovery</td></tr>
             </tbody>
-          </table>
-          <div class="card-head" style="border-top:1px solid var(--line-2)"><h3>Recent releases</h3></div>
-          <table class="table compact">
+          </table></div>
+          <div class="card-head" style="border-top:1px solid var(--line-2)"><h3 data-help="recent-releases">Recent releases</h3></div>
+          <div class="table-wrap"><table class="table compact">
             <tbody>
               <tr><td class="mono">R-5529</td><td>TXO-10488</td><td class="small">Expired · unpaid 15 min</td><td class="small muted">Job · 10:40</td></tr>
               <tr><td class="mono">R-5526</td><td>TXO-10485</td><td class="small">Order cancelled by customer</td><td class="small muted">Karthik R. · 10:21</td></tr>
               <tr><td class="mono">R-5519</td><td>Quote Q-2291</td><td class="small">Manual release · dealer changed quantity</td><td class="small muted">Vikram S. · 09:58</td></tr>
               <tr><td class="mono">R-5514</td><td>TXO-10479</td><td class="small">Payment failed (card declined ×2)</td><td class="small muted">Job · 09:45</td></tr>
             </tbody>
-          </table>
+          </table></div>
         </div>
         <div class="card">
-          <div class="card-head"><div><h3>Hold durations by channel</h3><div class="sub">Sample policy · configurable in Automation</div></div></div>
+          <div class="card-head"><div><h3 data-help="hold-durations">Hold durations by channel</h3><div class="sub">Sample policy · configurable in Automation</div></div></div>
           <table class="table compact">
             <tbody>
               <tr><td>Website checkout (card / netbanking)</td><td class="r strong">15 min</td></tr>
@@ -355,9 +399,10 @@
     <!-- SUPPLIER                                                             -->
     <!-- ================================================================== -->
     <div class="tab-panel" data-panel="supplier">
-      <div class="callout c-info mb-16"><i data-icon="info"></i><div><strong>Supplier availability is never company stock.</strong> It is stored separately with its own timestamp, source, lead time and buffer, excluded from ATP, and shown to shoppers as “Ships in 4–6 days · partner stock”. Company stock only increases through an authorised goods receipt.</div></div>
+      <div class="tab-intro"><i data-icon="info"></i><div><b>What suppliers say they have in their own warehouses — not Tradex stock.</b> It is kept separately, never added to ATP, and offered to shoppers only as “ships in X days · partner stock” while the supplier's feed is fresh.<span class="ti-next">Chase stale feeds with “Request update”; an expired feed suspends the partner offer until fresh data arrives.</span></div></div>
+      <div class="callout c-info mb-16"><i data-icon="info"></i><div><strong data-help="sup-rule">Supplier availability is never company stock.</strong> It is stored separately with its own timestamp, source, lead time and buffer, excluded from ATP, and shown to shoppers as “Ships in 4–6 days · partner stock”. Company stock only increases through an authorised goods receipt.</div></div>
       <div class="card mb-16" data-anno="1B · A21/T14 Stale supplier feed policy">
-        <div class="card-head"><div><h3>Stale-feed handling</h3><div class="sub">Per-supplier freshness deadline (default 24 h)</div></div></div>
+        <div class="card-head"><div><h3 data-help="stale-policy">Stale-feed handling</h3><div class="sub">Per-supplier freshness deadline (default 24 h)</div></div></div>
         <div class="card-body">
           <div class="fresh-bar">
             <div style="background:var(--ok-50)"><b class="text-ok">Fresh (&lt; 24 h)</b>Offer shows supplier lead time; can be promised at checkout with buffer applied.</div>
@@ -367,16 +412,16 @@
         </div>
       </div>
       <div class="card mb-16">
-        <div class="card-head"><div><h3>Supplier feeds</h3><div class="sub">Sources of partner availability</div></div><span class="small muted">Now: 26 Sep 10:42</span></div>
+        <div class="card-head"><div><h3 data-help="feeds-table">Supplier feeds</h3><div class="sub">Sources of partner availability</div></div><span class="small muted">Now: 26 Sep 10:42</span></div>
         <div class="table-wrap"><table class="table">
-          <thead><tr><th>Supplier</th><th>Feed</th><th class="r">Offers</th><th>Last update</th><th>Freshness</th><th>Current policy</th><th></th></tr></thead>
+          <thead><tr><th>Supplier</th><th>Feed</th><th class="r">Offers</th><th>Last update</th><th data-help="col-freshness">Freshness</th><th data-help="col-feed-policy">Current policy</th><th></th></tr></thead>
           <tbody id="feed-body"></tbody>
         </table></div>
       </div>
       <div class="card">
-        <div class="card-head"><div><h3>Partner offers</h3><div class="sub">Company stock shown alongside for clarity — the two are never added together</div></div></div>
+        <div class="card-head"><div><h3 data-help="offers-table">Partner offers</h3><div class="sub">Company stock shown alongside for clarity — the two are never added together</div></div></div>
         <div class="table-wrap"><table class="table compact">
-          <thead><tr><th>SKU</th><th>Supplier</th><th class="r" data-tip="Company available-to-promise">Co. ATP</th><th class="r">Supplier qty</th><th class="r">Buffer</th><th>Lead time</th><th>Confirmed</th><th>Freshness</th><th>Storefront promise</th></tr></thead>
+          <thead><tr><th>SKU</th><th>Supplier</th><th class="r" data-tip="Company available-to-promise" data-help="col-co-atp">Co. ATP</th><th class="r" data-help="col-sup-qty">Supplier qty</th><th class="r">Buffer</th><th>Lead time</th><th>Confirmed</th><th>Freshness</th><th data-help="col-promise">Storefront promise</th></tr></thead>
           <tbody id="offer-body"></tbody>
         </table></div>
       </div>
@@ -385,31 +430,32 @@
 
   <!-- New transfer modal -->
   <div class="modal" id="m-transfer"><div class="modal-card lg">
-    <div class="modal-head"><div><h3>New stock transfer</h3><div class="small muted">Draft TR-0216 · stock leaves source only when shipped</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-head"><div><h3 data-help="m-transfer">New stock transfer</h3><div class="small muted">Draft TR-0216 · stock leaves source only when shipped</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
     <div class="modal-body col gap-16">
       <div class="grid g-3">
-        <div class="field"><label for="t-from" class="req">From</label><select class="select" id="t-from"><option>WH-BLR · Central Warehouse</option><option>BR-SPR · SP Road</option><option>BR-KRM · Koramangala</option><option>BR-MYS · Mysuru</option></select></div>
+        <div class="field"><label for="t-from" class="req" data-help="t-route">From</label><select class="select" id="t-from"><option>WH-BLR · Central Warehouse</option><option>BR-SPR · SP Road</option><option>BR-KRM · Koramangala</option><option>BR-MYS · Mysuru</option></select></div>
         <div class="field"><label for="t-to" class="req">To</label><select class="select" id="t-to"><option>BR-MYS · Mysuru</option><option>BR-SPR · SP Road</option><option>BR-KRM · Koramangala</option></select></div>
         <div class="field"><label for="t-date">Needed by</label><input class="input" id="t-date" value="28 Sep 2026"></div>
-        <div class="field"><label for="t-reason" class="req">Reason</label><select class="select" id="t-reason"><option>Replenish branch stock</option><option>Customer order TXO-10490 (collect in store)</option><option>Rebalance slow stock</option><option>Repair / RMA handling</option></select></div>
+        <div class="field"><label for="t-reason" class="req" data-help="t-reason">Reason</label><select class="select" id="t-reason"><option>Replenish branch stock</option><option>Customer order TXO-10490 (collect in store)</option><option>Rebalance slow stock</option><option>Repair / RMA handling</option></select></div>
         <div class="field span-2"><label for="t-note">Note</label><input class="input" id="t-note" value="Weekend demand at Mysuru — laptop display units"></div>
       </div>
-      <table class="table compact">
-        <thead><tr><th>SKU</th><th class="r">ATP at source</th><th class="r">Qty</th><th class="r">Value (cost)</th><th></th></tr></thead>
+      <div class="table-wrap"><table class="table compact">
+        <thead><tr><th>SKU</th><th class="r" data-help="t-atp-src">ATP at source</th><th class="r">Qty</th><th class="r">Value (cost)</th><th></th></tr></thead>
         <tbody id="t-lines"></tbody>
-      </table>
+      </table></div>
       <button class="btn btn-sm" style="align-self:flex-start" data-toast="SKU picker opened"><i data-icon="plus"></i> Add line</button>
       <div class="callout c-info" id="t-appr"><i data-icon="info"></i><div></div></div>
+      <div class="next-step" id="t-next"><i data-icon="route"></i><div class="grow"><b>After you submit:</b> the approver named above approves → the source picks and scans the units → on shipping they are <i>in transit</i> (not sellable anywhere) → the destination scans them in and they become sellable there. Any shortfall stays open as a discrepancy.</div><button type="button" class="btn btn-xs" data-close data-go-tab="transfers">See open transfers</button></div>
     </div>
     <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn" data-close data-toast="Draft TR-0216 saved">Save draft</button><button class="btn btn-primary" data-close data-toast="TR-0216 submitted for approval · source stock unchanged until shipped">Submit for approval</button></div>
   </div></div>
 
   <!-- Reveal serial modal -->
   <div class="modal" id="m-reveal"><div class="modal-card">
-    <div class="modal-head"><h3>Reveal manufacturer serial</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-head"><h3 data-help="m-reveal">Reveal manufacturer serial</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
     <div class="modal-body col gap-12">
       <p class="subtle">Full manufacturer serials are masked by default. Revealing is logged with your name, time and reason.</p>
-      <div class="field"><label for="rv-r" class="req">Reason</label><select class="select" id="rv-r"><option>Warranty claim with manufacturer</option><option>Police / insurance request</option><option>Customer verification (RMA)</option></select></div>
+      <div class="field"><label for="rv-r" class="req" data-help="rv-reason">Reason</label><select class="select" id="rv-r"><option>Warranty claim with manufacturer</option><option>Police / insurance request</option><option>Customer verification (RMA)</option></select></div>
     </div>
     <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-primary" data-close data-toast="Serial revealed for 60 s · audit entry AU-88213" id="rv-ok">Reveal</button></div>
   </div></div>
@@ -458,7 +504,7 @@ TX.ready(() => {
 
   const webShows = (r) => r.p.id === "gpu-03" ? `<span class="muted small">Hidden · listing suspended</span>` : r.sup ? `<span class="text-brand small ico-line">${ic("truck", "ic-sm")} Partner stock</span>` : r.atp === 0 ? `<span class="text-bad small">Out of stock</span>` : r.p.stock === "low" ? `<span class="text-warn small">Only ${r.atp} left</span>` : `<span class="text-ok small">In stock</span>`;
   const flags = (r) => [r.low ? `<span class="sev warning">${ic("alert")} Low</span>` : "", r.sup ? `<span class="badge b-info">No company stock</span>` : "", r.quarantine >= 3 ? `<span class="sev serious">${ic("alert-octagon")} QC</span>` : ""].join(" ");
-  const locHTML = (r) => `<div class="loc-t"><table class="table compact"><thead><tr><th>Location</th><th>Bin</th><th class="r">Sellable</th><th class="r">Reserved</th><th class="r">Buffer</th><th class="r">ATP</th><th class="r">Quarantine</th><th class="r">Incoming</th></tr></thead><tbody>
+  const locHTML = (r) => `<div class="loc-t"><table class="table compact"><thead><tr><th data-help="loc-view">Location</th><th data-help="g.bin">Bin</th><th class="r">Sellable</th><th class="r">Reserved</th><th class="r">Buffer</th><th class="r">ATP</th><th class="r">Quarantine</th><th class="r" data-help="col-incoming">Incoming</th></tr></thead><tbody>
     ${r.locs.map((l) => `<tr><td><b>${l.name}</b> <span class="muted small mono">${l.code}</span></td><td class="small mono">${l.bin}</td><td class="r">${l.sell}</td><td class="r ${l.res ? "" : "dim"}">${l.res}</td><td class="r ${l.buf ? "" : "dim"}">${l.buf}</td><td class="r strong">${l.atp}</td><td class="r ${l.q ? "text-bad strong" : "dim"}">${l.q}</td><td class="r ${l.t ? "text-brand strong" : "dim"}">${l.t}</td></tr>`).join("")}
     <tr><td colspan="2" class="strong">Enterprise</td><td class="r strong">${r.sellable}</td><td class="r strong">${r.reserved}</td><td class="r strong">${r.buffer}</td><td class="r strong">${r.atp}</td><td class="r strong">${r.quarantine}</td><td class="r strong">${r.transit}</td></tr>
     </tbody></table></div>
@@ -523,43 +569,50 @@ TX.ready(() => {
       insp: ["INS-2270", "Mohammed Irfan", "01 Sep 2026", "42 / 42 passed", "78% (402 cycles)", "ER-1160 · NIST 800-88 Purge"], warranty: ["Tradex refurbished · 6 months · policy v3", "Tradex", "12 Sep 2026 → 12 Mar 2027 · active"],
       tl: [["done", "clipboard", "Purchase order", "PO-2026-0122", "26 Aug"], ["done", "scan", "Goods receipt", "GRN-0419", "29 Aug"], ["done", "check", "QC inspection", "INS-2270 · pass", "01 Sep"], ["done", "award", "Graded", "Grade B", "01 Sep"], ["done", "camera", "Photographed", "5 photos", "02 Sep"], ["done", "globe", "Published", "LAP02-RB", "02 Sep"], ["done", "lock", "Reserved", "R-5377 · WhatsApp order", "10 Sep"], ["done", "truck", "Sold & dispatched", "TXO-10391 · delivered 12 Sep", "11 Sep"]] },
   };
+  // Next-step guidance per unit state: [what to do now, action button/link]
+  const UNEXT = {
+    "U-000812": ["re-grade this returned unit (proposed Grade B after a keyboard replacement), or send it to repair or back to the supplier. Until the decision is recorded it stays out of sellable stock and ATP.", `<a class="btn btn-xs" href="erp-returns.html#quarantine">Open returns quarantine</a>`],
+    "U-000815": ["this unit is sellable and has been suggested as the replacement for exception TXO-10477 (payment arrived after the hold expired). Finance decides: reserve it for that customer with their consent, or refund. Until then any channel can sell it.", `<button type="button" class="btn btn-xs" data-go-tab="reservations">See holds &amp; exceptions</button>`],
+    "U-000807": ["nothing to do — the unit was sold and delivered. If the customer returns it or claims warranty, the case starts on Returns &amp; warranty and is added to this history.", `<a class="btn btn-xs" href="erp-returns.html">Returns &amp; warranty</a>`],
+  };
   const snOut = $("#sn-out");
   const lookup = (q) => {
     q = q.trim().toUpperCase();
     if (q === "PF3K9Z21") {
-      snOut.innerHTML = `<div class="callout c-bad"><i data-icon="alert-octagon"></i><div><strong>Duplicate manufacturer serial detected — PF3K9Z21</strong><div class="mt-4">Appears on <b>U-000799</b> (sold 04 Sep, TXO-10366) and on a unit scanned into <b>GRN-0442</b> as SSD01-N (receiving now, Prime IT). The new unit is held in receiving and cannot become sellable until resolved (possible mis-scan, relabelled or returned device).</div>
+      snOut.innerHTML = `<div class="callout c-bad"><i data-icon="alert-octagon"></i><div><strong data-help="dup-serial">Duplicate manufacturer serial detected — PF3K9Z21</strong><div class="mt-4">Appears on <b>U-000799</b> (sold 04 Sep, TXO-10366) and on a unit scanned into <b>GRN-0442</b> as SSD01-N (receiving now, Prime IT). The new unit is held in receiving and cannot become sellable until resolved (possible mis-scan, relabelled or returned device).</div>
         <div class="row gap-8 mt-12"><a class="btn btn-sm" href="erp-purchasing.html#receive">Open GRN-0442</a><button class="btn btn-sm" data-toast="Case DSC-0034 opened · supplier asked for proof of origin">Open discrepancy case</button></div></div></div>`;
       TX.hydrate(snOut); return;
     }
     const u = UNITS[q];
-    if (!u) { snOut.innerHTML = `<div class="card"><div class="empty"><i data-icon="search"></i><h4>No unit found for “${esc(q)}”</h4><p>We search internal unit IDs (U-…), manufacturer serials and order numbers. Check for a mis-scan, or look up the GRN if the unit is still being received.</p><div class="row gap-8 mt-12" style="justify-content:center"><a class="btn btn-sm" href="erp-purchasing.html#receive">Receiving</a><a class="btn btn-sm" href="erp-returns.html">Returns desk</a></div></div></div>`; TX.hydrate(snOut); return; }
+    if (!u) { snOut.innerHTML = `<div class="card"><div class="empty"><i data-icon="search"></i><h4 data-help="sn-notfound">No unit found for “${esc(q)}”</h4><p>We search internal unit IDs (U-…), manufacturer serials and order numbers. Check for a mis-scan, or look up the GRN if the unit is still being received.</p><div class="row gap-8 mt-12" style="justify-content:center"><a class="btn btn-sm" href="erp-purchasing.html#receive">Receiving</a><a class="btn btn-sm" href="erp-returns.html">Returns desk</a></div></div></div>`; TX.hydrate(snOut); return; }
     const p = TX.byId(u.pid);
-    snOut.innerHTML = `<div class="unit-grid">
+    const nx = UNEXT[q];
+    snOut.innerHTML = `${nx ? `<div class="next-step mb-16">${ic(u.state[1] === "s-bad" ? "alert" : "arrow-right")}<div class="grow"><b>Next step:</b> ${nx[0]}</div>${nx[1]}</div>` : ""}<div class="unit-grid">
       <div class="col gap-16">
         <div class="card">
-          <div class="card-head"><div><div class="small muted">Serialised unit</div><h3 class="row gap-8" style="font-size:18px"><span class="mono">${q}</span> ${TX.condBadge(u.grade)}</h3></div><span class="status ${u.state[1]}">${u.state[0]}</span></div>
+          <div class="card-head"><div><div class="small muted" data-help="unit-card">Serialised unit</div><h3 class="row gap-8" style="font-size:18px"><span class="mono">${q}</span> ${TX.condBadge(u.grade)}</h3></div><span class="status ${u.state[1]}">${u.state[0]}</span></div>
           <div class="card-body">
             <div class="unit-photos mb-16">${TX.ph(u.photos[0], "wide")}<div class="thumbs">${u.photos.map((k) => TX.ph(k)).join("")}</div></div>
             <dl class="kv">
               <dt>Product</dt><dd>${esc(p.title)}</dd>
               <dt>SKU</dt><dd class="mono">${p.sku}</dd>
-              <dt>${u.mfrLabel}</dt><dd><span class="masked">${u.mfr}•••••${u.mfr2}</span> <button class="link-btn small" data-open="m-reveal">Reveal (audited)</button></dd>
+              <dt>${u.mfrLabel}</dt><dd><span class="masked">${u.mfr}•••••${u.mfr2}</span> <button class="link-btn small" data-open="m-reveal" data-help="reveal">Reveal (audited)</button></dd>
               <dt>Location</dt><dd>${u.loc}</dd>
               <dt>Photos</dt><dd>${u.photos.length} actual-unit photos · captured at inspection</dd>
             </dl>
           </div>
         </div>
         <div class="grid g-2">
-          <div class="card card-pad"><div class="row-between mb-8"><h4>Inspection record</h4><span class="mono small muted">${u.insp[0]}</span></div>
+          <div class="card card-pad"><div class="row-between mb-8"><h4 data-help="unit-insp">Inspection record</h4><span class="mono small muted">${u.insp[0]}</span></div>
             <dl class="kv" style="grid-template-columns:90px 1fr"><dt>Inspector</dt><dd>${u.insp[1]}</dd><dt>Date</dt><dd>${u.insp[2]}</dd><dt>Result</dt><dd class="text-ok">${u.insp[3]}</dd><dt>Battery</dt><dd>${u.insp[4]}</dd><dt>Erasure</dt><dd>${u.insp[5]}</dd></dl>
             <button class="btn btn-sm mt-12" data-toast="Inspection report PDF opened">${ic("file", "ic-sm")} Full checklist</button></div>
-          <div class="card card-pad"><div class="row-between mb-8"><h4>Warranty</h4>${ic("shield", "text-ok")}</div>
+          <div class="card card-pad"><div class="row-between mb-8"><h4 data-help="unit-wty">Warranty</h4>${ic("shield", "text-ok")}</div>
             <dl class="kv" style="grid-template-columns:80px 1fr"><dt>Policy</dt><dd>${u.warranty[0]}</dd><dt>Provider</dt><dd>${u.warranty[1]}</dd><dt>Term</dt><dd>${u.warranty[2]}</dd></dl>
             <div class="small muted mt-8">Policy version is the one snapshotted on the original order line.</div></div>
         </div>
       </div>
       <div class="card" data-anno="1A · §9.4 Unit lifecycle: PO → sale → return → re-grade">
-        <div class="card-head"><div><h3>Unit lifecycle</h3><div class="sub">Every event is a ledger entry with reference and actor</div></div><button class="btn btn-sm" data-toast="Lifecycle exported for warranty case">${ic("download", "ic-sm")} Export</button></div>
+        <div class="card-head"><div><h3 data-help="unit-life">Unit lifecycle</h3><div class="sub">Every event is a ledger entry with reference and actor</div></div><button class="btn btn-sm" data-toast="Lifecycle exported for warranty case">${ic("download", "ic-sm")} Export</button></div>
         <div class="card-body"><ul class="timeline">
           ${u.tl.map(([st, icon, t, d, m]) => `<li class="${st}"><span class="t-dot">${ic(icon)}</span><div class="t-title">${t}</div><div class="small subtle">${d}</div><div class="t-meta">${m}</div></li>`).join("")}
         </ul>
@@ -650,7 +703,7 @@ TX.ready(() => {
   $("#feed-body").innerHTML = FEEDS.map(([v, feed, n, last, ago, fr, pol]) => `<tr>
     <td><div class="cell-main">${v.name}</div><div class="cell-sub">${v.id} · ${v.model} · ${v.city}</div></td><td class="small">${feed}</td><td class="r">${n}</td>
     <td class="small">${last}<div class="cell-sub">${ago}</div></td><td><span class="badge ${fr[1]}">${fr[0] === "Stale" ? ic("clock") : fr[0] === "Fresh" ? ic("check-circle") : ""} ${fr[0]}</span></td><td class="small">${pol}</td>
-    <td class="r">${fr[0] === "Stale" ? `<button class="btn btn-xs btn-primary" data-toast="Update request sent to NetCore via portal & email">Request update</button>` : fr[0] === "Fresh" ? `<button class="btn btn-xs" data-toast="Feed log opened">Log</button>` : ""}</td></tr>`).join("");
+    <td class="r">${fr[0] === "Stale" ? `<button class="btn btn-xs btn-primary" data-toast="Update request sent to NetCore via portal & email">Request update</button>` : fr[0] === "Fresh" ? `<button class="btn btn-xs" data-toast="Feed log opened">View log</button>` : ""}</td></tr>`).join("");
   const OFF = [
     ["lap-06", 0, 0, 4, 1, "3–4 days", "Today 10:30", ["Fresh", "b-ok"], "Ships in 4–6 days · partner stock", ""],
     ["pc-03", 0, 0, 2, 0, "5–7 days (build)", "Today 10:30", ["Fresh", "b-ok"], "Ships in 6–8 days · built to order", ""],
@@ -674,10 +727,18 @@ TX.ready(() => {
       <td class="r"><div class="qty" style="height:30px"><button data-step="-1" aria-label="Decrease">${ic("minus", "ic-sm")}</button><input value="${q}" min="1" data-tl="${k}" aria-label="Quantity"><button data-step="1" aria-label="Increase">${ic("plus", "ic-sm")}</button></div></td><td class="r">${TX.fmt(v)}</td><td class="r"><button class="btn btn-ghost btn-icon btn-sm" aria-label="Remove line">${ic("trash", "ic-sm")}</button></td></tr>`; }).join("") + `<tr><td colspan="3" class="r strong">Total value at cost</td><td class="r strong">${TX.fmt(total)}</td><td></td></tr>`;
     const over = total > 200000;
     $("#t-appr").className = "callout " + (over ? "c-warn" : "c-info");
-    $("#t-appr div").innerHTML = over ? `<strong>Needs operations admin approval</strong> — value ${TX.fmt(total)} is above the ₹2,00,000 branch-manager limit (sample threshold). Anita R. is the approver; Rajesh M. is the alternate.` : `<strong>Branch manager can approve</strong> — value ${TX.fmt(total)} is within the ₹2,00,000 limit (sample threshold).`;
+    $("#t-appr div").innerHTML = over ? `<strong data-help="t-approval">Needs operations admin approval</strong> — value ${TX.fmt(total)} is above the ₹2,00,000 branch-manager limit (sample threshold). Anita R. is the approver; Rajesh M. is the alternate.` : `<strong data-help="t-approval">Branch manager can approve</strong> — value ${TX.fmt(total)} is within the ₹2,00,000 limit (sample threshold).`;
   };
   renderTl();
   $("#t-lines").addEventListener("change", (e) => { const i = e.target.closest("[data-tl]"); if (i) { TL[+i.dataset.tl][1] = Math.max(1, +i.value || 1); renderTl(); } });
+
+  /* ---------- Guide hooks: flow steps / next-step buttons that open a tab already filtered ---------- */
+  // data-mvq="<text>" searches the ledger, data-mvtype="<event>" picks an event type, data-sf="q|low|t" turns a stock chip on.
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-mvq],[data-mvtype],[data-sf]"); if (!b) return;
+    if (b.dataset.sf) { const c = $("#c-" + b.dataset.sf); if (c) { c.classList.add("active"); renderStock(); } return; }
+    $("#mv-q").value = b.dataset.mvq || ""; $("#mv-type").value = b.dataset.mvtype || ""; renderMv();
+  });
 });
 </script>
 </body>

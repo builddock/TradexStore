@@ -46,49 +46,49 @@
   <div class="page-head">
     <div>
       <div class="crumbs"><span>Finance &amp; insight</span><i data-icon="chevron-right"></i><span>Automation</span></div>
-      <h1>Automation &amp; exceptions</h1>
-      <p class="sub">Deterministic rules — no AI in Phase 1. Every rule has an owner, an idempotency key, a retry policy, a human boundary and a kill switch.</p>
+      <h1 data-help="page">Automation &amp; exceptions</h1>
+      <p class="sub"><span data-help="rule-basics">Deterministic rules</span> — no AI in Phase 1. Every rule has an owner, an idempotency key, a retry policy, a human boundary and a kill switch.</p>
     </div>
     <div class="actions">
-      <span class="badge b-outline" data-anno="R09/R10 Named reviewer may disable a faulty rule (§26.6 Q60)"><i data-icon="user"></i> Rule reviewer: Anita R. · Mondays 10:00</span>
-      <button class="btn btn-danger" data-open="m-pauseall"><i data-icon="pause"></i> Pause automation…</button>
-      <button class="btn btn-primary" data-open="m-propose"><i data-icon="plus"></i> Propose a rule</button>
+      <span class="badge b-outline" data-help="reviewer" data-anno="R09/R10 Named reviewer may disable a faulty rule (§26.6 Q60)"><i data-icon="user"></i> Rule reviewer: Anita R. · Mondays 10:00</span>
+      <button class="btn btn-danger" data-help="act-pauseall" data-open="m-pauseall"><i data-icon="pause"></i> Pause automation…</button>
+      <button class="btn btn-primary" data-help="act-propose" data-open="m-propose"><i data-icon="plus"></i> Propose a rule</button>
     </div>
   </div>
 
   <section class="grid g-6" id="kpis">
-    <div class="kpi"><div class="k-label"><i data-icon="zap"></i> <span>Active rules</span></div><div class="k-value">15 <span class="muted" style="font-size:15px">/ 17</span></div><div class="k-foot"><span>1 paused · 1 off</span></div></div>
-    <div class="kpi"><div class="k-label"><i data-icon="activity"></i> <span>Runs today</span></div><div class="k-value">2,418</div><div class="k-foot"><span>14,165 in 7 days</span></div></div>
-    <div class="kpi"><div class="k-label"><i data-icon="check-circle"></i> <span>Success rate</span></div><div class="k-value">99.2%</div><div class="k-foot"><span>today · 7 d <b id="succ7"></b></span></div></div>
-    <div class="kpi" data-anno="§12.4 Hours saved are estimates, measured weekly"><div class="k-label"><i data-icon="clock"></i> <span>Staff time saved</span></div><div class="k-value">41 h</div><div class="k-foot"><span class="delta up-good"><i data-icon="trending-up"></i> +3 h wk/wk</span><span>est.</span></div></div>
-    <div class="kpi"><div class="k-label"><i data-icon="alert"></i> <span>Open exceptions</span></div><div class="k-value">23</div><div class="k-foot"><span><b class="text-bad">1 critical</b> · 6 owner-level</span></div></div>
-    <div class="kpi"><div class="k-label"><i data-icon="check"></i> <span>Approvals waiting</span></div><div class="k-value">10</div><div class="k-foot"><span><b class="text-warn">1 overdue</b> · 5 on me</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-active"><i data-icon="zap"></i> <span>Active rules</span></div><div class="k-value">15 <span class="muted" style="font-size:15px">/ 17</span></div><div class="k-foot"><span>1 paused · 1 off</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-runs"><i data-icon="activity"></i> <span>Runs today</span></div><div class="k-value">2,418</div><div class="k-foot"><span>14,165 in 7 days</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-success"><i data-icon="check-circle"></i> <span>Success rate</span></div><div class="k-value">99.2%</div><div class="k-foot"><span>today · 7 d <b id="succ7"></b></span></div></div>
+    <div class="kpi" data-anno="§12.4 Hours saved are estimates, measured weekly"><div class="k-label" data-help="kpi-saved"><i data-icon="clock"></i> <span>Staff time saved</span></div><div class="k-value">41 h</div><div class="k-foot"><span class="delta up-good"><i data-icon="trending-up"></i> +3 h wk/wk</span><span>est.</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-exceptions"><i data-icon="alert"></i> <span>Open exceptions</span></div><div class="k-value">23</div><div class="k-foot"><span><b class="text-bad">1 critical</b> · 6 owner-level</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-approvals"><i data-icon="check"></i> <span>Approvals waiting</span></div><div class="k-value">10</div><div class="k-foot"><span><b class="text-warn">1 overdue</b> · 5 on me</span></div></div>
   </section>
 
   <section class="top-grid mt-16">
     <div class="card" data-anno="1A/1B · R09 Measured value — hours saved per week">
       <div class="card-head">
-        <div><h3>Estimated staff hours saved per week</h3><div class="sub">All enabled rules, net of exception-handling time · weeks starting Monday</div></div>
+        <div><h3 data-help="value-chart">Estimated staff hours saved per week</h3><div class="sub">All enabled rules, net of exception-handling time · weeks starting Monday</div></div>
         <button class="btn btn-sm btn-ghost" id="val-toggle"><i data-icon="list" class="ic-sm"></i> Table view</button>
       </div>
       <div class="card-body">
         <div id="ch-value"></div>
         <div class="row gap-12 mt-12" style="align-items:flex-start">
-          <div class="formula grow">hours_saved = cases × minutes_saved ÷ 60 − exception_handling_hours</div>
+          <div class="formula grow" data-help="value-formula">hours_saved = cases × minutes_saved ÷ 60 − exception_handling_hours</div>
           <div class="small muted" style="max-width:300px">Time study refreshed monthly (last: 14 Sep, 60 observed orders). Overlapping rules are not double-counted. ₹ value per hour to be confirmed by client.</div>
         </div>
       </div>
     </div>
     <div class="card">
-      <div class="card-head"><div><h3>Health right now</h3><div class="sub">Worker queue, retries and failing rules · 10:42</div></div><span class="status s-warn">1 rule paused</span></div>
-      <div class="list-row"><span class="li-icon bad"><i data-icon="pause"></i></span><div class="grow"><b>Courier tracking sync auto-paused</b><div class="small muted">3 × HTTP 504 since 08:15 · 17 shipments without update</div></div><button class="btn btn-xs" data-goto="runs">Evidence</button></div>
+      <div class="card-head"><div><h3 data-help="health">Health right now</h3><div class="sub">Worker queue, retries and failing rules · 10:42</div></div><span class="status s-warn">1 rule paused</span></div>
+      <div class="list-row"><span class="li-icon bad"><i data-icon="pause"></i></span><div class="grow"><b data-help="auto-pause">Courier tracking sync auto-paused</b><div class="small muted">3 × HTTP 504 since 08:15 · 17 shipments without update</div></div><button class="btn btn-xs" data-goto="runs">Evidence</button></div>
       <div class="list-row"><span class="li-icon warn"><i data-icon="upload"></i></span><div class="grow"><b>Supplier import: 38 rows rejected</b><div class="small muted">Prime IT · IMP-0332 · missing HSN code</div></div><button class="btn btn-xs" data-goto="exceptions">Open</button></div>
       <div class="list-row"><span class="li-icon warn"><i data-icon="wallet"></i></span><div class="grow"><b>Settlement matching partial</b><div class="small muted">4 unmatched lines · ₹18,420 · Finance</div></div><button class="btn btn-xs" data-goto="exceptions">Open</button></div>
-      <div class="list-row"><span class="li-icon ok"><i data-icon="shield"></i></span><div class="grow"><b>Global pause: off</b><div class="small muted">Last used 14 Aug · payment provider incident · 42 min</div></div></div>
+      <div class="list-row"><span class="li-icon ok"><i data-icon="shield"></i></span><div class="grow"><b data-help="global-pause">Global pause: off</b><div class="small muted">Last used 14 Aug · payment provider incident · 42 min</div></div></div>
       <div class="health-row">
-        <div><b>12 s</b><span>Oldest queued job</span></div>
-        <div><b>14</b><span>Retries · 24 h · 11 recovered</span></div>
-        <div><b>3</b><span>Failed → exception</span></div>
+        <div><b>12 s</b><span data-help="h-queue">Oldest queued job</span></div>
+        <div><b>14</b><span data-help="h-retries">Retries · 24 h · 11 recovered</span></div>
+        <div><b>3</b><span data-help="h-failed">Failed → exception</span></div>
       </div>
     </div>
   </section>
@@ -96,31 +96,31 @@
   <!-- ========================= Main tabs ========================= -->
   <section class="card mt-16" data-tabset>
     <div class="tabs main-tabs">
-      <button class="tab active" data-tab="rules"><i data-icon="zap" class="ic-sm"></i> Rules <span class="count">17</span></button>
-      <button class="tab" data-tab="runs"><i data-icon="activity" class="ic-sm"></i> Job runs <span class="count">3 failed</span></button>
-      <button class="tab" data-tab="exceptions"><i data-icon="alert" class="ic-sm"></i> Exceptions <span class="count">23</span></button>
-      <button class="tab" data-tab="approvals"><i data-icon="check-circle" class="ic-sm"></i> Approvals <span class="count">10</span></button>
+      <button class="tab active" data-tab="rules" data-help="tab-rules"><i data-icon="zap" class="ic-sm"></i> Rules <span class="count">17</span></button>
+      <button class="tab" data-tab="runs" data-help="tab-runs"><i data-icon="activity" class="ic-sm"></i> Job runs <span class="count">3 failed</span></button>
+      <button class="tab" data-tab="exceptions" data-help="tab-exceptions"><i data-icon="alert" class="ic-sm"></i> Exceptions <span class="count">23</span></button>
+      <button class="tab" data-tab="approvals" data-help="tab-approvals"><i data-icon="check-circle" class="ic-sm"></i> Approvals <span class="count">10</span></button>
     </div>
 
     <!-- Rules catalogue -->
     <div class="tab-panel active" data-panel="rules" data-anno="1A/1B · R09 Rules catalogue from blueprint §12.2 (A01–A38)">
       <div class="table-toolbar">
         <div class="input-icon" style="width:240px"><i data-icon="search"></i><input class="input input-sm" id="rule-q" placeholder="Search rules, triggers, IDs…" aria-label="Search rules"></div>
-        <div class="row gap-6" id="rule-f">
+        <div class="row gap-6" id="rule-f" data-help="rule-filter">
           <button class="chip active" data-f="all">All 17</button>
           <button class="chip" data-f="on">Active 15</button>
           <button class="chip" data-f="paused"><i data-icon="pause"></i> Paused 1</button>
           <button class="chip" data-f="off">Off 1</button>
           <button class="chip" data-f="failing"><i data-icon="alert"></i> Failed in 7 d</button>
         </div>
-        <select class="select input-sm" style="width:auto" id="rule-ph" aria-label="Phase"><option value="">All phases</option><option>1A</option><option>1B</option></select>
+        <select class="select input-sm" style="width:auto" id="rule-ph" aria-label="Phase" data-help="g.phase"><option value="">All phases</option><option>1A</option><option>1B</option></select>
         <span class="ml-auto small muted">Click a rule for its full definition, runs and kill switch</span>
       </div>
       <div class="table-wrap"><table class="table compact tbl-rules">
-        <thead><tr><th style="min-width:215px">Rule</th><th style="min-width:280px">When → then</th><th>Owner</th><th>Status</th><th>Runs 7 d · success</th><th class="r">Saved</th><th>Last failure</th></tr></thead>
+        <thead><tr><th style="min-width:215px" data-help="col-rule">Rule</th><th style="min-width:280px" data-help="col-when">When → then</th><th data-help="col-owner">Owner</th><th data-help="col-status">Status</th><th data-help="col-success">Runs 7 d · success</th><th class="r" data-help="col-saved">Saved</th><th data-help="col-lastfail">Last failure</th></tr></thead>
         <tbody id="rules-body"></tbody>
       </table></div>
-      <div class="pager"><span id="rules-count">17 rules</span><span>Candidates not yet built: A29 abandoned carts (P2), A30 forecasting (P2), A31 invoice OCR (P2), A33 seller payouts (P2), A34/A35 (P3)</span></div>
+      <div class="pager"><span id="rules-count">17 rules</span><span data-help="candidates">Candidates not yet built: A29 abandoned carts (P2), A30 forecasting (P2), A31 invoice OCR (P2), A33 seller payouts (P2), A34/A35 (P3)</span></div>
     </div>
 
     <!-- Job-run log -->
@@ -129,10 +129,10 @@
         <div class="seg" id="run-f"><button class="active" data-f="all">All</button><button data-f="failed">Failed 3</button><button data-f="retry">Retrying 1</button><button data-f="partial">Partial 2</button><button data-f="skipped">Skipped (duplicate) 1</button></div>
         <select class="select input-sm" style="width:auto" aria-label="Rule"><option>All rules</option><option>A05 Payment → reserve → pick</option><option>A13.2 Courier tracking sync</option><option>A14 Status notifications</option></select>
         <div class="seg"><button>Last hour</button><button class="active">Today</button><button>7 days</button></div>
-        <span class="ml-auto small muted">Backoff: 1 m → 2 m → 4 m (+ jitter), max 5 attempts · logs kept 90 days, failure evidence 1 year</span>
+        <span class="ml-auto small muted" data-help="backoff">Backoff: 1 m → 2 m → 4 m (+ jitter), max 5 attempts · logs kept 90 days, failure evidence 1 year</span>
       </div>
       <div class="table-wrap"><table class="table compact" id="runs-tbl">
-        <thead><tr><th>Run</th><th>Rule</th><th>Entity</th><th>Started</th><th class="r">Duration</th><th class="c">Attempt</th><th>Result</th><th>Detail</th></tr></thead>
+        <thead><tr><th data-help="col-run">Run</th><th>Rule</th><th data-help="col-entity">Entity</th><th>Started</th><th class="r">Duration</th><th class="c" data-help="col-attempt">Attempt</th><th data-help="col-result">Result</th><th>Detail</th></tr></thead>
         <tbody>
           <tr data-f="ok"><td class="mono nowrap">JOB-88231</td><td class="nowrap"><span class="rid">A06</span> Reservation expiry</td><td class="mono nowrap">R-5534</td><td>10:40:02</td><td class="r">38 ms</td><td class="c">1/5</td><td><span class="status s-ok">Succeeded</span></td><td class="small muted">1 unit released · availability event sent</td></tr>
           <tr data-f="ok"><td class="mono nowrap">JOB-88230</td><td class="nowrap"><span class="rid">A05</span> Payment → reserve → pick</td><td class="mono nowrap">TXO-10496</td><td>10:39:47</td><td class="r">212 ms</td><td class="c">1/5</td><td><span class="status s-ok">Succeeded</span></td><td class="small muted">Pick task PT-3318 · SP Road</td></tr>
@@ -151,11 +151,11 @@
 
       <div class="card-body" id="ev-88213" style="border-top:1px solid var(--line-2)" data-anno="A38 One actionable incident per failure, with evidence">
         <div class="row-between mb-12">
-          <div><h3>Failed job JOB-88213 · Courier tracking sync</h3><div class="small muted">Rule A13.2 v2 · owner Anita R. (Operations) · exception EX-2240 · provider ticket DLV-58213</div></div>
+          <div><h3 data-help="evidence">Failed job JOB-88213 · Courier tracking sync</h3><div class="small muted">Rule A13.2 v2 · owner Anita R. (Operations) · exception EX-2240 · provider ticket DLV-58213</div></div>
           <div class="row gap-8">
-            <button class="btn btn-sm" data-toast="Manual retry queued · attempt 4 (outside auto-retry cap, logged)"><i data-icon="refresh" class="ic-sm"></i> Retry now</button>
+            <button class="btn btn-sm" data-help="ev-retry" data-toast="Manual retry queued · attempt 4 (outside auto-retry cap, logged)"><i data-icon="refresh" class="ic-sm"></i> Retry now</button>
             <button class="btn btn-sm" data-toast="17 shipments moved to manual tracking queue · Ops"><i data-icon="clipboard" class="ic-sm"></i> Switch to manual tracking</button>
-            <button class="btn btn-sm btn-primary" data-open="m-resume"><i data-icon="play" class="ic-sm"></i> Resume rule…</button>
+            <button class="btn btn-sm btn-primary" data-help="ev-resume" data-open="m-resume"><i data-icon="play" class="ic-sm"></i> Resume rule…</button>
           </div>
         </div>
         <div class="grid" style="grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:20px">
@@ -167,7 +167,7 @@
               <li class="warn"><span class="t-dot"><i data-icon="x"></i></span><div class="t-title">08:21:52 · Attempt 3 → HTTP 504 after 30 s</div><div class="t-meta">Retry cap reached for this rule (3)</div></li>
               <li class="current"><span class="t-dot"><i data-icon="pause"></i></span><div class="t-title">08:22:23 · Rule auto-paused · EX-2240 raised</div><div class="t-meta">One exception (not 17) · assigned Anita R. · due 12:15 · owner digest if &gt; 4 h</div></li>
             </ul>
-            <div class="callout c-info small"><i data-icon="info"></i><div><b>Customer impact:</b> 17 shipments show “Status update delayed” on the tracking page instead of an outdated status. No orders, payments or stock were changed.</div></div>
+            <div class="callout c-info small"><i data-icon="info"></i><div><b data-help="ev-impact">Customer impact:</b> 17 shipments show “Status update delayed” on the tracking page instead of an outdated status. No orders, payments or stock were changed.</div></div>
           </div>
 <div class="evidence"><span class="dim"># request (credentials redacted)</span>
 <span class="k">GET</span> https://track.courier.example/v2/shipments?awb=1490228…,+16
@@ -199,10 +199,10 @@ affected AWBs ............... 17 (list attached to EX-2240)</div>
         <span class="ml-auto small muted">Sorted by severity, then due time</span>
       </div>
       <div class="table-wrap"><table class="table exc-tbl">
-        <thead><tr><th>Severity</th><th style="min-width:300px">Exception · evidence</th><th>Entity</th><th>Age</th><th>Assignee</th><th>Due</th><th>Escalation path</th><th class="r">Recommended actions</th></tr></thead>
+        <thead><tr><th data-help="severity">Severity</th><th style="min-width:300px" data-help="col-exc">Exception · evidence</th><th data-help="col-exc-entity">Entity</th><th>Age</th><th data-help="col-assignee">Assignee</th><th data-help="col-due">Due</th><th data-help="col-escalation">Escalation path</th><th class="r" data-help="col-actions">Recommended actions</th></tr></thead>
         <tbody id="exc-body"></tbody>
       </table></div>
-      <div class="card-foot"><span class="small muted">Showing 13 of 23 · resolved items keep their resolution reason · 3 exceptions recurred ≥ 5× this month → flagged for policy review, not more owner calls</span><a class="small strong" href="erp-reports.html">Approval &amp; exception ageing report →</a></div>
+      <div class="card-foot"><span class="small muted" data-help="recurrence">Showing 13 of 23 · resolved items keep their resolution reason · 3 exceptions recurred ≥ 5× this month → flagged for policy review, not more owner calls</span><a class="small strong" href="erp-reports.html">Approval &amp; exception ageing report →</a></div>
     </div>
 
     <!-- Approvals -->
@@ -210,13 +210,13 @@ affected AWBs ............... 17 (list attached to EX-2240)</div>
       <div class="table-toolbar">
         <div class="seg" id="apr-f"><button class="active" data-f="all">All 10</button><button data-f="me">Waiting on me 5</button><button data-f="overdue">Overdue / escalated 1</button></div>
         <select class="select input-sm" style="width:auto" aria-label="Approval type"><option>All types</option><option>Discount override</option><option>Stock write-off</option><option>Purchase order</option><option>Price change</option><option>Vendor content</option><option>Refund</option><option>Payout account</option></select>
-        <span class="ml-auto small muted">Thresholds: <a href="erp-admin.html#thresholds">Settings → Approval thresholds</a> (values to be confirmed by client)</span>
+        <span class="ml-auto small muted" data-help="thresholds-link">Thresholds: <a href="erp-admin.html#thresholds">Settings → Approval thresholds</a> (values to be confirmed by client)</span>
       </div>
       <div class="table-wrap"><table class="table appr-tbl">
-        <thead><tr><th>Type</th><th>Item · requested by</th><th>Why approval is needed</th><th class="r">Value</th><th>Deadline</th><th>Approver → alternate</th><th class="r">Decision</th></tr></thead>
+        <thead><tr><th data-help="col-apr-type">Type</th><th>Item · requested by</th><th data-help="col-why">Why approval is needed</th><th class="r">Value</th><th data-help="col-deadline">Deadline</th><th data-help="col-approver">Approver → alternate</th><th class="r" data-help="col-decision">Decision</th></tr></thead>
         <tbody id="apr-body"></tbody>
       </table></div>
-      <div class="card-foot"><span class="small muted">Each decision records approver, reason and time — bulk review is allowed only where every item keeps its own decision history.</span><span class="small muted">Decided today: 7 (5 by staff within delegated authority)</span></div>
+      <div class="card-foot"><span class="small muted" data-help="apr-record">Each decision records approver, reason and time — bulk review is allowed only where every item keeps its own decision history.</span><span class="small muted">Decided today: 7 (5 by staff within delegated authority)</span></div>
     </div>
   </section>
 
@@ -224,7 +224,7 @@ affected AWBs ............... 17 (list attached to EX-2240)</div>
   <div class="drawer" id="d-rule"><div class="drawer-card wide">
     <div class="drawer-head">
       <div>
-        <div class="row gap-8"><span class="rid" id="dr-id">A05</span><span class="badge b-outline sq" id="dr-ph">1A</span><span id="dr-status"></span></div>
+        <div class="row gap-8"><span class="rid" id="dr-id">A05</span><span class="badge b-outline sq" id="dr-ph">1A</span><span id="dr-status"></span><span data-help="d-rule" data-help-pos="in" class="hi-host"></span></div>
         <h2 class="mt-8" id="dr-name">Payment → reserve → pick task</h2>
         <div class="small muted mt-4" id="dr-sub"></div>
       </div>
@@ -234,18 +234,18 @@ affected AWBs ............... 17 (list attached to EX-2240)</div>
       <div class="killbox" id="dr-kill" data-anno="§12.3 Disable / rollback — kill switch">
         <label class="switch"><input type="checkbox" id="dr-switch" checked aria-label="Rule enabled"></label>
         <div class="grow"><b id="dr-kill-t">Kill switch · rule is running</b><div class="small subtle" id="dr-kill-d">Turning it off stops new runs immediately. In-flight runs finish; queued work moves to the owner’s manual queue. Nothing is replayed automatically when re-enabled.</div></div>
-        <button class="btn btn-sm btn-danger" id="dr-kill-btn"><i data-icon="pause" class="ic-sm"></i> Stop rule</button>
+        <button class="btn btn-sm btn-danger" id="dr-kill-btn" data-help="kill-switch"><i data-icon="pause" class="ic-sm"></i> Stop rule</button>
       </div>
       <div class="grid g-4" id="dr-kpis"></div>
       <div data-tabset>
         <div class="tabs pills mb-12">
-          <button class="tab active" data-tab="rd-def">Definition</button>
-          <button class="tab" data-tab="rd-runs">Recent runs</button>
-          <button class="tab" data-tab="rd-hist">Change history</button>
+          <button class="tab active" data-tab="rd-def" data-help="d-tab-def">Definition</button>
+          <button class="tab" data-tab="rd-runs" data-help="d-tab-runs">Recent runs</button>
+          <button class="tab" data-tab="rd-hist" data-help="d-tab-hist">Change history</button>
         </div>
         <div class="tab-panel active" data-panel="rd-def">
           <div class="card" style="overflow:hidden"><table class="spec-table" id="dr-spec"></table></div>
-          <div class="small muted mt-8">Template: blueprint §12.3 · every field is required before a rule can be enabled in production.</div>
+          <div class="small muted mt-8" data-help="d-template">Template: blueprint §12.3 · every field is required before a rule can be enabled in production.</div>
         </div>
         <div class="tab-panel" data-panel="rd-runs">
           <div class="card"><table class="table compact" id="dr-runs"></table></div>
@@ -256,26 +256,26 @@ affected AWBs ............... 17 (list attached to EX-2240)</div>
       </div>
     </div>
     <div class="drawer-foot">
-      <button class="btn" data-toast="Dry run queued on staging with last 50 real inputs (masked)"><i data-icon="play"></i> Dry-run on staging</button>
-      <button class="btn" data-toast="Draft v4 created · changes need approval by Rajesh M. before release"><i data-icon="edit"></i> Edit (needs approval)</button>
+      <button class="btn" data-help="d-dryrun" data-toast="Dry run queued on staging with last 50 real inputs (masked)"><i data-icon="play"></i> Dry-run on staging</button>
+      <button class="btn" data-help="d-edit" data-toast="Draft v4 created · changes need approval by Rajesh M. before release"><i data-icon="edit"></i> Edit (needs approval)</button>
       <button class="btn btn-primary" data-close>Done</button>
     </div>
   </div></div>
 
   <!-- ========================= Modals ========================= -->
   <div class="modal" id="m-kill"><div class="modal-card">
-    <div class="modal-head"><h3>Stop rule <span id="mk-name"></span>?</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-head"><h3 data-help="m-kill">Stop rule <span id="mk-name"></span>?</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
     <div class="modal-body col gap-16">
       <div class="callout c-warn"><i data-icon="alert"></i><div><b>What happens:</b> new runs stop now · in-flight runs complete · <span id="mk-queue">queued items</span> move to the manual queue · the rule owner and reviewer are notified · the change is audited.</div></div>
-      <div class="field"><label for="mk-reason" class="req">Reason</label><select class="select" id="mk-reason"><option>Provider outage / degraded</option><option>Wrong results observed</option><option>Business policy change</option><option>Planned maintenance</option><option>Other</option></select></div>
+      <div class="field"><label for="mk-reason" class="req" data-help="mk-reason">Reason</label><select class="select" id="mk-reason"><option>Provider outage / degraded</option><option>Wrong results observed</option><option>Business policy change</option><option>Planned maintenance</option><option>Other</option></select></div>
       <div class="field"><label for="mk-note">Note for the audit log</label><textarea class="textarea" id="mk-note" placeholder="e.g. Courier API timing out since 08:02 — manual tracking until provider confirms fix (ticket DLV-58213)"></textarea></div>
-      <div class="field"><label for="mk-until">Auto-resume</label><select class="select" id="mk-until"><option>Never — resume manually</option><option>In 1 hour (with health check)</option><option>At 18:00 today (with health check)</option></select></div>
+      <div class="field"><label for="mk-until" data-help="mk-until">Auto-resume</label><select class="select" id="mk-until"><option>Never — resume manually</option><option>In 1 hour (with health check)</option><option>At 18:00 today (with health check)</option></select></div>
     </div>
     <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-danger" id="mk-go" data-close><i data-icon="pause"></i> Stop rule</button></div>
   </div></div>
 
   <div class="modal" id="m-resume"><div class="modal-card">
-    <div class="modal-head"><h3>Resume courier tracking sync</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-head"><h3 data-help="m-resume">Resume courier tracking sync</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
     <div class="modal-body col gap-12">
       <div class="callout c-info"><i data-icon="info"></i><div>A health check runs first (1 test call). If it passes, the rule resumes and the 17 delayed shipments are re-synced once — the sync is read-only, so repeating it is safe.</div></div>
       <div class="field"><label for="rs-note" class="req">Reason</label><textarea class="textarea" id="rs-note">Provider status page shows recovery at 10:35 (DLV-58213).</textarea></div>
@@ -284,25 +284,25 @@ affected AWBs ............... 17 (list attached to EX-2240)</div>
   </div></div>
 
   <div class="modal" id="m-pauseall"><div class="modal-card lg">
-    <div class="modal-head"><div><h3>Pause automation</h3><div class="small muted">Incident control (§20.4) · requires Owner or Ops admin · audited</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-head"><div><h3 data-help="m-pauseall">Pause automation</h3><div class="small muted">Incident control (§20.4) · requires Owner or Ops admin · audited</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
     <div class="modal-body col gap-12">
-      <label class="panel row-top gap-12" style="cursor:pointer"><input type="radio" name="pa" checked style="margin-top:3px"><div><b>Non-critical only</b><div class="small subtle">Notifications, digests, reminders, suggestions and imports pause. Payment webhooks, reservations and availability keep running so stock stays correct.</div></div></label>
-      <label class="panel row-top gap-12" style="cursor:pointer"><input type="radio" name="pa" style="margin-top:3px"><div><b>Incident mode — stop checkout-affecting automation</b><div class="small subtle">Use when stock or payment integrity is uncertain. Checkout is switched to “temporarily unavailable” at the same time; provider events are stored and replayed after reconciliation.</div></div></label>
+      <label class="panel row-top gap-12" style="cursor:pointer"><input type="radio" name="pa" checked style="margin-top:3px"><div><b data-help="pa-noncritical">Non-critical only</b><div class="small subtle">Notifications, digests, reminders, suggestions and imports pause. Payment webhooks, reservations and availability keep running so stock stays correct.</div></div></label>
+      <label class="panel row-top gap-12" style="cursor:pointer"><input type="radio" name="pa" style="margin-top:3px"><div><b data-help="pa-incident">Incident mode — stop checkout-affecting automation</b><div class="small subtle">Use when stock or payment integrity is uncertain. Checkout is switched to “temporarily unavailable” at the same time; provider events are stored and replayed after reconciliation.</div></div></label>
       <div class="field"><label for="pa-r" class="req">Reason</label><input class="input" id="pa-r" placeholder="e.g. Payment provider incident — duplicate webhooks observed"></div>
     </div>
     <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-danger" data-close data-toast="Non-critical automation paused · Rajesh M. and Anita R. notified" data-toast-icon="pause"><i data-icon="pause"></i> Pause</button></div>
   </div></div>
 
   <div class="modal" id="m-propose"><div class="modal-card lg">
-    <div class="modal-head"><div><h3>Propose an automation rule</h3><div class="small muted">Observed first (§12.1), valued (§12.4), then built and reviewed</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-head"><div><h3 data-help="m-propose">Propose an automation rule</h3><div class="small muted">Observed first (§12.1), valued (§12.4), then built and reviewed</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
     <div class="modal-body">
       <div class="form-grid">
-        <div class="field full"><label for="pp-1" class="req">Business problem (observable manual step)</label><textarea class="textarea" id="pp-1" style="min-height:64px" placeholder="e.g. Branch staff phone the warehouse to check transfer arrival ~12 times a day"></textarea></div>
-        <div class="field"><label for="pp-2" class="req">Trigger</label><select class="select" id="pp-2"><option>Event</option><option>Schedule</option><option>Threshold</option><option>Explicit user action</option></select></div>
-        <div class="field"><label for="pp-3" class="req">Owner role</label><select class="select" id="pp-3"><option>Operations</option><option>Finance</option><option>Warehouse</option><option>Catalog</option><option>Support</option></select></div>
-        <div class="field"><label for="pp-4">Cases per month (observed)</label><input class="input" id="pp-4" placeholder="e.g. 360"></div>
-        <div class="field"><label for="pp-5">Minutes saved per case</label><input class="input" id="pp-5" placeholder="e.g. 3"></div>
-        <div class="field full"><label for="pp-6" class="req">Human boundary — what the rule must never decide</label><input class="input" id="pp-6" placeholder="e.g. cannot cancel a transfer or adjust stock"></div>
+        <div class="field full"><label for="pp-1" class="req" data-help="pp-problem">Business problem (observable manual step)</label><textarea class="textarea" id="pp-1" style="min-height:64px" placeholder="e.g. Branch staff phone the warehouse to check transfer arrival ~12 times a day"></textarea></div>
+        <div class="field"><label for="pp-2" class="req" data-help="pp-trigger">Trigger</label><select class="select" id="pp-2"><option>Event</option><option>Schedule</option><option>Threshold</option><option>Explicit user action</option></select></div>
+        <div class="field"><label for="pp-3" class="req" data-help="pp-owner">Owner role</label><select class="select" id="pp-3"><option>Operations</option><option>Finance</option><option>Warehouse</option><option>Catalog</option><option>Support</option></select></div>
+        <div class="field"><label for="pp-4" data-help="pp-cases">Cases per month (observed)</label><input class="input" id="pp-4" placeholder="e.g. 360"></div>
+        <div class="field"><label for="pp-5" data-help="pp-minutes">Minutes saved per case</label><input class="input" id="pp-5" placeholder="e.g. 3"></div>
+        <div class="field full"><label for="pp-6" class="req" data-help="pp-boundary">Human boundary — what the rule must never decide</label><input class="input" id="pp-6" placeholder="e.g. cannot cancel a transfer or adjust stock"></div>
         <div class="full callout c-brand"><i data-icon="info"></i><div>Phase 1 rules are deterministic. Suggestions that need judgement (compatibility answers, forecasting, invoice OCR) are logged for Phase 2/3 review — not built as rules.</div></div>
       </div>
     </div>
@@ -310,11 +310,11 @@ affected AWBs ............... 17 (list attached to EX-2240)</div>
   </div></div>
 
   <div class="modal" id="m-approve"><div class="modal-card">
-    <div class="modal-head"><h3 id="ma-title">Approve</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-head"><div class="row gap-4"><h3 id="ma-title">Approve</h3><span data-help="m-approve" data-help-pos="in" class="hi-host"></span></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
     <div class="modal-body col gap-12">
       <div class="panel small" id="ma-sum"></div>
-      <div class="field"><label for="ma-r" class="req">Reason (stored in the audit log)</label><textarea class="textarea" id="ma-r" placeholder="e.g. School tender — strategic account; margin accepted once, not a new policy"></textarea></div>
-      <label class="check small"><input type="checkbox"> This exception recurs — flag it for a policy/threshold review</label>
+      <div class="field"><label for="ma-r" class="req" data-help="ma-reason">Reason (stored in the audit log)</label><textarea class="textarea" id="ma-r" placeholder="e.g. School tender — strategic account; margin accepted once, not a new policy"></textarea></div>
+      <label class="check small" data-help="ma-recur"><input type="checkbox"> This exception recurs — flag it for a policy/threshold review</label>
     </div>
     <div class="modal-foot"><button class="btn btn-danger" data-close data-toast="Rejected · requester notified with your reason">Reject</button><button class="btn btn-ok" data-close id="ma-go" data-toast="Approved · reason recorded in audit log">Approve</button></div>
   </div></div>
@@ -459,8 +459,8 @@ TX.ready(() => {
       : r.st === "paused" ? "Auto-paused after the retry cap. Resuming runs a health check first; the rule then processes the backlog once (idempotent)." : "Enabling requires every template field, a staging dry run and owner approval.";
     $("#dr-kill-btn").innerHTML = on ? `${ic("pause", "ic-sm")} Stop rule` : `${ic("play", "ic-sm")} ${r.st === "paused" ? "Resume…" : "Request enable"}`;
     $("#dr-kill-btn").className = "btn btn-sm " + (on ? "btn-danger" : "btn-primary");
-    const k = (l, v, s) => `<div class="kpi" style="padding:12px 14px"><div class="k-label">${l}</div><div class="k-value" style="font-size:20px">${v}</div>${s ? `<div class="k-sub">${s}</div>` : ""}</div>`;
-    $("#dr-kpis").innerHTML = k("Runs · 7 days", TX.num(r.runs), "") + k("Success", r.succ == null ? "—" : r.succ + "%", r.succ != null && r.succ < 99 ? "below 99% target" : "target ≥ 99%") + k("Saved / week", r.hrs ? r.hrs.toFixed(1) + " h" : "—", "estimate") + k("Open exceptions", r.failBad || r.failWarn ? "1" : "0", "");
+    const k = (l, v, s, h) => `<div class="kpi" style="padding:12px 14px"><div class="k-label"${h ? ` data-help="${h}"` : ""}>${l}</div><div class="k-value" style="font-size:20px">${v}</div>${s ? `<div class="k-sub">${s}</div>` : ""}</div>`;
+    $("#dr-kpis").innerHTML = k("Runs · 7 days", TX.num(r.runs), "", "dk-runs") + k("Success", r.succ == null ? "—" : r.succ + "%", r.succ != null && r.succ < 99 ? "below 99% target" : "target ≥ 99%", "dk-success") + k("Saved / week", r.hrs ? r.hrs.toFixed(1) + " h" : "—", "estimate", "dk-saved") + k("Open exceptions", r.failBad || r.failWarn ? "1" : "0", "", "dk-exc");
     $("#dr-spec").innerHTML = "<tbody>" + tplFor(r).map(([a, b]) => `<tr><th>${a}</th><td>${b}</td></tr>`).join("") + "</tbody>";
     const t0 = [["10:40", "ok"], ["10:35", "ok"], ["10:30", r.failWarn ? "warn" : "ok"], ["10:25", "ok"], ["10:20", "dup"], ["10:15", r.failBad ? "bad" : "ok"]];
     $("#dr-runs").innerHTML = `<thead><tr><th>Run</th><th>Started</th><th class="c">Attempt</th><th>Result</th><th class="r">Duration</th></tr></thead><tbody>` + (r.st === "off" ? `<tr><td colspan="5"><div class="empty">${ic("pause")}<h4>No runs yet</h4><p>This rule has never been enabled in production.</p></div></td></tr>` :
@@ -543,12 +543,12 @@ TX.ready(() => {
     const list = A.filter((a) => af === "all" || (af === "me" ? a.me : a.overdue));
     $("#apr-body").innerHTML = list.map((a) => `<tr class="${a.self ? "self" : ""}">
       <td><div class="row gap-8 nowrap">${ic(a.ic, "ic-sm")}<span class="small strong">${a.type}</span></div></td>
-      <td><div class="cell-main" style="font-size:12.5px">${a.item}</div><div class="cell-sub">by ${a.by}</div>${a.status ? `<span class="badge b-info mt-4">${a.status}</span>` : ""}</td>
+      <td><div class="cell-main" style="font-size:12.5px">${a.item}</div><div class="cell-sub">by ${a.by}</div>${a.status ? `<span class="badge b-info mt-4" data-help="callback">${a.status}</span>` : ""}</td>
       <td class="small subtle">${a.why}</td>
       <td class="r small strong">${a.val}</td>
       <td class="small ${a.dlC || ""}">${a.dlC === "due-bad" ? ic("clock", "ic-sm ic-in") + " " : ""}${a.dl}</td>
       <td class="small"><b>${a.ap}</b><div class="${a.altBad ? "text-bad" : "muted"}">${a.altBad ? ic("alert", "ic-sm ic-in") + " " : "→ "}${a.alt}</div></td>
-      <td class="r">${a.self ? `<span class="badge b-outline" data-tip="Separation of duties (§18.2)">${ic("lock")} Cannot self-approve</span>` : a.status ? `<button class="btn btn-xs" data-toast="Call-back logged · awaiting checker">Log call-back</button>` : `<div class="act-col"><button class="btn btn-xs btn-ok" data-approve="${a.type} · ${a.item} · ${a.val}">Approve…</button><button class="btn btn-xs" data-approve="${a.type} · ${a.item} · ${a.val}">Reject…</button></div>`}</td></tr>`).join("");
+      <td class="r">${a.self ? `<span class="badge b-outline" data-help="self-approve" data-tip="Separation of duties (§18.2)">${ic("lock")} Cannot self-approve</span>` : a.status ? `<button class="btn btn-xs" data-toast="Call-back logged · awaiting checker">Log call-back</button>` : `<div class="act-col"><button class="btn btn-xs btn-ok" data-approve="${a.type} · ${a.item} · ${a.val}">Approve…</button><button class="btn btn-xs" data-approve="${a.type} · ${a.item} · ${a.val}">Reject…</button></div>`}</td></tr>`).join("");
   };
   renderApr();
   $("#apr-f").addEventListener("click", (e) => { const b = e.target.closest("button[data-f]"); if (!b) return; af = b.dataset.f; renderApr(); });

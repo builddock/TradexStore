@@ -12,17 +12,17 @@ the codebase and passing tests win, then `TASKS.md`; fix this file to match.
 | Current phase | **0 — Discovery & proof** |
 | Current stage | 0 |
 | Current task | — (none in progress). Next eligible: **T-0-M01-03** Discovery questionnaire & next-meeting pack |
-| Last session | 2026-09-27 — implementation plan created |
+| Last session | 2026-09-28 — ERP/vendor mockup: contextual help (ⓘ) and guided workflows (user request) |
 | Application code present | No (`frontend/`, `backend/`, `infra/`, `tests/` not yet created) |
-| UI prototype | Mockup v0.1 (32 screens) at repo root — **awaiting client sign-off (D-049)**. Storefront pages responsive (desktop · tablet · phone) since 2026-09-27; Phase 1 mobile scope is D-223 |
+| UI prototype | Mockup v0.1 (32 screens) at repo root — **awaiting client sign-off (D-049)**. Storefront pages responsive (desktop · tablet · phone) since 2026-09-27; Phase 1 mobile scope is D-223. ERP workspace and vendor portal have contextual help (ⓘ, help panel, glossary) and 8 operational ERP pages have guided workflows since 2026-09-28 (D-224) |
 | Blocking decisions for Phase 1A start | D-001 (operational core), D-003 (storefront framework), D-004 (staff UI), D-005 (hosting), D-049 (UI sign-off) — see `DECISIONS.md` |
 
 ## 2. Task counts
 Run `python3 plan/tools/status.py` and paste the summary here at the end of each session.
 
 ```
-Tradex plan status — 361 tasks
-  NOT_STARTED=106 · IN_PROGRESS=0 · BLOCKED=0 · REQUIRES_DECISION=254 · COMPLETED=1 · NOT_APPLICABLE=0
+Tradex plan status — 364 tasks
+  NOT_STARTED=107 · IN_PROGRESS=0 · BLOCKED=0 · REQUIRES_DECISION=256 · COMPLETED=1 · NOT_APPLICABLE=0
 Current (earliest unfinished) stage: 0
 Per stage:
   0       done   1/69   in-progress 0  blocked 0  needs-decision 47
@@ -56,6 +56,7 @@ Open decisions blocking the most tasks:
 | 2026-09-27 | (pre-plan) | Implementation plan written in `plan/` | — | — |
 | 2026-09-27 | T-0-M01-01 | D-210 recorded (Phase 0 records location) | — | `status.py --check` 0 issues |
 | 2026-09-27 | (mockup, user request) | Storefront mockup made responsive: phone/tablet header, menu drawer, bottom bar, filter & account panels, sticky buy/checkout bars, per-page layouts, banners & images | — | 13 widths 320–1920 px: 0 overflow; 0 image/banner issues; 0 JS errors on 34 pages; keyboard test of 3 panels passed; desktop 1440 px pixel-identical to before except live timers and the active "Refurbished" category link |
+| 2026-09-28 | (mockup, user request) | ERP workspace + vendor portal: ⓘ contextual help on all 19 P-E/P-V screens (help panel with page guide, glossary A–Z of 203 terms, search), guided workflows ("How it works" strips, tab intros, next-step boxes, plain tab labels) on P-E02/03/04/06/07/08/09/12 | — | see session log 2026-09-28 |
 
 ## 6. Decisions log (append-only; details in `DECISIONS.md`)
 | Date | D-ID | Decision | Approved by |
@@ -63,6 +64,7 @@ Open decisions blocking the most tasks:
 | 2026-09-27 | D-054 | One repository for the whole project; canonical folder layout in `00-conventions.md` §11 (names delegated to the plan) | User |
 | 2026-09-27 | D-210 | Phase 0 records in `plan/phase0/` (publication stays under D-115) | Plan design (folder layout delegated by user) |
 | 2026-09-27 | D-213 | Task IDs permanent; moved tasks change Stage only; `NOT_APPLICABLE` status for tasks a decision removes | Plan design (tracking system) |
+| 2026-09-28 | D-224 | Contextual help (ⓘ, help panel, glossary) on every P-E/P-V screen; guided workflows on P-E02, P-E03, P-E04, P-E06, P-E07, P-E08, P-E09, P-E12 | User |
 
 ## 7. Database migrations
 | Migration ID / file | Entities | Environment(s) applied | Date | Task ID |
@@ -96,6 +98,7 @@ Open decisions blocking the most tasks:
 |---|---|---|
 | 2026-09-27 | (plan) | `plan/*` (24 files + `tools/status.py`), `CLAUDE.md` |
 | 2026-09-27 | (mockup responsive) | `assets/tradex.css`, `assets/tradex.js`, all 13 `store-*.html`; `plan/DECISIONS.md` (D-223), `plan/STATE.md` |
+| 2026-09-28 | (mockup help & guided workflows) | `assets/tradex.js`, `assets/tradex.css`, new `assets/help/` (glossary.js, shell.js, 19 page files), all 15 `erp-*.html`, all 4 `vendor-*.html`, `index.html`; `plan/DECISIONS.md` (D-224, D-225, D-174 note), `plan/04b-frontend-workspace-1.md` (rule 23, §2.21–2.23, §3.2 #5), `plan/04c-frontend-workspace-2-vendor.md` (X20), `plan/TASKS.md` (T-1A.3-M24-02, T-1A.16-M24-06, T-1B.1-M14-16; T-1A.16-M24-03 description), `plan/12-phases.md`, `plan/18-master-checklist.md`, `plan/STATE.md` |
 
 ## 13. Known issues
 | # | Date | Issue | Affects | Status |
@@ -107,6 +110,9 @@ Open decisions blocking the most tasks:
 | 5 | 2026-09-27 | **Ownership gaps** — assign when the stage is reached: P-E11 KPI strip; P-S04 FAQ wiring to API-M16-01 (after 1A.13); email as a shared-inbox channel; checkout disclosure of pilot lines if D-073 is rejected; API-M16-17/-18 and the SLA timer in a 1A-only launch; seeds for S-13 non-inventory values (D-028, D-058, D-077); dealer bank-transfer confirmation screen if the optional T-1A.10-M11-07 is not approved; OTP/reset/invitation message wording before `E-message_template` exists (1A.2 vs 1A.13) | plan | OPEN |
 | 6 | 2026-09-27 | **Cross-stage notes** — T-1A.8-M08-07 internal notes need `E-internal_note` (1A.9) and D-134; T-1A.8-M08-09 bulk message needs the 1A.13 notification core (D-145); T-1A.14-M17-11 Export button needs API-M18-03 (1A.15); supplier-RMA drafts only after 1A.11/1A.12; media backup part of T-1A.1-M26-02 verified in 1A.4 | plan | OPEN (handled inside the task blocks) |
 | 7 | 2026-09-27 | **Minor document inconsistencies** — invitation-expiry decision cited as D-040 in `07` but D-083 in `03`/`11`; `11` §9.5/§12.2 still list AG-02/AG-03 (now API-M24-10/-11); `12-phases.md` §3/§10 initial status counts are pre-D-210 (status.py is authoritative); API-M14-55 roles differ between `06`/`07` and `04c`; vendor nav badges source API-M14-03 (`04c`) vs API-M18-15 (`06`) | plan | OPEN (low) |
+| 8 | 2026-09-28 | **Mockup sample-data inconsistencies** found while writing the ERP help (left unchanged — samples only): P-E02 "Awaiting payment" tile 12 vs saved view 3, "Overdue dispatch" 2 vs 1 overdue row; P-E03 "Ready to ship" count 8 vs 6 rows, Overdue tile 2 vs 1; P-E07 "2 pending changes" with one shown; P-E08 Reserved tile 186 units vs 186 holds / 412 units, "3 bins frozen" vs 1 shown; P-E09 Open POs 14 vs stage bar 19, buyer self-approval ₹1 L vs "creator can't approve"; P-E12 GST series still flags the gap the close checklist says was explained; P-E15 Thresholds callout cites "D-07" (plan: D-024); P-E02 cancel form disables every line on partly shipped orders although BP §10.1/§10.3 allow cancelling unshipped lines | mockup | OPEN — tidy in the next mockup revision (T-0-M09-03) |
+| 9 | 2026-09-28 | ERP and vendor pages still overflow sideways on phones (≈130–435 px at 390 px, unchanged from v0.1) — staff mobile is Phase 2 (04c X16, BP §5.1) | mockup | ACCEPTED (Phase 2) |
+| 10 | 2026-09-28 | P-E15 `#integrations` has a 36 px horizontal overflow at 1024 px (already in v0.1; the source could not be isolated — no element box crosses the edge) | mockup | OPEN — minor |
 
 ## 14. Session log (append-only; newest last)
 ### 2026-09-27 — plan creation
@@ -162,4 +168,37 @@ Open decisions blocking the most tasks:
   - Result: 0 issues on all 13 store pages (~1,000 page states); 0 overflow at 13 widths 320–1920 px;
     0 JS errors; desktop 1440 px unchanged except live timers, a 1 px checkout summary shift and the active
     "Refurbished" link.
+
+### 2026-09-28 — ERP & vendor mockup: contextual help and guided workflows (user request)
+- User requests (same day): (1) an ⓘ explanation wherever needed in the ERP — sections, sub-sections, tabs, sub-tabs,
+  inner pages, settings, configuration, workflows, modals, forms, tables, important buttons, statuses, notifications,
+  short names/terms — opening a clear explanation (meaning, purpose, how to read it, what to do, fields/statuses/
+  buttons, next step); (2) the same for the vendor portal; (3) make Orders, Pick · pack · dispatch, Returns, Products,
+  Pricing, Inventory, Purchasing and Payments simpler and self-explanatory without removing any feature; (4) update
+  the plan only where needed. Recorded as D-224 (DECIDED · User); content ownership as D-225 (OPEN); D-174 narrowed.
+- Shared engine (`assets/tradex.js`, `assets/tradex.css`): `data-help` ⓘ buttons (placed after controls, beside
+  labels, one "About this tab" per tab bar); non-modal help panel (modal sheet on phones) with page guide, glossary
+  A–Z, search, back history, "Show help icons" switch; glossary abbreviations underlined at first mention per card
+  with hover/focus tooltip; aliases (`see`); "How it works" strip, tab intro and next-step box components; top-bar ?
+  opens the page guide; prototype bar "Help icons" toggle. Help CSS is scoped (`button.hi`, `section.flow`) — all 13
+  storefront pages are pixel-identical to the committed version.
+- Content (`assets/help/`): `glossary.js` 203 terms (BP §33 + terms met on the screens; page-local terms merged and
+  reconciled), `shell.js` (ERP and vendor frame), 19 page files — about 1,500 entries in total. Written for
+  non-experts; sample values and open decisions are labelled "sample" / "to be confirmed"; no decision IDs in texts.
+- Guided workflows on P-E02, P-E03, P-E04, P-E06, P-E07, P-E08, P-E09, P-E12: 6-step strips with live sample counts
+  and step filters, tab intros on every main tab, next-step boxes in record drawers/forms, 30 plain tab labels
+  (crosswalk `04b` §2.22), clearer action labels; other additions listed in `04b` §2.23. Page layouts wrap at
+  laptop widths (removed the v0.1 overflows at 1024 px on these pages).
+- Work was split across parallel writers (no browsers); an interruption stopped 8 of them mid-page — each was resumed
+  from the files on disk and completed; nothing was lost (keycheck on every page).
+- Verification (sequential, one headless Chrome, `nice -n 19`): 19 ERP/vendor pages × 5 widths, every tab, modal and
+  drawer opened, 562 visible ⓘ clicked — 0 JS errors, 0 empty panels, 0 missing keys, every tab has help, 1,553 ⓘ and
+  626 marked terms; laptop/desktop overflow 0 except Known issue #10 (pre-existing); phone overflow unchanged or
+  smaller (Phase 2, #9); help-engine functional test 13/13 (keyboard, Esc inside modals, focus return, tab help,
+  links/back, search, glossary, aliases, hide-icons persistence, accessible names, phone focus trap); 0 JS errors on
+  all 34 pages; storefront pixel-identical.
+- Plan: `DECISIONS.md` D-224/D-225/D-174; `04b` rule 23, §2.21–§2.23, §3.2 #5; `04c` X20; tasks T-1A.3-M24-02,
+  T-1A.16-M24-06, T-1B.1-M14-16 (+ `12-phases.md` skeleton/counts, `18-master-checklist.md`); T-1A.16-M24-03
+  description updated (Help destination now D-224). Tracker 364 tasks; next task still T-0-M01-03;
+  `status.py --check`: 0 issues. Known issues #8–#10 added (sample-data inconsistencies, phone overflow, P-E15 36 px).
 

@@ -315,7 +315,7 @@ Each stage: objective, prerequisites, scope summaries, completion criteria, veri
 | Parallelisation | T-1A.3-M09-01…03 and T-1A.3-M01-01 run in parallel with 1A.2; shell and page tasks follow the 1A.2 auth tasks. |
 | Conflicts and notes | Vendor-portal scaffolding and shell are in 1B.1 (M14 is 1B). If D-004 marks a P-E screen native, its P-E tasks become configuration in `backend/` and no code goes to `frontend/workspace/` (00 §11); the task is recorded per D-213. |
 | Decisions referenced | D-003, D-004, D-040, D-049, D-050, D-051, D-101, D-103, D-163, D-170 |
-| Gate task / task count | T-1A.3-M09-06 · 11 tasks (§9.5) |
+| Gate task / task count | T-1A.3-M09-06 · 12 tasks (§9.5) |
 
 ### 6.5 Stage 1A.4 — Catalog, media, search & SEO base
 
@@ -627,7 +627,7 @@ Each stage: objective, prerequisites, scope summaries, completion criteria, veri
 | Parallelisation | Parallel with 1A.14 and 1A.15; the 1A.17 migration track may start once its dependencies are COMPLETED. |
 | Conflicts and notes | Mockup-only controls (D-177) and explanatory panels (D-171) are decided per item; built, deferred or dropped per D-213. |
 | Decisions referenced | D-004, D-036, D-171 (C), D-172, D-174, D-177 (C), D-191, D-195 |
-| Gate task / task count | T-1A.16-M24-05 · 7 tasks (§9.18) |
+| Gate task / task count | T-1A.16-M24-05 · 8 tasks (§9.18) |
 
 ### 6.18 Stage 1A.17 — Migration, UAT & launch readiness
 
@@ -675,7 +675,7 @@ Each stage: objective, prerequisites, scope summaries, completion criteria, veri
 | Parallelisation | Parallel with 1B.3. |
 | Conflicts and notes | Conflicts: D-220 (PR1 places the vendor platform in Phase 2), D-048, D-007. BP §5.2 marks 'vendor admin-created accounts and submissions' C in 1A: if approved for 1A, T-1B.1-M14-01…07 are re-staged into 1A per D-213. Marketplace (M15) stays LATER; the locked marketplace previews in P-E11/P-V04 are not built (D-046). |
 | Decisions referenced | D-004, D-011, D-047, D-068, D-081, D-101, D-131 (C), D-137, D-142 (C), D-185, D-186, D-187, D-188, D-189, D-200 |
-| Gate task / task count | T-1B.1-M14-15 · 15 tasks (§9.20) |
+| Gate task / task count | T-1B.1-M14-15 · 16 tasks (§9.20) |
 
 ### 6.20 Stage 1B.2 — Validated bulk import & supplier feeds
 
@@ -1233,7 +1233,7 @@ stage only) · **Decisions** (must be `DECIDED` before work) · **Primary plan r
 | T-1A.2-M24-02 | Integration settings and secrets: per-environment records (seed S-18 per enabled provider), contract checklist and fallback mode, masked credentials, test connection, write-only rotation with second approver, redacted call logs (API-M24-03…06, API-M24-10; E-integration_setting) | M24 | T-1A.2-M23-01, T-1A.2-M24-01, T-1A.1-M01-08 | — | 11 §9.5; 05 §5.24; 06 API-M24-03…06; 16 TS-ADM-07, TS-INT-10, TS-PERM-10; BP §19.1 | NOT_STARTED |
 | T-1A.2-M02-09 | Stage 1A.2 verification and seed S-04 (owner/admin/finance accounts through invitations with MFA; integration accounts) | M02 | T-1A.2-M02-05, T-1A.2-M02-06, T-1A.2-M02-07, T-1A.2-M02-08, T-1A.2-M03-02, T-1A.2-M17-02, T-1A.2-M24-02 | — | 03 §6 S-04; 16 §4 (S), TS-AUTH-01…10, TS-PERM-01, TS-PERM-04, TS-PERM-08, TS-ADM-01, TS-ADM-02, TS-ADM-05, TS-ADM-06, TS-ADM-09, TS-SVC-03, TS-SVC-04; T10 (identity part) | NOT_STARTED |
 
-### 9.5 Stage 1A.3 — Design system & app shells (11 tasks)
+### 9.5 Stage 1A.3 — Design system & app shells (12 tasks)
 
 | Task ID | Title | Mod | Depends on | Decisions | Primary plan references | Initial status |
 |---|---|---|---|---|---|---|
@@ -1244,6 +1244,7 @@ stage only) · **Decisions** (must be `DECIDED` before work) · **Primary plan r
 | T-1A.3-M09-05 | P-S12 sign-in tab and P-S14 account-access landings (password-reset completion, invitation acceptance) | M09 | T-1A.3-M09-04, T-1A.2-M02-05, T-1A.2-M02-07 | D-040 | 04a §4.12 (#signin); 00 §8 P-S12, P-S14; 06 API-M02-02…08, API-M02-16, API-M02-17; 07 §12.4; 16 TS-AUTH-01, TS-A11Y-01 | REQUIRES_DECISION |
 | T-1A.3-M01-01 | Workspace application scaffolding (frontend/workspace): framework, D-004 screen register (custom vs native), API client, permission-aware rendering, shared list/queue patterns | M01 | T-1A.3-M09-02, T-1A.1-M01-05, T-1A.1-M01-06 | D-101, D-004 | 04b §1.1–1.5, §2; 04c §1; 02 §4; 16 TS-FE-03; BP §30.1 | REQUIRES_DECISION |
 | T-1A.3-M24-01 | Workspace shell: permission-filtered sidebar, top bar, location switcher, global-search box, 'New' menu, notification-bell and system-health placeholders, user menu; workspace context (API-M03-10, API-M03-11) | M24 | T-1A.3-M01-01, T-1A.2-M02-04, T-1A.2-M03-01 | D-170 | 04b §3.0–3.4; 07 §12.2; 06 API-M03-10, API-M03-11; 16 TS-FE-03, TS-PERM-11, TS-ADM-15; MK assets/tradex.js buildWorkspaceShell | REQUIRES_DECISION |
+| T-1A.3-M24-02 | Contextual help framework and guided-workflow components (ⓘ buttons, help panel, glossary marking, How it works strip, tab intro, next-step box) — added 2026-09-28 (D-224) | M24 | T-1A.3-M09-02, T-1A.3-M24-01 | D-224 | 04b §1.4 rule 23, §2.21, §3.2 #5; 04c X20; MK assets/help/; BP §24.2 | NOT_STARTED |
 | T-1A.3-M02-01 | P-E16 staff sign-in, MFA challenge/enrolment, password reset and invitation acceptance | M02 | T-1A.3-M24-01, T-1A.2-M02-05, T-1A.2-M02-06, T-1A.2-M02-07 | D-004 | 04b §3.3a; 00 §8 P-E16; 06 API-M02-04, API-M02-05, API-M02-07, API-M02-08, API-M02-12, API-M02-13, API-M02-16, API-M02-17; 16 TS-AUTH-02 | REQUIRES_DECISION |
 | T-1A.3-M02-02 | P-E15 #users (+ m-invite, access reviews), #roles and #audit (+ d-audit) | M02 | T-1A.3-M24-01, T-1A.2-M02-03, T-1A.2-M02-07, T-1A.2-M02-08 | D-004 | 04c §8.2–8.4, §8.9; 11 §2, §3, §11; 06 API-M02-20…30; 16 TS-ADM-01, TS-ADM-02, TS-ADM-05, TS-ADM-09 | REQUIRES_DECISION |
 | T-1A.3-M03-01 | P-E15 #locations (company, locations, capabilities, bins) | M03 | T-1A.3-M24-01, T-1A.2-M03-01 | D-004 | 04c §8.7; 11 §9.1; 06 API-M03-02…06, API-M03-08, API-M03-09; 16 TS-ADM-06 | REQUIRES_DECISION |
@@ -1486,7 +1487,7 @@ stage only) · **Decisions** (must be `DECIDED` before work) · **Primary plan r
 | T-1A.15-M10-01 | Production-verification / test transaction flag with exclusion from reports, metrics and accounting export (API-M10-26) | M10 | T-1A.15-M18-02, T-1A.15-M19-01 | D-209 | 06 API-M10-26; 16 TS-MIG-06; BP §4 (exclude test traffic), §21.3 step 9 | REQUIRES_DECISION |
 | T-1A.15-M18-08 | Stage 1A.15 verification: T27 accountant test day, T18 accounting effect, T35 export during checkout, TS-PROOF-10, WP15 totals reconcile | M18 | T-1A.15-M18-05, T-1A.15-M18-07, T-1A.15-M19-02, T-1A.15-M11-01, T-1A.15-M09-01, T-1A.15-M10-01 | — | 16 §4 (S), TS-API-01 (stage endpoints), TS-ERP-14, TS-ERP-19, TS-INT-05, TS-SVC-10, TS-SEC-10, TS-UNIT-11, TS-PERF-05, TS-PROOF-10; T18, T27, T35; WP15 | NOT_STARTED |
 
-### 9.18 Stage 1A.16 — Administration completion (7 tasks)
+### 9.18 Stage 1A.16 — Administration completion (8 tasks)
 
 | Task ID | Title | Mod | Depends on | Decisions | Primary plan references | Initial status |
 |---|---|---|---|---|---|---|
@@ -1494,6 +1495,7 @@ stage only) · **Decisions** (must be `DECIDED` before work) · **Primary plan r
 | T-1A.16-M24-02 | Change register: capture of report/integration requests, register list and decisions with effort/cost/dates/baseline (E-change_request; API-M24-07, API-M24-12, API-M24-13, API-M18-11) | M24 | T-1A.9-M09-01 | D-191 | 11 §13; 00 §7.1 E-change_request; 03 §2.21.27; 06 API-M24-07, API-M24-12, API-M24-13, API-M18-11; 04c §6.7; 16 TS-ADM-13; BP §2.3, §25.5 | REQUIRES_DECISION |
 | T-1A.16-M24-03 | Shell completion: sidebar queue counts, staff help and 'My profile' for staff and vendor users (API-M18-15, API-M02-33) | M24 | T-1A.3-M24-01, T-1A.14-M17-05 | D-172, D-174 | 04b §3.1, §3.2, §3.3; 06 API-M18-15, API-M02-33; 16 TS-ADM-15 | REQUIRES_DECISION |
 | T-1A.16-M24-04 | MOCKUP-ONLY workspace controls and explanatory panels, build/defer/drop per decision (P-E03, P-E06, P-E07, P-E08, P-E09, P-E15 items) | M24 | T-1A.3-M24-01 | D-177, D-171 | 04b §6.4, §9.4, §10.1, §10.3, §10.4, §10.7, §11.2, §11.3; 04c §2.10, §8.13 | REQUIRES_DECISION |
+| T-1A.16-M24-06 | Help content and guided-workflow wiring for P-E01…P-E15 — added 2026-09-28 (D-224) | M24 | T-1A.3-M24-02, T-1A.16-M24-03 | D-224, D-225, D-172 | 04b §2.21, §2.22; 04c X20; MK assets/help/ | REQUIRES_DECISION |
 | T-1A.16-M26-01 | Alert catalogue: conditions, page vs daily review, named owners; alert routing drills (API-M24-14) | M26 | T-1A.1-M26-01, T-1A.13-M20-01 | D-195 | 11 §12.3; 02 §21; 16 TS-ADM-08; BP §20.3, §20.4, §23.4 | REQUIRES_DECISION |
 | T-1A.16-M26-02 | Data retention matrix: retention classes → entity hooks, anonymisation that keeps statutory records | M26 | T-1A.8-M08-04 | D-036 | 03 §9.1; 11 §12.4; 16 TS-DB-06; BP §19.3 | REQUIRES_DECISION |
 | T-1A.16-M24-05 | Stage 1A.16 verification: TS-ADM-01…12 complete, AccessPolicy coverage on every admin endpoint, TS-PERM-10/11/12, TS-SEC-05 | M24 | T-1A.16-M24-01, T-1A.16-M24-02, T-1A.16-M24-03, T-1A.16-M26-01, T-1A.16-M26-02 | — | 16 §4 (S), TS-API-01 (stage endpoints), TS-ADM-01…12, TS-SVC-04, TS-PERM-10, TS-PERM-11, TS-PERM-12, TS-SEC-05; 11 §15 | NOT_STARTED |
@@ -1520,7 +1522,7 @@ stage only) · **Decisions** (must be `DECIDED` before work) · **Primary plan r
 | T-1A.17-M25-06 | Cutover execution: freeze or final delta, final import with control totals, verify opening stock/serials/payment references/permissions, switch channels, supervised low-risk production transactions, legacy read-only access | M25 | T-1A.17-M01-01, T-1A.15-M10-01 | D-209, D-048 | 16 TS-MIG-03, TS-MIG-06, TS-MIG-08; BP §21.3 steps 5–10; WP17 | REQUIRES_DECISION |
 | T-1A.17-M26-07 | Hypercare and handover: close monitoring, first-weeks review of exceptions/tickets/abandonment/search failures/discrepancies/automation, maintenance calendar, scheduled restore rehearsals, upgrade regression | M26 | T-1A.17-M25-06 | D-214, D-035 | BP §21.3 step 10, §24.3, §24.4; 16 TS-BKP-04, TS-REG-03, TS-PERF-07, TS-SEC-08; WP17 'Stable operations and handover' | REQUIRES_DECISION |
 
-### 9.20 Stage 1B.1 — Vendor portal & vendor management (15 tasks)
+### 9.20 Stage 1B.1 — Vendor portal & vendor management (16 tasks)
 
 | Task ID | Title | Mod | Depends on | Decisions | Primary plan references | Initial status |
 |---|---|---|---|---|---|---|
@@ -1538,6 +1540,7 @@ stage only) · **Decisions** (must be `DECIDED` before work) · **Primary plan r
 | T-1B.1-M14-12 | Vendor dashboard, action items and two-way messaging; P-V01 (API-M14-03, API-M14-53, API-M14-60, API-M20-01) | M14 | T-1B.1-M14-06, T-1A.13-M20-03 | D-004 | 09 §5.18, §5.20; 04c §10; 06 API-M14-03, API-M14-53, API-M20-01; 16 TS-FE-04 | NOT_STARTED |
 | T-1B.1-M14-13 | Vendor performance metrics and scorecard: P-E11 #performance and P-V01 scorecard (API-M14-55) | M14 | T-1B.1-M14-12 | D-187, D-004, D-075 | 09 §5.19; 04c §4.7, §10.4; 06 API-M14-55; 16 TS-VEN-11; BP §11.2, §14.3 | REQUIRES_DECISION |
 | T-1B.1-M14-14 | Vendor announcements and policy updates (CONDITIONAL; E-vendor_announcement) | M14 | T-1B.1-M14-12 | D-142 | 00 §7.2 E-vendor_announcement; 04c §10.6 | REQUIRES_DECISION |
+| T-1B.1-M14-16 | Vendor-portal help content (P-V01–P-V04, vendor shell) — added 2026-09-28 (D-224) | M14 | T-1A.3-M24-02, T-1B.1-M14-02 | D-224, D-225 | 04c X17, X20; 04b §2.21; MK assets/help/vendor-*.js | REQUIRES_DECISION |
 | T-1B.1-M14-15 | Stage 1B.1 verification: T11, T12, T13 with two vendors; TS-VEN-01/02/05/06/08/09/10; TS-PROOF-06, TS-PROOF-09; TS-E2E-03 | M14 | T-1B.1-M14-05, T-1B.1-M14-07, T-1B.1-M14-08, T-1B.1-M14-09, T-1B.1-M14-11, T-1B.1-M14-13 | — | 16 §4 (S), TS-API-01 (stage endpoints), TS-VEN-01, TS-VEN-02, TS-VEN-05, TS-VEN-06, TS-VEN-08, TS-VEN-09, TS-VEN-10, TS-PERM-02, TS-FE-04, TS-PROOF-06, TS-PROOF-09, TS-E2E-03; T11, T12, T13; WP13 | NOT_STARTED |
 
 ### 9.21 Stage 1B.2 — Validated bulk import & supplier feeds (10 tasks)

@@ -39,6 +39,22 @@
     .rt-step.done .ci { background: var(--ok-50); color: var(--ok-tx); }
     .rt-step.warn .ci { background: var(--warn-50); color: var(--warn-tx); }
     .sm3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    /* Guided help: next-step boxes, unmatched-item drawer, clickable queue rows */
+    #rt-next { margin-bottom: 12px; }
+    #um-body tr[data-um] { cursor: pointer; }
+    .du-steps { margin: 0; padding-left: 20px; font-size: 13px; line-height: 1.5; }
+    .du-steps li { margin: 4px 0; }
+    @media (max-width: 980px) {
+      .ov-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .ov-grid > :last-child { grid-column: 1 / -1; }
+    }
+    @media (max-width: 760px) {
+      .ov-grid { grid-template-columns: minmax(0, 1fr); }
+      .ov-grid > :last-child { grid-column: auto; }
+      .ck { grid-template-columns: 24px minmax(0, 1fr) auto; gap: 4px 10px; padding: 12px 14px; }
+      .ck > :nth-child(3), .ck > :nth-child(4) { grid-column: 2; }
+      .ck > :nth-child(5) { grid-column: 3; grid-row: 1; }
+    }
   </style>
 </head>
 <body data-app="erp" data-page="finance">
@@ -46,40 +62,57 @@
   <div class="page-head">
     <div>
       <div class="crumbs"><span>Finance & insight</span><i data-icon="chevron-right"></i><span>Payments & reconciliation</span></div>
-      <h1>Payments & reconciliation</h1>
-      <p class="sub">Razorpay (primary gateway) · settlement file imported 07:10 · <b>Tally Prime remains the accounting system of record</b> — Tradex exports approved documents to it</p>
+      <h1 data-help="page">Payments & reconciliation</h1>
+      <p class="sub">Razorpay (primary gateway) · settlement file imported 07:10 · <b data-help="acct-authority">Tally Prime remains the accounting system of record</b> — Tradex exports approved documents to it</p>
     </div>
     <div class="actions">
-      <button class="btn" data-toast="Provider reconciliation started · 4 pending attempts queried" data-toast-icon="refresh"><i data-icon="refresh"></i> Check pending with provider</button>
-      <button class="btn" data-open="m-import"><i data-icon="upload"></i> Import settlement file</button>
-      <div class="dd"><button class="btn btn-primary" data-dd-toggle><i data-icon="download"></i> Export <i data-icon="chevron-down" class="ic-sm"></i></button>
+      <button class="btn" data-help="act-check" data-toast="Provider reconciliation started · 4 pending attempts queried" data-toast-icon="refresh"><i data-icon="refresh"></i> Check pending with provider</button>
+      <button class="btn" data-help="act-import" data-open="m-import"><i data-icon="upload"></i> Import settlement file</button>
+      <div class="dd"><button class="btn btn-primary" data-help="act-export" data-dd-toggle><i data-icon="download"></i> Export <i data-icon="chevron-down" class="ic-sm"></i></button>
         <div class="dd-menu"><a href="#" data-goto="export">Accounting export (Tally)</a><a href="#" data-toast="Payment ledger CSV queued · formula-safe · link expires 24 h">Payment ledger (CSV)</a><a href="#" data-toast="Reconciliation report queued">Reconciliation report</a></div></div>
     </div>
   </div>
+
+  <section class="flow" data-flow="finance" aria-labelledby="flow-h" data-anno="1A · §10.2 Reliable checkout · A09 A10 A26 payment → settlement → accounting · guided">
+    <div class="flow-head">
+      <div><h2 class="flow-title" id="flow-h" data-help="flow"><i data-icon="route"></i> How payments &amp; reconciliation work</h2>
+        <p class="flow-sub">Money comes in, is matched to orders, differences are resolved, refunds are paid, documents go to the accounts and the day is closed. Click a step to open it.</p></div>
+      <button class="btn btn-ghost btn-sm flow-toggle" data-flow-toggle aria-expanded="true" aria-controls="flow-steps"><span class="when-open">Hide guide</span><span class="when-closed">Show how it works</span></button>
+    </div>
+    <ol class="flow-steps" id="flow-steps">
+      <li class="flow-step"><button type="button" class="flow-btn" data-go-tab="payments"><span class="fs-n">1</span><span class="fs-t">Receive money</span><span class="fs-d">The provider confirms online payments, couriers collect COD cash and dealers pay by bank transfer.</span><span class="fs-f"><span class="fs-c">61 captured · 5 in flight</span><span class="fs-who">Automatic</span></span></button></li>
+      <li class="flow-step is-done"><button type="button" class="flow-btn" data-go-tab="recon"><span class="fs-n">2</span><span class="fs-t">Match money to orders</span><span class="fs-d">Captured payments are compared with the provider's settlement and with the bank statement.</span><span class="fs-f"><span class="fs-c ok">25 Sep matched · ₹0 diff.</span><span class="fs-who">Automatic · Finance</span></span></button></li>
+      <li class="flow-step is-attn"><button type="button" class="flow-btn" data-go-tab="recon" data-um-go><span class="fs-n">3</span><span class="fs-t">Resolve mismatches</span><span class="fs-d">Anything that does not match becomes an item with an owner: investigate it, chase it or match it by hand.</span><span class="fs-f"><span class="fs-c warn">9 items · ₹1.1 L</span><span class="fs-who">Finance</span></span></button></li>
+      <li class="flow-step"><button type="button" class="flow-btn" data-go-tab="refunds"><span class="fs-n">4</span><span class="fs-t">Approve &amp; pay refunds</span><span class="fs-d">Finance approves each refund; bank transfers need a second person. Failed refunds are checked before any retry.</span><span class="fs-f"><span class="fs-c bad">6 open · 1 failed</span><span class="fs-who">Finance</span></span></button></li>
+      <li class="flow-step"><button type="button" class="flow-btn" data-go-tab="export"><span class="fs-n">5</span><span class="fs-t">Export to the accounts</span><span class="fs-d">Invoices, credit notes, receipts and fees go once to the accounting system, and the totals must agree.</span><span class="fs-f"><span class="fs-c bad">212 of 214 · 2 failed</span><span class="fs-who">Finance</span></span></button></li>
+      <li class="flow-step"><button type="button" class="flow-btn" data-go-tab="close"><span class="fs-n">6</span><span class="fs-t">Close the day</span><span class="fs-d">Finish the checklist, explain open items and sign off. A second person approves and the day is locked.</span><span class="fs-f"><span class="fs-c warn">6 of 9 checks</span><span class="fs-who">Maker · checker</span></span></button></li>
+    </ol>
+    <div class="flow-foot"><span><i data-icon="split"></i> Where each kind of money is tracked: online payments in <button type="button" class="hp-link" data-go-tab="payments">Customer payments</button>, courier cash in <button type="button" class="hp-link" data-go-tab="cod">Courier cash (COD)</button>, dealer bank transfers as bank lines in <button type="button" class="hp-link" data-go-tab="recon">Match &amp; resolve</button>.</span><span>How the provider reports each payment: <button type="button" class="hp-link" data-go-tab="events">Provider messages</button> · new file: <button type="button" class="hp-link" data-open="m-import">Import settlement or bank file</button></span></div>
+  </section>
 
   <div class="filterbar">
     <div class="seg"><button class="active">Today</button><button>Yesterday</button><button>7 days</button><button>Month to date</button></div>
     <select class="select" aria-label="Location"><option>All locations & channels</option><option>Website</option><option>WhatsApp checkout links</option><option>SP Road POS</option><option>Koramangala POS</option><option>Mysuru POS</option></select>
     <select class="select" aria-label="Provider"><option>Razorpay</option><option>Branch card terminals</option><option>COD (couriers)</option></select>
-    <span class="muted small ml-auto">Business date Sat 26 Sep 2026 · amounts incl. GST unless stated · payment date ≠ invoice date ≠ settlement date</span>
+    <span class="muted small ml-auto" data-help="dates">Business date Sat 26 Sep 2026 · amounts incl. GST unless stated · payment date ≠ invoice date ≠ settlement date</span>
   </div>
 
   <section class="grid g-6">
-    <div class="kpi"><div class="k-label"><i data-icon="check-circle"></i> <span>Captured today</span></div><div class="k-value">₹8.42 L</div><div class="k-foot"><span>61 payments</span><span id="sp1"></span></div></div>
-    <div class="kpi"><div class="k-label"><i data-icon="activity"></i> <span>Success rate</span></div><div class="k-value">91.4%</div><div class="k-foot"><span class="delta up-good"><i data-icon="trending-up"></i> +0.6 pt</span><span id="sp2"></span></div></div>
-    <div class="kpi"><div class="k-label"><i data-icon="clock"></i> <span>In flight</span></div><div class="k-value">5</div><div class="k-foot"><span>4 pending · 1 authorised</span></div></div>
-    <div class="kpi" data-anno="1A · R09 Settlement matching (A10)"><div class="k-label"><i data-icon="alert"></i> <span>Unmatched</span></div><div class="k-value text-warn" id="k-unm">—</div><div class="k-foot"><span id="k-unm-n"></span></div></div>
-    <div class="kpi"><div class="k-label"><i data-icon="undo"></i> <span>Refunds open</span></div><div class="k-value">6</div><div class="k-foot"><span class="text-bad strong">1 failed</span><span>₹1.36 L</span></div></div>
-    <div class="kpi"><div class="k-label"><i data-icon="database"></i> <span>Tally export</span></div><div class="k-value">212 / 214</div><div class="k-foot"><span class="text-bad strong">2 failed</span><span>07:30 batch</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-captured"><i data-icon="check-circle"></i> <span>Captured today</span></div><div class="k-value">₹8.42 L</div><div class="k-foot"><span>61 payments</span><span id="sp1"></span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-success"><i data-icon="activity"></i> <span>Success rate</span></div><div class="k-value">91.4%</div><div class="k-foot"><span class="delta up-good"><i data-icon="trending-up"></i> +0.6 pt</span><span id="sp2"></span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-inflight"><i data-icon="clock"></i> <span>In flight</span></div><div class="k-value">5</div><div class="k-foot"><span>4 pending · 1 authorised</span></div></div>
+    <div class="kpi" data-anno="1A · R09 Settlement matching (A10)"><div class="k-label" data-help="kpi-unmatched"><i data-icon="alert"></i> <span>Unmatched</span></div><div class="k-value text-warn" id="k-unm">—</div><div class="k-foot"><span id="k-unm-n"></span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-refunds"><i data-icon="undo"></i> <span>Refunds open</span></div><div class="k-value">6</div><div class="k-foot"><span class="text-bad strong">1 failed</span><span>₹1.36 L</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-export"><i data-icon="database"></i> <span>Tally export</span></div><div class="k-value">212 / 214</div><div class="k-foot"><span class="text-bad strong">2 failed</span><span>07:30 batch</span></div></div>
   </section>
 
   <section class="ov-grid mt-16">
     <div class="card">
-      <div class="card-head"><div><h3>Unmatched value by age</h3><div class="sub">Settlement, bank & COD differences awaiting finance</div></div><button class="btn btn-sm btn-ghost" data-table-toggle="ch-age"><i data-icon="list"></i> Table</button></div>
+      <div class="card-head"><div><h3 data-help="ch-age">Unmatched value by age</h3><div class="sub">Settlement, bank & COD differences awaiting finance</div></div><button class="btn btn-sm btn-ghost" data-table-toggle="ch-age"><i data-icon="list"></i> Table</button></div>
       <div class="card-body" style="padding-top:14px"><div id="ch-age"></div><div class="small muted mt-8">Items older than 15 days escalate to the Owner digest.</div></div>
     </div>
     <div class="card">
-      <div class="card-head"><div><h3>Method mix · today</h3><div class="sub">Share of captured value · success rate by method</div></div></div>
+      <div class="card-head"><div><h3 data-help="ch-mix">Method mix · today</h3><div class="sub">Share of captured value · success rate by method</div></div></div>
       <div class="card-body" style="padding-top:14px">
         <div id="ch-mix"></div>
         <table class="table compact mt-12"><thead><tr><th>Method</th><th class="r">Attempts</th><th class="r">Success</th></tr></thead><tbody>
@@ -88,7 +121,7 @@
       </div>
     </div>
     <div class="card" data-anno="1A · Daily close checklist (maker → checker)">
-      <div class="card-head"><div><h3>Daily close · 26 Sep</h3><div class="sub">6 of 9 checks done · finance sign-off by 19:00</div></div><button class="btn btn-sm" data-goto="close">Open</button></div>
+      <div class="card-head"><div><h3 data-help="ov-close">Daily close · 26 Sep</h3><div class="sub">6 of 9 checks done · finance sign-off by 19:00</div></div><button class="btn btn-sm" data-goto="close">Open checklist</button></div>
       <div class="card-body" style="padding-top:10px">
         <div class="meter m-warn mb-12"><span style="width:67%"></span></div>
         <div class="mini-ck"><span class="ci ok" style="background:var(--ok-50);color:var(--ok-tx)"><i data-icon="check"></i></span><span class="grow">Webhooks processed · retry queue empty</span></div>
@@ -102,24 +135,25 @@
 
   <section class="card mt-16" data-tabset id="tabs-main">
     <div class="tabs" style="padding:0 12px">
-      <button class="tab active" data-tab="payments">Payment attempts <span class="count">72</span></button>
-      <button class="tab" data-tab="events">Webhook events</button>
-      <button class="tab" data-tab="recon">Settlement reconciliation <span class="count" id="t-unm">9</span></button>
-      <button class="tab" data-tab="refunds">Refunds <span class="count">6</span></button>
-      <button class="tab" data-tab="cod">COD remittance</button>
-      <button class="tab" data-tab="export">Accounting export & GST series</button>
-      <button class="tab" data-tab="close">Daily close</button>
+      <button class="tab active" data-tab="payments" data-help="tab-payments">Customer payments <span class="count">72</span></button>
+      <button class="tab" data-tab="events" data-help="tab-events">Provider messages (webhooks)</button>
+      <button class="tab" data-tab="recon" data-help="tab-recon">Match &amp; resolve <span class="count" id="t-unm">9</span></button>
+      <button class="tab" data-tab="refunds" data-help="tab-refunds">Refunds <span class="count">6</span></button>
+      <button class="tab" data-tab="cod" data-help="tab-cod">Courier cash (COD)</button>
+      <button class="tab" data-tab="export" data-help="tab-export">Accounting export &amp; invoices</button>
+      <button class="tab" data-tab="close" data-help="tab-close">Daily close</button>
     </div>
 
     <!-- PAYMENT ATTEMPTS -->
     <div class="tab-panel active" data-panel="payments">
+      <div class="tab-intro"><i data-icon="info"></i><div><b>Every attempt to pay for an order today — website, WhatsApp links, dealer netbanking and COD — one row each.</b> The <b data-help="col-pa-state">attempt state</b> comes from the payment provider and is kept separate from the order's own state. Click a row to see its timeline and what to do next.<span class="ti-next">Most rows need nothing. Look at red rows and anything still <i>pending</i> or <i>authorised</i> — use <b>Check pending with provider</b> if a confirmation seems late.</span></div></div>
       <div class="table-toolbar">
         <div class="input-icon" style="width:270px"><i data-icon="search"></i><input class="input input-sm" id="pa-q" placeholder="Order, provider ref, customer…" aria-label="Search payments"></div>
         <div class="seg" id="pa-state"><button class="active" data-s="all">All</button><button data-s="created">Created</button><button data-s="pending">Pending</button><button data-s="authorised">Authorised</button><button data-s="captured">Captured</button><button data-s="failed">Failed</button><button data-s="expired">Expired</button></div>
-        <span class="ml-auto small muted">One order can have several attempts · no card data is stored (hosted checkout)</span>
+        <span class="ml-auto small muted" data-help="pa-note">One order can have several attempts · no card data is stored (hosted checkout)</span>
       </div>
       <div class="table-wrap" data-anno="1A · §10.1 Payment attempt states are separate from order state"><table class="table">
-        <thead><tr><th>Attempt</th><th>Order</th><th>Method</th><th>Provider ref</th><th class="r">Amount</th><th>Attempt state</th><th>Order state</th><th>Updated</th><th>Note</th></tr></thead>
+        <thead><tr><th data-help="col-attempt">Attempt</th><th>Order</th><th>Method</th><th data-help="col-pa-ref">Provider ref</th><th class="r">Amount</th><th data-help="col-pa-state">Attempt state</th><th data-help="col-order-state">Order state</th><th>Updated</th><th>Note</th></tr></thead>
         <tbody id="pa-body"></tbody>
       </table></div>
       <div class="pager"><span id="pa-count"></span><div class="pages"><button class="active">1</button><button>2</button><button>3</button><button>…</button><button>6</button></div></div>
@@ -127,30 +161,32 @@
 
     <!-- WEBHOOK EVENTS -->
     <div class="tab-panel" data-panel="events">
+      <div class="tab-intro"><i data-icon="info"></i><div><b>The automatic messages (webhooks) the payment provider sends when a payment, refund or settlement changes.</b> Each message is checked for a valid signature, recorded once, and applied only if the change is allowed — so a repeated, late or fake message can never change a payment wrongly.<span class="ti-next">Normally there is nothing to do here. Look at <i>Rejected</i> rows (possible fake message) and <i>Polling</i> rows (the message never arrived, so Tradex asked the provider).</span></div></div>
       <div class="card-body" style="padding-bottom:0">
         <div class="grid g-4 mb-16">
-          <div class="panel"><div class="small muted">Events today</div><b style="font-size:18px">418</b><div class="small muted">p95 processing 0.9 s</div></div>
-          <div class="panel"><div class="small muted">Signature verified</div><b style="font-size:18px" class="text-ok">417</b><div class="small muted">1 rejected (invalid)</div></div>
-          <div class="panel"><div class="small muted">Duplicates ignored</div><b style="font-size:18px">23</b><div class="small muted">idempotent by event ID</div></div>
-          <div class="panel"><div class="small muted">Recovered by polling</div><b style="font-size:18px">2</b><div class="small muted">webhook never arrived</div></div>
+          <div class="panel"><div class="small muted" data-help="ev-today">Events today</div><b style="font-size:18px">418</b><div class="small muted">p95 processing 0.9 s</div></div>
+          <div class="panel"><div class="small muted" data-help="ev-sig">Signature verified</div><b style="font-size:18px" class="text-ok">417</b><div class="small muted">1 rejected (invalid)</div></div>
+          <div class="panel"><div class="small muted" data-help="ev-dup">Duplicates ignored</div><b style="font-size:18px">23</b><div class="small muted">idempotent by event ID</div></div>
+          <div class="panel"><div class="small muted" data-help="ev-poll">Recovered by polling</div><b style="font-size:18px">2</b><div class="small muted">webhook never arrived</div></div>
         </div>
       </div>
       <div class="table-toolbar">
         <div class="seg" id="ev-f"><button class="active" data-f="all">All</button><button data-f="applied">Applied</button><button data-f="dup">Duplicate</button><button data-f="ooo">Out of order</button><button data-f="rej">Rejected</button><button data-f="poll">Polling</button></div>
-        <span class="ml-auto small muted">Events are recorded once, then state transitions are applied only if legal · a proven capture is never downgraded</span>
+        <span class="ml-auto small muted" data-help="ev-rule">Events are recorded once, then state transitions are applied only if legal · a proven capture is never downgraded</span>
       </div>
       <div class="table-wrap" data-anno="1A · §10.2 Signed webhooks, duplicates & out-of-order events handled idempotently"><table class="table compact">
-        <thead><tr><th>Received</th><th>Event ID</th><th>Type</th><th>Payment / order</th><th>Signature</th><th>Result</th><th class="r">Latency</th></tr></thead>
+        <thead><tr><th>Received</th><th data-help="col-ev-id">Event ID</th><th data-help="col-ev-type">Type</th><th>Payment / order</th><th data-help="col-ev-sig">Signature</th><th data-help="col-ev-result">Result</th><th class="r" data-help="col-ev-latency">Latency</th></tr></thead>
         <tbody id="ev-body"></tbody>
       </table></div>
     </div>
 
     <!-- SETTLEMENT RECONCILIATION -->
     <div class="tab-panel" data-panel="recon">
+      <div class="tab-intro"><i data-icon="info"></i><div><b>Checks that the money the provider, the bank and the couriers actually paid matches the payments captured for orders.</b> Top: how one settlement adds up (captured → fees → net payout → bank credit), recent settlements and imported files. Bottom: every difference that still needs a person.<span class="ti-next">Work the <b>Unmatched items queue</b> oldest first — click an item to see what it means and how to resolve it.</span></div></div>
       <div class="card-body">
-        <div class="grid" style="grid-template-columns:minmax(0,0.95fr) minmax(0,1.4fr);gap:20px">
+        <div class="grid stack-md" style="grid-template-columns:minmax(0,0.95fr) minmax(0,1.4fr);gap:20px">
           <div class="card" style="overflow:hidden" data-anno="Captured vs settled vs fees vs net vs bank">
-            <div class="card-head"><div><h3>Settlement <span class="mono">setl_Nx6Tq2</span></h3><div class="sub">Payments of 25 Sep · credited 26 Sep to HDFC current a/c ••4412</div></div><span class="badge b-ok">Matched to bank</span></div>
+            <div class="card-head"><div><h3 data-help="setl-card">Settlement <span class="mono">setl_Nx6Tq2</span></h3><div class="sub">Payments of 25 Sep · credited 26 Sep to HDFC current a/c ••4412</div></div><span class="badge b-ok">Matched to bank</span></div>
             <div class="card-body" style="padding-top:8px">
               <table class="wf">
                 <tr><td class="op"></td><td>Captured payments (58)</td><td class="r">₹7,94,210.00</td></tr>
@@ -167,9 +203,9 @@
             </div>
           </div>
           <div>
-            <div class="row-between mb-8"><h4>Recent settlements</h4><span class="small muted">auto-matched daily at 07:15</span></div>
-            <table class="table compact" style="border:1px solid var(--line);border-radius:var(--r)">
-              <thead><tr><th>Settlement</th><th>For date</th><th class="r">Captured</th><th class="r">Fees + GST</th><th class="r">Net</th><th>Status</th></tr></thead>
+            <div class="row-between mb-8"><h4 data-help="setl-recent">Recent settlements</h4><span class="small muted">auto-matched daily at 07:15</span></div>
+            <div class="table-wrap"><table class="table compact" style="border:1px solid var(--line);border-radius:var(--r)">
+              <thead><tr><th>Settlement</th><th>For date</th><th class="r" data-help="col-setl-captured">Captured</th><th class="r" data-help="col-fees">Fees + GST</th><th class="r" data-help="col-net">Net</th><th data-help="col-setl-status">Status</th></tr></thead>
               <tbody>
                 <tr><td class="mono small">setl_Nx6Tq2</td><td>25 Sep</td><td class="r">₹7,94,210</td><td class="r">₹18,229</td><td class="r">₹7,44,191</td><td><span class="status s-ok">Matched</span></td></tr>
                 <tr><td class="mono small">setl_Nx4Ab9</td><td>24 Sep</td><td class="r">₹6,88,040</td><td class="r">₹15,902</td><td class="r">₹6,72,138</td><td><span class="status s-warn">1 fee mismatch</span></td></tr>
@@ -177,24 +213,24 @@
                 <tr><td class="mono small">setl_Nx0Fz7</td><td>22 Sep</td><td class="r">₹5,90,120</td><td class="r">₹13,570</td><td class="r">₹5,65,560</td><td><span class="status s-warn">Chargeback debit</span></td></tr>
                 <tr><td class="mono small">—</td><td>26 Sep</td><td class="r">₹8,42,318</td><td class="r">—</td><td class="r">—</td><td><span class="status s-muted">Expected 27 Sep</span></td></tr>
               </tbody>
-            </table>
-            <div class="row-between mt-16 mb-8"><h4>Settlement & statement imports</h4><button class="btn btn-sm" data-open="m-import"><i data-icon="upload" class="ic-sm"></i> Import file</button></div>
-            <table class="table compact" style="border:1px solid var(--line);border-radius:var(--r)">
-              <thead><tr><th>File</th><th class="r">Rows</th><th class="r">Matched</th><th>Result</th></tr></thead>
+            </table></div>
+            <div class="row-between mt-16 mb-8"><h4 data-help="imports">Settlement & statement imports</h4><button class="btn btn-sm" data-open="m-import"><i data-icon="upload" class="ic-sm"></i> Import file</button></div>
+            <div class="table-wrap"><table class="table compact" style="border:1px solid var(--line);border-radius:var(--r)">
+              <thead><tr><th>File</th><th class="r">Rows</th><th class="r" data-help="col-imp-matched">Matched</th><th data-help="col-imp-result">Result</th></tr></thead>
               <tbody>
                 <tr><td class="small"><div class="strong" style="word-break:break-all">razorpay_settlement_2026-09-25.csv</div><div class="cell-sub">Provider settlement · 07:10 · auto (SFTP)</div></td><td class="r">60</td><td class="r">58</td><td><span class="status s-ok">Imported</span></td></tr>
                 <tr><td class="small"><div class="strong">hdfc_statement_26sep.xlsx</div><div class="cell-sub">Bank statement · 08:02 · Deepa K.</div></td><td class="r">41</td><td class="r">38</td><td><span class="status s-warn">3 unmatched</span></td></tr>
                 <tr><td class="small"><div class="strong" style="word-break:break-all">razorpay_settlement_2026-09-25 (1).csv</div><div class="cell-sub">08:05 · Deepa K.</div></td><td class="r">60</td><td class="r">—</td><td><span class="status s-bad">Duplicate · rejected</span><div class="cell-sub">same file hash as 07:10</div></td></tr>
                 <tr><td class="small"><div class="strong">delhivery_cod_remit_0921.csv</div><div class="cell-sub">COD remittance · 23 Sep · Deepa K.</div></td><td class="r">41</td><td class="r">40</td><td><span class="status s-warn">1 short</span></td></tr>
               </tbody>
-            </table>
+            </table></div>
           </div>
         </div>
       </div>
-      <div class="card-head" style="border-top:1px solid var(--line-2)"><div><h3>Unmatched items queue</h3><div class="sub">Each item has an owner and a due date · write-offs above ₹5,000 need Owner approval (placeholder)</div></div>
+      <div class="card-head" id="um-head" style="border-top:1px solid var(--line-2)"><div><h3 data-help="um-queue">Unmatched items queue</h3><div class="sub">Each item has an owner and a due date · write-offs above ₹5,000 need Owner approval (placeholder)</div></div>
         <div class="seg" id="um-f"><button class="active" data-f="all">All</button><button data-f="0">0–2 d</button><button data-f="1">3–7 d</button><button data-f="2">8–15 d</button><button data-f="3">16–30 d</button></div></div>
       <div class="table-wrap"><table class="table">
-        <thead><tr><th>Item</th><th>Type</th><th>Reference</th><th class="r">Amount</th><th class="r">Age</th><th>Owner</th><th class="r">Action</th></tr></thead>
+        <thead><tr><th>Item</th><th data-help="col-um-type">Type</th><th data-help="col-um-ref">Reference</th><th class="r">Amount</th><th class="r" data-help="col-um-age">Age</th><th>Owner</th><th class="r" data-help="col-um-action">Action</th></tr></thead>
         <tbody id="um-body"></tbody>
         <tfoot><tr><td colspan="3">Total unmatched</td><td class="r" id="um-total"></td><td colspan="3"></td></tr></tfoot>
       </table></div>
@@ -202,6 +238,7 @@
 
     <!-- REFUNDS -->
     <div class="tab-panel" data-panel="refunds">
+      <div class="tab-intro"><i data-icon="info"></i><div><b>Money going back to customers — one refund per request, from returns and from cancelled orders.</b> The <b data-help="rf-stages">stage bar</b> counts refunds at each step. Support can request a refund; finance approves it; a bank transfer needs a second person to release it.<span class="ti-next">Start with the failed refund (red row): <b>Retry safely</b> checks the provider first, so the customer is never paid twice.</span></div></div>
       <div class="pipeline" style="border-bottom:1px solid var(--line-2)" data-anno="1A · §10.1 Refund state machine">
         <div class="stage"><div class="s-n">1</div><div class="s-l">Requested</div><div class="s-w muted">awaiting RMA result</div></div>
         <div class="stage"><div class="s-n">2</div><div class="s-l">Approved</div><div class="s-w muted">1 needs checker</div></div>
@@ -211,31 +248,32 @@
         <div class="stage"><div class="s-n text-bad">1</div><div class="s-l">Failed</div><div class="s-w text-bad">SLA 6 h · 3 h used</div></div>
       </div>
       <div class="table-wrap"><table class="table">
-        <thead><tr><th>Refund</th><th>Source</th><th>Customer</th><th>Route</th><th class="r">Amount</th><th>State</th><th>Approval</th><th>Provider ref</th><th class="r">Action</th></tr></thead>
+        <thead><tr><th>Refund</th><th data-help="col-rf-source">Source</th><th>Customer</th><th data-help="col-rf-route">Route</th><th class="r">Amount</th><th data-help="col-rf-state">State</th><th data-help="col-rf-approval">Approval</th><th data-help="col-rf-ref">Provider ref</th><th class="r" data-help="col-rf-action">Action</th></tr></thead>
         <tbody>
-          <tr><td class="mono strong nowrap">RF-0236</td><td><div class="small">RMA-0094</div><div class="cell-sub">return · Keychron K2</div></td><td>Kavya Reddy</td><td class="small">Original · UPI</td><td class="r">₹7,499</td><td><span class="st created">requested</span></td><td class="small muted">Waits for inspection result</td><td class="mono small">—</td><td class="r"><button class="btn btn-xs" disabled>Approve</button></td></tr>
-          <tr><td class="mono strong nowrap">RF-0235</td><td><div class="small">TXO-10483</div><div class="cell-sub">cancelled before dispatch</div></td><td>Rahul Deshpande</td><td class="small">Original · Visa ••4421</td><td class="r">₹3,495</td><td><span class="st authorised">approved</span></td><td class="small">Auto · within policy</td><td class="mono small">—</td><td class="r"><button class="btn btn-xs btn-primary" data-toast="Submitted to Razorpay with idempotency key RF-0235-1 · rfnd_Nx9H…">Submit</button></td></tr>
+          <tr><td class="mono strong nowrap">RF-0236</td><td><div class="small">RMA-0094</div><div class="cell-sub">return · Keychron K2</div></td><td>Kavya Reddy</td><td class="small">Original · UPI</td><td class="r">₹7,499</td><td><span class="st created">requested</span></td><td class="small muted">Waits for inspection result</td><td class="mono small">—</td><td class="r"><button class="btn btn-xs" disabled title="Approval opens once the returned item has been inspected">Approve</button></td></tr>
+          <tr><td class="mono strong nowrap">RF-0235</td><td><div class="small">TXO-10483</div><div class="cell-sub">cancelled before dispatch</div></td><td>Rahul Deshpande</td><td class="small">Original · Visa ••4421</td><td class="r">₹3,495</td><td><span class="st authorised">approved</span></td><td class="small">Auto · within policy</td><td class="mono small">—</td><td class="r"><button class="btn btn-xs btn-primary" data-toast="Submitted to Razorpay with idempotency key RF-0235-1 · rfnd_Nx9H…">Submit to provider</button></td></tr>
           <tr><td class="mono strong nowrap">RF-0230</td><td><div class="small">RMA-0089 · COD order</div><div class="cell-sub">return · Seagate 2 TB</div></td><td>Mohammed Salim</td><td class="small">Bank transfer · IFSC verified</td><td class="r">₹5,299</td><td><span class="st authorised">approved</span></td><td class="small">Maker Deepa K. → <b>checker pending</b> (Rajesh M.)</td><td class="mono small">—</td><td class="r"><button class="btn btn-xs" data-toast="Checked & released · maker ≠ checker recorded">Check & release</button></td></tr>
-          <tr><td class="mono strong nowrap">RF-0234</td><td><div class="small">RMA-0092</div><div class="cell-sub">return · TP-Link Archer C6</div></td><td>Ananya Iyer</td><td class="small">Original · Netbanking</td><td class="r">₹2,799</td><td><span class="st pending">submitted</span></td><td class="small">Karthik R. · ≤ ₹10k</td><td class="mono small">rfnd_Nx9A2c</td><td class="r"><button class="btn btn-xs btn-ghost" data-toast="Provider status: processed · will complete on next event">Status</button></td></tr>
+          <tr><td class="mono strong nowrap">RF-0234</td><td><div class="small">RMA-0092</div><div class="cell-sub">return · TP-Link Archer C6</div></td><td>Ananya Iyer</td><td class="small">Original · Netbanking</td><td class="r">₹2,799</td><td><span class="st pending">submitted</span></td><td class="small">Karthik R. · ≤ ₹10k</td><td class="mono small">rfnd_Nx9A2c</td><td class="r"><button class="btn btn-xs btn-ghost" data-toast="Provider status: processed · will complete on next event">Check status</button></td></tr>
           <tr><td class="mono strong nowrap">RF-0232</td><td><div class="small">RMA-0090</div><div class="cell-sub">return · ASUS TUF F15</div></td><td>Kavya Reddy</td><td class="small">Original · HDFC EMI</td><td class="r">₹72,990</td><td><span class="st pending">pending</span></td><td class="small">Deepa K. · Finance</td><td class="mono small">rfnd_Nx7Tq8</td><td class="r"><span class="small muted">EMI reversal 7–10 d</span></td></tr>
           <tr style="background:#fff8f8"><td class="mono strong nowrap">RF-0231</td><td><div class="small">RMA-0093</div><div class="cell-sub">return · Sony WH-1000XM4</div></td><td>Priya Nair</td><td class="small">Original · UPI (VPA closed)</td><td class="r">₹19,990</td><td><span class="st failed">failed</span><div class="cell-sub text-bad">2 retries · beneficiary account closed</div></td><td class="small">Deepa K. · Finance</td><td class="mono small">rfnd_Nx7Zp4</td><td class="r"><button class="btn btn-xs btn-danger" data-open="m-retry">Retry safely</button></td></tr>
           <tr><td class="mono strong nowrap">RF-0229</td><td><div class="small">TXO-10479</div><div class="cell-sub">duplicate capture</div></td><td>Arjun Mehta</td><td class="small">Original · UPI</td><td class="r">₹5,499</td><td><span class="st captured">completed</span></td><td class="small">Auto · duplicate payment rule</td><td class="mono small">rfnd_Nx8Kd0</td><td class="r"><span class="small muted">10:02</span></td></tr>
         </tbody>
       </table></div>
-      <div class="card-foot"><span class="small muted">Refunds use the original allocated line amount, discount and tax from the order · credit notes are raised automatically and exported to Tally.</span><a class="small strong" href="erp-returns.html">Returns & RMA →</a></div>
+      <div class="card-foot"><span class="small muted" data-help="rf-basis">Refunds use the original allocated line amount, discount and tax from the order · credit notes are raised automatically and exported to Tally.</span><a class="small strong" href="erp-returns.html">Returns & RMA →</a></div>
     </div>
 
     <!-- COD -->
     <div class="tab-panel" data-panel="cod">
+      <div class="tab-intro"><i data-icon="info"></i><div><b>Cash on delivery: the courier collects the cash and later pays it to Tradex in batches (remittances).</b> Each batch is compared with the COD orders it delivered; short and late batches are chased with the courier.<span class="ti-next">Chase short and overdue remittances first. The eligibility rules on the right are proposals still to be confirmed by the business.</span></div></div>
       <div class="card-body">
         <div class="callout c-warn mb-16" data-anno="§10.6 COD is conditional — eligibility, remittance, RTO, abuse controls">
-          <i data-icon="alert"></i><div><strong>COD is conditional, not a default.</strong> It is offered only where the rules below pass, and every delivered COD order must be matched to a courier remittance. Values shown are placeholders pending client decision (discovery Q37).</div>
+          <i data-icon="alert"></i><div><strong data-help="cod-conditional">COD is conditional, not a default.</strong> It is offered only where the rules below pass, and every delivered COD order must be matched to a courier remittance. Values shown are placeholders pending client decision (discovery Q37).</div>
         </div>
-        <div class="grid" style="grid-template-columns:minmax(0,2.1fr) minmax(0,1fr);gap:20px">
+        <div class="grid stack-md" style="grid-template-columns:minmax(0,2.1fr) minmax(0,1fr);gap:20px">
           <div>
-            <div class="row-between mb-8"><h4>Courier remittances</h4><span class="small muted">COD share: 5.1% of orders · 3.2% of value</span></div>
+            <div class="row-between mb-8"><h4 data-help="cod-remit">Courier remittances</h4><span class="small muted">COD share: 5.1% of orders · 3.2% of value</span></div>
             <div class="table-wrap" style="border:1px solid var(--line);border-radius:var(--r)"><table class="table compact">
-              <thead><tr><th>Courier · batch</th><th class="r">Orders</th><th class="r">Expected</th><th class="r">Remitted</th><th class="r">Diff.</th><th>Due</th><th>Status</th></tr></thead>
+              <thead><tr><th>Courier · batch</th><th class="r">Orders</th><th class="r" data-help="col-cod-exp">Expected</th><th class="r" data-help="col-cod-remitted">Remitted</th><th class="r" data-help="col-cod-diff">Diff.</th><th data-help="col-cod-due">Due</th><th data-help="col-cod-status">Status</th></tr></thead>
               <tbody>
                 <tr><td><div class="strong">Delhivery</div><div class="cell-sub mono">DLV-R-0926</div></td><td class="r">38</td><td class="r">₹2,14,300</td><td class="r">₹2,14,300</td><td class="r">₹0</td><td class="nowrap">26 Sep</td><td><span class="status s-ok">Reconciled</span></td></tr>
                 <tr><td><div class="strong">Delhivery</div><div class="cell-sub mono">DLV-R-0921</div></td><td class="r">41</td><td class="r">₹2,33,480</td><td class="r">₹2,30,990</td><td class="r text-bad strong">−₹2,490</td><td class="nowrap">23 Sep</td><td><span class="status s-bad">Short · disputed</span></td></tr>
@@ -245,13 +283,13 @@
               </tbody>
             </table></div>
             <div class="grid g-3 mt-16">
-              <div class="panel"><div class="small muted">Returned to origin (7 d)</div><b style="font-size:18px">3 · ₹14,480</b><div class="small muted">no remittance expected</div></div>
-              <div class="panel"><div class="small muted">RTO rate on COD</div><b style="font-size:18px" class="text-warn">11.8%</b><div class="small muted">prepaid: 1.9%</div></div>
-              <div class="panel"><div class="small muted">Customers COD-blocked</div><b style="font-size:18px">27</b><div class="small muted">≥ 2 refused deliveries</div></div>
+              <div class="panel"><div class="small muted" data-help="cod-rto">Returned to origin (7 d)</div><b style="font-size:18px">3 · ₹14,480</b><div class="small muted">no remittance expected</div></div>
+              <div class="panel"><div class="small muted" data-help="cod-rto-rate">RTO rate on COD</div><b style="font-size:18px" class="text-warn">11.8%</b><div class="small muted">prepaid: 1.9%</div></div>
+              <div class="panel"><div class="small muted" data-help="cod-blocked">Customers COD-blocked</div><b style="font-size:18px">27</b><div class="small muted">≥ 2 refused deliveries</div></div>
             </div>
           </div>
           <div>
-            <h4 class="mb-8">Eligibility rules (proposed)</h4>
+            <h4 class="mb-8" data-help="cod-rules">Eligibility rules (proposed)</h4>
             <div class="panel" style="padding:4px 14px">
               <div class="mini-ck"><span class="ci" style="background:var(--ok-50);color:var(--ok-tx)"><i data-icon="check"></i></span><span>Serviceable PIN with a COD-enabled courier</span></div>
               <div class="mini-ck"><span class="ci" style="background:var(--ok-50);color:var(--ok-tx)"><i data-icon="check"></i></span><span>Order value ≤ ₹25,000 <span class="muted">(placeholder)</span></span></div>
@@ -260,7 +298,7 @@
               <div class="mini-ck"><span class="ci" style="background:var(--bad-50);color:var(--bad-tx)"><i data-icon="x"></i></span><span>Disabled after 2 refused deliveries (per verified phone)</span></div>
               <div class="mini-ck"><span class="ci" style="background:var(--warn-50);color:var(--warn-tx)"><i data-icon="alert"></i></span><span>OTP confirmation on orders above ₹10,000</span></div>
             </div>
-            <div class="callout c-info small mt-12"><i data-icon="info"></i><div>COD refunds can't go back to “cash” — they go to a verified bank account or UPI ID with maker–checker release.</div></div>
+            <div class="callout c-info small mt-12"><i data-icon="info"></i><div><b data-help="cod-refunds">COD refunds</b> can't go back to “cash” — they go to a verified bank account or UPI ID with maker–checker release.</div></div>
           </div>
         </div>
       </div>
@@ -268,15 +306,17 @@
 
     <!-- ACCOUNTING EXPORT & GST SERIES -->
     <div class="tab-panel" data-panel="export">
+      <div class="tab-intro"><i data-icon="info"></i><div><b>Sends approved invoices, credit notes, receipts and gateway charges to the accounting system — once each — and checks that the totals agree on both sides.</b> Below the export: the GST invoice number series and their gap check.<span class="ti-next">Fix failed documents first (usually a ledger missing in the accounting system), then retry. Any gap in an invoice series must be explained.</span></div></div>
       <div class="card-body">
         <div class="callout c-brand mb-16" data-anno="§14.2 One accounting authority: Tally · controlled export with control totals">
-          <i data-icon="database"></i><div class="grow"><strong>Tally Prime (HO, Bengaluru) stays the official books.</strong> Tradex publishes approved sales invoices, credit notes, receipts and gateway charges through the Tally gateway agent. Every document is exported <b>once</b> (idempotency key = document ID + version); re-runs skip already-acknowledged documents, and corrections go as credit/debit notes — never by editing an exported voucher.</div>
+          <i data-icon="database"></i><div class="grow"><strong data-help="acct-authority">Tally Prime (HO, Bengaluru) stays the official books.</strong> Tradex publishes approved sales invoices, credit notes, receipts and gateway charges through the Tally gateway agent. Every document is exported <b>once</b> (idempotency key = document ID + version); re-runs skip already-acknowledged documents, and corrections go as credit/debit notes — never by editing an exported voucher.</div>
         </div>
-        <div class="grid" style="grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:20px">
+        <div class="next-step mb-16"><i data-icon="arrow-right"></i><div class="grow"><b>Next step:</b> 2 documents failed because a ledger is missing in the accounting system. Create the missing ledgers there, then click <b>Retry failed (2)</b>. Until the totals agree, the daily close shows this check as open.</div><button type="button" class="btn btn-xs" data-ex-show="failed">Show failed documents</button></div>
+        <div class="grid stack-md" style="grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:20px">
           <div>
-            <div class="row-between mb-8"><h4>Control totals · batch EXP-0926-01</h4><span class="status s-warn">2 differences</span></div>
-            <table class="table compact" style="border:1px solid var(--line);border-radius:var(--r)">
-              <thead><tr><th>Measure</th><th class="r">Tradex</th><th class="r">Tally ack.</th><th class="r">Diff.</th></tr></thead>
+            <div class="row-between mb-8"><h4 data-help="ctrl-totals">Control totals · batch EXP-0926-01</h4><span class="status s-warn">2 differences</span></div>
+            <div class="table-wrap"><table class="table compact" style="border:1px solid var(--line);border-radius:var(--r)">
+              <thead><tr><th>Measure</th><th class="r">Tradex</th><th class="r" data-help="col-ack">Tally ack.</th><th class="r" data-help="col-ctrl-diff">Diff.</th></tr></thead>
               <tbody>
                 <tr><td>Documents</td><td class="r">214</td><td class="r">212</td><td class="r text-bad strong">2</td></tr>
                 <tr><td>Taxable value</td><td class="r">₹41,82,310</td><td class="r">₹41,59,810</td><td class="r text-bad strong">₹22,500</td></tr>
@@ -286,21 +326,21 @@
                 <tr><td>Receipts</td><td class="r">₹49,22,410</td><td class="r">₹49,10,415</td><td class="r text-bad strong">₹11,995</td></tr>
                 <tr><td>Credit notes</td><td class="r">−₹61,420</td><td class="r">−₹61,420</td><td class="r">₹0</td></tr>
               </tbody>
-            </table>
-            <div class="row gap-8 mt-12"><button class="btn btn-sm btn-primary" data-toast="Retrying 2 failed documents with the same idempotency keys · no duplicates possible">Retry failed (2)</button><button class="btn btn-sm" data-toast="Control-total report downloaded">Control-total report</button></div>
+            </table></div>
+            <div class="row gap-8 mt-12"><button class="btn btn-sm btn-primary" data-help="act-retry-export" data-toast="Retrying 2 failed documents with the same idempotency keys · no duplicates possible">Retry failed (2)</button><button class="btn btn-sm" data-toast="Control-total report downloaded">Download control-total report</button></div>
           </div>
           <div>
-            <div class="row-between mb-8"><h4>Documents</h4><div class="seg" id="ex-f"><button class="active" data-f="all">All</button><button data-f="failed">Failed</button><button data-f="skipped">Skipped</button></div></div>
+            <div class="row-between mb-8"><h4 data-help="ex-docs">Documents</h4><div class="seg" id="ex-f"><button class="active" data-f="all">All</button><button data-f="failed">Failed</button><button data-f="skipped">Skipped</button></div></div>
             <div class="table-wrap" style="border:1px solid var(--line);border-radius:var(--r)"><table class="table compact">
-              <thead><tr><th>Document</th><th>Type</th><th class="r">Amount</th><th>Status</th><th>Tally voucher / error</th></tr></thead>
+              <thead><tr><th>Document</th><th>Type</th><th class="r">Amount</th><th data-help="col-ex-status">Status</th><th data-help="col-ex-voucher">Tally voucher / error</th></tr></thead>
               <tbody id="ex-body"></tbody>
             </table></div>
           </div>
         </div>
         <hr class="mt-24">
-        <div class="row-between mb-8" data-anno="1A · GST invoice series — gapless, never reused"><h4>GST invoice series · FY 2026-27 · GSTIN 29AAGCT4821K1Z3</h4><span class="small muted">Numbers are allocated only when an invoice is finalised · cancelled numbers are kept, never reused</span></div>
+        <div class="row-between mb-8" data-anno="1A · GST invoice series — gapless, never reused"><h4 data-help="gst-series">GST invoice series · FY 2026-27 · GSTIN 29AAGCT4821K1Z3</h4><span class="small muted">Numbers are allocated only when an invoice is finalised · cancelled numbers are kept, never reused</span></div>
         <div class="table-wrap" style="border:1px solid var(--line);border-radius:var(--r)"><table class="table compact">
-          <thead><tr><th>Series</th><th>Used for</th><th>Last issued</th><th>Next</th><th class="r">Issued FY</th><th class="r">Cancelled</th><th>Gap check</th><th>E-invoice (IRN)</th></tr></thead>
+          <thead><tr><th data-help="col-series">Series</th><th>Used for</th><th>Last issued</th><th data-help="col-next">Next</th><th class="r">Issued FY</th><th class="r" data-help="col-cancelled">Cancelled</th><th data-help="col-gap">Gap check</th><th data-help="col-irn">E-invoice (IRN)</th></tr></thead>
           <tbody>
             <tr><td class="mono strong">TX/26-27/</td><td>Online B2C tax invoices</td><td class="mono">TX/26-27/004872</td><td class="mono">004873</td><td class="r">4,872</td><td class="r">3</td><td><span class="status s-ok">No gaps</span></td><td class="small muted">Not applicable (B2C)</td></tr>
             <tr><td class="mono strong">TXB/26-27/</td><td>Dealer (B2B) invoices</td><td class="mono">TXB/26-27/001204</td><td class="mono">001205</td><td class="r">1,204</td><td class="r">0</td><td><span class="status s-ok">No gaps</span></td><td><span class="status s-warn">Accountant to confirm</span></td></tr>
@@ -315,14 +355,15 @@
 
     <!-- DAILY CLOSE -->
     <div class="tab-panel" data-panel="close">
-      <div class="row-between" style="padding:16px 20px;border-bottom:1px solid var(--line-2)"><div><b>Daily close · Saturday 26 Sep 2026</b><div class="small muted">Maker: Deepa Krishnan (Finance) · Checker: Rajesh Menon · deadline 19:00</div></div><div class="row gap-12"><div class="meter m-warn" style="width:200px"><span style="width:67%"></span></div><b>6 / 9</b></div></div>
+      <div class="tab-intro"><i data-icon="info"></i><div><b>The end-of-day checklist for payments and money.</b> The checks run automatically or are ticked by the person responsible. Open items do not block sign-off, but each one must be explained in the note — then a second person (the checker) approves.<span class="ti-next">Resolve or explain the 3 open checks (use <b>Resolve</b> to jump to each), then click <b>Sign off with exceptions</b> before the deadline.</span></div></div>
+      <div class="row-between" style="padding:16px 20px;border-bottom:1px solid var(--line-2)"><div><b data-help="close-day">Daily close · Saturday 26 Sep 2026</b><div class="small muted">Maker: Deepa Krishnan (Finance) · Checker: Rajesh Menon · deadline 19:00</div></div><div class="row gap-12"><div class="meter m-warn" style="width:200px"><span style="width:67%"></span></div><b>6 / 9</b></div></div>
       <div id="close-list"></div>
       <div class="card-body" style="border-top:1px solid var(--line-2)">
         <div class="grid g-2">
-          <div class="field"><label for="close-note">Exceptions note (required to sign off with open items)</label><textarea class="textarea" id="close-note" placeholder="e.g. RF-0231 awaiting customer's new UPI ID; Delhivery short remittance disputed (ticket DLV-88412)."></textarea></div>
+          <div class="field"><label for="close-note" data-help="close-note">Exceptions note (required to sign off with open items)</label><textarea class="textarea" id="close-note" placeholder="e.g. RF-0231 awaiting customer's new UPI ID; Delhivery short remittance disputed (ticket DLV-88412)."></textarea></div>
           <div class="col gap-8" style="justify-content:flex-end">
-            <div class="callout c-info small"><i data-icon="info"></i><div>Signing off locks the day's payment ledger for export. Late events still post, but to the next business date with a reference to this close.</div></div>
-            <div class="row gap-8"><button class="btn" data-toast="Checklist refreshed · 6 of 9 complete"><i data-icon="refresh" class="ic-sm"></i> Re-run checks</button><span class="ml-auto"></span><button class="btn btn-primary" id="close-go">Sign off with exceptions</button></div>
+            <div class="callout c-info small"><i data-icon="info"></i><div><b data-help="close-lock">Signing off locks the day's payment ledger</b> for export. Late events still post, but to the next business date with a reference to this close.</div></div>
+            <div class="row gap-8"><button class="btn" data-toast="Checklist refreshed · 6 of 9 complete"><i data-icon="refresh" class="ic-sm"></i> Re-run checks</button><span class="ml-auto"></span><button class="btn btn-primary" id="close-go" data-help="close-signoff">Sign off with exceptions</button></div>
           </div>
         </div>
       </div>
@@ -333,31 +374,40 @@
   <div class="drawer" id="d-pay"><div class="drawer-card wide">
     <div class="drawer-head"><div id="dp-head" class="grow"></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
     <div class="drawer-body" id="dp-body"></div>
-    <div class="drawer-foot"><button class="btn" data-close>Close</button><button class="btn" data-toast="Provider says: captured · no change needed" data-toast-icon="refresh"><i data-icon="refresh" class="ic-sm"></i> Check with provider</button><a class="btn btn-primary" href="erp-orders.html">Open order</a></div>
+    <div class="drawer-foot"><button class="btn" data-close>Close</button><button class="btn" data-help="d-check" data-toast="Provider says: captured · no change needed" data-toast-icon="refresh"><i data-icon="refresh" class="ic-sm"></i> Check with provider</button><a class="btn btn-primary" href="erp-orders.html">Open order</a></div>
+  </div></div>
+
+  <!-- Unmatched item drawer (guided resolution) -->
+  <div class="drawer" id="d-um"><div class="drawer-card">
+    <div class="drawer-head"><div id="du-head" class="grow"></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="drawer-body" id="du-body"></div>
+    <div class="drawer-foot" id="du-foot"></div>
   </div></div>
 
   <!-- Retry refund modal -->
   <div class="modal" id="m-retry"><div class="modal-card">
-    <div class="modal-head"><div><h3>Retry refund RF-0231 safely</h3><div class="small muted">₹19,990 · RMA-0093 · Priya Nair · rfnd_Nx7Zp4</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-head"><div><h3 data-help="m-retry">Retry refund RF-0231 safely</h3><div class="small muted">₹19,990 · RMA-0093 · Priya Nair · rfnd_Nx7Zp4</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
     <div class="modal-body">
       <p class="small subtle mb-12">A refund is never re-issued blindly. The provider's status is checked first so a timed-out or delayed refund can't be paid twice.</p>
+      <div class="next-step" id="rt-next"><i data-icon="arrow-right"></i><div class="grow"><b>Next step:</b> click <b>Run status check</b>. <b>Submit retry</b> stays locked until the provider confirms that no money moved.</div></div>
       <div id="rt-steps">
         <div class="rt-step" data-i="0"><span class="ci"><i data-icon="search"></i></span><div><b>Query provider status for rfnd_Nx7Zp4</b><div class="small muted rt-res">Not run yet</div></div></div>
         <div class="rt-step" data-i="1"><span class="ci"><i data-icon="receipt"></i></span><div><b>Check total refunded on pay_Nx5Wc1</b><div class="small muted rt-res">Not run yet</div></div></div>
         <div class="rt-step" data-i="2"><span class="ci"><i data-icon="route"></i></span><div><b>Choose a route</b><div class="small muted rt-res">Not run yet</div></div></div>
       </div>
-      <div class="field mt-12 hidden" id="rt-route"><label for="rt-sel">Refund route</label><select class="select" id="rt-sel"><option>New UPI ID confirmed by customer (priya.n@okhdfc · verified ₹1 check)</option><option>Bank transfer · maker–checker</option></select><span class="hint">Idempotency key <span class="mono">RF-0231-r3</span> · same key on any further retry</span></div>
+      <div class="field mt-12 hidden" id="rt-route"><label for="rt-sel" data-help="rt-route">Refund route</label><select class="select" id="rt-sel"><option>New UPI ID confirmed by customer (priya.n@okhdfc · verified ₹1 check)</option><option>Bank transfer · maker–checker</option></select><span class="hint">Idempotency key <span class="mono">RF-0231-r3</span> · same key on any further retry</span></div>
     </div>
-    <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn" id="rt-run"><i data-icon="refresh" class="ic-sm"></i> Run status check</button><button class="btn btn-primary" id="rt-go" disabled>Submit retry</button></div>
+    <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn" id="rt-run" data-help="rt-run"><i data-icon="refresh" class="ic-sm"></i> Run status check</button><button class="btn btn-primary" id="rt-go" data-help="rt-go" disabled>Submit retry</button></div>
   </div></div>
 
   <!-- Import modal -->
   <div class="modal" id="m-import"><div class="modal-card lg">
-    <div class="modal-head"><div><h3>Import settlement or bank file</h3><div class="small muted">Duplicate files are rejected by content hash · rows are matched automatically</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-head"><div><h3 data-help="m-import">Import settlement or bank file</h3><div class="small muted">Duplicate files are rejected by content hash · rows are matched automatically</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
     <div class="modal-body col gap-16">
       <div class="seg"><button class="active">Razorpay settlement</button><button>Bank statement (HDFC)</button><button>Courier COD remittance</button></div>
       <div class="dropzone"><i data-icon="upload"></i><b>Drop a CSV / XLSX file here</b><div class="small">or <a href="#" data-toast="File picker opens">browse</a> · max 10 MB · template v3</div></div>
-      <div class="panel small"><b>Preview (last successful import):</b> 60 rows · 58 matched to captures · 2 carried (EMI T+2) · fees ₹15,448.20 · GST on fees ₹2,780.68 · net ₹7,44,191.12</div>
+      <div class="panel small"><b data-help="imp-preview">Preview (last successful import):</b> 60 rows · 58 matched to captures · 2 carried (EMI T+2) · fees ₹15,448.20 · GST on fees ₹2,780.68 · net ₹7,44,191.12</div>
+      <div class="next-step"><i data-icon="arrow-right"></i><div class="grow"><b>What happens next:</b> matching runs automatically and you are notified when it finishes. Rows that match nothing go to the <b>Unmatched items queue</b> in Match &amp; resolve, each with an owner.</div></div>
     </div>
     <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-primary" data-close data-toast="File queued · you'll be notified when matching finishes">Import & match</button></div>
   </div></div>
@@ -407,19 +457,32 @@ TX.ready(() => {
   const openPay = (id) => {
     const r = PA.find((x) => x[0] === id); const exc = id === "PA-88397";
     const steps = { created: ["created"], pending: ["created", "pending"], authorised: ["created", "pending", "authorised"], captured: ["created", "pending", "authorised", "captured"], failed: ["created", "pending", "failed"], expired: ["created", "pending", "expired"] }[r[6]];
-    $("#dp-head").innerHTML = `<div class="row gap-8"><h3 class="mono">${r[0]}</h3><span class="st ${r[6]}">${r[6]}</span></div><div class="small muted mt-4">${r[1]} · ${r[2]} · ${r[3]} · ${fmt(r[5])}</div>`;
+    $("#dp-head").innerHTML = `<div class="row gap-8"><h3 class="mono" data-help="d-pay">${r[0]}</h3><span class="st ${r[6]}">${r[6]}</span></div><div class="small muted mt-4">${r[1]} · ${r[2]} · ${r[3]} · ${fmt(r[5])}</div>`;
+    // Next-step guidance for the attempt's state (help: d-pay)
+    const toTab = (tab, label) => `<button type="button" class="btn btn-xs" data-close data-go-tab="${tab}">${label}</button>`;
+    const toOrder = `<a class="btn btn-xs" href="erp-orders.html">Open order</a>`;
+    const toCheck = `<button type="button" class="btn btn-xs" data-toast="Status requested from the provider · the attempt updates when it answers" data-toast-icon="refresh">Check with provider</button>`;
+    const NX = exc ? ["resolve the stock exception with the customer — re-reserve the alternate unit (with consent), offer an alternative, or refund under the policy. Finance owns it, due 11:30.", toOrder]
+      : r[6] === "captured" && r[7][1].startsWith("On hold") ? ["nothing to do on the payment — it is confirmed. The order waits for the supplier to confirm stock; the orders team follows it up.", toOrder]
+      : { created: ["nothing to collect online. The courier collects the cash on delivery; it is matched when the courier's remittance arrives.", toTab("cod", "Go to Courier cash (COD)")],
+          pending: ["wait for the provider's confirmation. If none arrives within 15 minutes, Tradex asks the provider directly. Never mark a payment as paid by hand.", toCheck],
+          authorised: ["wait — the bank has approved the amount and it is captured automatically after the stock check. Check with the provider only if it stays authorised for long.", toCheck],
+          captured: ["nothing to do — the payment is confirmed and the order moves on to fulfilment. It is matched to the provider's settlement when that arrives.", toTab("recon", "See matching")],
+          failed: ["nothing to refund — no money was taken. If the customer still wants the order, they pay again with a new attempt.", toOrder],
+          expired: ["nothing to do — the checkout expired, no money moved and the reserved stock was released.", toOrder] }[r[6]];
     $("#dp-body").innerHTML = `
+      <div class="next-step mb-16">${ic(exc ? "alert" : "arrow-right")}<div class="grow"><b>Next step:</b> ${NX[0]}</div>${NX[1]}</div>
       ${exc ? `<div class="callout c-bad mb-16 small">${ic("alert-octagon")}<div><b>Payment captured after the stock hold expired.</b> Reservation R-5521 expired 10:02; capture arrived 10:04. The payment is recorded, no negative stock was created and the order is on hold. Policy: re-reserve (alternate unit U-000815 at SP Road) with customer consent, offer an alternative, or refund. Escalated to Finance · Deepa K. · due 11:30.</div></div>` : ""}
       <div class="grid g-3 mb-16" data-anno="Separate state machines: order ≠ payment ≠ fulfilment">
-        <div class="panel"><div class="upper muted mb-4">Order</div><span class="status ${r[7][0]}">${r[7][1]}</span></div>
-        <div class="panel"><div class="upper muted mb-4">Payment attempt</div><span class="st ${r[6]}">${r[6]}</span></div>
-        <div class="panel"><div class="upper muted mb-4">Fulfilment</div><span class="status ${r[6] === "captured" && !exc ? "s-brand" : "s-muted"}">${r[6] === "captured" && !exc ? "Allocated · to pick" : "Unallocated"}</span></div>
+        <div class="panel"><div class="upper muted mb-4" data-help="col-order-state">Order</div><span class="status ${r[7][0]}">${r[7][1]}</span></div>
+        <div class="panel"><div class="upper muted mb-4" data-help="col-pa-state">Payment attempt</div><span class="st ${r[6]}">${r[6]}</span></div>
+        <div class="panel"><div class="upper muted mb-4" data-help="d-fulfil">Fulfilment</div><span class="status ${r[6] === "captured" && !exc ? "s-brand" : "s-muted"}">${r[6] === "captured" && !exc ? "Allocated · to pick" : "Unallocated"}</span></div>
       </div>
       <div class="grid g-2 mb-16">
-        <dl class="kv"><dt>Provider</dt><dd>Razorpay (hosted checkout)</dd><dt>Provider order</dt><dd class="mono">order_${r[4].slice(4)}</dd><dt>Payment ID</dt><dd class="mono">${r[4]}</dd><dt>Idempotency key</dt><dd class="mono">${r[1]}-att-${r[0].slice(-2)}</dd></dl>
-        <dl class="kv"><dt>Amount</dt><dd>${fmt2(r[5])}</dd><dt>Method</dt><dd>${r[3]}</dd><dt>Gateway fee (est.)</dt><dd>${r[3].startsWith("COD") ? "—" : fmt2(r[5] * 0.0195)} + GST</dd><dt>Card data</dt><dd>Not stored — tokenised by provider</dd></dl>
+        <dl class="kv"><dt>Provider</dt><dd>Razorpay (hosted checkout)</dd><dt>Provider order</dt><dd class="mono">order_${r[4].slice(4)}</dd><dt>Payment ID</dt><dd class="mono">${r[4]}</dd><dt data-help="g.idempotency">Idempotency key</dt><dd class="mono">${r[1]}-att-${r[0].slice(-2)}</dd></dl>
+        <dl class="kv"><dt>Amount</dt><dd>${fmt2(r[5])}</dd><dt>Method</dt><dd>${r[3]}</dd><dt data-help="d-fee">Gateway fee (est.)</dt><dd>${r[3].startsWith("COD") ? "—" : fmt2(r[5] * 0.0195)} + GST</dd><dt data-help="g.hosted-checkout">Card data</dt><dd>Not stored — tokenised by provider</dd></dl>
       </div>
-      <h4 class="mb-8">Attempt timeline</h4>
+      <h4 class="mb-8" data-help="d-timeline">Attempt timeline</h4>
       <ul class="timeline">
         ${steps.map((s, i) => `<li class="${s === "failed" || s === "expired" ? "warn" : i === steps.length - 1 ? "current" : "done"}"><span class="t-dot">${ic(s === "failed" ? "x" : s === "expired" ? "clock" : "check")}</span><div class="t-title">${s}</div><div class="t-meta">${s === "created" ? "Attempt created after stock reservation" : ""}${s === "captured" ? "Signed webhook evt verified ✓ · applied once" : s === "authorised" ? "payment.authorized · signature ✓" : s === "pending" ? "Customer redirected to provider" : s === "failed" ? r[9] : s === "expired" ? "No completion within 15 min · reservation released" : ""}</div></li>`).join("")}
         ${exc ? `<li class="warn"><span class="t-dot">${ic("alert")}</span><div class="t-title">Stock exception raised</div><div class="t-meta">10:04 · no confirmation, no fulfilment task created</div></li>` : ""}
@@ -470,11 +533,53 @@ TX.ready(() => {
   const total = UM.reduce((a, r) => a + r[3], 0);
   $("#k-unm").textContent = TX.fmtK(total); $("#k-unm-n").textContent = `${UM.length} items · oldest 19 d`; $("#t-unm").textContent = UM.length;
   const renderUM = () => { const f = ($("#um-f .active") || {}).dataset?.f || "all"; const rows = UM.filter((r) => f === "all" || bucket(r[4]) === +f);
-    $("#um-body").innerHTML = rows.map((r) => `<tr><td class="strong small">${r[0]}</td><td><span class="badge">${r[1]}</span></td><td class="mono small">${r[2]}</td><td class="r strong">${fmt(r[3])}</td>
+    $("#um-body").innerHTML = rows.map((r) => `<tr data-um="${UM.indexOf(r)}"><td class="strong small">${r[0]}</td><td><span class="badge">${r[1]}</span></td><td class="mono small">${r[2]}</td><td class="r strong">${fmt(r[3])}</td>
       <td class="r ${r[4] > 15 ? "text-bad strong" : r[4] > 7 ? "text-warn" : ""}">${r[4]} d</td><td class="small">${r[5]}</td><td class="r"><button class="btn btn-xs" data-toast="${r[6]} · action logged against the item">${r[6]}</button></td></tr>`).join("");
     $("#um-total").textContent = fmt(rows.reduce((a, r) => a + r[3], 0)); };
   renderUM();
   $("#um-f").addEventListener("click", (e) => { if (e.target.closest("button")) setTimeout(renderUM); });
+  // "How it works" step 3 → show the whole queue and scroll to it
+  const smooth = () => (window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth");
+  $$("[data-um-go]").forEach((b) => b.addEventListener("click", () => {
+    $$("#um-f button").forEach((x) => x.classList.toggle("active", x.dataset.f === "all")); renderUM();
+    setTimeout(() => $("#um-head").scrollIntoView({ behavior: smooth(), block: "start" }), 80);
+  }));
+
+  /* Unmatched item → guided resolution drawer (help: d-um). Explains each sample item and the usual way to resolve it. */
+  const UMG = {
+    "Captured, not settled after T+3": { what: "The provider confirmed this payment (captured), but it has not been paid out to Tradex in any settlement within the expected time. T+3 means three days after the payment day; the timing is a sample value.",
+      steps: ["check the payment's status with the provider using the payment ID.", "If it is still not settled, raise it with the provider, quoting the payment ID and the order.", "When it appears in a later settlement it is matched automatically and this item closes."] },
+    "Settlement line without an order": { what: "The provider paid out money for a payment that no Tradex order is linked to — for example a payment made on an old or expired checkout link.",
+      steps: ["look up the payment ID at the provider to find the customer, time and amount.", "If it belongs to an existing order, link it to that order.", "If no order should exist, finance decides with the customer whether to create the order or refund the payment."], tab: ["payments", "Open Customer payments"] },
+    "Fee mismatch (EMI rate)": { what: "The fee the provider deducted for an EMI payment is different from the fee Tradex expected from the agreed rates (the expected fee is shown in the reference). The amount shown is the difference.",
+      steps: ["compare the fee with the provider's agreed rates for that payment method.", "If the provider charged too much, raise it with them and ask for the difference back.", "If Tradex's expected rate is out of date, finance updates it so future settlements match."] },
+    "Refund deducted, no refund record": { what: "A settlement was reduced by a refund that Tradex has no matching refund record for — for example a refund made directly in the provider's own dashboard instead of through Tradex.",
+      steps: ["find the refund at the provider (the refund ID is in the reference) and the order it belongs to.", "Link it to the right order and refund record (Match manually) and note why it happened.", "If nobody at Tradex issued it, escalate it to the finance manager."], tab: ["refunds", "Open Refunds"] },
+    "Bank credit without settlement": { what: "Money arrived in Tradex's bank account that is not a payment-provider settlement — typically a dealer paying for an order by bank transfer (NEFT / RTGS / IMPS). The UTR is the bank's reference number for that transfer.",
+      steps: ["use the UTR, amount, date and payer name from the bank statement to find the dealer and the order.", "Match the credit to that order (the suggested match here is TXO-10433).", "If the amount differs from the invoice (for example a part-payment or a deduction by the dealer), record the difference and follow it up with the dealer."] },
+    "COD remittance short": { what: "The courier paid Tradex less cash than it collected for the COD orders in this batch. The amount shown is the shortfall.",
+      steps: ["compare the courier's remittance file with the delivered COD orders to find which order is short.", "Raise a dispute with the courier, with the order and delivery proof.", "Record the courier's answer; when the balance is paid the item closes."], tab: ["cod", "Open Courier cash (COD)"] },
+    "Chargeback debit": { what: "The customer's bank reversed this payment after the customer disputed it (a chargeback), and the provider took the amount back from a settlement. Tradex can contest it with evidence before the provider's deadline.",
+      steps: ["collect the evidence — invoice, proof of delivery and any messages with the customer — and submit it to the provider before the deadline.", "Record the outcome: if the dispute is won, the money comes back in a later settlement.", "If it is lost, finance records the loss with a reason."] },
+    "Customer paid twice (duplicate capture)": { what: "The customer was charged twice for one order. A rule refunded the extra payment automatically (RF-0229, completed).",
+      steps: ["confirm that the refund appears in the provider's settlement, then close the item.", "No other action is needed — the customer has their money back."], tab: ["refunds", "Open Refunds"] },
+    "EMI capture awaiting bank confirmation": { what: "An EMI (instalment) payment that is captured but still waiting for the lending bank's confirmation, so it has not been settled yet. EMI payments can settle later than other methods.",
+      steps: ["check the payment's status with the provider.", "If the bank has confirmed it, it settles in a coming batch and is matched automatically.", "If the bank rejected it, the order is followed up with the customer."] },
+  };
+  const openUM = (i) => {
+    const r = UM[i]; if (!r) return;
+    const g = UMG[r[0]] || { what: "", steps: [r[6] + "."] }, old = r[4] > 15;
+    $("#du-head").innerHTML = `<div class="small muted">Unmatched item · ${r[1]}</div><h3 class="mt-4" data-help="d-um">${r[0]}</h3><div class="small muted mt-4">${fmt(r[3])} · ${r[4]} days old · owner ${r[5]}</div>`;
+    $("#du-body").innerHTML = `
+      <div class="next-step mb-16">${ic(old ? "alert" : "arrow-right")}<div class="grow"><b>Next step:</b> ${g.steps[0]}</div><button type="button" class="btn btn-xs" data-toast="${r[6]} · action logged against the item">${r[6]}</button></div>
+      <dl class="kv mb-16"><dt>Type</dt><dd><span class="badge">${r[1]}</span></dd><dt>Reference</dt><dd class="mono">${r[2]}</dd><dt>Amount</dt><dd>${fmt(r[3])}</dd><dt>Age</dt><dd class="${old ? "text-bad" : r[4] > 7 ? "text-warn" : ""}">${r[4]} days · ${BUCKETS[bucket(r[4])]}${old ? " · shown in the Owner digest" : ""}</dd><dt>Owner</dt><dd>${r[5]}</dd></dl>
+      <h4 class="mb-8">What this means</h4><p class="small mb-16">${g.what}</p>
+      <h4 class="mb-8">How to resolve it</h4><ol class="du-steps">${g.steps.map((s, k) => `<li>${k ? s : s[0].toUpperCase() + s.slice(1)}</li>`).join("")}</ol>
+      <div class="callout c-info small mt-16">${ic("info")}<div>Every action is logged against the item. If the money cannot be recovered, the item is written off with a reason; above the approval limit (sample: ₹5,000) the Owner approves.</div></div>`;
+    $("#du-foot").innerHTML = `<button type="button" class="btn" data-close>Close</button>${g.tab ? `<button type="button" class="btn" data-close data-go-tab="${g.tab[0]}">${g.tab[1]}</button>` : ""}`;
+    TX.open("d-um");
+  };
+  document.addEventListener("click", (e) => { const tr = e.target.closest("#um-body tr[data-um]"); if (tr && !e.target.closest("button,a,input")) openUM(+tr.dataset.um); });
   const byB = [0, 0, 0, 0]; UM.forEach((r) => (byB[bucket(r[4])] += r[3]));
   TX.charts.hbar($("#ch-age"), { title: "Unmatched value by age bucket", seriesName: "Unmatched value", labelHeader: "Age", labelWidth: 84, format: (v) => fmt(v),
     items: BUCKETS.map((l, i) => ({ label: l, value: byB[i], color: i === 3 ? "var(--st-critical)" : i === 2 ? "var(--st-serious)" : "var(--series-1)" })) });
@@ -496,6 +601,11 @@ TX.ready(() => {
       <td><span class="status ${r[3] === "ok" ? "s-ok" : r[3] === "failed" ? "s-bad" : "s-muted"}">${r[3] === "ok" ? "Exported" : r[3] === "failed" ? "Failed" : "Skipped"}</span></td><td class="small ${r[3] === "failed" ? "text-bad" : "muted"}">${r[4]}</td></tr>`).join(""); };
   renderEX();
   $("#ex-f").addEventListener("click", (e) => { if (e.target.closest("button")) setTimeout(renderEX); });
+  // Next-step box → filter the document list (e.g. to the failed ones)
+  $$("[data-ex-show]").forEach((b) => b.addEventListener("click", () => {
+    $$("#ex-f button").forEach((x) => x.classList.toggle("active", x.dataset.f === b.dataset.exShow)); renderEX();
+    $("#ex-body").closest(".table-wrap").scrollIntoView({ behavior: smooth(), block: "nearest" });
+  }));
 
   /* ---------------- Daily close ---------------- */
   const CL = [
@@ -515,10 +625,13 @@ TX.ready(() => {
 
   /* ---------------- Retry refund flow ---------------- */
   const setStep = (i, cls, txt) => { const s = $(`.rt-step[data-i="${i}"]`); s.className = "rt-step " + cls; $(".rt-res", s).innerHTML = txt; };
+  const rtNext = (icon, html) => { $("#rt-next").innerHTML = `${ic(icon)}<div class="grow"><b>Next step:</b> ${html}</div>`; };
   $("#rt-run").addEventListener("click", () => {
     $("#rt-run").disabled = true; setStep(0, "run", "Querying provider…");
+    rtNext("clock", "wait a moment — the provider and the refund history are being checked.");
     setTimeout(() => { setStep(0, "done", "Provider status: <b>failed</b> · reason: beneficiary VPA closed · no money moved"); setStep(1, "run", "Checking…"); }, 600);
-    setTimeout(() => { setStep(1, "done", "Refunded so far ₹0.00 of ₹19,990.00 · no other refund in flight — safe to retry"); setStep(2, "warn", "Original UPI ID can't receive funds — pick a verified alternative"); $("#rt-route").classList.remove("hidden"); $("#rt-go").disabled = false; }, 1300);
+    setTimeout(() => { setStep(1, "done", "Refunded so far ₹0.00 of ₹19,990.00 · no other refund in flight — safe to retry"); setStep(2, "warn", "Original UPI ID can't receive funds — pick a verified alternative"); $("#rt-route").classList.remove("hidden"); $("#rt-go").disabled = false;
+      rtNext("arrow-right", "no money moved, so a retry is safe. Choose a verified <b>Refund route</b> below, then click <b>Submit retry</b>. The same idempotency key is used on every retry, so the customer can never be paid twice."); }, 1300);
   });
   $("#rt-go").addEventListener("click", () => { TX.close($("#rt-go")); TX.toast("Retry submitted · key RF-0231-r3 · customer notified on WhatsApp"); });
   if (location.hash === "#d-pay") openPay("PA-88397");

@@ -14,7 +14,8 @@
     .fg-adjust { grid-column: span 2; background: var(--accent-50); color: #b24a00; }
     .fg-tax { background: var(--info-50); color: var(--info-tx); }
     .fg-guard { grid-column: span 2; background: var(--ok-50); color: var(--ok-tx); }
-    .flow { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 10px; }
+    /* (was .flow — renamed so it does not clash with the shared "How it works" .flow strip) */
+    .prec { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 10px; }
     .fs { position: relative; background: #fff; border: 1px solid var(--line); border-radius: var(--r); padding: 10px 10px 12px; min-width: 0; }
     .fs:not(:last-child)::after { content: ""; position: absolute; right: -9px; top: 22px; width: 7px; height: 7px; border-top: 2px solid var(--tx-4); border-right: 2px solid var(--tx-4); transform: rotate(45deg); }
     .fs .n { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-size: 11.5px; font-weight: 700; background: var(--bg-2); color: var(--tx-2); }
@@ -52,6 +53,33 @@
     .auth-cell { font-size: 12px; font-weight: 650; }
     #tabs-main > .tabs .tab { padding: 10px 11px; font-size: 13px; }
     #tier-body td { white-space: nowrap; }
+    /* Guided help: next-step boxes */
+    .dl-next { margin-bottom: 14px; }
+    /* Narrow screens: every block stays inside the viewport */
+    @media (max-width: 1100px) {
+      .sim { grid-template-columns: minmax(0, 1fr); }
+    }
+    @media (max-width: 980px) {
+      .flow-groups { display: flex; flex-wrap: wrap; gap: 6px; }
+      .prec { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .prec .fs:nth-child(4n)::after { display: none; }
+    }
+    @media (max-width: 760px) {
+      .flow-wrap { padding: 14px 16px 16px; }
+      .prec { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .prec .fs:nth-child(2n)::after { display: none; }
+      .calc li { grid-template-columns: 26px minmax(0, 1fr) 100px; gap: 10px; padding: 10px 14px; }
+      .calc .cv { overflow-wrap: anywhere; }
+      .final { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .final > div { padding: 12px 14px; min-width: 0; }
+      .final .fv { font-size: 17px; overflow-wrap: anywhere; }
+      .tier-cmp { grid-template-columns: minmax(0, 1fr); }
+      .diff { grid-template-columns: minmax(84px, .8fr) minmax(0, 1fr) minmax(0, 1fr); font-size: 12.5px; }
+      .diff > div { padding: 8px; min-width: 0; overflow-wrap: anywhere; }
+      [data-panel="approvals"] .card-head .row, [data-panel="controls"] .row { flex-wrap: wrap; }
+      [data-panel="approvals"] .row-between > .seg { max-width: 100%; overflow-x: auto; scrollbar-width: none; }
+      [data-panel="approvals"] .row-between > .seg > button { flex: none; }
+    }
   </style>
 </head>
 <body data-app="erp" data-page="pricing">
@@ -59,41 +87,58 @@
   <div class="page-head">
     <div>
       <div class="crumbs"><a href="erp-catalog.html">Catalog</a><i data-icon="chevron-right"></i><span>Pricing & tiers</span></div>
-      <h1>Pricing & dealer tiers</h1>
-      <p class="sub">One server-side price engine for website, staff orders, WhatsApp checkout links and the future app · rule set <b class="mono">v2026.09.3</b> active since 21 Sep</p>
+      <h1 data-help="page">Pricing & dealer tiers</h1>
+      <p class="sub">One server-side price engine for website, staff orders, WhatsApp checkout links and the future app · rule set <b class="mono" data-help="g.rule-set">v2026.09.3</b> active since 21 Sep</p>
     </div>
     <div class="actions">
-      <button class="btn" data-sim-jump><i data-icon="sliders"></i> Simulate a price</button>
-      <div class="dd"><button class="btn" data-dd-toggle><i data-icon="download"></i> Export <i data-icon="chevron-down" class="ic-sm"></i></button>
+      <button class="btn" data-sim-jump><i data-icon="sliders"></i> Preview a price</button>
+      <div class="dd"><button class="btn" data-dd-toggle data-help="act-export"><i data-icon="download"></i> Export <i data-icon="chevron-down" class="ic-sm"></i></button>
         <div class="dd-menu"><a href="#" data-toast="Price lists exported (CSV · formula-safe) · link expires in 24 h">Price lists (CSV)</a><a href="#" data-toast="Tier sheet exported">Quantity tiers (CSV)</a><a href="#" data-toast="Audit export queued · you'll be notified">Price change audit</a></div></div>
-      <button class="btn btn-primary" data-open="m-newlist"><i data-icon="plus"></i> New price list</button>
+      <button class="btn btn-primary" data-open="m-newlist" data-help="act-newlist"><i data-icon="plus"></i> New price list</button>
     </div>
   </div>
+
+  <section class="flow" data-flow="pricing" aria-labelledby="flow-h" data-anno="1A · §8.1 / §18 Price change → checks → approval → publish · guided">
+    <div class="flow-head">
+      <div><h2 class="flow-title" id="flow-h" data-help="flow"><i data-icon="route"></i> How price changes work</h2>
+        <p class="flow-sub">Every change to a price list, bulk price or promotion follows these steps. Click a step to open the part of the page where it happens.</p></div>
+      <button class="btn btn-ghost btn-sm flow-toggle" data-flow-toggle aria-expanded="true" aria-controls="flow-steps"><span class="when-open">Hide guide</span><span class="when-closed">Show how it works</span></button>
+    </div>
+    <ol class="flow-steps" id="flow-steps">
+      <li class="flow-step"><button type="button" class="flow-btn" data-go-tab="lists"><span class="fs-n">1</span><span class="fs-t">Draft the change</span><span class="fs-d">Edit a public, dealer, location or contract list, its bulk prices or a promotion. It is saved as a draft — live prices do not move.</span><span class="fs-f"><span class="fs-c">5 active lists</span><span class="fs-who">Operations admin</span></span></button></li>
+      <li class="flow-step"><button type="button" class="flow-btn" data-go-tab="simulator"><span class="fs-n">2</span><span class="fs-t">Preview the price</span><span class="fs-d">Run any product, buyer, quantity or coupon through the simulator to see what the buyer would pay, step by step.</span><span class="fs-f"><span class="fs-c">Read-only</span><span class="fs-who">Anyone pricing</span></span></button></li>
+      <li class="flow-step"><button type="button" class="flow-btn" data-go-tab="controls"><span class="fs-n">3</span><span class="fs-t">Automatic checks</span><span class="fs-d">The engine compares margin with the floor (from landed cost), checks each role's discount limit and which promotions may combine.</span><span class="fs-f"><span class="fs-c warn">7 below floor · 30 d</span><span class="fs-who">Price engine</span></span></button></li>
+      <li class="flow-step is-attn"><button type="button" class="flow-btn" data-go-tab="approvals"><span class="fs-n">4</span><span class="fs-t">Approve or send back</span><span class="fs-d">Anything outside the limits waits for an approver with a reason — never the person who asked for it.</span><span class="fs-f"><span class="fs-c warn">2 changes · 1 discount waiting</span><span class="fs-who">Owner · Finance</span></span></button></li>
+      <li class="flow-step"><button type="button" class="flow-btn" data-go-tab="lists"><span class="fs-n">5</span><span class="fs-t">Goes live on its date</span><span class="fs-d">The approved version is published on its effective date. Orders keep the price and version they were sold with.</span><span class="fs-f"><span class="fs-c">Gold v8 due 1 Oct</span><span class="fs-who">Automatic</span></span></button></li>
+      <li class="flow-step"><button type="button" class="flow-btn" data-go-tab="audit"><span class="fs-n">6</span><span class="fs-t">Monitor &amp; review</span><span class="fs-d">Price history, overrides, locked quotes and supplier cost signals are all recorded and reviewed.</span><span class="fs-f"><span class="fs-c ok">1,284 changes logged</span><span class="fs-who">Finance · Owner</span></span></button></li>
+    </ol>
+    <div class="flow-foot"><span><i data-icon="layers"></i> What you can change: <button type="button" class="hp-link" data-go-tab="lists">Price lists</button> · <button type="button" class="hp-link" data-go-tab="tiers">Bulk prices (tiers)</button> · <button type="button" class="hp-link" data-go-tab="promotions">Promotions &amp; coupons</button></span><span>Supplier cost changes: <button type="button" class="hp-link" data-go-tab="approvals">Awaiting approval</button> · unusual situations: <button type="button" class="hp-link" data-go-tab="rules">Special cases</button></span></div>
+  </section>
 
   <div class="callout c-warn mb-16" data-anno="1A · R06 Price-list changes need approval with reason">
     <i data-icon="alert"></i>
-    <div class="grow"><strong>Dealer Gold v7 expires on 30 Sep (in 4 days).</strong> Its successor, Dealer Gold v8 (Q4 revision · 38 SKUs · avg −1.8%), is waiting for your approval. If v8 isn't approved in time, Gold accounts fall back to <b>Dealer Standard v6</b> — never to ₹0 or an arbitrary price.</div>
-    <button class="btn btn-sm" data-goto="approvals">Review change</button>
+    <div class="grow"><strong data-help="alert-expiry">Dealer Gold v7 expires on 30 Sep (in 4 days).</strong> Its successor, Dealer Gold v8 (Q4 revision · 38 SKUs · avg −1.8%), is waiting for your approval. If v8 isn't approved in time, Gold accounts fall back to <b>Dealer Standard v6</b> — never to ₹0 or an arbitrary price.</div>
+    <button class="btn btn-sm" data-goto="approvals">Review the v8 change</button>
   </div>
 
   <section class="grid g-6">
-    <div class="kpi"><div class="k-label"><i data-icon="layers"></i> <span>Active price lists</span></div><div class="k-value">5</div><div class="k-foot"><span>1 pending · 1 expired</span></div></div>
-    <div class="kpi"><div class="k-label"><i data-icon="briefcase"></i> <span>Dealer accounts</span></div><div class="k-value">43</div><div class="k-foot"><span>28 Standard · 14 Gold · 1 contract</span></div></div>
-    <div class="kpi"><div class="k-label"><i data-icon="gift"></i> <span>Live promotions</span></div><div class="k-value">4</div><div class="k-foot"><span>2 scheduled · 1 paused</span></div></div>
-    <div class="kpi"><div class="k-label"><i data-icon="alert"></i> <span>Below-floor asks</span></div><div class="k-value">7</div><div class="k-foot"><span class="delta down-good"><i data-icon="trending-down"></i> from 15</span><span>30 d · 5 approved</span></div></div>
-    <div class="kpi"><div class="k-label"><i data-icon="lock"></i> <span>Locked quotes</span></div><div class="k-value">18</div><div class="k-foot"><span>web 30 min · assisted 24 h</span></div></div>
-    <div class="kpi"><div class="k-label"><i data-icon="clock"></i> <span>Pending changes</span></div><div class="k-value text-warn">2</div><div class="k-foot"><span>oldest 20 h · due 29 Sep</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-lists"><i data-icon="layers"></i> <span>Active price lists</span></div><div class="k-value">5</div><div class="k-foot"><span>1 pending · 1 expired</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-dealers"><i data-icon="briefcase"></i> <span>Dealer accounts</span></div><div class="k-value">43</div><div class="k-foot"><span>28 Standard · 14 Gold · 1 contract</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-promos"><i data-icon="gift"></i> <span>Live promotions</span></div><div class="k-value">4</div><div class="k-foot"><span>2 scheduled · 1 paused</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-floor"><i data-icon="alert"></i> <span>Below-floor asks</span></div><div class="k-value">7</div><div class="k-foot"><span class="delta down-good"><i data-icon="trending-down"></i> from 15</span><span>30 d · 5 approved</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-quotes"><i data-icon="lock"></i> <span>Locked quotes</span></div><div class="k-value">18</div><div class="k-foot"><span>web 30 min · assisted 24 h</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-pending"><i data-icon="clock"></i> <span>Pending changes</span></div><div class="k-value text-warn">2</div><div class="k-foot"><span>oldest 20 h · due 29 Sep</span></div></div>
   </section>
 
   <!-- Rule precedence pipeline -->
   <section class="card mt-16" data-anno="1A · R03/R04 Proposed rule precedence (blueprint §8.1) — to confirm with client">
     <div class="card-head">
-      <div><h3>How every price is calculated</h3><div class="sub">Same sequence for every channel · final price and rule version are stored on each order line · the engine never silently picks “the biggest discount”</div></div>
+      <div><h3 data-help="calc-flow">How every price is calculated</h3><div class="sub">Same sequence for every channel · final price and rule version are stored on each order line · the engine never silently picks “the biggest discount”</div></div>
       <span class="badge b-warn dot">Proposed precedence · client sign-off pending</span>
     </div>
     <div class="flow-wrap">
-      <div class="flow-groups"><div class="fg-resolve">Resolve base price</div><div class="fg-adjust">Adjust</div><div class="fg-tax">Deliver & tax</div><div class="fg-guard">Guard & commit</div></div>
-      <div class="flow">
+      <div class="flow-groups"><div class="fg-resolve" data-help="calc-resolve">Resolve base price</div><div class="fg-adjust" data-help="calc-adjust">Adjust</div><div class="fg-tax" data-help="calc-tax">Deliver & tax</div><div class="fg-guard" data-help="calc-guard">Guard & commit</div></div>
+      <div class="prec">
         <div class="fs g1"><span class="n">1</span><b>Customer contract</b><span class="d">Approved account-specific price, if a contract line exists</span></div>
         <div class="fs g1"><span class="n">2</span><b>Dealer price list</b><span class="d">Gold / Standard list assigned to the business account</span></div>
         <div class="fs g1"><span class="n">3</span><b>Public list</b><span class="d">Retail list, or a location list for its location only</span></div>
@@ -109,56 +154,58 @@
   <!-- Tabs -->
   <section class="card mt-16" data-tabset id="tabs-main">
     <div class="tabs" style="padding:0 12px">
-      <button class="tab active" data-tab="lists">Price lists <span class="count">7</span></button>
-      <button class="tab" data-tab="tiers">Quantity tiers</button>
-      <button class="tab" data-tab="simulator">Price simulator</button>
-      <button class="tab" data-tab="promotions">Promotions <span class="count">8</span></button>
-      <button class="tab" data-tab="controls">Margin & authority</button>
-      <button class="tab" data-tab="rules">Edge cases</button>
-      <button class="tab" data-tab="approvals">Pending changes <span class="count">2</span></button>
-      <button class="tab" data-tab="audit">Change audit</button>
+      <button class="tab active" data-tab="lists" data-help="tab-lists">Price lists <span class="count">7</span></button>
+      <button class="tab" data-tab="tiers" data-help="tab-tiers">Bulk prices (tiers)</button>
+      <button class="tab" data-tab="simulator" data-help="tab-simulator">Price preview (simulator)</button>
+      <button class="tab" data-tab="promotions" data-help="tab-promotions">Promotions &amp; coupons <span class="count">8</span></button>
+      <button class="tab" data-tab="controls" data-help="tab-controls">Margin &amp; approval limits</button>
+      <button class="tab" data-tab="rules" data-help="tab-rules">Special cases</button>
+      <button class="tab" data-tab="approvals" data-help="tab-approvals">Awaiting approval <span class="count">2</span></button>
+      <button class="tab" data-tab="audit" data-help="tab-audit">Change history (audit)</button>
     </div>
 
     <!-- PRICE LISTS -->
     <div class="tab-panel active" data-panel="lists">
+      <div class="tab-intro"><i data-icon="info"></i><div><b>Every set of prices Tradex sells at — public, dealer, location and customer contract lists.</b> Use the type buttons or search to narrow the list, and click a row to see its lines, accounts and version history.<span class="ti-next">To change prices, open a list and choose <b>Propose a change</b>: a draft is created and the live list stays as it is until the change is approved.</span></div></div>
       <div class="table-toolbar">
         <div class="input-icon" style="width:260px"><i data-icon="search"></i><input class="input input-sm" placeholder="Filter lists, accounts…" id="list-filter" aria-label="Filter price lists"></div>
         <div class="seg" id="list-type"><button class="active" data-t="all">All</button><button data-t="Public">Public</button><button data-t="Dealer">Dealer</button><button data-t="Location">Location</button><button data-t="Contract">Contract</button></div>
-        <span class="small muted ml-auto">Consumers see GST-inclusive prices · dealers see ex-GST + tiers · guests see public only</span>
+        <span class="small muted ml-auto" data-help="price-display">Consumers see GST-inclusive prices · dealers see ex-GST + tiers · guests see public only</span>
       </div>
       <div class="table-wrap"><table class="table">
-        <thead><tr><th>Price list</th><th>Type</th><th>Basis & display</th><th>Validity</th><th>Assigned to</th><th class="r">SKUs</th><th>Version</th><th>Status</th><th></th></tr></thead>
+        <thead><tr><th>Price list</th><th data-help="col-l-type">Type</th><th data-help="col-l-basis">Basis & display</th><th data-help="col-l-validity">Validity</th><th>Assigned to</th><th class="r">SKUs</th><th data-help="col-l-version">Version</th><th data-help="col-l-status">Status</th><th></th></tr></thead>
         <tbody id="lists-body"></tbody>
       </table></div>
-      <div class="card-foot"><span class="small muted row gap-6"><i data-icon="info" class="ic-sm"></i> Every list has a defined fallback on expiry. Expired or missing lists block checkout for that buyer rather than pricing at ₹0.</span><span class="small muted">Click a row for lines, accounts and history</span></div>
+      <div class="card-foot"><span class="small muted row gap-6" data-help="fallback"><i data-icon="info" class="ic-sm"></i> Every list has a defined fallback on expiry. Expired or missing lists block checkout for that buyer rather than pricing at ₹0.</span><span class="small muted">Click a row for lines, accounts and history</span></div>
     </div>
 
     <!-- QUANTITY TIERS -->
     <div class="tab-panel" data-panel="tiers">
+      <div class="tab-intro"><i data-icon="info"></i><div><b>Lower unit prices for dealers who buy more of the same product — for example 5+ or 10+ units.</b> Pick a product and a dealer list, adjust the minimum quantities and prices, and watch the margin check on every row.<span class="ti-next">Edits are saved as a draft change and approved like any other price change. Whether a bulk price covers all units or only the units above each break is still to be confirmed by the business.</span></div></div>
       <div class="card-body">
-        <div class="grid" style="grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:20px">
+        <div class="grid stack-md" style="grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:20px">
           <div data-anno="1A · R04 Quantity tier editor (per SKU, per list)">
             <div class="row wrap gap-8 mb-12">
-              <div class="field" style="min-width:320px;flex:1"><label for="tier-sku">SKU</label><select class="select" id="tier-sku"></select></div>
+              <div class="field" style="min-width:min(320px, 100%);flex:1"><label for="tier-sku">Product (SKU)</label><select class="select" id="tier-sku"></select></div>
               <div class="field"><label>Price list</label><div class="seg" id="tier-list"><button class="active" data-l="gold">Dealer Gold</button><button data-l="std">Dealer Standard</button></div></div>
             </div>
             <div class="panel row gap-16 mb-12 small" id="tier-ctx"></div>
             <div class="table-wrap" style="border:1px solid var(--line);border-radius:var(--r)"><table class="table compact">
-              <thead><tr><th>Tier</th><th class="r">Min qty</th><th class="r">Unit ex-GST</th><th class="r">vs list</th><th class="r">Margin</th><th>Floor</th><th></th></tr></thead>
+              <thead><tr><th>Tier</th><th class="r" data-help="col-t-min">Min qty</th><th class="r" data-help="col-t-unit">Unit ex-GST</th><th class="r" data-help="col-t-vs">vs list</th><th class="r" data-help="g.margin">Margin</th><th data-help="col-t-floor">Floor</th><th></th></tr></thead>
               <tbody id="tier-body"></tbody>
             </table></div>
             <div class="row mt-12 gap-8">
               <button class="btn btn-sm" id="tier-add"><i data-icon="plus" class="ic-sm"></i> Add tier</button>
-              <label class="check small"><input type="checkbox" checked> Scope: per SKU (not mixed basket)</label>
+              <label class="check small" data-help="tier-scope"><input type="checkbox" checked> Scope: per SKU (not mixed basket)</label>
               <span class="ml-auto"></span>
-              <button class="btn btn-sm" data-toast="Changes discarded">Discard</button>
-              <button class="btn btn-sm btn-primary" data-toast="Saved as draft change PCR-0415 · sent to Anita R. for approval">Save as draft change</button>
+              <button class="btn btn-sm" data-toast="Changes discarded">Discard edits</button>
+              <button class="btn btn-sm btn-primary" data-help="tier-save" data-toast="Saved as draft change PCR-0415 · sent to Anita R. for approval">Save as draft change</button>
             </div>
-            <div class="callout c-info mt-12 small"><i data-icon="info"></i><div>Tier edits never go live directly — they are bundled into a price-list change with an effective date and reviewed like any other change. Changing quantity after a quote recalculates the tier and asks the buyer to confirm.</div></div>
+            <div class="callout c-info mt-12 small"><i data-icon="info"></i><div><b data-help="tier-draft">Tier edits never go live directly</b> — they are bundled into a price-list change with an effective date and reviewed like any other change. Changing quantity after a quote recalculates the tier and asks the buyer to confirm.</div></div>
           </div>
 
           <div data-anno="Decision Q33: all-units vs graduated (client to confirm)">
-            <div class="row-between mb-8"><h4>All-units vs graduated — worked example</h4>
+            <div class="row-between mb-8"><h4 data-help="tier-modes">All-units vs graduated — worked example</h4>
               <div class="row gap-6"><label class="small muted" for="tier-qty">Quantity</label><div class="qty"><button data-step="-1" aria-label="Decrease"><i data-icon="minus"></i></button><input id="tier-qty" value="12" min="1" aria-label="Quantity"><button data-step="1" aria-label="Increase"><i data-icon="plus"></i></button></div></div>
             </div>
             <div class="tier-cmp">
@@ -167,7 +214,8 @@
             </div>
             <div class="small subtle mt-8" id="cmp-diff"></div>
             <hr>
-            <h4 class="mb-8">Blueprint illustration (§8.2 · all-units)</h4>
+            <h4 class="mb-8" data-help="tier-example">Blueprint illustration (§8.2 · all-units)</h4>
+            <div class="table-wrap">
             <table class="table compact" style="border:1px solid var(--line);border-radius:var(--r)">
               <thead><tr><th>Buyer</th><th class="r">Qty</th><th class="r">Unit price</th><th class="r">Line subtotal</th></tr></thead>
               <tbody>
@@ -176,8 +224,8 @@
                 <tr><td>Approved dealer</td><td class="r">5</td><td class="r">₹2,200</td><td class="r">₹11,000</td></tr>
                 <tr><td>Approved dealer</td><td class="r">10</td><td class="r">₹2,100</td><td class="r">₹21,000</td></tr>
               </tbody>
-            </table>
-            <div class="callout c-warn mt-12 small"><i data-icon="alert"></i><div><strong>Open policy:</strong> if a dealer returns or cancels part of a tiered order (e.g. 10 → 7 units), does the original tier price stand or is an adjustment due? No retroactive repricing until the client agrees a policy and customer disclosure.</div></div>
+            </table></div>
+            <div class="callout c-warn mt-12 small"><i data-icon="alert"></i><div><strong data-help="tier-partial">Open policy:</strong> if a dealer returns or cancels part of a tiered order (e.g. 10 → 7 units), does the original tier price stand or is an adjustment due? No retroactive repricing until the client agrees a policy and customer disclosure.</div></div>
           </div>
         </div>
       </div>
@@ -185,12 +233,13 @@
 
     <!-- SIMULATOR -->
     <div class="tab-panel" data-panel="simulator">
+      <div class="tab-intro"><i data-icon="info"></i><div><b>See exactly how one product would be priced for one buyer, step by step.</b> Choose the product, buyer, quantity, channel, delivery place, coupon and any manual discount — the calculation on the right updates as you change them.<span class="ti-next">It is read-only: nothing is saved, no price changes and no order is created. Start with a <b>Try</b> example to see the tricky cases.</span></div></div>
       <div class="card-body">
         <div class="sim">
           <div class="col gap-12" data-anno="1A · R03/R04 Price simulator uses the live engine (read-only)">
             <div class="field"><label for="s-prod">Product</label><select class="select" id="s-prod"></select></div>
             <div class="row gap-12" id="s-prod-card"></div>
-            <div class="field"><label for="s-buyer">Buyer context</label>
+            <div class="field"><label for="s-buyer" data-help="sim-buyer">Buyer context</label>
               <select class="select" id="s-buyer">
                 <option value="guest">Guest (not signed in)</option>
                 <option value="consumer">Consumer · Priya Nair</option>
@@ -200,9 +249,9 @@
               </select></div>
             <div class="form-grid">
               <div class="field"><label for="s-qty">Quantity</label><div class="qty"><button data-step="-1" aria-label="Decrease"><i data-icon="minus"></i></button><input id="s-qty" value="10" min="1" aria-label="Quantity"><button data-step="1" aria-label="Increase"><i data-icon="plus"></i></button></div></div>
-              <div class="field"><label for="s-ch">Channel</label><select class="select" id="s-ch"><option value="web">Website</option><option value="wa">WhatsApp checkout link</option><option value="assisted">Assisted (staff)</option><option value="pos">Branch POS</option></select></div>
+              <div class="field"><label for="s-ch" data-help="sim-channel">Channel</label><select class="select" id="s-ch"><option value="web">Website</option><option value="wa">WhatsApp checkout link</option><option value="assisted">Assisted (staff)</option><option value="pos">Branch POS</option></select></div>
             </div>
-            <div class="field"><label for="s-loc">Delivery / location</label>
+            <div class="field"><label for="s-loc" data-help="sim-location">Delivery / location</label>
               <select class="select" id="s-loc">
                 <option value="blr">Deliver to Bengaluru 560034 · Karnataka</option>
                 <option value="mys">Deliver to Mysuru 570017 · Mysuru location list</option>
@@ -210,13 +259,13 @@
                 <option value="pickup">Pickup · SP Road Branch</option>
               </select></div>
             <div class="form-grid">
-              <div class="field"><label for="s-coupon">Coupon code</label><input class="input" id="s-coupon" placeholder="e.g. FESTIVE5"></div>
-              <div class="field"><label for="s-disc">Manual discount %</label><input class="input" id="s-disc" type="number" min="0" max="40" value="0"></div>
+              <div class="field"><label for="s-coupon" data-help="sim-coupon">Coupon code</label><input class="input" id="s-coupon" placeholder="e.g. FESTIVE5"></div>
+              <div class="field"><label for="s-disc" data-help="sim-disc">Manual discount %</label><input class="input" id="s-disc" type="number" min="0" max="40" value="0"></div>
             </div>
-            <div class="field"><label for="s-role">Requested by (role)</label>
+            <div class="field"><label for="s-role" data-help="sim-role">Requested by (role)</label>
               <select class="select" id="s-role"><option value="staff">Sales / support staff (limit 3%)</option><option value="manager" selected>Branch manager (limit 8%)</option><option value="ops">Operations admin (limit 10%)</option><option value="owner">Owner (no limit · reason logged)</option></select></div>
-            <label class="check small"><input type="checkbox" id="s-after"> Simulate on 1 Oct 2026 (Dealer Gold v7 expired, v8 not approved)</label>
-            <div class="row wrap gap-6"><span class="small muted">Try:</span>
+            <label class="check small" data-help="sim-after"><input type="checkbox" id="s-after"> Simulate on 1 Oct 2026 (Dealer Gold v7 expired, v8 not approved)</label>
+            <div class="row wrap gap-6"><span class="small muted" data-help="sim-presets">Try:</span>
               <button class="chip" data-preset="consumer-hub">Consumer + FESTIVE5</button>
               <button class="chip" data-preset="grade-b">Grade B clearance + coupon</button>
               <button class="chip" data-preset="floor">14% off · below floor</button>
@@ -224,7 +273,7 @@
             </div>
           </div>
           <div class="card" style="overflow:hidden">
-            <div class="card-head"><div><h3>Calculation</h3><div class="sub" id="s-sub"></div></div><span class="badge b-outline mono">rule set v2026.09.3</span></div>
+            <div class="card-head"><div><h3 data-help="sim-calc">Calculation</h3><div class="sub" id="s-sub"></div></div><span class="badge b-outline mono">rule set v2026.09.3</span></div>
             <ol class="calc" id="s-steps"></ol>
             <div class="final" id="s-final"></div>
           </div>
@@ -234,14 +283,15 @@
 
     <!-- PROMOTIONS -->
     <div class="tab-panel" data-panel="promotions">
+      <div class="tab-intro"><i data-icon="info"></i><div><b>Discounts on top of list prices — coupon codes, automatic discounts, bank offers, bundles and dealer promotions.</b> Each row shows who can use it, the benefit, how it combines with other discounts (stacking), its dates and its budget.<span class="ti-next">A new promotion starts as a draft and needs approval before it goes live. It pauses automatically when its budget is used up.</span></div></div>
       <div class="table-toolbar">
         <div class="seg"><button class="active">All (8)</button><button>Live (4)</button><button>Scheduled (2)</button><button>Paused / ended (2)</button></div>
         <span class="ml-auto"></span>
-        <button class="btn btn-sm" data-toast="Coupon codes generated: 500 single-use codes (batch CB-0092)"><i data-icon="copy" class="ic-sm"></i> Generate single-use codes</button>
-        <button class="btn btn-sm btn-primary" data-toast="Promotion draft created · needs approval before going live"><i data-icon="plus" class="ic-sm"></i> New promotion</button>
+        <button class="btn btn-sm" data-help="act-codes" data-toast="Coupon codes generated: 500 single-use codes (batch CB-0092)"><i data-icon="copy" class="ic-sm"></i> Generate single-use codes</button>
+        <button class="btn btn-sm btn-primary" data-help="act-newpromo" data-toast="Promotion draft created · needs approval before going live"><i data-icon="plus" class="ic-sm"></i> New promotion</button>
       </div>
       <div class="table-wrap"><table class="table">
-        <thead><tr><th>Promotion / code</th><th>Type</th><th>Eligibility</th><th>Benefit</th><th>Stacking</th><th>Validity</th><th class="r">Usage / budget</th><th>Status</th></tr></thead>
+        <thead><tr><th>Promotion / code</th><th data-help="col-p-type">Type</th><th data-help="col-p-elig">Eligibility</th><th>Benefit</th><th data-help="g.stacking">Stacking</th><th>Validity</th><th class="r" data-help="col-p-usage">Usage / budget</th><th data-help="col-p-status">Status</th></tr></thead>
         <tbody>
           <tr><td><div class="cell-main mono">FESTIVE5</div><div class="cell-sub">Navratri accessories & audio</div></td><td><span class="badge b-brand">Coupon</span></td><td class="small">Guests & consumers · Accessories, Audio · min ₹1,500</td><td class="small">5% off, max ₹1,000 / order</td><td class="small">Exclusive with automatic clearance · not with dealer lists</td><td class="small">20 Sep – 5 Oct</td><td class="r"><div class="small strong">412 / 2,000</div><div class="meter thin mt-4"><span style="width:21%"></span></div></td><td><span class="status s-ok">Live</span></td></tr>
           <tr><td><div class="cell-main mono">AUTO-CLEAR-B10</div><div class="cell-sub">Grade B monitors & printers</div></td><td><span class="badge b-accent">Automatic</span></td><td class="small">Consumers · Refurbished Grade B · Monitors, Printers</td><td class="small">10% off list</td><td class="small">No coupons on top (exclusive)</td><td class="small">1 Sep – 31 Oct</td><td class="r"><div class="small strong">64 orders</div><div class="cell-sub">₹61,200 given</div></td><td><span class="status s-ok">Live</span></td></tr>
@@ -255,7 +305,7 @@
       </table></div>
       <div class="grid g-3 card-body" style="border-top:1px solid var(--line-2)">
         <div data-anno="1A · Stacking policy is explicit, not 'best discount wins'">
-          <h4 class="mb-8">Stacking policy (rule set v2026.09.3)</h4>
+          <h4 class="mb-8" data-help="stacking-policy">Stacking policy (rule set v2026.09.3)</h4>
           <ul class="small subtle" style="margin:0;padding-left:18px;line-height:1.8">
             <li>Max <b>one coupon</b> per order.</li>
             <li>Automatic promotions + coupon only if both are marked combinable.</li>
@@ -266,14 +316,14 @@
           </ul>
         </div>
         <div>
-          <h4 class="mb-8">Coupon validation failures · 24 h</h4>
+          <h4 class="mb-8" data-help="coupon-failures">Coupon validation failures · 24 h</h4>
           <div class="list-row" style="padding:8px 0"><span class="li-icon"><i data-icon="clock"></i></span><div class="grow small"><b>Expired code</b> <span class="muted">· MONSOON10</span></div><b>41</b></div>
           <div class="list-row" style="padding:8px 0"><span class="li-icon"><i data-icon="briefcase"></i></span><div class="grow small"><b>Not valid on dealer pricing</b></div><b>6</b></div>
           <div class="list-row" style="padding:8px 0"><span class="li-icon"><i data-icon="rupee"></i></span><div class="grow small"><b>Minimum basket not met</b></div><b>18</b></div>
           <div class="list-row" style="padding:8px 0"><span class="li-icon warn"><i data-icon="alert"></i></span><div class="grow small"><b>Rate-limited guesses</b> <span class="muted">· 1 IP blocked 30 min</span></div><b>3</b></div>
         </div>
         <div>
-          <h4 class="mb-8">Budget & abuse controls</h4>
+          <h4 class="mb-8" data-help="promo-controls">Budget & abuse controls</h4>
           <dl class="kv"><dt>Per-customer limit</dt><dd>1 use / code (verified phone)</dd><dt>Budget stop</dt><dd>Auto-pause at 100% of budget</dd><dt>Refund handling</dt><dd>Original line discount used for refund</dd><dt>Approval</dt><dd>New promotions > ₹1 L budget → Owner</dd></dl>
         </div>
       </div>
@@ -281,15 +331,16 @@
 
     <!-- MARGIN & AUTHORITY -->
     <div class="tab-panel" data-panel="controls">
+      <div class="tab-intro"><i data-icon="info"></i><div><b>The limits that decide when a price needs someone's approval: the lowest margin allowed, and how much discount each role may give.</b> Below the two tables are the discount and below-floor requests waiting for a decision.<span class="ti-next">The floors and % limits shown are placeholders — the business must confirm the real limits before they are enforced.</span></div></div>
       <div class="card-body">
         <div class="callout c-warn mb-16" data-anno="§18.1 Thresholds are placeholders until the client supplies them">
-          <i data-icon="alert"></i><div><strong>Placeholder thresholds.</strong> The margin floors and % limits below are proposed values for the prototype. Exact limits must be supplied and signed off by the client (discovery question 36) before they are enforced as policy.</div>
+          <i data-icon="alert"></i><div><strong data-help="placeholder-limits">Placeholder thresholds.</strong> The margin floors and % limits below are proposed values for the prototype. Exact limits must be supplied and signed off by the client (discovery question 36) before they are enforced as policy.</div>
         </div>
-        <div class="grid" style="grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);gap:20px">
+        <div class="grid stack-md" style="grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);gap:20px">
           <div>
-            <div class="row-between mb-8"><h4>Margin floors</h4><button class="btn btn-xs" data-toast="Floor change drafted · needs Owner approval"><i data-icon="edit" class="ic-sm"></i> Edit</button></div>
+            <div class="row-between mb-8"><h4 data-help="floors">Margin floors</h4><button class="btn btn-xs" data-toast="Floor change drafted · needs Owner approval"><i data-icon="edit" class="ic-sm"></i> Propose change</button></div>
             <table class="table compact" style="border:1px solid var(--line);border-radius:var(--r)">
-              <thead><tr><th>Scope</th><th class="r">Floor</th><th class="r">30 d</th><th>On breach</th></tr></thead>
+              <thead><tr><th>Scope</th><th class="r">Floor</th><th class="r" data-help="col-f-30d">30 d</th><th data-help="col-f-breach">On breach</th></tr></thead>
               <tbody>
                 <tr><td>New · all categories</td><td class="r strong">5%</td><td class="r">4</td><td class="small">Approval with reason</td></tr>
                 <tr><td>Open box</td><td class="r strong">6%</td><td class="r">1</td><td class="small">Approval with reason</td></tr>
@@ -298,38 +349,39 @@
                 <tr><td>Customer contracts</td><td class="r strong">3%</td><td class="r">0</td><td class="small">Block · Owner only</td></tr>
               </tbody>
             </table>
-            <p class="small muted mt-8">Margin = (net unit price ex-GST − known landed cost) ÷ net price. Cost & margin are visible only to Finance, Operations admin and Owner roles.</p>
+            <p class="small muted mt-8" data-help="margin-formula">Margin = (net unit price ex-GST − known landed cost) ÷ net price. Cost & margin are visible only to Finance, Operations admin and Owner roles.</p>
           </div>
           <div data-anno="§18.1 Authority matrix by role">
-            <div class="row-between mb-8"><h4>Discount & pricing authority by role</h4><a class="small strong" href="erp-admin.html#thresholds">Approval thresholds →</a></div>
-            <table class="table compact" style="border:1px solid var(--line);border-radius:var(--r)">
+            <div class="row-between mb-8"><h4 data-help="authority">Discount & pricing authority by role</h4><a class="small strong" href="erp-admin.html#thresholds">Approval thresholds →</a></div>
+            <div class="table-wrap"><table class="table compact" style="border:1px solid var(--line);border-radius:var(--r)">
               <thead><tr><th>Action</th><th class="c">Sales / support</th><th class="c">Branch mgr</th><th class="c">Ops admin</th><th class="c">Finance</th><th class="c">Owner</th></tr></thead>
               <tbody id="auth-body"></tbody>
-            </table>
+            </table></div>
             <div class="row gap-16 mt-8 small muted"><span class="row gap-4"><i data-icon="check" class="ic-sm text-ok"></i> Allowed</span><span class="row gap-4"><i data-icon="minus" class="ic-sm"></i> Not allowed</span><span>“Request” = creates an approval item</span><span>Nobody approves their own request</span></div>
           </div>
         </div>
         <hr>
-        <div class="row-between mb-8"><h4>Open override requests</h4><a class="small strong" href="erp-automation.html#approvals">Approval queue →</a></div>
+        <div class="row-between mb-8"><h4 data-help="overrides">Open override requests</h4><a class="small strong" href="erp-automation.html#approvals">Approval queue →</a></div>
         <div class="exc" style="padding:12px 0">
           <span class="sev serious"><i data-icon="alert"></i> Serious</span>
           <div><div class="e-title">14% discount on assisted order TXO-10491 · 10 × Dell monitors · school tender</div>
             <div class="e-meta"><span><i data-icon="user"></i> Vikram Shetty (limit 8%)</span><span><i data-icon="percent"></i> Margin after discount 3.1% · floor 5%</span><span><i data-icon="clock"></i> 1 h 12 min · due 13:00</span><span><i data-icon="flag"></i> Approver: Owner</span></div></div>
-          <div class="e-act"><button class="btn btn-sm btn-ok" data-open="m-decide">Decide</button></div>
+          <div class="e-act"><button class="btn btn-sm btn-ok" data-open="m-decide" data-decide-ctx="override">Review &amp; decide</button></div>
         </div>
         <div class="exc" style="padding:12px 0">
           <span class="sev good"><i data-icon="check-circle"></i> Resolved</span>
           <div><div class="e-title">6% extra on 25 × Kingston FURY 16 GB for Sai Systems (quote Q-88102)</div>
             <div class="e-meta"><span><i data-icon="user"></i> Karthik R. (limit 3%) → Anita Rao (delegated ≤ 10%)</span><span><i data-icon="percent"></i> Margin 7.9%</span><span><i data-icon="check"></i> Approved 25 Sep 16:40 · reason “matching distributor quote”</span></div></div>
-          <div class="e-act"><button class="btn btn-sm" data-goto="audit">Audit</button></div>
+          <div class="e-act"><button class="btn btn-sm" data-goto="audit">See in change history</button></div>
         </div>
       </div>
     </div>
 
     <!-- EDGE CASE RULES -->
     <div class="tab-panel" data-panel="rules">
+      <div class="tab-intro"><i data-icon="info"></i><div><b>What the price engine does in unusual situations — a dealer signing out, an expired list, a quantity change after a quote, a refund on a discounted order and more.</b> Each row gives the agreed behaviour, whether it is set up, and the test that proves it.<span class="ti-next">Rows marked <b>Decision pending</b> wait for a business decision; until then the prototype behaviour described in the row applies.</span></div></div>
       <div class="table-wrap"><table class="table">
-        <thead><tr><th style="width:24%">Case</th><th>Engine behaviour</th><th>Status</th><th>Acceptance test</th></tr></thead>
+        <thead><tr><th style="width:24%">Case</th><th>Engine behaviour</th><th data-help="col-r-status">Status</th><th data-help="col-r-test">Acceptance test</th></tr></thead>
         <tbody>
           <tr><td class="strong">Dealer signs out</td><td class="small">Private price and cached responses are no longer accessible; pages re-render with public prices.</td><td><span class="status s-ok">Configured</span></td><td class="mono small">AT-PR-01 ✓</td></tr>
           <tr><td class="strong">Guest sends <span class="mono">customer_type=dealer</span></td><td class="small">Server ignores untrusted classification and derives context from the session. Event logged (3 in 24 h).</td><td><span class="status s-ok">Configured</span></td><td class="mono small">AT-PR-02 ✓</td></tr>
@@ -349,22 +401,23 @@
 
     <!-- PENDING CHANGES -->
     <div class="tab-panel" data-panel="approvals">
+      <div class="tab-intro"><i data-icon="info"></i><div><b>Price changes waiting for a decision, shown as before and after.</b> Read the reason, check the header changes, the changed lines and any floor breaches, then approve, request changes or reject — always with a reason.<span class="ti-next">The live list does not change until the change is approved. Supplier cost changes further down are suggestions only; each one needs a decision.</span></div></div>
       <div class="card-body col gap-16">
         <div class="card" style="overflow:hidden" data-anno="1A · R06 Pending change shown as a diff; live list unchanged until approved">
           <div class="card-head">
-            <div><div class="row gap-8"><h3>Dealer Gold · Q4 2026 revision</h3><span class="badge b-warn">Awaiting approval</span><span class="badge b-outline mono">v7 → v8</span></div>
+            <div><div class="row gap-8"><h3 data-help="pcr">Dealer Gold · Q4 2026 revision</h3><span class="badge b-warn">Awaiting approval</span><span class="badge b-outline mono">v7 → v8</span></div>
               <div class="sub">PCR-0412 · requested by Anita Rao (Operations admin) 26 Sep 10:05 · effective 1 Oct 2026 00:00 · approver: Owner · due 29 Sep</div></div>
-            <div class="row gap-8"><button class="btn btn-sm btn-danger" data-open="m-decide" data-decision="reject">Reject</button><button class="btn btn-sm" data-open="m-decide" data-decision="changes">Request changes</button><button class="btn btn-sm btn-ok" data-open="m-decide" data-decision="approve"><i data-icon="check" class="ic-sm"></i> Approve</button></div>
+            <div class="row gap-8"><button class="btn btn-sm btn-danger" data-open="m-decide" data-decision="reject">Reject</button><button class="btn btn-sm" data-open="m-decide" data-decision="changes">Request changes</button><button class="btn btn-sm btn-ok" data-open="m-decide" data-decision="approve" data-help="pcr-approve"><i data-icon="check" class="ic-sm"></i> Approve</button></div>
           </div>
           <div class="card-body">
             <div class="grid g-4 mb-16">
               <div class="panel"><div class="small muted">SKUs changed</div><div class="strong" style="font-size:18px">38 <span class="small muted">of 1,904</span></div></div>
               <div class="panel"><div class="small muted">Average change</div><div class="strong" style="font-size:18px">−1.8%</div></div>
-              <div class="panel"><div class="small muted">Est. margin impact / month</div><div class="strong text-warn" style="font-size:18px">−₹1.21 L</div></div>
-              <div class="panel"><div class="small muted">Below margin floor</div><div class="strong text-bad" style="font-size:18px" id="floor-count">3 SKUs</div></div>
+              <div class="panel"><div class="small muted" data-help="pcr-impact">Est. margin impact / month</div><div class="strong text-warn" style="font-size:18px">−₹1.21 L</div></div>
+              <div class="panel"><div class="small muted" data-help="pcr-floor">Below margin floor</div><div class="strong text-bad" style="font-size:18px" id="floor-count">3 SKUs</div></div>
             </div>
-            <div class="callout c-brand small mb-16"><i data-icon="info"></i><div><b>Reason given:</b> “Prime IT Distributors cut Q4 costs on Samsung/SanDisk SSDs and Kingston RAM by 4–6%. Matching the Mysuru market rate for Dealer Gold before Diwali stocking.” · Evidence: PO-2026-0187 cost sheet, 3 competitor quotes (attached).</div></div>
-            <h4 class="mb-8">List header</h4>
+            <div class="callout c-brand small mb-16"><i data-icon="info"></i><div><b data-help="pcr-reason">Reason given:</b> “Prime IT Distributors cut Q4 costs on Samsung/SanDisk SSDs and Kingston RAM by 4–6%. Matching the Mysuru market rate for Dealer Gold before Diwali stocking.” · Evidence: PO-2026-0187 cost sheet, 3 competitor quotes (attached).</div></div>
+            <h4 class="mb-8" data-help="pcr-header">List header</h4>
             <div class="diff mb-16">
               <div class="dh">Field</div><div class="dh">Live · v7</div><div class="dh">Proposed · v8</div>
               <div class="same">Validity</div><div class="old">1 Jul 2026 – 30 Sep 2026</div><div class="new">1 Oct 2026 – 31 Dec 2026</div>
@@ -373,19 +426,19 @@
               <div class="same">Tier mode</div><div class="same">All-units · 5+ / 10+</div><div class="new">All-units · 5+ / 10+ / 25+ (storage only)</div>
               <div class="same">Rounding</div><div class="old">Nearest ₹10</div><div class="new">Nearest ₹10 · ends in 0</div>
             </div>
-            <div class="row-between mb-8"><h4>Line changes <span class="muted small">(showing 10 of 38)</span></h4><div class="seg"><button class="active">All</button><button>Decreases</button><button>Increases</button><button>Floor breaches</button></div></div>
+            <div class="row-between mb-8"><h4 data-help="pcr-lines">Line changes <span class="muted small">(showing 10 of 38)</span></h4><div class="seg"><button class="active">All</button><button>Decreases</button><button>Increases</button><button>Floor breaches</button></div></div>
             <div class="table-wrap" style="border:1px solid var(--line);border-radius:var(--r)"><table class="table compact">
-              <thead><tr><th>Product</th><th class="r">List ex-GST</th><th class="r">5+ tier</th><th class="r">10+ tier</th><th class="r">Price Δ</th><th class="r">Cost Δ</th><th class="r">Margin at 10+</th><th>Check</th></tr></thead>
+              <thead><tr><th>Product</th><th class="r">List ex-GST</th><th class="r">5+ tier</th><th class="r">10+ tier</th><th class="r" data-help="col-delta">Price Δ</th><th class="r" data-help="col-delta">Cost Δ</th><th class="r" data-help="col-m10">Margin at 10+</th><th data-help="col-check">Check</th></tr></thead>
               <tbody id="diff-body"></tbody>
             </table></div>
           </div>
-          <div class="card-foot"><span class="small muted row gap-6"><i data-icon="lock" class="ic-sm"></i> Anita Rao requested this change and cannot approve it (separation of duties). Quotes locked before 1 Oct keep their locked price.</span><span class="small muted">Live list v7 stays in effect until approval.</span></div>
+          <div class="card-foot"><span class="small muted row gap-6" data-help="g.maker-checker"><i data-icon="lock" class="ic-sm"></i> Anita Rao requested this change and cannot approve it (separation of duties). Quotes locked before 1 Oct keep their locked price.</span><span class="small muted">Live list v7 stays in effect until approval.</span></div>
         </div>
 
         <div class="card" data-anno="§8.4 Supplier cost changes never auto-change live prices">
-          <div class="card-head"><div><h3>Supplier cost changes detected</h3><div class="sub">From supplier price files & POs · live prices are NOT changed automatically — each signal needs a decision</div></div><span class="badge b-info">6 signals</span></div>
+          <div class="card-head"><div><h3 data-help="cost-signals">Supplier cost changes detected</h3><div class="sub">From supplier price files & POs · live prices are NOT changed automatically — each signal needs a decision</div></div><span class="badge b-info">6 signals</span></div>
           <div class="table-wrap"><table class="table compact">
-            <thead><tr><th>Product</th><th>Source</th><th class="r">Cost change</th><th class="r">Margin at current price</th><th>Suggested</th><th class="r">Action</th></tr></thead>
+            <thead><tr><th>Product</th><th>Source</th><th class="r">Cost change</th><th class="r" data-help="col-cs-margin">Margin at current price</th><th>Suggested</th><th class="r">Action</th></tr></thead>
             <tbody id="cost-body"></tbody>
           </table></div>
         </div>
@@ -394,14 +447,15 @@
 
     <!-- AUDIT -->
     <div class="tab-panel" data-panel="audit">
+      <div class="tab-intro"><i data-icon="info"></i><div><b>The permanent record of every price change, discount override, promotion change and pricing security event.</b> Each entry shows when, who, what changed (before → after), why, and which approval covered it.<span class="ti-next">Entries cannot be edited or deleted. Search or filter by object, and export when finance or an auditor asks.</span></div></div>
       <div class="table-toolbar">
         <div class="input-icon" style="width:260px"><i data-icon="search"></i><input class="input input-sm" placeholder="Search actor, SKU, list…" aria-label="Search audit"></div>
         <select class="select input-sm" style="width:auto" aria-label="Object type"><option>All objects</option><option>Price lists</option><option>Tiers</option><option>Promotions</option><option>Overrides</option><option>Security events</option></select>
-        <span class="ml-auto small muted">Immutable · before/after · reason · approval reference</span>
+        <span class="ml-auto small muted" data-help="audit-trail">Immutable · before/after · reason · approval reference</span>
         <button class="btn btn-sm" data-toast="Audit export queued (CSV, formula-safe)"><i data-icon="download" class="ic-sm"></i> Export</button>
       </div>
       <div class="table-wrap"><table class="table">
-        <thead><tr><th>When</th><th>Actor</th><th>Object</th><th>Change</th><th>Reason</th><th>Approval</th></tr></thead>
+        <thead><tr><th>When</th><th>Actor</th><th data-help="col-a-object">Object</th><th>Change</th><th>Reason</th><th data-help="col-a-approval">Approval</th></tr></thead>
         <tbody>
           <tr><td class="small nowrap">26 Sep 10:05</td><td><div class="row gap-8"><span class="avatar sm" style="background:#7c3aed">AR</span>Anita Rao</div></td><td class="small">Dealer Gold v8</td><td class="small">Draft submitted · 38 SKU lines</td><td class="small">Distributor Q4 cost drop</td><td><span class="status s-warn">PCR-0412 pending</span></td></tr>
           <tr><td class="small nowrap">25 Sep 18:20</td><td><div class="row gap-8"><span class="avatar sm" style="background:#2a3656">⚙</span>Price engine</div></td><td class="small">Supplier cost file · Prime IT</td><td class="small">6 cost signals created · <b>no live price changed</b></td><td class="small">Rule: cost changes → suggestion only</td><td><span class="status s-muted">n/a</span></td></tr>
@@ -423,36 +477,38 @@
   <div class="drawer" id="d-list"><div class="drawer-card wide">
     <div class="drawer-head"><div id="dl-head"></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
     <div class="drawer-body" id="dl-body"></div>
-    <div class="drawer-foot"><button class="btn" data-close>Close</button><button class="btn" data-toast="Copied as draft · edit lines and submit for approval"><i data-icon="copy" class="ic-sm"></i> Duplicate as draft</button><button class="btn btn-primary" data-toast="Draft change opened · live list unchanged until approved"><i data-icon="edit" class="ic-sm"></i> Propose change</button></div>
+    <div class="drawer-foot"><button class="btn" data-close>Close</button><button class="btn" data-toast="Copied as draft · edit lines and submit for approval"><i data-icon="copy" class="ic-sm"></i> Duplicate as draft</button><button class="btn btn-primary" data-help="d-propose" data-toast="Draft change opened · live list unchanged until approved"><i data-icon="edit" class="ic-sm"></i> Propose a change</button></div>
   </div></div>
 
   <!-- New price list modal -->
   <div class="modal" id="m-newlist"><div class="modal-card lg">
-    <div class="modal-head"><div><h3>New price list</h3><div class="small muted">Created as a draft · goes live only after approval</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-head"><div><h3 data-help="m-newlist">New price list</h3><div class="small muted">Created as a draft · goes live only after approval</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
     <div class="modal-body">
       <div class="form-grid">
         <div class="field"><label class="req" for="nl-name">Name</label><input class="input" id="nl-name" placeholder="e.g. Dealer Platinum"></div>
-        <div class="field"><label for="nl-type">Type</label><select class="select" id="nl-type"><option>Dealer</option><option>Location</option><option>Customer contract</option><option>Public</option></select></div>
-        <div class="field"><label>Price display</label><div class="seg"><button class="active">Ex-GST (B2B)</button><button>GST-inclusive (B2C)</button></div></div>
-        <div class="field"><label for="nl-basis">Basis</label><select class="select" id="nl-basis"><option>Derived: Public list −7% ex-GST</option><option>Copy of Dealer Gold v7</option><option>Explicit per-SKU prices (import)</option></select></div>
+        <div class="field"><label for="nl-type" data-help="nl-type">Type</label><select class="select" id="nl-type"><option>Dealer</option><option>Location</option><option>Customer contract</option><option>Public</option></select></div>
+        <div class="field"><label data-help="price-display">Price display</label><div class="seg"><button class="active">Ex-GST (B2B)</button><button>GST-inclusive (B2C)</button></div></div>
+        <div class="field"><label for="nl-basis" data-help="nl-basis">Basis</label><select class="select" id="nl-basis"><option>Derived: Public list −7% ex-GST</option><option>Copy of Dealer Gold v7</option><option>Explicit per-SKU prices (import)</option></select></div>
         <div class="field"><label class="req" for="nl-from">Valid from</label><input class="input" id="nl-from" type="date" value="2026-10-01"></div>
         <div class="field"><label class="req" for="nl-to">Valid to</label><input class="input" id="nl-to" type="date" value="2026-12-31"></div>
-        <div class="field"><label class="req" for="nl-fb">Fallback on expiry</label><select class="select" id="nl-fb"><option>Dealer Standard</option><option>Public list</option><option>Block checkout (quote only)</option></select><span class="hint">Required — a list can never fall back to ₹0.</span></div>
-        <div class="field"><label for="nl-round">Rounding</label><select class="select" id="nl-round"><option>Nearest ₹10</option><option>Ends in 9 (B2C)</option><option>None (paise)</option></select></div>
+        <div class="field"><label class="req" for="nl-fb" data-help="fallback">Fallback on expiry</label><select class="select" id="nl-fb"><option>Dealer Standard</option><option>Public list</option><option>Block checkout (quote only)</option></select><span class="hint">Required — a list can never fall back to ₹0.</span></div>
+        <div class="field"><label for="nl-round" data-help="rounding">Rounding</label><select class="select" id="nl-round"><option>Nearest ₹10</option><option>Ends in 9 (B2C)</option><option>None (paise)</option></select></div>
         <div class="field full"><label for="nl-reason" class="req">Reason for change</label><textarea class="textarea" id="nl-reason" placeholder="Why is this list needed? Visible to the approver and kept in the audit log."></textarea></div>
       </div>
+      <div class="next-step mt-16"><i data-icon="arrow-right"></i><div class="grow"><b>Next step:</b> after <b>Create draft</b>, add or import the lines and submit the draft for approval. Nobody can buy at these prices until it is approved and its <b>Valid from</b> date arrives.</div></div>
     </div>
     <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-primary" data-close data-toast="Draft PL-DRAFT-0019 created · submit for approval when lines are ready">Create draft</button></div>
   </div></div>
 
   <!-- Decision modal -->
   <div class="modal" id="m-decide"><div class="modal-card">
-    <div class="modal-head"><h3 id="dec-title">Decide on change</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-head"><h3 id="dec-title" data-help="m-decide">Decide on change</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
     <div class="modal-body col gap-12">
       <div class="seg" id="dec-seg"><button data-d="approve" class="active">Approve</button><button data-d="changes">Request changes</button><button data-d="reject">Reject</button></div>
+      <div class="next-step" id="dec-next"></div>
       <div class="field"><label class="req" for="dec-reason">Reason (recorded in audit log)</label><textarea class="textarea" id="dec-reason" placeholder="e.g. Approved except the 3 floor-breach SKUs — keep v7 prices for those."></textarea><span class="err hidden" id="dec-err">A reason is required for every decision.</span></div>
       <label class="check small"><input type="checkbox" checked> Notify requester and affected account managers</label>
-      <div class="callout c-info small"><i data-icon="info"></i><div>Approving publishes v8 on its effective date. Locked quotes keep their price until the lock expires.</div></div>
+      <div class="callout c-info small"><i data-icon="info"></i><div id="dec-note">Approving publishes v8 on its effective date. Locked quotes keep their price until the lock expires.</div></div>
     </div>
     <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-primary" id="dec-submit">Submit decision</button></div>
   </div></div>
@@ -512,26 +568,32 @@ TX.ready(() => {
   const SAMPLE = ["lap-01", "lap-04", "mon-01", "gpu-01", "ssd-01", "ram-01", "net-02", "ms-02"];
   const openList = (id) => {
     const l = LISTS.find((x) => x.id === id);
-    $("#dl-head").innerHTML = `<div class="row gap-8"><h3>${l.name}</h3><span class="badge ${typeBadge[l.type]}">${l.type}</span><span class="status ${l.status[0]}">${l.status[1]}</span></div><div class="small muted mt-4 mono">${l.code} · ${l.ver} · ${l.from} → ${l.to}</div>`;
+    $("#dl-head").innerHTML = `<div class="row gap-8"><h3 data-help="d-list">${l.name}</h3><span class="badge ${typeBadge[l.type]}">${l.type}</span><span class="status ${l.status[0]}">${l.status[1]}</span></div><div class="small muted mt-4 mono">${l.code} · ${l.ver} · ${l.from} → ${l.to}</div>`;
     const priceFor = (p) => l.id === "retail" ? p.price / 1.18 : l.id === "std" ? std(p) : l.id === "mys" ? (Math.round(p.price * 0.98 / 10) * 10 - 1) / 1.18 : l.id === "ct7" ? r10(p.dealer * 0.96) : p.dealer;
     const dealers = TX.dealers.filter((d) => (l.id === "gold" || l.id === "gold8") ? d.list === "Dealer Gold" : l.id === "std" ? d.list === "Dealer Standard" : l.id === "ct7" ? d.name === "Coastal Infotech" : false);
     const acctRows = dealers.length ? dealers.map((d) => `<tr><td><div class="cell-main">${d.name}</div><div class="cell-sub">${d.contact} · ${d.city}</div></td><td><span class="status s-ok">${d.status}</span></td><td class="small">Prepaid</td><td class="r"><a class="small strong" href="erp-customers.html#business">Open</a></td></tr>`).join("") + (l.id === "std" ? `<tr><td colspan="4" class="small muted">+ 27 more accounts</td></tr>` : (l.id === "gold" || l.id === "gold8") ? `<tr><td colspan="4" class="small muted">+ 12 more accounts</td></tr>` : "")
       : `<tr><td colspan="4" class="small muted">${l.assigned}</td></tr>`;
+    // Next step for this list's state (guided help)
+    const NEXT = l.id === "gold" ? ["alert", "This list expires on 30 Sep. Decide on its successor v8 before then — otherwise its 14 accounts are priced from Dealer Standard.", "approvals", "Review the v8 change"]
+      : l.id === "gold8" ? ["clock", "Waiting for the Owner's decision (due 29 Sep). Check the before-and-after lines and the floor breaches, then approve, request changes or reject.", "approvals", "Open the approval"]
+      : l.status[1] === "Expired" ? ["check", "Nothing to do — this list has expired and is read-only. It is kept for audit and for orders placed while it was valid.", "audit", "See change history"]
+      : ["arrow-right", "This list is live. To change it, click <b>Propose a change</b> below — a draft is created and the live list stays until the change is approved.", "simulator", "Preview prices"];
     $("#dl-body").innerHTML = `
+      <div class="next-step dl-next">${ic(NEXT[0])}<div class="grow"><b>Next step:</b> ${NEXT[1]}</div><button type="button" class="btn btn-xs" data-close data-go-tab="${NEXT[2]}">${NEXT[3]}</button></div>
       ${l.id === "gold" ? `<div class="callout c-warn mb-16 small">${ic("alert")}<div><b>Expires 30 Sep 23:59.</b> Successor v8 awaits approval. On expiry without a successor, 14 accounts are priced from <b>Dealer Standard</b> (defined fallback).</div></div>` : ""}
       ${l.id === "silver" ? `<div class="callout c-info mb-16 small">${ic("info")}<div>Expired list kept read-only for audit and for orders placed while it was valid. It can't be assigned to new accounts.</div></div>` : ""}
       <div class="grid g-2 mb-16">
-        <dl class="kv"><dt>Basis</dt><dd>${l.basis}</dd><dt>Tax display</dt><dd>${l.type === "Public" || l.type === "Location" ? "GST-inclusive (B2C)" : "Ex-GST + GST shown at checkout"}</dd><dt>Tier mode</dt><dd>${l.type === "Dealer" ? "All-units · per SKU · 5+ / 10+" : l.type === "Contract" ? "Fixed — no tiers" : "None"}</dd></dl>
-        <dl class="kv"><dt>Fallback on expiry</dt><dd>${l.fallback}</dd><dt>Rounding</dt><dd>${l.type === "Public" || l.type === "Location" ? "Ends in 9" : "Nearest ₹10"}</dd><dt>Owner</dt><dd>Anita Rao · approver Owner</dd></dl>
+        <dl class="kv"><dt>Basis</dt><dd>${l.basis}</dd><dt data-help="price-display">Tax display</dt><dd>${l.type === "Public" || l.type === "Location" ? "GST-inclusive (B2C)" : "Ex-GST + GST shown at checkout"}</dd><dt data-help="tier-modes">Tier mode</dt><dd>${l.type === "Dealer" ? "All-units · per SKU · 5+ / 10+" : l.type === "Contract" ? "Fixed — no tiers" : "None"}</dd></dl>
+        <dl class="kv"><dt data-help="fallback">Fallback on expiry</dt><dd>${l.fallback}</dd><dt data-help="rounding">Rounding</dt><dd>${l.type === "Public" || l.type === "Location" ? "Ends in 9" : "Nearest ₹10"}</dd><dt>Owner</dt><dd>Anita Rao · approver Owner</dd></dl>
       </div>
-      <h4 class="mb-8">Assigned accounts</h4>
+      <h4 class="mb-8" data-help="d-accounts">Assigned accounts</h4>
       <table class="table compact mb-16" style="border:1px solid var(--line);border-radius:var(--r)"><thead><tr><th>Account</th><th>Status</th><th>Payment terms</th><th></th></tr></thead><tbody>${acctRows}</tbody></table>
-      <div class="row-between mb-8"><h4>Sample lines</h4><span class="small muted">${TX.num(l.skus)} SKUs · margin visible to Finance/Owner only</span></div>
-      <table class="table compact mb-16" style="border:1px solid var(--line);border-radius:var(--r)"><thead><tr><th>Product</th><th class="r">Public incl. GST</th><th class="r">This list ${l.type === "Public" || l.type === "Location" ? "(ex-GST)" : "ex-GST"}</th><th class="r">5+</th><th class="r">10+</th><th class="r">Margin</th></tr></thead><tbody>
+      <div class="row-between mb-8"><h4 data-help="d-lines">Sample lines</h4><span class="small muted">${TX.num(l.skus)} SKUs · margin visible to Finance/Owner only</span></div>
+      <div class="table-wrap mb-16"><table class="table compact" style="border:1px solid var(--line);border-radius:var(--r)"><thead><tr><th>Product</th><th class="r">Public incl. GST</th><th class="r">This list ${l.type === "Public" || l.type === "Location" ? "(ex-GST)" : "ex-GST"}</th><th class="r">5+</th><th class="r">10+</th><th class="r">Margin</th></tr></thead><tbody>
       ${SAMPLE.map((id) => { const p = TX.byId(id); const lp = priceFor(p); const t = l.id === "std" ? stdTiers(p) : l.type === "Dealer" ? p.tiers : null; const m = margin(lp, p);
         return `<tr><td><div class="row">${TX.ph(p.img, "thumb")}<div><div class="cell-main truncate" style="max-width:260px">${p.title}</div><div class="cell-sub mono">${p.sku}</div></div></div></td><td class="r">${fmt(p.price)}</td><td class="r strong">${fmt2(lp)}</td><td class="r">${t ? fmt(t[0].p) : "—"}</td><td class="r">${t ? fmt(t[1].p) : "—"}</td><td class="r ${m < floorOf(p) ? "text-bad" : ""}">${m.toFixed(1)}%</td></tr>`; }).join("")}
-      </tbody></table>
-      <h4 class="mb-8">Version history</h4>
+      </tbody></table></div>
+      <h4 class="mb-8" data-help="d-versions">Version history</h4>
       <ul class="timeline">
         <li class="${l.id === "gold8" ? "current" : "done"}"><span class="t-dot">${ic("check")}</span><div class="t-title">${l.ver} ${l.id === "gold8" ? "submitted for approval" : "published"}</div><div class="t-meta">${l.id === "gold8" ? "25 Sep 14:20 · Anita Rao · PCR-0412" : l.from + " · approved by Rajesh Menon"}</div></li>
         <li class="done"><span class="t-dot">${ic("check")}</span><div class="t-title">Previous version archived</div><div class="t-meta">Orders keep the version they were priced with</div></li>
@@ -553,7 +615,7 @@ TX.ready(() => {
   };
   const renderTiers = () => {
     const p = TX.byId(tierSku.value); const base = tierRows[0].p;
-    $("#tier-ctx").innerHTML = `${TX.ph(p.img, "thumb")}<div class="grow"><div class="strong">${p.title}</div><div class="muted">${TX.condBadge(p.cond)} &nbsp;Public ${fmt(p.price)} incl. GST · <span class="mono">${p.sku}</span></div></div><div class="r"><div class="muted">Est. landed cost</div><div class="strong">${fmt2(cost(p))}</div></div><div class="r"><div class="muted">Floor</div><div class="strong">${floorOf(p)}%</div></div>`;
+    $("#tier-ctx").innerHTML = `${TX.ph(p.img, "thumb")}<div class="grow"><div class="strong">${p.title}</div><div class="muted">${TX.condBadge(p.cond)} &nbsp;Public ${fmt(p.price)} incl. GST · <span class="mono">${p.sku}</span></div></div><div class="r"><div class="muted" data-help="g.landed">Est. landed cost</div><div class="strong">${fmt2(cost(p))}</div></div><div class="r"><div class="muted" data-help="g.margin">Floor</div><div class="strong">${floorOf(p)}%</div></div>`;
     $("#tier-body").innerHTML = tierRows.map((t, i) => { const m = margin(t.p, p); const ok = m >= floorOf(p);
       return `<tr><td class="strong">${t.base ? "List" : "Tier " + i}</td>
         <td class="r">${t.base ? "1" : `<input class="input tbl-input" style="width:64px" data-ti="${i}" data-f="min" value="${t.min}" aria-label="Minimum quantity">`}</td>
@@ -621,15 +683,38 @@ TX.ready(() => {
       <td class="r"><span class="delta ${pct > 0 ? "up-bad" : "down-good"}">${pct > 0 ? "+" : ""}${pct}%</span></td>
       <td class="r small">Public ${m.toFixed(1)}% · Gold <span class="${low ? "text-bad strong" : ""}">${md.toFixed(1)}%</span></td>
       <td class="small">${low ? "Raise Gold list +" + Math.ceil(floorOf(p) - md + 1) + "%" : pct < 0 ? "Hold price (margin gain)" : "No change needed"}</td>
-      <td class="r"><div class="row-actions"><button class="btn btn-xs" data-toast="Draft change created from cost signal · live price unchanged">Draft change</button><button class="btn btn-xs btn-ghost" data-toast="Signal dismissed · reason required in audit">Dismiss</button></div></td></tr>`; }).join("");
+      <td class="r"><div class="row-actions"><button class="btn btn-xs" data-toast="Draft change created from cost signal · live price unchanged">Draft price change</button><button class="btn btn-xs btn-ghost" data-toast="Signal dismissed · reason required in audit">Dismiss…</button></div></td></tr>`; }).join("");
 
   /* ---------- Decision modal ---------- */
   document.addEventListener("click", (e) => { const b = e.target.closest("[data-decision]"); if (b) { $$("#dec-seg button").forEach((x) => x.classList.toggle("active", x.dataset.d === b.dataset.decision)); } });
+  // Guided help: what each decision leads to, for the price-list change (PCR-0412) or the discount override (TXO-10491)
+  let decCtx = "pcr";
+  const decNote = $("#dec-note").innerHTML;
+  const DEC_NEXT = {
+    pcr: { approve: ["check-circle", "Dealer Gold v8 is published on 1 Oct 00:00 for its 14 accounts and v7 is archived. The requester is told."],
+      changes: ["undo", "The change goes back to Anita Rao with your comments. v7 stays live; if nothing is approved by 30 Sep, Gold accounts are priced from Dealer Standard."],
+      reject: ["x-circle", "v8 is closed. v7 stays live until 30 Sep, then Gold accounts are priced from Dealer Standard (the defined fallback)."] },
+    override: { approve: ["check-circle", "The 14% discount is allowed on order TXO-10491 only. Your name and reason are kept with the order; no price list changes."],
+      changes: ["undo", "The request goes back to Vikram Shetty with your comments — for example to offer a smaller discount."],
+      reject: ["x-circle", "The order cannot go ahead at 14%. Vikram Shetty is told your reason and can offer a price within the rules."] },
+  };
+  const renderDecNext = () => {
+    const d = ($("#dec-seg .active") || {}).dataset?.d || "approve"; const n = DEC_NEXT[decCtx][d];
+    $("#dec-next").innerHTML = `${ic(n[0])}<div class="grow"><b>When you submit:</b> ${n[1]}</div>`;
+    $("#dec-note").innerHTML = decCtx === "override" ? "Approving an override applies to this one order. It never changes a price list, floor or limit." : decNote;
+  };
+  document.addEventListener("click", (e) => {
+    const o = e.target.closest('[data-open="m-decide"]'); if (o) { decCtx = o.dataset.decideCtx || "pcr"; setTimeout(renderDecNext); }
+    if (e.target.closest("#dec-seg > button")) setTimeout(renderDecNext);
+  });
+  renderDecNext();
   $("#dec-submit").addEventListener("click", () => {
     const r = $("#dec-reason"); const d = ($("#dec-seg .active") || {}).dataset?.d || "approve";
     if (!r.value.trim()) { r.classList.add("is-error"); $("#dec-err").classList.remove("hidden"); r.focus(); return; }
     r.classList.remove("is-error"); $("#dec-err").classList.add("hidden"); TX.close(r); r.value = "";
-    TX.toast({ approve: "Approved · v8 goes live 1 Oct 00:00 · requester notified", changes: "Changes requested · returned to Anita R. with your comments", reject: "Rejected · v7 stays live until 30 Sep, then fallback applies" }[d]);
+    TX.toast(decCtx === "override"
+      ? { approve: "Override approved for TXO-10491 · reason recorded · Vikram S. notified", changes: "Changes requested · returned to Vikram S. with your comments", reject: "Override rejected · Vikram S. notified with your reason" }[d]
+      : { approve: "Approved · v8 goes live 1 Oct 00:00 · requester notified", changes: "Changes requested · returned to Anita R. with your comments", reject: "Rejected · v7 stays live until 30 Sep, then fallback applies" }[d]);
   });
 
   /* ---------- Simulator ---------- */

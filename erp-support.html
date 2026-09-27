@@ -73,31 +73,31 @@
   <div class="page-head">
     <div>
       <div class="crumbs"><span>Sell &amp; serve</span><i data-icon="chevron-right"></i><span>Support inbox</span></div>
-      <h1>Support &amp; WhatsApp inbox</h1>
+      <h1 data-help="page">Support &amp; WhatsApp inbox</h1>
       <p class="sub">Shared inbox for WhatsApp Business, website chat and email · service hours 9 AM–9 PM · guided bot answers approved FAQs and hands off to people — no AI in Phase 1</p>
     </div>
     <div class="actions">
-      <div class="dd"><button class="btn" data-dd-toggle><span class="status s-ok">Available</span> <i data-icon="chevron-down" class="ic-sm"></i></button>
+      <div class="dd"><button class="btn" data-dd-toggle data-help="availability"><span class="status s-ok">Available</span> <i data-icon="chevron-down" class="ic-sm"></i></button>
         <div class="dd-menu"><a href="#"><span class="status s-ok">Available</span></a><a href="#"><span class="status s-warn">Busy · no new chats</span></a><a href="#"><span class="status s-muted">Away</span></a></div></div>
-      <button class="btn" data-open="m-ticket"><i data-icon="plus"></i> New ticket</button>
-      <button class="btn btn-wa" data-open="m-basket"><i data-icon="cart"></i> Draft basket</button>
+      <button class="btn" data-open="m-ticket" data-help="act-new-ticket"><i data-icon="plus"></i> New ticket</button>
+      <button class="btn btn-wa" data-open="m-basket" data-help="act-basket"><i data-icon="cart"></i> Draft basket</button>
     </div>
   </div>
 
   <section class="grid g-6">
-    <div class="kpi"><div class="k-label"><i data-icon="chat"></i> <span>Open chats</span></div><div class="k-value">14</div><div class="k-foot"><span>8 WhatsApp · 4 web · 2 email</span></div></div>
-    <div class="kpi"><div class="k-label"><i data-icon="clock"></i> <span>Waiting on us</span></div><div class="k-value text-warn">4</div><div class="k-foot"><span>Oldest 12 min</span></div></div>
-    <div class="kpi"><div class="k-label"><i data-icon="activity"></i> <span>First response</span></div><div class="k-value">4 min</div><div class="k-foot"><span class="delta down-good"><i data-icon="trending-down"></i> −2 min</span><span id="sp1"></span></div></div>
-    <div class="kpi"><div class="k-label"><i data-icon="zap"></i> <span>Bot-resolved</span></div><div class="k-value">62%</div><div class="k-foot"><span>Order status &amp; FAQs · today</span></div></div>
-    <div class="kpi"><div class="k-label"><i data-icon="alert"></i> <span>SLA breaches</span></div><div class="k-value text-bad">1</div><div class="k-foot"><span>SUP-7740 · late GPU order</span></div></div>
-    <div class="kpi"><div class="k-label"><i data-icon="cart"></i> <span>Chat → orders</span></div><div class="k-value">6</div><div class="k-foot"><span>₹3.1 L today · via checkout links</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-open"><i data-icon="chat"></i> <span>Open chats</span></div><div class="k-value">14</div><div class="k-foot"><span>8 WhatsApp · 4 web · 2 email</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-waiting"><i data-icon="clock"></i> <span>Waiting on us</span></div><div class="k-value text-warn">4</div><div class="k-foot"><span>Oldest 12 min</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-first"><i data-icon="activity"></i> <span>First response</span></div><div class="k-value">4 min</div><div class="k-foot"><span class="delta down-good"><i data-icon="trending-down"></i> −2 min</span><span id="sp1"></span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-bot"><i data-icon="zap"></i> <span>Bot-resolved</span></div><div class="k-value">62%</div><div class="k-foot"><span>Order status &amp; FAQs · today</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-breaches"><i data-icon="alert"></i> <span>SLA breaches</span></div><div class="k-value text-bad">1</div><div class="k-foot"><span>SUP-7740 · late GPU order</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-orders"><i data-icon="cart"></i> <span>Chat → orders</span></div><div class="k-value">6</div><div class="k-foot"><span>₹3.1 L today · via checkout links</span></div></div>
   </section>
 
   <section class="card mt-16" data-tabset>
     <div class="tabs" style="padding:0 12px">
-      <button class="tab active" data-tab="inbox"><i data-icon="inbox" class="ic-sm"></i> Inbox <span class="count">14</span></button>
-      <button class="tab" data-tab="tickets"><i data-icon="clipboard" class="ic-sm"></i> Tickets <span class="count">9</span></button>
-      <button class="tab" data-tab="library"><i data-icon="file" class="ic-sm"></i> Answer library &amp; templates</button>
+      <button class="tab active" data-tab="inbox" data-help="tab-inbox"><i data-icon="inbox" class="ic-sm"></i> Inbox <span class="count">14</span></button>
+      <button class="tab" data-tab="tickets" data-help="tab-tickets"><i data-icon="clipboard" class="ic-sm"></i> Tickets <span class="count">9</span></button>
+      <button class="tab" data-tab="library" data-help="tab-library"><i data-icon="file" class="ic-sm"></i> Answer library &amp; templates</button>
     </div>
 
     <!-- ============ INBOX ============ -->
@@ -107,7 +107,7 @@
           <div class="ib-head">
             <div class="seg" id="chf" aria-label="Channel filter"><button class="active" data-ch="">All</button><button data-ch="wa">WhatsApp</button><button data-ch="web">Web chat</button><button data-ch="email">Email</button></div>
             <div class="row gap-6">
-              <select class="select input-sm" id="stf" aria-label="Status filter" style="flex:1"><option value="">Open · all (14)</option><option value="mine">Assigned to me</option><option value="unassigned">Unassigned</option><option value="bot">Bot handling</option><option value="waiting">Waiting on customer</option><option value="closed">Closed today</option></select>
+              <select class="select input-sm" id="stf" aria-label="Status filter" style="flex:1" data-help="conv-list"><option value="">Open · all (14)</option><option value="mine">Assigned to me</option><option value="unassigned">Unassigned</option><option value="bot">Bot handling</option><option value="waiting">Waiting on customer</option><option value="closed">Closed today</option></select>
               <button class="btn btn-sm btn-icon" aria-label="Sort"><i data-icon="sort" class="ic-sm"></i></button>
             </div>
           </div>
@@ -123,10 +123,10 @@
       <div class="table-toolbar">
         <div class="seg"><button class="active">Open (7)</button><button>Mine (3)</button><button>Breached (1)</button><button>Resolved (2)</button></div>
         <select class="select input-sm" style="width:190px" aria-label="Category"><option>All categories</option><option>Payment dispute</option><option>Warranty ambiguity</option><option>Missing / late order</option><option>Unsafe product</option><option>Compatibility</option></select>
-        <span class="small muted ml-auto">SLA by priority: Critical 1 h · High 4 h · Normal 8 h · Low 24 h (business hours, example targets)</span>
+        <span class="small muted ml-auto" data-help="sla-targets">SLA by priority: Critical 1 h · High 4 h · Normal 8 h · Low 24 h (business hours, example targets)</span>
       </div>
       <div class="table-wrap"><table class="table tk-table">
-        <thead><tr><th>Ticket</th><th>Subject · customer</th><th>Category</th><th>Priority</th><th>Status</th><th>Assignee</th><th>SLA</th><th>Linked</th></tr></thead>
+        <thead><tr><th>Ticket</th><th>Subject · customer</th><th data-help="col-tk-cat">Category</th><th data-help="col-tk-priority">Priority</th><th data-help="col-tk-status">Status</th><th>Assignee</th><th data-help="col-tk-sla">SLA</th><th data-help="col-tk-linked">Linked</th></tr></thead>
         <tbody id="tk-body"></tbody>
       </table></div>
       <div class="pager"><span>9 tickets · escalations from chat keep the full transcript</span><div class="pages"><button class="active">1</button></div></div>
@@ -137,23 +137,23 @@
       <div class="lib-grid" style="padding:16px">
         <div class="col gap-16">
           <div class="card" style="border-radius:var(--r)" data-anno="§13.4 Versioned, approved answers (bot + agents)">
-            <div class="card-head"><div><h3>Approved answers (FAQ)</h3><div class="sub">Used by the guided bot, agents' quick replies and the help centre · every change is a new version that needs approval</div></div><button class="btn btn-sm" data-toast="Draft answer created · needs approval before use"><i data-icon="plus" class="ic-sm"></i> New answer</button></div>
+            <div class="card-head"><div><h3 data-help="faq">Approved answers (FAQ)</h3><div class="sub">Used by the guided bot, agents' quick replies and the help centre · every change is a new version that needs approval</div></div><button class="btn btn-sm" data-toast="Draft answer created · needs approval before use"><i data-icon="plus" class="ic-sm"></i> New answer</button></div>
             <div class="table-wrap"><table class="table compact">
-              <thead><tr><th>Answer</th><th>Version</th><th>Status</th><th>Used by</th><th>Owner</th><th class="r">Uses 30 d</th></tr></thead>
+              <thead><tr><th>Answer</th><th>Version</th><th data-help="faq-status">Status</th><th>Used by</th><th>Owner</th><th class="r">Uses 30 d</th></tr></thead>
               <tbody id="faq-body"></tbody>
             </table></div>
           </div>
           <div class="card" style="border-radius:var(--r)" data-anno="§13.3 WhatsApp templates · opt-in & category">
-            <div class="card-head"><div><h3>WhatsApp message templates</h3><div class="sub">Required for business-initiated messages and for any reply after the 24-hour service window · approved by Meta via the provider</div></div><button class="btn btn-sm" data-toast="Template submitted to provider for review"><i data-icon="upload" class="ic-sm"></i> Submit template</button></div>
+            <div class="card-head"><div><h3 data-help="templates">WhatsApp message templates</h3><div class="sub">Required for business-initiated messages and for any reply after the 24-hour service window · approved by Meta via the provider</div></div><button class="btn btn-sm" data-toast="Template submitted to provider for review"><i data-icon="upload" class="ic-sm"></i> Submit template</button></div>
             <div class="table-wrap"><table class="table compact">
-              <thead><tr><th>Template</th><th>Category</th><th>Version</th><th>Status · last sent</th><th>Rule / consent</th></tr></thead>
+              <thead><tr><th>Template</th><th data-help="tpl-category">Category</th><th>Version</th><th data-help="tpl-status">Status · last sent</th><th data-help="tpl-rule">Rule / consent</th></tr></thead>
               <tbody id="tpl-body"></tbody>
             </table></div>
           </div>
         </div>
         <div class="col gap-16">
           <div class="card" style="border-radius:var(--r)">
-            <div class="card-head"><div><h3>Return window by condition</h3><div class="sub">Answer A-012 · <b>v4 approved</b> by Anita R. · 1 Sep 2026 · linked to Returns policy v2026.2</div></div><span class="badge b-ok">Live</span></div>
+            <div class="card-head"><div><h3 data-help="faq-detail">Return window by condition</h3><div class="sub">Answer A-012 · <b>v4 approved</b> by Anita R. · 1 Sep 2026 · linked to Returns policy v2026.2</div></div><span class="badge b-ok">Live</span></div>
             <div class="card-body col gap-12">
               <div class="panel small" style="line-height:1.6">Returns are accepted within <b>7 days</b> of delivery for new items and <b>10 days</b> for open-box and certified refurbished items, if the product is complete and undamaged. Warranty faults after the return window are handled by the warranty provider shown on your invoice. <a href="#">Start a return</a></div>
               <div class="small"><b>Channels:</b> guided bot · agent quick reply · help centre page</div>
@@ -164,11 +164,11 @@
                 <div class="same">Consumer window</div><div class="same">7 d new · 10 d refurb</div><div class="same">7 d new · 10 d refurb</div>
                 <div class="same">Dealer returns</div><div class="old">not mentioned</div><div class="new">sealed only · 5% restocking</div>
               </div>
-              <div class="row gap-8"><button class="btn btn-sm" data-toast="Version history: v1 12 Mar · v2 2 May · v3 18 Jul · v4 1 Sep">Version history</button><button class="btn btn-sm btn-primary" data-toast="v5 approved · bot and quick replies updated · audit logged">Approve v5</button></div>
+              <div class="row gap-8"><button class="btn btn-sm" data-toast="Version history: v1 12 Mar · v2 2 May · v3 18 Jul · v4 1 Sep">Version history</button><button class="btn btn-sm btn-primary" data-toast="v5 approved · bot and quick replies updated · audit logged" data-help="act-approve-answer">Approve v5</button></div>
             </div>
           </div>
           <div class="card" style="border-radius:var(--r)">
-            <div class="card-head"><h3>Guided bot menu</h3><span class="badge b-outline">Deterministic · no LLM</span></div>
+            <div class="card-head"><h3 data-help="bot-menu">Guided bot menu</h3><span class="badge b-outline">Deterministic · no LLM</span></div>
             <div class="list-row"><span class="li-icon brand"><i data-icon="package"></i></span><div class="grow small"><b>Track my order</b><div class="muted">OTP to order phone → permitted status only</div></div><span class="small muted">41%</span></div>
             <div class="list-row"><span class="li-icon brand"><i data-icon="cart"></i></span><div class="grow small"><b>Buy / get a quote</b><div class="muted">Pick item &amp; qty → draft basket → agent confirms variant</div></div><span class="small muted">22%</span></div>
             <div class="list-row"><span class="li-icon brand"><i data-icon="undo"></i></span><div class="grow small"><b>Returns &amp; warranty</b><div class="muted">Approved answers → RMA form</div></div><span class="small muted">18%</span></div>
@@ -182,33 +182,33 @@
 
   <!-- Draft basket modal -->
   <div class="modal" id="m-basket"><div class="modal-card lg">
-    <div class="modal-head"><div><h3>Create draft basket · <span id="bk-cust">Metro Computers</span></h3><div class="small muted">Draft lives in the main order system · prices from the pricing engine · customer confirms on a secure checkout page</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-head"><div><h3 data-help="m-basket">Create draft basket · <span id="bk-cust">Metro Computers</span></h3><div class="small muted">Draft lives in the main order system · prices from the pricing engine · customer confirms on a secure checkout page</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
     <div class="modal-body col gap-16" data-anno="1B · R11 A08 Draft basket → secure checkout link">
       <div class="callout c-info small"><i data-icon="whatsapp"></i><div>Pre-filled from conversation <b>SUP-7742</b>: “10 SanDisk Extreme 1TB + 4 USB-C hubs”. The item and condition were confirmed by the agent — the system never infers an order from unconfirmed text.</div></div>
       <div class="card" style="border-radius:var(--r)"><table class="table compact">
-        <thead><tr><th>Item</th><th class="r">Qty</th><th class="r">Unit (ex-GST)</th><th>Rule</th><th class="r">Total</th></tr></thead>
+        <thead><tr><th>Item</th><th class="r">Qty</th><th class="r">Unit (ex-GST)</th><th data-help="bk-rule">Rule</th><th class="r">Total</th></tr></thead>
         <tbody id="bk-lines"></tbody>
         <tfoot><tr><td colspan="4">Payable incl. 18% GST</td><td class="r" id="bk-tot"></td></tr></tfoot>
       </table></div>
       <div class="form-grid">
-        <div class="field"><label for="bk-ch">Send link via</label><select class="select" id="bk-ch"><option>WhatsApp · template checkout_link v2</option><option>SMS</option><option>Email</option></select></div>
-        <div class="field"><label for="bk-exp">Link &amp; reservation expiry</label><select class="select" id="bk-exp"><option>30 minutes (default)</option><option>2 hours (dealer, needs approval)</option></select></div>
+        <div class="field"><label for="bk-ch" data-help="bk-ch">Send link via</label><select class="select" id="bk-ch"><option>WhatsApp · template checkout_link v2</option><option>SMS</option><option>Email</option></select></div>
+        <div class="field"><label for="bk-exp" data-help="bk-exp">Link &amp; reservation expiry</label><select class="select" id="bk-exp"><option>30 minutes (default)</option><option>2 hours (dealer, needs approval)</option></select></div>
       </div>
       <div class="small muted">On the checkout page the customer confirms address and final price and pays via Razorpay. Stock is reserved when the link is sent and revalidated at payment; the same reservation, payment and fulfilment rules as the website apply.</div>
     </div>
     <div class="modal-foot" style="justify-content:space-between">
-      <a class="btn" href="erp-orders.html#assisted"><i data-icon="external" class="ic-sm"></i> Open as assisted order</a>
-      <div class="row gap-8"><button class="btn" data-close data-toast="Draft DB-0417 saved · no stock reserved">Save draft</button><button class="btn btn-wa" data-close data-toast="Secure checkout link sent (checkout_link v2) · DB-0417 reserved 30 min" data-toast-icon="whatsapp"><i data-icon="send" class="ic-sm"></i> Send secure checkout link</button></div>
+      <a class="btn" href="erp-orders.html#assisted" data-help="g.assisted"><i data-icon="external" class="ic-sm"></i> Open as assisted order</a>
+      <div class="row gap-8"><button class="btn" data-close data-toast="Draft DB-0417 saved · no stock reserved">Save draft</button><button class="btn btn-wa" data-close data-toast="Secure checkout link sent (checkout_link v2) · DB-0417 reserved 30 min" data-toast-icon="whatsapp" data-help="act-send-link"><i data-icon="send" class="ic-sm"></i> Send secure checkout link</button></div>
     </div>
   </div></div>
 
   <!-- Escalate to ticket modal -->
   <div class="modal" id="m-ticket"><div class="modal-card">
-    <div class="modal-head"><div><h3>Escalate to ticket</h3><div class="small muted">Transcript, customer identity state and linked orders are attached</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-head"><div><h3 data-help="m-ticket">Escalate to ticket</h3><div class="small muted">Transcript, customer identity state and linked orders are attached</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
     <div class="modal-body col gap-16">
-      <div class="field"><label for="tk-cat" class="req">Category</label><select class="select" id="tk-cat"><option>Payment dispute</option><option>Warranty ambiguity</option><option>Missing / late order</option><option>Unsafe product issue</option><option>Compatibility uncertainty</option><option>Other</option></select><span class="hint">These categories always go to a person — the bot never answers them.</span></div>
+      <div class="field"><label for="tk-cat" class="req" data-help="tk-cat">Category</label><select class="select" id="tk-cat"><option>Payment dispute</option><option>Warranty ambiguity</option><option>Missing / late order</option><option>Unsafe product issue</option><option>Compatibility uncertainty</option><option>Other</option></select><span class="hint">These categories always go to a person — the bot never answers them.</span></div>
       <div class="form-grid">
-        <div class="field"><label for="tk-pr">Priority</label><select class="select" id="tk-pr"><option>High · SLA 4 h</option><option>Critical · SLA 1 h</option><option>Normal · SLA 8 h</option><option>Low · SLA 24 h</option></select></div>
+        <div class="field"><label for="tk-pr" data-help="tk-pr">Priority</label><select class="select" id="tk-pr"><option>High · SLA 4 h</option><option>Critical · SLA 1 h</option><option>Normal · SLA 8 h</option><option>Low · SLA 24 h</option></select></div>
         <div class="field"><label for="tk-as">Assign to</label><select class="select" id="tk-as"><option>Finance · Deepa K.</option><option>Operations · Anita R.</option><option>Catalog · Sneha P.</option><option>Me · Karthik R.</option></select></div>
       </div>
       <div class="field"><label for="tk-s">Summary</label><textarea class="textarea" id="tk-s">Customer asks why two debits appear for TXO-10483 — first attempt failed (3-D Secure), second not completed. Verify with provider and explain reversal timeline.</textarea></div>
@@ -311,43 +311,44 @@ TX.ready(() => {
   function msgHTML(m, c) {
     const [k, text, t, q, who, card] = m;
     if (k === "s") return `<div class="msg sys">${text}</div>`;
-    if (k === "h") return `<div class="handoff"><span data-anno="1B · T24 Bot → human handoff with context">${ic("headset")} ${text}${t ? " · " + t : ""}</span></div>`;
+    if (k === "h") return `<div class="handoff"><span data-help="g.handoff" data-anno="1B · T24 Bot → human handoff with context">${ic("headset")} ${text}${t ? " · " + t : ""}</span></div>`;
     if (k === "p") return `<div class="paused-line"><span class="il">${ic("pause", "ic-sm")} ${text}</span></div>`;
     const cls = k === "c" ? "cust" : k === "b" ? "botm" : "agent";
     const whoTxt = k === "c" ? `${c.name.split(" ·")[0]}` : k === "b" ? `${ic("zap")} Guided bot · approved answers` : `${ic("headset")} ${who}`;
     return `<div class="msg ${cls}"><div class="who">${whoTxt}</div>${text}
       ${q ? `<div class="qr">${q.map((x) => `<span>${x}</span>`).join("")}</div>` : ""}
-      ${card ? `<div class="bcard"><div class="row-between"><b>${ic("cart", "ic-sm")} Draft basket ${card.db}</b><span class="badge mini b-ok">Converted · TXO-10486</span></div><div class="mt-4">${card.items}</div><div class="row-between mt-4"><span class="muted">${card.rule}</span><b>${card.total}</b></div><div class="small mt-4" style="color:var(--brand-700)">${ic("lock", "ic-sm")} Secure checkout link · tradex.in/c/DB0412-•••• · ${card.exp}</div></div>` : ""}
+      ${card ? `<div class="bcard"><div class="row-between"><b data-help="g.draft-basket">${ic("cart", "ic-sm")} Draft basket ${card.db}</b><span class="badge mini b-ok">Converted · TXO-10486</span></div><div class="mt-4">${card.items}</div><div class="row-between mt-4"><span class="muted">${card.rule}</span><b>${card.total}</b></div><div class="small mt-4" style="color:var(--brand-700)">${ic("lock", "ic-sm")} Secure checkout link · tradex.in/c/DB0412-•••• · ${card.exp}</div></div>` : ""}
       <div class="t">${t || ""}${k === "a" ? " · ✓✓ read" : ""}</div></div>`;
   }
 
   function renderThread() {
     const c = C.find((x) => x.id === curId);
     const closed = c.win === "closed";
-    const winBar = c.win === "open" ? `<div class="win"><span class="status s-ok">WhatsApp service window open</span><span class="muted">· ${c.winTxt} </span></div>`
-      : c.win === "closed" ? `<div class="win"><span class="status s-bad">WhatsApp service window closed</span><span class="muted">· ${c.winTxt}</span></div>`
-      : c.ch === "email" ? `<div class="win"><span class="status s-info">Email</span><span class="muted">· replies go from support@tradex.in · signature v3</span></div>`
-      : `<div class="win"><span class="status s-info">Web chat</span><span class="muted">· customer is ${c.id === "c4" ? "online now" : "offline — reply is emailed"}</span></div>`;
+    const winBar = c.win === "open" ? `<div class="win"><span class="status s-ok">WhatsApp service window open</span><span class="muted" data-help="service-window">· ${c.winTxt} </span></div>`
+      : c.win === "closed" ? `<div class="win"><span class="status s-bad">WhatsApp service window closed</span><span class="muted" data-help="service-window">· ${c.winTxt}</span></div>`
+      : c.ch === "email" ? `<div class="win"><span class="status s-info">Email</span><span class="muted" data-help="service-window">· replies go from support@tradex.in · signature v3</span></div>`
+      : `<div class="win"><span class="status s-info">Web chat</span><span class="muted" data-help="service-window">· customer is ${c.id === "c4" ? "online now" : "offline — reply is emailed"}</span></div>`;
     $("#thread").innerHTML = `
       <div class="th-head">
         <div class="av-wrap"><div class="avatar" style="background:${c.color}">${c.init}</div><span class="ch-ic ${c.ch}">${ic(CHN[c.ch][1])}</span></div>
         <div class="grow" style="min-width:0"><div class="strong truncate">${c.name}${c.org ? ` <span class="muted" style="font-weight:500">· ${c.org}</span>` : ""}</div><div class="tiny muted truncate">${CHN[c.ch][0]} · <span class="mono">${c.ref}</span> · ${c.phone}</div></div>
+        <span data-help="thread" data-help-pos="in" class="hi-host"></span>
         <div class="dd"><button class="btn btn-sm" data-dd-toggle>${ic("user", "ic-sm")} ${c.who} ${ic("chevron-down", "ic-sm")}</button><div class="dd-menu"><div class="dd-label">Assign to</div><a href="#" data-toast="Assigned to you">Karthik R. (me)</a><a href="#" data-toast="Assigned to Anita R.">Anita R. · Operations</a><a href="#" data-toast="Assigned to Deepa K.">Deepa K. · Finance</a><a href="#" data-toast="Assigned to Sneha P.">Sneha P. · Catalog</a></div></div>
         <button class="btn btn-sm" data-open="m-ticket">${ic("flag", "ic-sm")} Escalate</button>
         <button class="btn btn-sm btn-ghost btn-icon" aria-label="Close conversation" data-tip="Close conversation" data-toast="Conversation closed · customer can reopen by replying">${ic("check-circle", "ic-sm")}</button>
       </div>
       <div class="th-sub">
-        <label class="switch" data-anno="§13.4 Pause automation per conversation"><input type="checkbox" id="pause" ${c.paused ? "checked" : ""}> Pause automation in this conversation</label>
+        <label class="switch" data-help="pause" data-anno="§13.4 Pause automation per conversation"><input type="checkbox" id="pause" ${c.paused ? "checked" : ""}> Pause automation in this conversation</label>
         <span class="muted">${c.paused ? "Bot &amp; automatic updates are silent here until resumed" : "Bot replies to menu choices; order updates are automatic"}</span>
         <span class="ml-auto badge ${c.prio[1] || ""}">${c.prio[0]} priority</span>
       </div>
       <div class="ib-msgs" id="msgs">${c.msgs.map((m) => msgHTML(m, c)).join("")}<button class="jump hidden" id="jump">${ic("chevron-down", "ic-sm")} Latest messages</button></div>
       <div class="composer" data-anno="§13.3 24-h window closed → template only">
         ${winBar}
-        ${closed ? `<div class="callout c-warn small mb-8" style="padding:8px 12px"><i data-icon="lock"></i><div><b>Free-text reply not allowed.</b> The 24-hour customer service window has closed — send an approved template (utility). Marketing templates are blocked: Sunita opted out on 12 Aug.</div></div>` : ""}
+        ${closed ? `<div class="callout c-warn small mb-8" style="padding:8px 12px"><i data-icon="lock"></i><div><b data-help="window-closed">Free-text reply not allowed.</b> The 24-hour customer service window has closed — send an approved template (utility). Marketing templates are blocked: Sunita opted out on 12 Aug.</div></div>` : ""}
         <textarea class="textarea" id="reply" ${closed ? "disabled" : ""} placeholder="${closed ? "Choose an approved template to continue…" : c.ver === "no" ? "Reply — don't share order details: identity not verified" : "Type a reply · / for quick answers"}" aria-label="Reply"></textarea>
         <div class="row gap-6 mt-8">
-          <div class="dd"><button class="btn btn-sm ${closed ? "btn-primary" : ""}" data-dd-toggle>${ic("file", "ic-sm")} Templates ${ic("chevron-up", "ic-sm")}</button>
+          <div class="dd"><button class="btn btn-sm ${closed ? "btn-primary" : ""}" data-dd-toggle data-help="tpl-menu">${ic("file", "ic-sm")} Templates ${ic("chevron-up", "ic-sm")}</button>
             <div class="dd-menu" id="tplmenu">
               <div class="dd-label">Approved WhatsApp templates</div>
               <button class="tpl" data-tpl="Hi {{1}}, an update on your request {{2}}: {{3}}. Reply to this message to continue."><b>support_followup · v2 · Utility</b><span>Re-opens the conversation after the window closes</span></button>
@@ -362,7 +363,7 @@ TX.ready(() => {
           <button class="btn btn-sm btn-ghost" aria-label="Attach" ${closed ? "disabled" : ""}>${ic("paperclip", "ic-sm")}</button>
           <button class="btn btn-sm btn-ghost" data-toast="${c.ver === "yes" ? "Order status inserted (verified customer)" : "Blocked — verify identity before sharing order details"}" data-toast-icon="${c.ver === "yes" ? "check-circle" : "lock"}">${ic("package", "ic-sm")} Order status</button>
           <span class="ml-auto"></span>
-          <button class="btn btn-sm ${c.ch === "wa" ? "btn-wa" : "btn-primary"}" id="send">${ic("send", "ic-sm")} ${closed ? "Send template" : "Send"}</button>
+          <button class="btn btn-sm ${c.ch === "wa" ? "btn-wa" : "btn-primary"}" id="send" data-help="composer">${ic("send", "ic-sm")} ${closed ? "Send template" : "Send"}</button>
         </div>
       </div>`;
     TX.hydrate($("#thread"));
@@ -402,14 +403,14 @@ TX.ready(() => {
         <div class="row gap-12"><div class="avatar lg" style="background:${c.color}">${c.init}</div><div style="min-width:0"><div class="strong truncate">${c.ver === "no" ? "Unknown contact" : c.name}</div><div class="small muted">${c.org || (c.ver === "no" ? "No account linked" : c.ch === "web" && c.ver === "na" ? "Website visitor" : "Consumer")}</div>
           <div class="row gap-6 mt-4">${c.dealer ? `<span class="badge b-vendor mini">${ic("briefcase")} ${c.id === "c1" ? "Dealer Gold" : "Dealer Gold"}</span>` : ""}<span class="badge mini">${CHN[c.ch][0]}</span></div></div></div>
       </div>
-      <div class="side-sec"><h5>Identity</h5>${verBlock}</div>
-      <div class="side-sec"><h5>Linked orders <a href="erp-orders.html" class="tiny" style="text-transform:none;letter-spacing:0">All →</a></h5>${ordHTML}</div>
-      <div class="side-sec" data-anno="T25 Consent: opted-out → no reminders"><h5>Consent</h5>
+      <div class="side-sec"><h5><span data-help="side-identity">Identity</span></h5>${verBlock}</div>
+      <div class="side-sec"><h5><span data-help="side-orders">Linked orders</span> <a href="erp-orders.html" class="tiny" style="text-transform:none;letter-spacing:0">All →</a></h5>${ordHTML}</div>
+      <div class="side-sec" data-anno="T25 Consent: opted-out → no reminders"><h5><span data-help="side-consent">Consent</span></h5>
         <div class="consent">${consent.map(([l, v, k]) => `<span>${l}</span><span class="status ${k}" style="font-size:11.5px">${v}</span>`).join("")}</div>
         <div class="tiny muted mt-8">Saving our number is not marketing consent. Opt-outs stop reminders and promotions immediately (rule A28).</div>
         <button class="btn btn-xs mt-8" data-toast="Opt-out recorded for marketing · source: agent, SUP chat">Record opt-out</button>
       </div>
-      <div class="side-sec"><h5>Actions</h5>
+      <div class="side-sec"><h5><span data-help="side-actions">Actions</span></h5>
         <div class="col gap-6">
           <button class="btn btn-sm btn-wa btn-block" data-open="m-basket" ${c.ver === "yes" ? "" : "disabled"}>${ic("cart", "ic-sm")} Create draft basket</button>
           <button class="btn btn-sm btn-block" ${c.ver === "yes" && c.win !== "closed" ? "" : "disabled"} data-toast="Secure checkout link sent · template checkout_link v2" data-toast-icon="whatsapp">${ic("link", "ic-sm")} Send secure checkout link</button>

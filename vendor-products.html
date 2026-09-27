@@ -99,20 +99,20 @@
   <div class="page-head">
     <div>
       <div class="crumbs"><a href="vendor-dashboard.html">Vendor portal</a><i data-icon="chevron-right"></i><span>Products &amp; submissions</span></div>
-      <h1>Products &amp; submissions</h1>
+      <h1 data-help="page">Products &amp; submissions</h1>
       <p class="sub">Submit new products or changes for Tradex review. Nothing goes live until approved — and a pending change never overwrites the live version.</p>
     </div>
     <div class="actions">
-      <span class="badge b-vendor" data-anno="1B · §11.1 Permitted scope enforced on every submission"><i data-icon="shield"></i> Permitted: Laptops, Monitors — refurbished A/B</span>
+      <span class="badge b-vendor" data-help="scope" data-help-pos="after" data-anno="1B · §11.1 Permitted scope enforced on every submission"><i data-icon="shield"></i> Permitted: Laptops, Monitors — refurbished A/B</span>
       <button class="btn" data-goto="bulk"><i data-icon="download"></i> Templates</button>
-      <button class="btn btn-vendor" data-goto="new"><i data-icon="plus"></i> Submit product</button>
+      <button class="btn btn-vendor" data-goto="new" data-help="act-submit"><i data-icon="plus"></i> Submit product</button>
     </div>
   </div>
 
   <!-- Lifecycle strip -->
   <section class="card" data-anno="1B · §7.3 Lifecycle: Draft → Submitted → Needs changes → Approved → Published">
     <div class="pipeline p7">
-      <div class="stage" data-goto="submissions" data-filter="draft"><div class="s-n">2</div><div class="s-l">Draft</div><div class="s-w muted">Not visible to Tradex</div></div>
+      <div class="stage" data-goto="submissions" data-filter="draft"><div class="s-n">2</div><div class="s-l" data-help="lifecycle">Draft</div><div class="s-w muted">Not visible to Tradex</div></div>
       <div class="stage" data-goto="submissions" data-filter="submitted"><div class="s-n">3</div><div class="s-l">Submitted · in review</div><div class="s-w muted">SLA 2 working days</div></div>
       <div class="stage" data-goto="submissions" data-filter="changes"><div class="s-n text-warn">1</div><div class="s-l">Needs changes</div><div class="s-w text-warn">Reply by 29 Sep</div></div>
       <div class="stage" data-goto="submissions" data-filter="approved"><div class="s-n">2</div><div class="s-l">Approved</div><div class="s-w muted">1 awaiting publication</div></div>
@@ -124,17 +124,17 @@
 
   <div data-tabset class="mt-16">
     <div class="tabs">
-      <button class="tab active" data-tab="listings"><i data-icon="tag"></i> Live listings <span class="count">42</span></button>
-      <button class="tab" data-tab="submissions"><i data-icon="inbox"></i> Submissions <span class="count">10</span></button>
-      <button class="tab" data-tab="new"><i data-icon="plus"></i> Submit product</button>
-      <button class="tab" data-tab="bulk"><i data-icon="upload"></i> Bulk upload</button>
+      <button class="tab active" data-tab="listings" data-help="tab-listings"><i data-icon="tag"></i> Live listings <span class="count">42</span></button>
+      <button class="tab" data-tab="submissions" data-help="tab-submissions"><i data-icon="inbox"></i> Submissions <span class="count">10</span></button>
+      <button class="tab" data-tab="new" data-help="tab-new"><i data-icon="plus"></i> Submit product</button>
+      <button class="tab" data-tab="bulk" data-help="tab-bulk"><i data-icon="upload"></i> Bulk upload</button>
     </div>
 
     <!-- ===================== LISTINGS ===================== -->
     <div class="tab-panel active" data-panel="listings">
       <div class="callout c-info mt-16" data-anno="1B · §11.3 Pending version never overwrites live data">
         <i data-icon="info"></i>
-        <div><strong>The approved version stays live while a change is in review.</strong> Sensitive edits — brand, condition, warranty, tax class, or a supplier-price change above 10% — always need Tradex review. Quantities and lead times are updated in <a href="vendor-availability.html#feed">Availability</a>, not here. Retail prices are set by Tradex and are not shown in the portal.</div>
+        <div><strong data-help="live-rule">The approved version stays live while a change is in review.</strong> Sensitive edits — brand, condition, warranty, tax class, or a supplier-price change above 10% — always need Tradex review. Quantities and lead times are updated in <a href="vendor-availability.html#feed">Availability</a>, not here. Retail prices are set by Tradex and are not shown in the portal.</div>
       </div>
       <div class="card mt-16">
         <div class="table-toolbar">
@@ -145,7 +145,7 @@
           <span class="small muted ml-auto" id="l-count"></span>
         </div>
         <div class="table-wrap"><table class="table">
-          <thead><tr><th>Product</th><th>Your code · SKU</th><th>Warranty</th><th class="r">Supplier price</th><th class="r">Declared</th><th style="min-width:190px">Status</th><th class="r"></th></tr></thead>
+          <thead><tr><th>Product</th><th data-help="col-code">Your code · SKU</th><th data-help="col-warranty">Warranty</th><th class="r" data-help="col-sprice">Supplier price</th><th class="r" data-help="col-declared">Declared</th><th style="min-width:190px" data-help="col-lstatus">Status</th><th class="r"></th></tr></thead>
           <tbody id="l-body"></tbody>
         </table></div>
         <div class="pager"><span>Showing <b id="l-shown">8</b> of 42 listings · sorted by last change</span><div class="pages"><button class="active">1</button><button>2</button><button>3</button><button>4</button><button>5</button><button>6</button><button aria-label="Next page">›</button></div></div>
@@ -162,7 +162,7 @@
           <div class="input-icon ml-auto" style="width:240px"><i data-icon="search"></i><input class="input input-sm" id="s-q" placeholder="Search VS-number or product" aria-label="Search submissions"></div>
         </div>
         <div class="table-wrap"><table class="table">
-          <thead><tr><th>ID</th><th>Product</th><th>Type</th><th>Status</th><th>Reviewer comment</th><th>Updated</th><th class="r"></th></tr></thead>
+          <thead><tr><th>ID</th><th>Product</th><th data-help="col-stype">Type</th><th data-help="col-sstatus">Status</th><th data-help="col-comment">Reviewer comment</th><th>Updated</th><th class="r"></th></tr></thead>
           <tbody id="s-body"></tbody>
         </table></div>
         <div id="s-empty" class="empty hidden"><i data-icon="inbox"></i><h4>No submissions in this state</h4><p>Try another filter, or <a href="#" data-goto="new">submit a product</a>.</p></div>
@@ -173,7 +173,7 @@
     <!-- ===================== SUBMIT PRODUCT ===================== -->
     <div class="tab-panel" data-panel="new">
       <div class="row-between mt-16 mb-12">
-        <div class="row gap-8"><h3>New product submission</h3><span class="badge mono">Draft VS-0224</span><span class="small muted">Auto-saved 10:41 · last validated 10:41</span></div>
+        <div class="row gap-8"><h3 data-help="form-new">New product submission</h3><span class="badge mono">Draft VS-0224</span><span class="small muted">Auto-saved 10:41 · last validated 10:41</span></div>
         <div class="stepper" style="width:560px">
           <div class="step done"><span class="dot"><i data-icon="check" class="ic-sm"></i></span>Draft</div>
           <div class="step current"><span class="dot">2</span>Validate</div>
@@ -185,39 +185,39 @@
         <form class="col gap-16" id="sub-form" novalidate onsubmit="return false">
           <div class="callout c-bad errsum" id="errsum" data-anno="1B · §7.4 Validation errors shown inline, before review">
             <i data-icon="alert-octagon"></i>
-            <div><strong id="errsum-title">4 issues must be fixed before you can submit</strong><ul id="errsum-list"></ul></div>
+            <div><strong id="errsum-title">4 issues must be fixed before you can submit</strong><span data-help="errsum" data-help-pos="in" class="hi-host"></span><ul id="errsum-list"></ul></div>
           </div>
 
           <!-- 1 Category -->
           <section class="card fsec" id="sec-cat">
-            <div class="card-head"><div class="row"><span class="num">1</span><div><h3>Category &amp; identity</h3><div class="sub">Category decides which attributes are required</div></div></div></div>
+            <div class="card-head"><div class="row"><span class="num">1</span><div><h3 data-help="sec-cat">Category &amp; identity</h3><div class="sub">Category decides which attributes are required</div></div></div></div>
             <div class="card-body form-grid">
-              <div class="field"><label class="req" for="f-cat">Category</label>
+              <div class="field"><label class="req" for="f-cat" data-help="f-cat">Category</label>
                 <select class="select" id="f-cat"><option value="laptops" selected>Laptops</option><option value="monitors">Monitors</option><option disabled>Desktops — not permitted</option><option disabled>Cameras — not permitted</option><option disabled>Components — not permitted</option></select>
                 <span class="hint">Only categories approved for your account are selectable.</span></div>
-              <div class="field"><label>Condition type</label>
+              <div class="field"><label data-help="f-condtype">Condition type</label>
                 <div class="input-group"><span class="addon"><i data-icon="lock" class="ic-sm"></i></span><input class="input ro" value="Refurbished" readonly aria-label="Condition type"></div>
                 <span class="hint">Your approval covers refurbished units only.</span></div>
               <div class="field"><label class="req" for="f-brand">Brand</label><select class="select" id="f-brand"><option>Dell</option><option>HP</option><option>Lenovo</option><option>Apple</option><option>LG</option><option>Samsung</option></select></div>
               <div class="field"><label class="req" for="f-model">Model</label><input class="input" id="f-model" value="Latitude 7420"></div>
-              <div class="field"><label for="f-mpn">Manufacturer part no. (MPN)</label><input class="input mono" id="f-mpn" value="N7420-i5-1145G7-16-512"></div>
-              <div class="field"><label class="req" for="f-code">Your product code</label><input class="input mono" id="f-code" value="RT-LAT7420-A"><span class="hint">Mapped to a Tradex SKU on approval — your code is kept for POs.</span></div>
-              <div class="field full"><label>Title preview</label><div class="panel strong" id="f-title" style="padding:10px 12px"></div><span class="hint">Generated from brand, model, key specs and grade. Tradex may standardise wording.</span></div>
-              <div class="field"><label>Tax classification</label><input class="input ro mono" value="HSN 8471 30 10 · GST 18%" readonly aria-label="Tax classification"><span class="hint">Set by Tradex from the category — not editable.</span></div>
-              <div class="field"><label for="f-ean">Barcode / EAN (optional)</label><input class="input mono" id="f-ean" placeholder="e.g. 5397184471563"></div>
+              <div class="field"><label for="f-mpn" data-help="g.mpn">Manufacturer part no. (MPN)</label><input class="input mono" id="f-mpn" value="N7420-i5-1145G7-16-512"></div>
+              <div class="field"><label class="req" for="f-code" data-help="f-code">Your product code</label><input class="input mono" id="f-code" value="RT-LAT7420-A"><span class="hint">Mapped to a Tradex SKU on approval — your code is kept for POs.</span></div>
+              <div class="field full"><label data-help="f-title">Title preview</label><div class="panel strong" id="f-title" style="padding:10px 12px"></div><span class="hint">Generated from brand, model, key specs and grade. Tradex may standardise wording.</span></div>
+              <div class="field"><label data-help="f-tax">Tax classification</label><input class="input ro mono" value="HSN 8471 30 10 · GST 18%" readonly aria-label="Tax classification"><span class="hint">Set by Tradex from the category — not editable.</span></div>
+              <div class="field"><label for="f-ean" data-help="g.ean">Barcode / EAN (optional)</label><input class="input mono" id="f-ean" placeholder="e.g. 5397184471563"></div>
             </div>
           </section>
 
           <!-- 2 Specs -->
           <section class="card fsec" id="sec-spec" data-anno="1B · R07 Category schema drives attributes">
-            <div class="card-head"><div class="row"><span class="num">2</span><div><h3>Specifications</h3><div class="sub" id="schema-name">Schema “Laptops v4” · 9 required, 3 optional</div></div></div><span class="badge b-vendor" id="schema-badge">Laptops v4</span></div>
+            <div class="card-head"><div class="row"><span class="num">2</span><div><h3 data-help="sec-spec">Specifications</h3><div class="sub" id="schema-name">Schema “Laptops v4” · 9 required, 3 optional</div></div></div><span class="badge b-vendor" id="schema-badge">Laptops v4</span></div>
             <div class="card-body form-grid" data-schema="laptops">
               <div class="field"><label class="req" for="a-cpu">Processor</label><input class="input" id="a-cpu" value="Intel Core i5-1145G7 (11th gen)"></div>
               <div class="field"><label class="req" for="a-ram">Memory (RAM)</label><div class="input-group"><select class="select" id="a-ram"><option>8</option><option selected>16</option><option>32</option></select><span class="addon">GB DDR4</span></div></div>
               <div class="field"><label class="req" for="a-stype">Storage type</label><select class="select" id="a-stype"><option selected>NVMe SSD</option><option>SATA SSD</option><option>HDD</option></select></div>
               <div class="field"><label class="req" for="a-scap">Storage capacity</label><div class="input-group"><select class="select" id="a-scap"><option>256</option><option selected>512</option><option>1024</option></select><span class="addon">GB</span></div></div>
               <div class="field"><label class="req" for="a-disp">Display</label><div class="input-group"><input class="input" id="a-disp" value="14.0"><span class="addon">inch</span><select class="select" aria-label="Resolution"><option selected>1920 × 1080 FHD</option><option>1366 × 768 HD</option><option>2560 × 1440 QHD</option></select></div></div>
-              <div class="field" id="fld-batt"><label class="req" for="a-batt">Battery health</label><div class="input-group"><input class="input" id="a-batt" value="105" inputmode="numeric"><span class="addon">% of design capacity</span></div>
+              <div class="field" id="fld-batt"><label class="req" for="a-batt" data-help="f-batt">Battery health</label><div class="input-group"><input class="input" id="a-batt" value="105" inputmode="numeric"><span class="addon">% of design capacity</span></div>
                 <span class="err"><i data-icon="alert" class="ic-sm"></i> Must be between 0 and 100 %. Enter measured full-charge ÷ design capacity.</span><span class="hint">Grade A needs ≥ 85 %, Grade B ≥ 80 %.</span></div>
               <div class="field"><label class="req" for="a-os">Operating system</label><select class="select" id="a-os"><option selected>Windows 11 Pro — refurbisher licence (genuine)</option><option>Windows 10 Pro — refurbisher licence</option><option>No OS</option></select></div>
               <div class="field"><label class="req" for="a-kb">Keyboard layout</label><select class="select" id="a-kb"><option selected>US English</option><option>UK English</option></select></div>
@@ -240,7 +240,7 @@
 
           <!-- 3 Condition & warranty -->
           <section class="card fsec" id="sec-cond" data-anno="1B · R19 Grade rubric + mandatory warranty provider">
-            <div class="card-head"><div class="row"><span class="num">3</span><div><h3>Condition grade &amp; warranty</h3><div class="sub">Grade by the Tradex rubric · warranty provider and duration are mandatory</div></div></div><a class="small strong" href="#" data-toast="Grading rubric v2.1 (PDF) opened">Full rubric (PDF)</a></div>
+            <div class="card-head"><div class="row"><span class="num">3</span><div><h3 data-help="sec-cond">Condition grade &amp; warranty</h3><div class="sub">Grade by the Tradex rubric · warranty provider and duration are mandatory</div></div></div><a class="small strong" href="#" data-toast="Grading rubric v2.1 (PDF) opened">Full rubric (PDF)</a></div>
             <div class="card-body col gap-16">
               <div class="grades" role="radiogroup" aria-label="Condition grade">
                 <label class="grade-opt on"><input type="radio" name="grade" value="A" checked><div><div class="row gap-6"><span class="cond refurb">Refurbished · Grade A</span></div><div class="small muted mt-4">Minimal signs of use · battery ≥ 85 %</div></div></label>
@@ -248,7 +248,7 @@
                 <label class="grade-opt off"><input type="radio" name="grade" value="C" disabled><div><div class="row gap-6"><span class="cond used">Used · Good</span></div><div class="small muted mt-4 row gap-4"><i data-icon="lock" class="ic-sm"></i> Not permitted for your account</div></div></label>
               </div>
               <table class="spec-table rubric" style="border:1px solid var(--line-2);border-radius:8px">
-                <thead><tr><th>Rubric v2.1</th><th class="hl" data-g="A" style="color:var(--tx-1)">Grade A</th><th data-g="B" style="color:var(--tx-1)">Grade B</th></tr></thead>
+                <thead><tr><th data-help="rubric">Rubric v2.1</th><th class="hl" data-g="A" style="color:var(--tx-1)">Grade A</th><th data-g="B" style="color:var(--tx-1)">Grade B</th></tr></thead>
                 <tbody>
                   <tr><th>Cosmetic</th><td class="hl" data-g="A">No marks visible at 30 cm</td><td data-g="B">Light scratches / scuffs, no dents or cracks</td></tr>
                   <tr><th>Screen</th><td class="hl" data-g="A">No scratches, dead pixels or bleed</td><td data-g="B">Faint marks visible when off; no dead pixels</td></tr>
@@ -258,14 +258,14 @@
                 </tbody>
               </table>
               <div class="form-grid">
-                <div class="field" id="fld-wprov"><label class="req" for="f-wprov">Warranty provider</label>
+                <div class="field" id="fld-wprov"><label class="req" for="f-wprov" data-help="f-wprov">Warranty provider</label>
                   <select class="select" id="f-wprov"><option value="">— Select who honours the warranty —</option><option>RenewTech Refurbishers (supplier warranty, claims via Tradex)</option><option>Tradex (seller warranty, back-to-back with RenewTech)</option><option>Manufacturer (remaining OEM warranty — proof required)</option></select>
                   <span class="err"><i data-icon="alert" class="ic-sm"></i> Warranty provider is required for refurbished products (policy from 15 Sep 2026).</span></div>
-                <div class="field" id="fld-wdur"><label class="req" for="f-wdur">Warranty duration</label>
+                <div class="field" id="fld-wdur"><label class="req" for="f-wdur" data-help="f-wdur">Warranty duration</label>
                   <select class="select" id="f-wdur"><option value="">— Select —</option><option>3 months</option><option selected>6 months</option><option>12 months</option></select>
                   <span class="err"><i data-icon="alert" class="ic-sm"></i> Choose a duration.</span><span class="hint">Return window (10 days for refurbished) is a separate Tradex policy.</span></div>
                 <div class="field"><label for="f-defects">Defects &amp; cosmetic notes</label><textarea class="textarea" id="f-defects" style="min-height:70px">Light wear on palm rest. Tiny scuff on lid edge (photo 2). No dents.</textarea></div>
-                <div class="field"><label>Inspection &amp; data erasure evidence</label>
+                <div class="field"><label data-help="f-evidence">Inspection &amp; data erasure evidence</label>
                   <div class="panel small col gap-6">
                     <label class="check"><input type="checkbox" checked> 42-point inspection completed on 24 Sep 2026</label>
                     <div class="row gap-6"><i data-icon="file" class="ic-sm"></i> erasure_batch_0924.pdf <span class="badge b-ok">NIST 800-88 · verified format</span></div>
@@ -276,12 +276,12 @@
 
           <!-- 4 Images -->
           <section class="card fsec" id="sec-img" data-anno="1B · §7.4 Image quality + rights confirmation">
-            <div class="card-head"><div class="row"><span class="num">4</span><div><h3>Images &amp; content</h3><div class="sub">JPG/PNG · min 1200 px on the long edge · up to 10 photos · show the actual unit or batch</div></div></div><span class="small muted" id="img-count">5 of 10</span></div>
+            <div class="card-head"><div class="row"><span class="num">4</span><div><h3 data-help="sec-img">Images &amp; content</h3><div class="sub">JPG/PNG · min 1200 px on the long edge · up to 10 photos · show the actual unit or batch</div></div></div><span class="small muted" id="img-count">5 of 10</span></div>
             <div class="card-body col gap-16">
               <div class="imgs" id="imgs"></div>
               <div class="dropzone" style="padding:18px"><i data-icon="upload"></i><div><b style="color:var(--tx-1)">Drag photos here</b> or <a href="#" data-toast="File picker opened (prototype)">browse</a></div><div class="small">No watermarks, no text overlays, no images copied from Amazon, Flipkart or manufacturer sites without permission.</div></div>
               <div class="rights" id="fld-rights">
-                <label class="check" style="align-items:flex-start"><input type="checkbox" id="f-rights" style="margin-top:2px"> <span><b>I confirm RenewTech Refurbishers owns these photos or has written permission to use them, and that they show the product being supplied.</b><br><span class="small muted">Required. Recorded with your name, time and terms v3 clause 7.2.</span></span></label>
+                <label class="check" style="align-items:flex-start"><input type="checkbox" id="f-rights" style="margin-top:2px"> <span><b data-help="f-rights">I confirm RenewTech Refurbishers owns these photos or has written permission to use them, and that they show the product being supplied.</b><br><span class="small muted">Required. Recorded with your name, time and terms v3 clause 7.2.</span></span></label>
                 <div class="err small mt-8" id="rights-err" style="color:var(--bad-tx);display:flex;gap:5px;align-items:center"><i data-icon="alert" class="ic-sm"></i> Confirm image rights to submit.</div>
               </div>
               <div class="form-grid">
@@ -293,17 +293,17 @@
 
           <!-- 5 Commercial -->
           <section class="card fsec" id="sec-com">
-            <div class="card-head"><div class="row"><span class="num">5</span><div><h3>Supplier price &amp; availability</h3><div class="sub">What Tradex pays you, and what you can supply</div></div></div></div>
+            <div class="card-head"><div class="row"><span class="num">5</span><div><h3 data-help="sec-com">Supplier price &amp; availability</h3><div class="sub">What Tradex pays you, and what you can supply</div></div></div></div>
             <div class="card-body form-grid">
-              <div class="field" id="fld-price"><label class="req" for="f-price">Supplier price (ex-GST, per unit)</label><div class="input-group"><span class="addon">₹</span><input class="input" id="f-price" value="36,400" inputmode="numeric"></div>
+              <div class="field" id="fld-price"><label class="req" for="f-price" data-help="f-price">Supplier price (ex-GST, per unit)</label><div class="input-group"><span class="addon">₹</span><input class="input" id="f-price" value="36,400" inputmode="numeric"></div>
                 <span class="err"><i data-icon="alert" class="ic-sm"></i> Enter a price greater than zero.</span><span class="hint" id="price-hint">₹42,952 incl. 18% GST. Retail price is set by Tradex separately.</span></div>
               <div class="field"><label for="f-valid">Price valid until</label><div class="input-group"><input class="input" id="f-valid" value="31 Oct 2026"><span class="addon"><i data-icon="calendar" class="ic-sm"></i></span></div></div>
-              <div class="field"><label class="req" for="f-qty">Supplier-held quantity</label><div class="row"><div class="qty"><button type="button" data-step="-1" aria-label="Decrease"><i data-icon="minus"></i></button><input id="f-qty" value="12" min="0" aria-label="Quantity"><button type="button" data-step="1" aria-label="Increase"><i data-icon="plus"></i></button></div><span class="small muted">units at your warehouse</span></div></div>
-              <div class="field" id="fld-lead"><label class="req" for="f-lead">Lead time to Tradex warehouse</label><div class="input-group"><input class="input" id="f-lead" value="3" inputmode="numeric"><span class="addon">working days</span></div><span class="err"><i data-icon="alert" class="ic-sm"></i> Lead time must be 1–30 days.</span></div>
-              <div class="field"><label for="f-loc">Dispatch from</label><select class="select" id="f-loc"><option>Chennai — Guindy warehouse (approved)</option><option disabled>Bengaluru — Hosur Road (approval pending)</option></select></div>
-              <div class="field"><label for="f-moq">Minimum order per PO</label><div class="input-group"><input class="input" id="f-moq" value="1"><span class="addon">units</span></div></div>
+              <div class="field"><label class="req" for="f-qty" data-help="f-qty">Supplier-held quantity</label><div class="row"><div class="qty"><button type="button" data-step="-1" aria-label="Decrease"><i data-icon="minus"></i></button><input id="f-qty" value="12" min="0" aria-label="Quantity"><button type="button" data-step="1" aria-label="Increase"><i data-icon="plus"></i></button></div><span class="small muted">units at your warehouse</span></div></div>
+              <div class="field" id="fld-lead"><label class="req" for="f-lead" data-help="f-lead">Lead time to Tradex warehouse</label><div class="input-group"><input class="input" id="f-lead" value="3" inputmode="numeric"><span class="addon">working days</span></div><span class="err"><i data-icon="alert" class="ic-sm"></i> Lead time must be 1–30 days.</span></div>
+              <div class="field"><label for="f-loc" data-help="f-loc">Dispatch from</label><select class="select" id="f-loc"><option>Chennai — Guindy warehouse (approved)</option><option disabled>Bengaluru — Hosur Road (approval pending)</option></select></div>
+              <div class="field"><label for="f-moq" data-help="g.moq">Minimum order per PO</label><div class="input-group"><input class="input" id="f-moq" value="1"><span class="addon">units</span></div></div>
               <div class="callout c-info full small"><i data-icon="info"></i><div>Declared quantity is <b>your</b> stock — it is never counted as Tradex stock. After approval it can power “Ships in 4–6 days · partner stock” on the storefront only while your availability feed is fresh.</div></div>
-              <div class="field full"><label class="switch" style="opacity:.6"><input type="checkbox" disabled> Eligible for supplier-fulfilment pilot</label><span class="hint">Pilot SKUs are agreed with Tradex purchasing — not self-selectable.</span></div>
+              <div class="field full"><label class="switch" style="opacity:.6" data-help="f-pilot"><input type="checkbox" disabled> Eligible for supplier-fulfilment pilot</label><span class="hint">Pilot SKUs are agreed with Tradex purchasing — not self-selectable.</span></div>
             </div>
           </section>
 
@@ -311,22 +311,22 @@
             <span class="small muted row gap-6"><i data-icon="history" class="ic-sm"></i> Draft VS-0224 · auto-saved 10:41 · visible only to your organisation</span>
             <div class="ml-auto row gap-8">
               <button type="button" class="btn btn-ghost" data-toast="Draft VS-0224 saved">Save draft</button>
-              <button type="button" class="btn" id="btn-validate"><i data-icon="check-circle"></i> Validate</button>
-              <button type="button" class="btn btn-vendor" id="btn-submit"><i data-icon="send"></i> Submit for review</button>
+              <button type="button" class="btn" id="btn-validate" data-help="btn-validate"><i data-icon="check-circle"></i> Validate</button>
+              <button type="button" class="btn btn-vendor" id="btn-submit" data-help="btn-submit"><i data-icon="send"></i> Submit for review</button>
             </div>
           </div>
         </form>
 
         <aside class="form-side">
           <div class="card">
-            <div class="card-head"><div><h3>Submission checklist</h3><div class="sub" id="chk-sub">5 of 7 complete</div></div></div>
+            <div class="card-head"><div><h3 data-help="checklist">Submission checklist</h3><div class="sub" id="chk-sub">5 of 7 complete</div></div></div>
             <div class="card-body" style="padding-top:8px;padding-bottom:10px">
               <div class="meter m-vendor thin mb-8" style="margin-top:8px"><span id="chk-meter" style="width:71%"></span></div>
               <ul class="chk-list" id="chk-list"></ul>
             </div>
           </div>
           <div class="card">
-            <div class="card-head"><h3>What happens next</h3></div>
+            <div class="card-head"><h3 data-help="sub-next">What happens next</h3></div>
             <div class="card-body">
               <ul class="timeline">
                 <li class="current"><span class="t-dot"><i data-icon="check"></i></span><div class="t-title">Automatic validation</div><div class="t-meta">Instant · required fields, ranges, images, duplicates</div></li>
@@ -336,7 +336,7 @@
               </ul>
             </div>
           </div>
-          <div class="panel small"><b>Your permitted scope</b><div class="muted mt-4">Laptops, Monitors · Refurbished Grade A/B · dispatch from Chennai (Guindy). Need more? <a href="vendor-account.html#profile">Request a category</a>.</div></div>
+          <div class="panel small"><b data-help="scope">Your permitted scope</b><div class="muted mt-4">Laptops, Monitors · Refurbished Grade A/B · dispatch from Chennai (Guindy). Need more? <a href="vendor-account.html#profile">Request a category</a>.</div></div>
         </aside>
       </div>
     </div>
@@ -351,7 +351,7 @@
       </div>
       <div class="bulk-steps" data-anno="1B · R20 Versioned template · file or API · same validation">
         <div class="card">
-          <div class="card-head"><h3>1 · Download a template</h3><span class="badge b-vendor">v4 · 1 Sep 2026</span></div>
+          <div class="card-head"><h3 data-help="bulk-tpl">1 · Download a template</h3><span class="badge b-vendor">v4 · 1 Sep 2026</span></div>
           <div class="card-body" style="padding-top:6px;padding-bottom:8px">
             <div class="tpl"><i data-icon="file"></i><div class="grow"><b>Laptops template</b><div class="small muted">XLSX · 28 columns · dropdowns for grades</div></div><button class="btn btn-xs" data-toast="Downloaded tradex_laptops_v4.xlsx"><i data-icon="download"></i></button></div>
             <div class="tpl"><i data-icon="file"></i><div class="grow"><b>Monitors template</b><div class="small muted">XLSX · 22 columns</div></div><button class="btn btn-xs" data-toast="Downloaded tradex_monitors_v4.xlsx"><i data-icon="download"></i></button></div>
@@ -359,14 +359,14 @@
           </div>
         </div>
         <div class="card">
-          <div class="card-head"><h3>2 · Upload</h3><span class="small muted">max 500 rows · 20 MB</span></div>
+          <div class="card-head"><h3 data-help="bulk-upload">2 · Upload</h3><span class="small muted">max 500 rows · 20 MB</span></div>
           <div class="card-body">
             <div class="dropzone" style="padding:18px"><i data-icon="upload"></i><div><b style="color:var(--tx-1)">Drop XLSX / CSV here</b> or <a href="#" data-toast="File picker opened (prototype)">browse</a></div><div class="small">Older template versions are rejected with a clear message.</div></div>
             <div class="small muted mt-8">Images: upload a ZIP named by your product code, or use approved HTTPS hosts (your Google Drive / S3). Other URLs are blocked.</div>
           </div>
         </div>
         <div class="card">
-          <div class="card-head"><h3>… or connect via API</h3><span class="badge b-info">1B pilot</span></div>
+          <div class="card-head"><h3 data-help="bulk-api">… or connect via API</h3><span class="badge b-info">1B pilot</span></div>
           <div class="card-body col gap-8 small">
             <div class="mono panel" style="padding:8px 10px">POST /v1/vendor/submissions</div>
             <div class="muted">Same validation and review as uploads — the API can never publish directly. Uses your scoped key from <a href="vendor-availability.html#feed">Availability → API</a>.</div>
@@ -377,8 +377,8 @@
 
       <div class="card mt-16" data-anno="1B · §7.4 Row-level results · fix & resubmit without duplicates">
         <div class="card-head">
-          <div><h3>Batch B-0012 · renewtech_sept_batch2.xlsx</h3><div class="sub">Uploaded 26 Sep 10:02 by Arjun P. · template v4 ✓ · batch key B-0012 (re-validation never duplicates accepted rows)</div></div>
-          <div class="row gap-8"><button class="btn btn-sm" data-toast="Downloaded B-0012_errors.csv (6 rows with reasons)"><i data-icon="download"></i> Error report</button><button class="btn btn-sm btn-danger" data-toast="Batch B-0012 discarded · nothing was submitted"><i data-icon="trash"></i> Discard batch</button></div>
+          <div><h3 data-help="bulk-batch">Batch B-0012 · renewtech_sept_batch2.xlsx</h3><div class="sub">Uploaded 26 Sep 10:02 by Arjun P. · template v4 ✓ · batch key B-0012 (re-validation never duplicates accepted rows)</div></div>
+          <div class="row gap-8"><button class="btn btn-sm" data-toast="Downloaded B-0012_errors.csv (6 rows with reasons)"><i data-icon="download"></i> Error report</button><button class="btn btn-sm btn-danger" data-help="b-discard" data-toast="Batch B-0012 discarded · nothing was submitted"><i data-icon="trash"></i> Discard batch</button></div>
         </div>
         <div class="res-kpis">
           <div><div class="n" id="k-rows">24</div><div class="l">Rows in file</div></div>
@@ -392,17 +392,17 @@
           <span class="small muted ml-auto">Fix a row inline and it is re-validated immediately</span>
         </div>
         <div class="table-wrap"><table class="table">
-          <thead><tr><th style="width:60px">Row</th><th>Your code</th><th>Product</th><th>Grade</th><th class="r">Supplier price</th><th>Result</th><th style="width:36%">Issue &amp; fix</th></tr></thead>
+          <thead><tr><th style="width:60px">Row</th><th>Your code</th><th>Product</th><th>Grade</th><th class="r">Supplier price</th><th data-help="col-bresult">Result</th><th style="width:36%" data-help="col-bfix">Issue &amp; fix</th></tr></thead>
           <tbody id="b-body"></tbody>
         </table></div>
         <div class="card-foot">
           <span class="small muted" id="b-foot">18 valid rows will become submissions VS-0227 → VS-0244 — not live until Tradex approves each one.</span>
-          <div class="row gap-8"><button class="btn btn-sm" id="b-resub" disabled><i data-icon="refresh"></i> Resubmit fixed rows (<span id="b-fixed">0</span>)</button><button class="btn btn-sm btn-vendor" id="b-submit"><i data-icon="send"></i> Submit <span id="b-vcount">18</span> valid rows</button></div>
+          <div class="row gap-8"><button class="btn btn-sm" id="b-resub" data-help="b-resub" disabled><i data-icon="refresh"></i> Resubmit fixed rows (<span id="b-fixed">0</span>)</button><button class="btn btn-sm btn-vendor" id="b-submit" data-help="b-submit"><i data-icon="send"></i> Submit <span id="b-vcount">18</span> valid rows</button></div>
         </div>
       </div>
 
       <div class="card mt-16">
-        <div class="card-head"><h3>Previous batches</h3><span class="small muted">Last 60 days</span></div>
+        <div class="card-head"><h3 data-help="bulk-prev">Previous batches</h3><span class="small muted">Last 60 days</span></div>
         <div class="table-wrap"><table class="table compact">
           <thead><tr><th>Batch</th><th>File</th><th>Uploaded</th><th class="r">Rows</th><th>Outcome</th></tr></thead>
           <tbody>
@@ -422,7 +422,7 @@
 
   <!-- Submitted modal -->
   <div class="modal" id="m-submitted"><div class="modal-card">
-    <div class="modal-head"><h3>Submitted for review</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-head"><h3 data-help="m-submitted">Submitted for review</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
     <div class="modal-body col gap-12">
       <div class="callout c-ok"><i data-icon="check-circle"></i><div><strong>VS-0224 passed validation</strong> and is now in the Tradex catalog review queue.</div></div>
       <dl class="kv"><dt>Reviewer SLA</dt><dd>2 working days (by 29 Sep)</dd><dt>Visible to customers</dt><dd>No — only after approval &amp; publication</dd><dt>Editing</dt><dd>Locked while in review · you can withdraw</dd><dt>Notify</dt><dd>Email + WhatsApp to Suresh Babu</dd></dl>
@@ -494,11 +494,11 @@ TX.ready(() => {
 
   function listingDrawer(i) {
     const l = L[i];
-    const head = `<div class="drawer-head"><div class="row">${TX.ph(l.img, "thumb-lg")}<div><div class="row gap-6">${TX.condBadge(l.cond)}<span class="mono small muted">${l.code} · ${l.sku}</span></div><h3 class="mt-4">${l.title}</h3><div class="small muted">${l.specs}</div></div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close">${ic("x")}</button></div>`;
+    const head = `<div class="drawer-head"><div class="row">${TX.ph(l.img, "thumb-lg")}<div><div class="row gap-6">${TX.condBadge(l.cond)}<span class="mono small muted">${l.code} · ${l.sku}</span><span data-help="d-listing" data-help-pos="in" class="hi-host"></span></div><h3 class="mt-4">${l.title}</h3><div class="small muted">${l.specs}</div></div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close">${ic("x")}</button></div>`;
     let body = "";
     if (l.status === "pending") body = `
       <div class="callout c-warn">${ic("clock")}<div><strong>Change ${l.pend} is waiting for Tradex review.</strong> Customers still see the approved ${l.ver}. If the change is rejected or withdrawn, ${l.ver} simply continues.</div></div>
-      <h4 class="mt-16 mb-8">Live version vs pending change</h4>
+      <h4 class="mt-16 mb-8" data-help="d-diff">Live version vs pending change</h4>
       <div class="diff"><div class="dh">Field</div><div class="dh">Live ${l.ver} · on storefront</div><div class="dh">Pending ${l.pend}</div>
         ${l.diff.map(([f, a, b, ch]) => `<div class="same strong">${f}</div>${ch ? `<div class="old">${a}</div><div class="new">${b}</div>` : `<div class="same">${a}</div><div class="same">${b} <span class="muted small">(unchanged)</span></div>`}`).join("")}</div>
       <div class="small muted mt-8 row gap-6">${ic("info", "ic-sm")} Warranty changes are a sensitive edit and always need review (terms v3 §5).</div>`;
@@ -508,20 +508,20 @@ TX.ready(() => {
         <div class="panel small"><b>Storefront</b><div class="muted">Offer hidden since 22 Sep</div></div>
         <div class="panel small"><b>Open POs</b><div class="muted">None for this SKU</div></div>
         <div class="panel small"><b>Returns</b><div class="muted">RTV-0027 resolved (debit note DN-0142)</div></div></div>
-      <h4 class="mt-16 mb-8">To reinstate</h4>
+      <h4 class="mt-16 mb-8" data-help="d-reinstate">To reinstate</h4>
       <ol class="small" style="margin:0;padding-left:18px;line-height:1.9"><li>Re-grade affected units or change the listing to disclose battery health per unit.</li><li>Submit a corrected version — it goes through normal review.</li><li>Tradex QC checks the next receipt before the listing goes live again.</li></ol>`;
     else body = `<div class="callout c-ok">${ic("check-circle")}<div><strong>Live · approved ${l.ver}</strong> on ${l.approved}. No change pending.</div></div>`;
     body += `
-      <h4 class="mt-24 mb-8">Approved data (${l.ver})</h4>
+      <h4 class="mt-24 mb-8" data-help="d-approved">Approved data (${l.ver})</h4>
       <dl class="kv"><dt>Category</dt><dd>${l.cat === "laptops" ? "Laptops" : "Monitors"}</dd><dt>Condition</dt><dd>${TX.conditions[l.cond].label}</dd><dt>Warranty</dt><dd>${l.war} · ${l.wprov}</dd><dt>Supplier price (ex-GST)</dt><dd>${fmt(l.sp)}</dd><dt>Declared availability</dt><dd>${l.avail} units · ${l.lead} working days to Tradex WH</dd><dt>Approved</dt><dd>${l.approved} · reviewer Sneha P. (Catalog)</dd></dl>
-      <h4 class="mt-24 mb-8">Version history</h4>
+      <h4 class="mt-24 mb-8" data-help="d-versions">Version history</h4>
       <ul class="timeline">
         ${l.status === "pending" ? `<li class="current"><span class="t-dot">${ic("clock")}</span><div class="t-title">${l.pend} submitted — ${l.pendWhat}</div><div class="t-meta">In review · live version unchanged</div></li>` : ""}
         ${l.status === "suspended" ? `<li class="warn"><span class="t-dot">${ic("alert")}</span><div class="t-title">Suspended by Tradex QC</div><div class="t-meta">22 Sep 2026 · reason recorded in audit log</div></li>` : ""}
         <li class="done"><span class="t-dot">${ic("check")}</span><div class="t-title">${l.ver} approved &amp; published</div><div class="t-meta">${l.approved} · Sneha P.</div></li>
         ${l.ver !== "v1" ? `<li class="done"><span class="t-dot">${ic("check")}</span><div class="t-title">${l.ver === "v2" ? "v1" : "v1 – v" + (+l.ver.slice(1) - 1)} approved &amp; published</div><div class="t-meta">Earlier versions kept for audit</div></li>` : ""}
       </ul>`;
-    const foot = l.status === "pending" ? `<button class="btn btn-danger" data-close data-toast="${l.pend} withdrawn · ${l.ver} remains live">Withdraw change</button><button class="btn btn-vendor" data-close data-goto="submissions" data-open-sub="${l.pend}">Open ${l.pend}</button>`
+    const foot = l.status === "pending" ? `<button class="btn btn-danger" data-help="d-withdraw" data-close data-toast="${l.pend} withdrawn · ${l.ver} remains live">Withdraw change</button><button class="btn btn-vendor" data-close data-goto="submissions" data-open-sub="${l.pend}">Open ${l.pend}</button>`
       : l.status === "suspended" ? `<button class="btn" data-close data-toast="Message sent to Tradex QC">Contact reviewer</button><button class="btn btn-vendor" data-close data-goto="new" data-toast="Correction draft created from ${l.ver}">Correct &amp; resubmit</button>`
       : `${l.store ? `<a class="btn" href="store-product.html?id=${l.store}">${ic("external", "ic-sm")} View on storefront</a>` : ""}<button class="btn btn-vendor" data-close data-goto="new" data-toast="Change draft created from ${l.ver} — live version stays unchanged">Propose a change</button>`;
     $("#d-listing-card").innerHTML = head + `<div class="drawer-body">${body}</div><div class="drawer-foot">${foot}</div>`;
@@ -576,10 +576,10 @@ TX.ready(() => {
     let detail = "";
     if (x.s === "changes") detail = `
       <div class="callout c-warn">${ic("alert")}<div><strong>Needs changes — reply by 29 Sep 2026.</strong> Nothing from this submission is visible to customers. Fix the fields below and resubmit; the review history is kept.</div></div>
-      <h4 class="mt-16 mb-8">Field issues (2)</h4>
+      <h4 class="mt-16 mb-8" data-help="d-issues">Field issues (2)</h4>
       <div class="card"><div class="list-row"><span class="li-icon bad">${ic("shield")}</span><div class="grow"><b>Warranty provider — missing (required)</b><div class="small muted">Name who honours the warranty: RenewTech, Tradex (back-to-back) or manufacturer with proof.</div></div><span class="badge b-bad">Blocking</span></div>
       <div class="list-row"><span class="li-icon warn">${ic("image")}</span><div class="grow"><b>Photo 3 — keyboard layout mismatch</b><div class="small muted">Photo shows a US layout; specification says UK English. Correct the spec or the photo.</div></div><span class="badge b-warn">Clarify</span></div></div>
-      <h4 class="mt-16 mb-8">Conversation</h4>
+      <h4 class="mt-16 mb-8" data-help="d-conv">Conversation</h4>
       <div class="col gap-8">
         <div class="row-top"><div class="avatar sm" style="background:#be185d">SP</div><div class="grow"><div class="rev-msg"><b>Sneha Pillai</b> <span class="small muted">· Tradex Catalog · 24 Sep 15:20</span><div class="mt-4">Refurbished listings must name who honours the warranty and for how long (policy from 15 Sep). Also photo 3 shows a US keyboard but the spec says UK — please confirm which is correct.</div></div></div></div>
         <div class="field"><label for="reply">Reply to reviewer</label><textarea class="textarea" id="reply" placeholder="e.g. Warranty is ours (RenewTech, 6 months). Keyboard is US — spec corrected." style="min-height:70px"></textarea></div>
@@ -592,18 +592,18 @@ TX.ready(() => {
       <div class="callout c-ok">${ic("check-circle")}<div><strong>Approved by Sneha P.</strong> ${x.id === "VS-0219" ? "Approved is not yet live: Tradex runs publication checks (tax class, storefront copy, retail price). Scheduled for 27 Sep." : "Published on 25 Sep 2026 — now a live listing."}</div></div>`;
     else if (x.s === "submitted") detail = `
       <div class="callout c-info">${ic("clock")}<div><strong>In Tradex review · SLA 2 working days.</strong> Editing is locked while in review. ${x.live ? `The live ${x.live} stays on the storefront unchanged until this is approved.` : "Nothing is visible to customers yet."}</div></div>
-      ${x.id === "VS-0231" ? `<h4 class="mt-16 mb-8">Your change</h4><div class="diff"><div class="dh">Field</div><div class="dh">Live v3</div><div class="dh">Proposed</div><div class="same strong">Warranty duration</div><div class="old">6 months</div><div class="new">3 months</div><div class="same strong">Condition notes</div><div class="old">Light wear on lid</div><div class="new">Light wear on lid; minor keyboard shine</div></div>` : ""}`;
+      ${x.id === "VS-0231" ? `<h4 class="mt-16 mb-8" data-help="d-yourchange">Your change</h4><div class="diff"><div class="dh">Field</div><div class="dh">Live v3</div><div class="dh">Proposed</div><div class="same strong">Warranty duration</div><div class="old">6 months</div><div class="new">3 months</div><div class="same strong">Condition notes</div><div class="old">Light wear on lid</div><div class="new">Light wear on lid; minor keyboard shine</div></div>` : ""}`;
     else detail = `<div class="callout c-info">${ic("edit")}<div><strong>Draft — only your organisation can see it.</strong> ${x.c}.</div></div>`;
     const foot = { draft: `<button class="btn btn-danger" data-close data-toast="Draft ${x.id} deleted">Delete draft</button><button class="btn btn-vendor" data-close data-goto="new">Continue editing</button>`,
       submitted: `<button class="btn btn-danger" data-close data-toast="${x.id} withdrawn${x.live ? " · live " + x.live + " unchanged" : ""}">Withdraw</button><button class="btn" disabled>${ic("lock", "ic-sm")} Locked in review</button>`,
       changes: `<button class="btn" data-close data-toast="Reply sent to Sneha P.">Send reply only</button><button class="btn btn-vendor" data-close data-goto="new" data-toast="Opened ${x.id} for editing">Edit &amp; resubmit</button>`,
       approved: `<a class="btn btn-vendor" href="#" data-close data-goto="listings">View live listing</a>`,
       rejected: `<button class="btn" data-close data-toast="New draft VS-0226 created from ${x.id}">Duplicate as new draft</button>` }[x.s];
-    $("#d-sub-card").innerHTML = `<div class="drawer-head"><div class="row">${TX.ph(x.img, "thumb-lg")}<div><div class="row gap-6"><span class="mono strong">${x.id}</span>${sLabel[x.s]}</div><h3 class="mt-4">${x.t}</h3><div class="small muted">${x.type} · ${x.g === "Used" ? "Used" : "Refurbished " + x.g} · submitted by ${x.by}</div></div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close">${ic("x")}</button></div>
+    $("#d-sub-card").innerHTML = `<div class="drawer-head"><div class="row">${TX.ph(x.img, "thumb-lg")}<div><div class="row gap-6"><span class="mono strong">${x.id}</span>${sLabel[x.s]}<span data-help="d-sub" data-help-pos="in" class="hi-host"></span></div><h3 class="mt-4">${x.t}</h3><div class="small muted">${x.type} · ${x.g === "Used" ? "Used" : "Refurbished " + x.g} · submitted by ${x.by}</div></div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close">${ic("x")}</button></div>
       <div class="drawer-body">${steps(x.s)}<div class="mt-24">${detail}</div>
-        <h4 class="mt-24 mb-8">Submitted data</h4>
+        <h4 class="mt-24 mb-8" data-help="d-subdata">Submitted data</h4>
         <dl class="kv"><dt>Category</dt><dd>${x.img.startsWith("mon") ? "Monitors" : x.img.startsWith("cam") ? "Cameras (not permitted)" : "Laptops"}</dd><dt>Warranty</dt><dd>${x.s === "changes" ? '<span class="text-bad strong">Provider missing</span> · 6 months' : "6 months · RenewTech"}</dd><dt>Supplier price</dt><dd>${fmt(x.img === "mon-pink" ? 9400 : x.img === "mon-setup" ? 7900 : 29800)} ex-GST</dd><dt>Declared stock</dt><dd>${x.s === "rejected" ? "—" : "12 units · 3 days lead"}</dd><dt>Last update</dt><dd>${x.upd} · ${x.by}</dd></dl>
-        <h4 class="mt-24 mb-8">History</h4>
+        <h4 class="mt-24 mb-8" data-help="d-subhist">History</h4>
         <ul class="timeline">
           ${x.s === "changes" ? `<li class="warn"><span class="t-dot">${ic("alert")}</span><div class="t-title">Needs changes · Sneha P.</div><div class="t-meta">24 Sep 15:20 · 2 field issues</div></li>` : ""}
           ${x.s === "approved" ? `<li class="done"><span class="t-dot">${ic("check")}</span><div class="t-title">Approved · Sneha P.</div><div class="t-meta">${x.upd}</div></li>` : ""}

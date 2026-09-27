@@ -54,6 +54,13 @@
     .stat-tile .n { font-size: 22px; font-weight: 700; }
     .stat-tile .l { font-size: 12px; color: var(--tx-3); }
     .lc-row { display: flex; justify-content: space-between; font-size: 13px; padding: 5px 0; }
+    /* Guided workflow: tab intros sit outside cards on this page, so they get their own border */
+    .page-tabs > .tab-panel > .tab-intro { border: 1px solid var(--line-2); border-radius: var(--r); margin-bottom: 16px; }
+    .next-step .row { flex-wrap: wrap; }
+    .scanbox .input { min-width: 0; }
+    /* Narrow screens: the PO form and its approval rail stack; wide match grids scroll inside their card */
+    @media (max-width: 1100px) { .po-grid { grid-template-columns: minmax(0, 1fr); } .rail { position: static; } }
+    @media (max-width: 760px) { .match-grid, .dup { overflow-x: auto; } }
   </style>
 </head>
 <body data-app="erp" data-page="purchasing">
@@ -61,42 +68,60 @@
   <div class="page-head">
     <div>
       <div class="crumbs"><span>Stock</span><i data-icon="chevron-right"></i><span>Purchasing & receiving</span></div>
-      <h1>Purchasing & receiving</h1>
+      <h1 data-help="page">Purchasing & receiving</h1>
       <p class="sub">Reorder suggestions → buyer-approved POs → goods receipt & QC → 3-way match. Tradex never commits to a supplier automatically.</p>
     </div>
     <div class="actions">
       <button class="btn" data-toast="Open POs exported · po-register-2026-09-26.xlsx"><i data-icon="download"></i> Export</button>
-      <a class="btn" href="#receive"><i data-icon="scan"></i> Receive goods</a>
-      <a class="btn btn-primary" href="#new-po"><i data-icon="plus"></i> New purchase order</a>
+      <a class="btn" href="#receive" data-help="act-receive"><i data-icon="scan"></i> Receive goods</a>
+      <a class="btn btn-primary" href="#new-po" data-help="act-new-po"><i data-icon="plus"></i> New purchase order</a>
     </div>
   </div>
 
+  <section class="flow" data-flow="purchasing" aria-labelledby="flow-h" data-anno="1A · §9.3 Procurement and receipt · guided">
+    <div class="flow-head">
+      <div><h2 class="flow-title" id="flow-h" data-help="flow"><i data-icon="route"></i> How purchasing works</h2>
+        <p class="flow-sub">Every purchase moves through these steps, from “we are running low” to “the supplier is paid”. Click a step to see the work waiting at it.</p></div>
+      <button class="btn btn-ghost btn-sm flow-toggle" data-flow-toggle aria-expanded="true" aria-controls="flow-steps"><span class="when-open">Hide guide</span><span class="when-closed">Show how it works</span></button>
+    </div>
+    <ol class="flow-steps" id="flow-steps">
+      <li class="flow-step"><button type="button" class="flow-btn" data-go-tab="suggestions"><span class="fs-n">1</span><span class="fs-t">Check reorder suggestions</span><span class="fs-d">A daily rule lists items at or below their reorder point, with a quantity rounded to the supplier's pack or MOQ.</span><span class="fs-f"><span class="fs-c warn">18 items to review</span><span class="fs-who">Buyer</span></span></button></li>
+      <li class="flow-step"><button type="button" class="flow-btn" data-go-tab="orders" data-stage="draft"><span class="fs-n">2</span><span class="fs-t">Draft &amp; submit the PO</span><span class="fs-d">Turn suggestions into draft POs (or start one by hand), check prices and dates, then submit for approval.</span><span class="fs-f"><span class="fs-c">4 drafts</span><span class="fs-who">Buyer</span></span></button></li>
+      <li class="flow-step"><button type="button" class="flow-btn" data-go-tab="orders" data-stage="approval"><span class="fs-n">3</span><span class="fs-t">Approve the PO</span><span class="fs-d">Who approves depends on the PO value. Above the buyer's own limit a manager or the owner approves — never the creator.</span><span class="fs-f"><span class="fs-c warn">3 waiting · 1 needs owner</span><span class="fs-who">Manager · owner</span></span></button></li>
+      <li class="flow-step"><button type="button" class="flow-btn" data-go-tab="orders" data-stage="approved"><span class="fs-n">4</span><span class="fs-t">Send &amp; get confirmation</span><span class="fs-d">The approved PO goes to the supplier by email and in the vendor portal, and the supplier confirms the order.</span><span class="fs-f"><span class="fs-c">2 to send · 2 unconfirmed</span><span class="fs-who">Buyer · supplier</span></span></button></li>
+      <li class="flow-step"><button type="button" class="flow-btn" data-go-tab="receive"><span class="fs-n">5</span><span class="fs-t">Receive &amp; inspect</span><span class="fs-d">Count and scan the delivery against the PO (GRN), note short, extra or damaged items, then check each unit (QC). Only passed units become sellable.</span><span class="fs-f"><span class="fs-c warn">1 receiving · 4 units held</span><span class="fs-who">Warehouse</span></span></button></li>
+      <li class="flow-step is-attn"><button type="button" class="flow-btn" data-go-tab="bills"><span class="fs-n">6</span><span class="fs-t">Match the bill &amp; pay</span><span class="fs-d">Finance checks the supplier's invoice against the PO and the GRN (three-way match). Only bills that agree are paid.</span><span class="fs-f"><span class="fs-c bad">3 bills on hold</span><span class="fs-who">Finance</span></span></button></li>
+    </ol>
+    <div class="flow-foot"><span><i data-icon="split"></i> Short deliveries stay open on the PO as a backorder until they arrive or are cancelled (<button type="button" class="hp-link" data-go-tab="orders">Purchase orders</button>). Failed or wrong units go back to the supplier: <a class="hp-link" href="erp-returns.html#supplier">Returns to suppliers</a>.</span><span>Order by hand: <button type="button" class="hp-link" data-go-tab="new-po">New purchase order</button> · lead times and scores: <button type="button" class="hp-link" data-go-tab="suppliers">Suppliers</button></span></div>
+  </section>
+
   <section class="grid g-6 mb-24">
-    <div class="kpi"><div class="k-label"><i data-icon="clipboard"></i> Open POs</div><div class="k-value">14</div><div class="k-foot"><span>₹38.6 L ex-GST</span></div></div>
-    <div class="kpi"><div class="k-label"><i data-icon="clock"></i> <span>Awaiting approval</span></div><div class="k-value text-warn">3</div><div class="k-foot"><span>1 needs owner (&gt; ₹5 L)</span></div></div>
-    <div class="kpi"><div class="k-label"><i data-icon="truck"></i> <span>Due this week</span></div><div class="k-value">6</div><div class="k-foot"><span>1 overdue · NetCore</span></div></div>
-    <div class="kpi"><div class="k-label"><i data-icon="scan"></i> <span>Receiving now</span></div><div class="k-value">1</div><div class="k-foot"><span>GRN-0442 · dock 2</span></div></div>
-    <div class="kpi"><div class="k-label"><i data-icon="receipt"></i> <span>Bills on hold</span></div><div class="k-value text-bad">3</div><div class="k-foot"><span>1 duplicate blocked</span></div></div>
-    <div class="kpi"><div class="k-label"><i data-icon="award"></i> <span>Supplier on-time</span></div><div class="k-value">92%</div><div class="k-foot"><span class="delta up-good"><i data-icon="trending-up"></i> +3 pt</span><span>90 d</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-open"><i data-icon="clipboard"></i> Open POs</div><div class="k-value">14</div><div class="k-foot"><span>₹38.6 L ex-GST</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-approval"><i data-icon="clock"></i> <span>Awaiting approval</span></div><div class="k-value text-warn">3</div><div class="k-foot"><span>1 needs owner (&gt; ₹5 L)</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-due"><i data-icon="truck"></i> <span>Due this week</span></div><div class="k-value">6</div><div class="k-foot"><span>1 overdue · NetCore</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-receiving"><i data-icon="scan"></i> <span>Receiving now</span></div><div class="k-value">1</div><div class="k-foot"><span>GRN-0442 · dock 2</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-bills"><i data-icon="receipt"></i> <span>Bills on hold</span></div><div class="k-value text-bad">3</div><div class="k-foot"><span>1 duplicate blocked</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-ontime"><i data-icon="award"></i> <span>Supplier on-time</span></div><div class="k-value">92%</div><div class="k-foot"><span class="delta up-good"><i data-icon="trending-up"></i> +3 pt</span><span>90 d</span></div></div>
   </section>
 
   <div data-tabset class="page-tabs">
     <div class="tabs">
-      <button class="tab active" data-tab="suggestions"><i data-icon="zap"></i> Reorder suggestions <span class="count">18</span></button>
-      <button class="tab" data-tab="orders"><i data-icon="clipboard"></i> Purchase orders <span class="count">14</span></button>
-      <button class="tab" data-tab="new-po"><i data-icon="plus"></i> New PO</button>
-      <button class="tab" data-tab="receive"><i data-icon="scan"></i> Receive (GRN)</button>
-      <button class="tab" data-tab="bills"><i data-icon="receipt"></i> Bills & 3-way match <span class="count">3 on hold</span></button>
-      <button class="tab" data-tab="suppliers"><i data-icon="building"></i> Suppliers</button>
+      <button class="tab active" data-tab="suggestions" data-help="tab-suggestions"><i data-icon="zap"></i> Reorder suggestions <span class="count">18</span></button>
+      <button class="tab" data-tab="orders" data-help="tab-orders"><i data-icon="clipboard"></i> Purchase orders <span class="count">14</span></button>
+      <button class="tab" data-tab="new-po" data-help="tab-new-po"><i data-icon="plus"></i> New purchase order</button>
+      <button class="tab" data-tab="receive" data-help="tab-receive"><i data-icon="scan"></i> Receive goods (GRN)</button>
+      <button class="tab" data-tab="bills" data-help="tab-bills"><i data-icon="receipt"></i> Supplier bills <span class="count">3 on hold</span></button>
+      <button class="tab" data-tab="suppliers" data-help="tab-suppliers"><i data-icon="building"></i> Suppliers</button>
     </div>
 
     <!-- ================================================================== -->
     <!-- SUGGESTIONS                                                          -->
     <!-- ================================================================== -->
     <div class="tab-panel active" data-panel="suggestions">
+      <div class="tab-intro"><i data-icon="info"></i><div><b>Items that are running low, with a suggested quantity to order from each supplier.</b> Check the quantities (you can change them), tick the lines you want and click <b>Create draft POs</b>. Nothing is sent to a supplier from here.<span class="ti-next">Start with red <b data-help="col-cover">Cover</b> (stock runs out in under 7 days). Draft POs then wait in Purchase orders for approval.</span></div></div>
       <div class="card mb-16" data-anno="1A · A17 Rule drafts, buyer approves (no auto-purchasing)">
-        <div class="card-head"><div><h3>Rule A17 · reorder suggestion</h3><div class="sub">Deterministic rule · ran 06:00 today · next run 06:00 tomorrow · 18 SKUs triggered · 2 excluded</div></div><a class="btn btn-sm" href="erp-automation.html"><i data-icon="settings"></i> Rule settings</a></div>
-        <div class="card-body rule">
+        <div class="card-head"><div><h3 data-help="rule-a17">How suggestions are worked out · rule A17</h3><div class="sub">Deterministic rule · ran 06:00 today · next run 06:00 tomorrow · 18 SKUs triggered · 2 excluded</div></div><a class="btn btn-sm" href="erp-automation.html"><i data-icon="settings"></i> Rule settings</a></div>
+        <div class="card-body rule stack-sm">
           <div class="fx">
             <div><b>trigger</b><span>ATP ≤ ROP · where ROP = avg/day × lead time + safety stock</span></div>
             <div><b>suggest</b><span>max(0, avg/day × (lead + 7 d review) + safety − (ATP + on order))</span></div>
@@ -104,7 +129,7 @@
             <div><b>exclude</b><span>archived · discontinued · supplier suspended · need covered by open PO</span></div>
           </div>
           <div class="col gap-8 small">
-            <div class="callout c-brand"><i data-icon="shield"></i><div><strong>Human boundary:</strong> the rule only drafts. A buyer reviews quantities and sends; POs above approval thresholds also need a manager or owner.</div></div>
+            <div class="callout c-brand"><i data-icon="shield"></i><div><strong data-help="human-boundary">Human boundary:</strong> the rule only drafts. A buyer reviews quantities and sends; POs above approval thresholds also need a manager or owner.</div></div>
             <div class="muted">Forecast-based quantities (A30) are a Phase 2 candidate and will still require buyer approval.</div>
           </div>
         </div>
@@ -112,16 +137,16 @@
 
       <div class="filterbar">
         <select class="select" id="sg-sup" aria-label="Supplier"><option value="">All suppliers</option></select>
-        <div class="seg" id="sg-seg"><button class="active" data-f="">All (9 shown)</button><button data-f="risk">Stock-out &lt; 7 days</button><button data-f="refurb">Refurbished lots</button></div>
+        <div class="seg" id="sg-seg"><button class="active" data-f="">All (9 shown)</button><button data-f="risk">Stock-out &lt; 7 days</button><button data-f="refurb">Refurbished lots</button></div><span data-help="sg-filter"></span>
         <span class="small muted ml-auto">Costs are last PO cost ex-GST · quantities editable before drafting</span>
       </div>
       <div class="card">
-        <div class="bulkbar"><b><span class="bulk-count">0</span> lines selected</b><span style="opacity:.6">·</span><button class="btn btn-sm btn-primary" id="sg-draft">Create draft POs for buyer approval</button><button class="btn btn-sm" data-toast="Dismissed for 7 days · reason recorded">Dismiss…</button><span class="ml-auto small" style="opacity:.7">Nothing is sent to suppliers from here</span></div>
+        <div class="bulkbar"><b data-help="sg-bulk"><span class="bulk-count">0</span> lines selected</b><span style="opacity:.6">·</span><button class="btn btn-sm btn-primary" id="sg-draft" data-help="act-draft-pos">Create draft POs for buyer approval</button><button class="btn btn-sm" data-toast="Dismissed for 7 days · reason recorded">Dismiss…</button><span class="ml-auto small" style="opacity:.7">Nothing is sent to suppliers from here</span></div>
         <div class="table-wrap"><table class="table compact" id="sg-table">
-          <thead><tr><th class="check-col"><input type="checkbox" data-check-all aria-label="Select all suggestions"></th><th>Product</th><th class="r">ATP · ROP</th><th class="r">On order</th><th class="r" data-tip="30-day average units sold per day · supplier lead time">Avg/day · lead</th><th class="r" data-tip="Days until ATP runs out">Cover</th><th class="c">Suggested qty</th><th class="r">Unit cost</th><th class="r">Line value</th><th>Reason</th></tr></thead>
+          <thead><tr><th class="check-col"><input type="checkbox" data-check-all aria-label="Select all suggestions"></th><th>Product</th><th class="r" data-help="col-atp-rop">ATP · ROP</th><th class="r" data-help="col-on-order">On order</th><th class="r" data-tip="30-day average units sold per day · supplier lead time" data-help="col-avg-lead">Avg/day · lead</th><th class="r" data-tip="Days until ATP runs out" data-help="col-cover">Cover</th><th class="c" data-help="col-sugg-qty">Suggested qty</th><th class="r" data-help="col-sg-cost">Unit cost</th><th class="r">Line value</th><th data-help="col-reason">Reason</th></tr></thead>
           <tbody id="sg-body"></tbody>
         </table></div>
-        <div class="card-foot"><span class="small muted"><b>Excluded:</b> Seagate BarraCuda 1 TB (archived) · Apple AirPods Max refurbished (no supplier lot offered)</span><span class="small strong" id="sg-total"></span></div>
+        <div class="card-foot"><span class="small muted"><b data-help="sg-excluded">Excluded:</b> Seagate BarraCuda 1 TB (archived) · Apple AirPods Max refurbished (no supplier lot offered)</span><span class="small strong" id="sg-total"></span></div>
       </div>
     </div>
 
@@ -129,6 +154,7 @@
     <!-- ORDERS                                                               -->
     <!-- ================================================================== -->
     <div class="tab-panel" data-panel="orders">
+      <div class="tab-intro"><i data-icon="info"></i><div><b>Every purchase order, from draft until it is fully received and closed.</b> Click a PO to open it — the panel shows its steps and tells you what to do next. Use the <b data-help="po-pipeline">stage bar</b> to see only one stage.<span class="ti-next">Work “Awaiting approval” and late deliveries (red date) first. A PO never changes stock by itself — stock goes up only when goods are received and pass QC.</span></div></div>
       <div class="card mb-16" data-anno="1A · PO state machine">
         <div class="pipeline" id="po-pipe"></div>
       </div>
@@ -139,7 +165,7 @@
       </div>
       <div class="card">
         <div class="table-wrap"><table class="table po-t">
-          <thead><tr><th>PO</th><th>Supplier</th><th class="r">Lines</th><th class="r">Value ex-GST</th><th>Status</th><th>Approval</th><th>Expected</th><th>Received</th></tr></thead>
+          <thead><tr><th data-help="col-po">PO</th><th>Supplier</th><th class="r">Lines</th><th class="r" data-help="col-value">Value ex-GST</th><th data-help="col-po-status">Status</th><th data-help="col-approval">Approval</th><th data-help="col-expected">Expected</th><th data-help="col-received">Received</th></tr></thead>
           <tbody id="po-body"></tbody>
         </table></div>
         <div class="pager"><span>Showing 10 recent POs of 55 in the last 90 days (sample) · click a pipeline stage to filter</span><div class="pages"><button class="active">1</button><button>2</button><button>3</button><button aria-label="Next page">›</button></div></div>
@@ -150,26 +176,27 @@
     <!-- NEW PO                                                               -->
     <!-- ================================================================== -->
     <div class="tab-panel" data-panel="new-po">
+      <div class="tab-intro"><i data-icon="info"></i><div><b>Create a purchase order by hand</b> — for example for a new product or a supplier offer that the reorder rule did not suggest. Choose the supplier and where to deliver, add lines with quantity and unit cost, then <b>Submit for approval</b>.<span class="ti-next">The panel on the right shows who must approve it (by value) and any warnings to fix first. The supplier receives the PO only after it is approved and sent.</span></div></div>
       <div class="po-grid">
         <div class="col gap-16">
           <div class="card">
-            <div class="card-head"><div><h3>New purchase order · draft PO-2026-0196</h3><div class="sub">Autosaved 10:44 · submitting twice returns the same PO (idempotent)</div></div><span class="status s-muted">Draft</span></div>
+            <div class="card-head"><div><h3 data-help="np-form">New purchase order · draft PO-2026-0196</h3><div class="sub">Autosaved 10:44 · submitting twice returns the same PO (idempotent)</div></div><span class="status s-muted">Draft</span></div>
             <div class="card-body">
-              <div class="form-grid" style="grid-template-columns:repeat(3,minmax(0,1fr))">
-                <div class="field"><label class="req" for="np-sup">Supplier</label><select class="select" id="np-sup"></select><span class="hint" id="np-gstin"></span></div>
-                <div class="field"><label class="req" for="np-loc">Deliver to</label><select class="select" id="np-loc"><option>WH-BLR · Central Warehouse</option><option>BR-SPR · SP Road Branch</option><option>BR-MYS · Mysuru Branch</option></select></div>
-                <div class="field"><label class="req" for="np-date">Expected delivery</label><input class="input" id="np-date" value="02 Oct 2026"><span class="hint" id="np-lead"></span></div>
-                <div class="field"><label for="np-terms">Payment terms</label><select class="select" id="np-terms"><option>Net 30 from invoice</option><option>Net 15</option><option>50% advance · 50% on delivery</option><option>100% advance</option></select></div>
-                <div class="field"><label for="np-freight">Freight</label><select class="select" id="np-freight"><option>Supplier pays (FOR)</option><option>Tradex pays · landed cost applies</option></select></div>
-                <div class="field"><label for="np-ref">Supplier quotation ref.</label><input class="input" id="np-ref" value="Q/PIT/2026/1187"></div>
-                <div class="field full"><label for="np-note">Note to supplier</label><input class="input" id="np-note" value="Please scan-label cartons with PO number. Serial list (CSV) required with invoice."></div>
+              <div class="form-grid stack-sm" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+                <div class="field"><label class="req" for="np-sup" data-help="np-f-sup">Supplier</label><select class="select" id="np-sup"></select><span class="hint" id="np-gstin"></span></div>
+                <div class="field"><label class="req" for="np-loc" data-help="np-f-loc">Deliver to</label><select class="select" id="np-loc"><option>WH-BLR · Central Warehouse</option><option>BR-SPR · SP Road Branch</option><option>BR-MYS · Mysuru Branch</option></select></div>
+                <div class="field"><label class="req" for="np-date" data-help="np-f-date">Expected delivery</label><input class="input" id="np-date" value="02 Oct 2026"><span class="hint" id="np-lead"></span></div>
+                <div class="field"><label for="np-terms" data-help="np-f-terms">Payment terms</label><select class="select" id="np-terms"><option>Net 30 from invoice</option><option>Net 15</option><option>50% advance · 50% on delivery</option><option>100% advance</option></select></div>
+                <div class="field"><label for="np-freight" data-help="np-f-freight">Freight</label><select class="select" id="np-freight"><option>Supplier pays (FOR)</option><option>Tradex pays · landed cost applies</option></select></div>
+                <div class="field"><label for="np-ref" data-help="np-f-ref">Supplier quotation ref.</label><input class="input" id="np-ref" value="Q/PIT/2026/1187"></div>
+                <div class="field full"><label for="np-note" data-help="np-f-note">Note to supplier</label><input class="input" id="np-note" value="Please scan-label cartons with PO number. Serial list (CSV) required with invoice."></div>
               </div>
             </div>
           </div>
           <div class="card">
-            <div class="card-head"><h3>Lines</h3><div class="row gap-8"><button class="btn btn-sm" data-toast="Low-stock suggestions for this supplier added"><i data-icon="zap"></i> Add from suggestions</button><button class="btn btn-sm" data-toast="SKU search opened"><i data-icon="plus"></i> Add line</button></div></div>
+            <div class="card-head"><h3 data-help="np-lines">Lines</h3><div class="row gap-8"><button class="btn btn-sm" data-toast="Low-stock suggestions for this supplier added"><i data-icon="zap"></i> Add from suggestions</button><button class="btn btn-sm" data-toast="SKU search opened"><i data-icon="plus"></i> Add line</button></div></div>
             <div class="table-wrap"><table class="table compact">
-              <thead><tr><th>SKU · supplier code</th><th class="c">Qty</th><th class="r" data-tip="Unit cost excluding GST">Unit cost</th><th class="r">Last cost</th><th class="r">Line total</th><th></th></tr></thead>
+              <thead><tr><th>SKU · supplier code</th><th class="c">Qty</th><th class="r" data-tip="Unit cost excluding GST">Unit cost</th><th class="r" data-help="col-last-cost">Last cost</th><th class="r">Line total</th><th></th></tr></thead>
               <tbody id="np-lines"></tbody>
             </table></div>
             <div class="card-body"><div class="tot" id="np-tot"></div></div>
@@ -177,22 +204,22 @@
         </div>
         <aside class="rail">
           <div class="card" data-anno="1A · R06/R10 Approval by PO value">
-            <div class="card-head"><div><h3>Approval required</h3><div class="sub">Determined by PO value ex-GST</div></div></div>
+            <div class="card-head"><div><h3 data-help="np-approval">Approval required</h3><div class="sub">Determined by PO value ex-GST</div></div></div>
             <div class="card-body">
               <div id="np-tiers"></div>
               <div class="small muted mt-12">Sample thresholds — exact ₹ limits to be confirmed by the client (§18). The creator can't approve their own PO.</div>
             </div>
           </div>
           <div class="card">
-            <div class="card-head"><h3>Checks</h3></div>
+            <div class="card-head"><h3 data-help="np-checks">Checks</h3></div>
             <ul class="scanlog" id="np-checks" style="max-height:none"></ul>
           </div>
           <div class="card card-pad">
-            <div class="label mb-8">Attachments</div>
+            <div class="label mb-8" data-help="np-attach">Attachments</div>
             <div class="dropzone" style="padding:16px"><i data-icon="paperclip"></i><div class="small">Supplier quotation, specs, price confirmation</div></div>
             <div class="small mt-8 ico-line"><i data-icon="file" class="ic-sm"></i> Q-PIT-2026-1187.pdf · 182 KB</div>
           </div>
-          <div class="row gap-8"><button class="btn grow" data-toast="Draft PO-2026-0196 saved">Save draft</button><button class="btn btn-primary grow" id="np-submit">Submit for approval</button></div>
+          <div class="row gap-8"><button class="btn grow" data-toast="Draft PO-2026-0196 saved">Save draft</button><button class="btn btn-primary grow" id="np-submit" data-help="np-submit">Submit for approval</button></div>
         </aside>
       </div>
     </div>
@@ -201,9 +228,10 @@
     <!-- RECEIVE                                                              -->
     <!-- ================================================================== -->
     <div class="tab-panel" data-panel="receive">
+      <div class="tab-intro"><i data-icon="info"></i><div><b>Check a supplier's delivery in, against its purchase order.</b> Pick the PO, scan every carton and serial number, record anything short, extra, wrong or damaged, then check each unit (QC) and post the <b data-help="g.grn">goods receipt (GRN)</b>.<span class="ti-next">Units are not sellable while you work. When you post, units that passed QC become sellable, failed ones go to quarantine, and anything unexpected is held for the buyer.</span></div></div>
       <div class="card mb-16">
         <div class="card-head">
-          <div><h3>GRN-0442 · receiving against PO-2026-0188</h3><div class="sub">Prime IT Distributors · delivery challan DC/PIT/8812 · invoice INV/PIT/2026/4502 · WH-BLR dock 2 · vehicle KA-01-AB-2231 · started 10:22 by Mohammed Irfan</div></div>
+          <div><h3 data-help="rc-grn">GRN-0442 · receiving against PO-2026-0188</h3><div class="sub">Prime IT Distributors · delivery challan DC/PIT/8812 · invoice INV/PIT/2026/4502 · WH-BLR dock 2 · vehicle KA-01-AB-2231 · started 10:22 by Mohammed Irfan</div></div>
           <div class="row gap-8"><select class="select" style="width:auto;height:32px;font-size:12.5px" aria-label="Purchase order"><option>PO-2026-0188 · Prime IT · partially received</option><option>PO-2026-0187 · NetCore · partially received</option><option>PO-2026-0192 · RenewTech · sent</option></select></div>
         </div>
         <div class="card-body" data-anno="1A · A03 Scan receipt & serials against PO">
@@ -213,26 +241,27 @@
             <div class="step"><span class="dot">3</span> QC per unit</div>
             <div class="step"><span class="dot">4</span> Post receipt</div>
           </div>
+          <div class="next-step mt-12" id="rc-next"><i data-icon="arrow-right"></i><div class="grow"><b>Next step:</b> finish the count — 18 of 20 SSD serials are scanned and the other 2 did not arrive, so choose what happens to them under <i>Handling</i> in <i>Lines on this delivery</i> (backorder, cancel or wait for more cartons). Then set a QC result for every unit and post GRN-0442.</div><div class="row gap-6"><button type="button" class="btn btn-xs" data-rc-jump="scan-in">Scan next item</button><button type="button" class="btn btn-xs" data-rc-jump="rc-qc">Go to QC results</button></div></div>
         </div>
       </div>
 
-      <div class="grid mb-16" style="grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);align-items:start">
+      <div class="grid mb-16 stack-sm" style="grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);align-items:start">
         <div class="col gap-16">
           <div class="scanbox">
             <i data-icon="scan" class="ic-lg" style="color:var(--brand)"></i>
             <input class="input" id="scan-in" placeholder="Scan barcode or serial, then Enter" aria-label="Scan barcode or serial" value="S6XNNS0T812447">
-            <button class="btn btn-primary" id="scan-go">Add</button>
+            <button class="btn btn-primary" id="scan-go" data-help="rc-scan">Add</button>
           </div>
           <div class="card">
-            <div class="card-head"><h3>Scan log</h3><span class="small muted" id="scan-count"></span></div>
+            <div class="card-head"><h3 data-help="rc-log">Scan log</h3><span class="small muted" id="scan-count"></span></div>
             <ul class="scanlog" id="scan-log"></ul>
           </div>
         </div>
         <div class="col gap-16">
-          <div class="callout c-warn" data-anno="1A · T15 Wrong serial → discrepancy, not stock"><i data-icon="alert"></i><div><strong>4 exceptions on this delivery — none can become sellable stock.</strong>
+          <div class="callout c-warn" data-anno="1A · T15 Wrong serial → discrepancy, not stock"><i data-icon="alert"></i><div><strong data-help="rc-exceptions">4 exceptions on this delivery — none can become sellable stock.</strong>
             <ul style="margin:6px 0 0;padding-left:18px"><li>Duplicate serial PF3K9Z21 · unit held · case DSC-0034</li><li>2 × Samsung T7 Shield sent instead of T7 · substitution needs buyer approval</li><li>1 extra GaN charger (over-receipt) · held for buyer decision</li><li>ASUS ROG mouse not on PO · set aside for return</li></ul></div></div>
           <div class="card">
-            <div class="card-head"><div><h3>Landed cost</h3><div class="sub">Allocated to unit cost for valuation & margin — never changes retail price</div></div></div>
+            <div class="card-head"><div><h3 data-help="rc-landed">Landed cost</h3><div class="sub">Allocated to unit cost for valuation & margin — never changes retail price</div></div></div>
             <div class="card-body" style="padding-top:12px">
               <div class="lc-row"><span>Freight (VRL Logistics)</span><b>₹3,200</b></div>
               <div class="lc-row"><span>Transit insurance</span><b>₹450</b></div>
@@ -245,24 +274,24 @@
         </div>
       </div>
       <div class="card mb-16" data-anno="1A · Partial, over, short & substitution">
-        <div class="card-head"><div><h3>Lines on this delivery</h3><div class="sub">Quantities are posted only after QC · nothing reaches the website until units are sellable</div></div></div>
+        <div class="card-head"><div><h3 data-help="rc-lines">Lines on this delivery</h3><div class="sub">Quantities are posted only after QC · nothing reaches the website until units are sellable</div></div></div>
         <div class="table-wrap"><table class="table compact rcv-t">
-          <thead><tr><th>SKU</th><th class="r">Ordered</th><th class="r">Before</th><th class="c">Receiving now</th><th>Serials</th><th>Variance</th><th>Handling</th></tr></thead>
+          <thead><tr><th>SKU</th><th class="r">Ordered</th><th class="r" data-help="col-rc-before">Before</th><th class="c" data-help="col-rc-now">Receiving now</th><th data-help="col-rc-serials">Serials</th><th data-help="col-rc-variance">Variance</th><th data-help="col-rc-handling">Handling</th></tr></thead>
           <tbody id="rc-lines"></tbody>
         </table></div>
       </div>
-      <div class="card mb-16" data-anno="1A · §9.3 QC pass → sellable · fail → quarantine">
-        <div class="card-head"><div><h3>QC outcome per unit · SSD01-N</h3><div class="sub">18 units scanned · 16 pass · 2 fail · unit IDs assigned at receipt</div></div><div class="seg"><button class="active">All (18)</button><button>Failed (2)</button></div></div>
+      <div class="card mb-16" id="rc-qc" data-anno="1A · §9.3 QC pass → sellable · fail → quarantine">
+        <div class="card-head"><div><h3 data-help="rc-qc">QC outcome per unit · SSD01-N</h3><div class="sub">18 units scanned · 16 pass · 2 fail · unit IDs assigned at receipt</div></div><div class="seg"><button class="active">All (18)</button><button>Failed (2)</button></div></div>
         <div class="table-wrap"><table class="table compact">
-          <thead><tr><th>Unit</th><th>Manufacturer serial</th><th>Seal</th><th>Physical</th><th>Speed test</th><th>Outcome</th><th>Resolution</th></tr></thead>
+          <thead><tr><th data-help="col-qc-unit">Unit</th><th>Manufacturer serial</th><th data-help="col-qc-checks">Seal</th><th>Physical</th><th>Speed test</th><th data-help="col-qc-outcome">Outcome</th><th data-help="col-qc-resolution">Resolution</th></tr></thead>
           <tbody id="qc-body"></tbody>
         </table></div>
-        <div class="card-foot"><span class="small muted">Showing 7 of 18 · passing units become sellable at WH-BLR on posting</span><button class="btn btn-sm" data-toast="All remaining units marked Pass">Mark remaining as pass</button></div>
+        <div class="card-foot"><span class="small muted">Showing 7 of 18 · passing units become sellable at WH-BLR on posting</span><div class="row gap-4"><button class="btn btn-sm" data-toast="All remaining units marked Pass" data-help="rc-mark-pass">Mark remaining as pass</button></div></div>
       </div>
       <div class="card card-pad row-between">
-        <div><div class="row gap-8"><b>Ready to post GRN-0442</b><span class="badge b-warn">4 units held</span></div>
+        <div><div class="row gap-8"><b data-help="rc-post">Ready to post GRN-0442</b><span class="badge b-warn">4 units held</span></div>
           <div class="small subtle mt-4">Posting creates receipt movements, moves 16 SSD + 20 adapters + 10 chargers to sellable, 2 SSD to quarantine, refreshes website availability (A04) and makes the supplier bill matchable.</div></div>
-        <div class="row gap-8"><button class="btn" data-toast="GRN-0442 saved as draft">Save draft</button><button class="btn btn-primary" data-toast="GRN-0442 posted · 46 units sellable · 2 quarantined · 4 held (incl. duplicate-serial unit) · availability refresh queued">Post GRN-0442</button></div>
+        <div class="row gap-8"><button class="btn" data-toast="GRN-0442 saved as draft">Save draft</button><button class="btn btn-primary" data-toast="GRN-0442 posted · 46 units sellable · 2 quarantined · 4 held (incl. duplicate-serial unit) · availability refresh queued" data-help="rc-post-btn">Post GRN-0442</button></div>
       </div>
     </div>
 
@@ -270,22 +299,23 @@
     <!-- BILLS                                                                -->
     <!-- ================================================================== -->
     <div class="tab-panel" data-panel="bills">
+      <div class="tab-intro"><i data-icon="info"></i><div><b>Supplier invoices (bills) checked before they are paid.</b> Each bill is compared with its purchase order and goods receipt — the <b data-help="g.three-way">three-way match</b>. Bills that agree within tolerance are approved for payment; the rest are held here for finance or the buyer.<span class="ti-next">Open each bill on hold, read the difference, and decide: ask the supplier for a credit note, send it to the buyer, or approve it with a reason. Suspected duplicates are blocked until someone checks them.</span></div></div>
       <div class="grid g-4 mb-16">
-        <div class="stat-tile"><div class="l">Matched & approved (30 d)</div><div class="n text-ok">38</div><div class="small muted">₹1.12 Cr</div></div>
-        <div class="stat-tile"><div class="l">On hold · variance</div><div class="n text-warn">2</div><div class="small muted">price +₹1,440 · qty −2</div></div>
-        <div class="stat-tile"><div class="l">Duplicate suspected</div><div class="n text-bad">1</div><div class="small muted">blocked from payment</div></div>
-        <div class="stat-tile"><div class="l">Tolerance (sample)</div><div class="n" style="font-size:16px;margin-top:4px">±2% or ₹500 / line</div><div class="small muted">quantity must match exactly · tax must match</div></div>
+        <div class="stat-tile"><div class="l" data-help="bl-kpi-matched">Matched & approved (30 d)</div><div class="n text-ok">38</div><div class="small muted">₹1.12 Cr</div></div>
+        <div class="stat-tile"><div class="l" data-help="bl-kpi-hold">On hold · variance</div><div class="n text-warn">2</div><div class="small muted">price +₹1,440 · qty −2</div></div>
+        <div class="stat-tile"><div class="l" data-help="bl-kpi-dup">Duplicate suspected</div><div class="n text-bad">1</div><div class="small muted">blocked from payment</div></div>
+        <div class="stat-tile"><div class="l" data-help="g.tolerance">Tolerance (sample)</div><div class="n" style="font-size:16px;margin-top:4px">±2% or ₹500 / line</div><div class="small muted">quantity must match exactly · tax must match</div></div>
       </div>
       <div class="card mb-16" data-anno="1A · 3-way match PO ↔ GRN ↔ invoice">
-        <div class="card-head"><div><h3>Supplier bills</h3><div class="sub">A bill is payable only when PO, goods receipt and invoice agree within tolerance</div></div><button class="btn btn-sm" data-toast="Upload bill · OCR extraction is a Phase 2 candidate (A31); enter manually for now"><i data-icon="upload"></i> Record bill</button></div>
+        <div class="card-head"><div><h3 data-help="bl-table">Supplier bills</h3><div class="sub">A bill is payable only when PO, goods receipt and invoice agree within tolerance</div></div><button class="btn btn-sm" data-toast="Upload bill · OCR extraction is a Phase 2 candidate (A31); enter manually for now"><i data-icon="upload"></i> Record bill</button></div>
         <div class="table-wrap"><table class="table">
-          <thead><tr><th>Bill</th><th>Supplier invoice</th><th>Supplier</th><th>PO · GRN</th><th class="r">Amount incl. GST</th><th>Match</th><th>Status</th><th>Due</th></tr></thead>
+          <thead><tr><th data-help="col-bill">Bill</th><th data-help="col-sup-inv">Supplier invoice</th><th>Supplier</th><th data-help="col-po-grn">PO · GRN</th><th class="r">Amount incl. GST</th><th data-help="col-match">Match</th><th data-help="col-bill-status">Status</th><th data-help="col-due">Due</th></tr></thead>
           <tbody id="bl-body"></tbody>
         </table></div>
       </div>
       <div class="col gap-16">
         <div class="card">
-          <div class="card-head"><div><h3>BL-0331 · 3-way match detail</h3><div class="sub">INV/PIT/2026/4488 · PO-2026-0185 · GRN-0438 · Prime IT Distributors</div></div><span class="sev warning"><i data-icon="alert"></i> Price variance</span></div>
+          <div class="card-head"><div><h3 data-help="bl-detail">BL-0331 · 3-way match detail</h3><div class="sub">INV/PIT/2026/4488 · PO-2026-0185 · GRN-0438 · Prime IT Distributors</div></div><span class="sev warning"><i data-icon="alert"></i> Price variance</span></div>
           <div class="card-body">
             <div class="match-grid">
               <div class="h">Line</div><div class="h">PO qty × price</div><div class="h">GRN qty</div><div class="h">Invoice qty × price</div><div class="h">Variance</div><div class="h">Result</div>
@@ -297,10 +327,10 @@
             </div>
             <div class="callout c-info mt-12"><i data-icon="info"></i><div>Prime IT's price list changed on 22 Sep (after the PO was approved on 19 Sep). Options: accept the variance with a reason (finance), or ask for a credit note of ₹1,699 incl. GST.</div></div>
           </div>
-          <div class="card-foot"><span class="small muted">Assigned: Deepa K. (Finance) · buyer Anita R. informed · due 29 Sep</span><div class="row gap-8"><button class="btn btn-sm" data-toast="Sent to buyer for review with PO price evidence">Send to buyer</button><button class="btn btn-sm" data-toast="Credit note request emailed to Prime IT · ₹1,699">Request credit note</button><button class="btn btn-sm btn-ok" data-toast="Approved with variance · reason recorded · exported to accounting once">Approve with reason…</button></div></div>
+          <div class="card-foot"><span class="small muted">Assigned: Deepa K. (Finance) · buyer Anita R. informed · due 29 Sep</span><div class="row gap-8"><button class="btn btn-sm" data-toast="Sent to buyer for review with PO price evidence">Send to buyer</button><button class="btn btn-sm" data-toast="Credit note request emailed to Prime IT · ₹1,699">Request credit note</button><button class="btn btn-sm btn-ok" data-toast="Approved with variance · reason recorded · exported to accounting once" data-help="bl-approve">Approve with reason…</button></div></div>
         </div>
         <div class="card" data-anno="1A · A25 Duplicate invoice detection">
-          <div class="card-head"><div><h3>Duplicate invoice blocked · BL-0332</h3><div class="sub">Matched against bills from the last 12 months · normalised invoice numbers</div></div><span class="sev critical"><i data-icon="alert-octagon"></i> Blocked</span></div>
+          <div class="card-head"><div><h3 data-help="bl-dup">Duplicate invoice blocked · BL-0332</h3><div class="sub">Matched against bills from the last 12 months · normalised invoice numbers</div></div><span class="sev critical"><i data-icon="alert-octagon"></i> Blocked</span></div>
           <div class="card-body">
             <div class="dup">
               <div class="h">Field</div><div class="h">BL-0332 (new)</div><div class="h">BL-0318 (posted)</div><div class="h">Same?</div>
@@ -312,7 +342,7 @@
             </div>
             <div class="small muted mt-8">* Numbers match after removing separators. Near matches (same amount ±1%, different number) are flagged for review, not blocked.</div>
           </div>
-          <div class="card-foot"><button class="btn btn-sm" data-toast="Marked not duplicate · reason & approver required" data-toast-icon="alert">Not a duplicate…</button><button class="btn btn-sm btn-danger" data-toast="BL-0332 rejected as duplicate · supplier notified">Reject as duplicate</button></div>
+          <div class="card-foot"><div class="row gap-4"><button class="btn btn-sm" data-toast="Marked not duplicate · reason & approver required" data-toast-icon="alert" data-help="bl-not-dup">Not a duplicate…</button></div><button class="btn btn-sm btn-danger" data-toast="BL-0332 rejected as duplicate · supplier notified">Reject as duplicate</button></div>
         </div>
       </div>
     </div>
@@ -321,21 +351,22 @@
     <!-- SUPPLIERS                                                            -->
     <!-- ================================================================== -->
     <div class="tab-panel" data-panel="suppliers">
+      <div class="tab-intro"><i data-icon="info"></i><div><b>How reliable each supplier is, and the terms Tradex buys on.</b> The table compares delivery speed, on-time delivery, how much of each order arrives, and QC failures. The real lead time measured here is what the reorder rule uses.<span class="ti-next">A supplier with a falling score or a stale stock feed is a reason to check open POs with them or order elsewhere. New suppliers are approved on the Vendors page before any PO.</span></div></div>
       <div class="card" data-anno="1A · Actual lead times feed reorder points">
-        <div class="card-head"><div><h3>Suppliers</h3><div class="sub">Lead time used by the reorder rule is the 90-day actual, not the quoted figure</div></div><a class="btn btn-sm" href="erp-vendors.html"><i data-icon="building"></i> Vendor onboarding</a></div>
+        <div class="card-head"><div><h3 data-help="sp-table">Suppliers</h3><div class="sub">Lead time used by the reorder rule is the 90-day actual, not the quoted figure</div></div><a class="btn btn-sm" href="erp-vendors.html"><i data-icon="building"></i> Vendor onboarding</a></div>
         <div class="table-wrap"><table class="table compact">
-          <thead><tr><th>Supplier</th><th>GSTIN</th><th>Status</th><th class="r">Lead time<br><span style="text-transform:none;font-weight:500">quoted · actual</span></th><th class="r">On-time</th><th class="r">Fill rate</th><th class="r">QC fail</th><th>Terms</th><th class="r">Open POs</th><th>Score</th><th></th></tr></thead>
+          <thead><tr><th>Supplier</th><th data-help="g.gstin">GSTIN</th><th data-help="col-sp-status">Status</th><th class="r" data-help="col-sp-lead">Lead time<br><span style="text-transform:none;font-weight:500">quoted · actual</span></th><th class="r" data-help="col-sp-ontime">On-time</th><th class="r" data-help="g.fill-rate">Fill rate</th><th class="r" data-help="col-sp-qcfail">QC fail</th><th data-help="col-sp-terms">Terms</th><th class="r">Open POs</th><th data-help="col-sp-score">Score</th><th></th></tr></thead>
           <tbody id="sp-body"></tbody>
         </table></div>
         <div class="card-foot"><span class="small muted">Scores combine on-time, fill rate, QC failures and invoice accuracy · vendors see only their own scorecard in the vendor portal</span></div>
       </div>
       <div class="grid g-2 mt-16" style="align-items:start">
         <div class="card">
-          <div class="card-head"><div><h3>Actual lead time · last 90 days</h3><div class="sub">Order sent → goods received · used by reorder rule A17</div></div><button class="btn btn-sm btn-ghost" id="lt-tbl"><i data-icon="list"></i> Table</button></div>
+          <div class="card-head"><div><h3 data-help="sp-lead-chart">Actual lead time · last 90 days</h3><div class="sub">Order sent → goods received · used by reorder rule A17</div></div><button class="btn btn-sm btn-ghost" id="lt-tbl"><i data-icon="list"></i> Table</button></div>
           <div class="card-body"><div id="ch-lead"></div></div>
         </div>
         <div class="card">
-          <div class="card-head"><div><h3>Prime IT Distributors · terms</h3><div class="sub">V-014 · approved supplier since Apr 2024</div></div><span class="badge b-ok">Price list valid to 31 Dec</span></div>
+          <div class="card-head"><div><h3 data-help="sp-terms">Prime IT Distributors · terms</h3><div class="sub">V-014 · approved supplier since Apr 2024</div></div><span class="badge b-ok">Price list valid to 31 Dec</span></div>
           <div class="card-body">
             <dl class="kv" style="grid-template-columns:130px 1fr">
               <dt>Account manager</dt><dd>Naveen Gowda · +91 98450 1•••• · naveen@primeit.example</dd>
@@ -457,6 +488,8 @@ TX.ready(() => {
   $("#po-pipe").addEventListener("click", (e) => { const s = e.target.closest(".stage"); if (!s) return; poStage = poStage === s.dataset.stage ? "" : s.dataset.stage; $$(".stage", $("#po-pipe")).forEach((x) => x.classList.toggle("active", x.dataset.stage === poStage)); renderPo(); });
   $("#po-q").addEventListener("input", renderPo); $("#po-sup").addEventListener("change", renderPo);
   renderPo();
+  /* "How it works" steps 2–4 open the PO list filtered to their stage */
+  $$(".flow-btn[data-stage]").forEach((b) => b.addEventListener("click", () => { poStage = b.dataset.stage; $$(".stage", $("#po-pipe")).forEach((x) => x.classList.toggle("active", x.dataset.stage === poStage)); renderPo(); }));
 
   const tlSteps = ["Draft", "Approved", "Sent", "Receiving", "Received", "Closed"];
   const stepIdx = { draft: 0, approval: 0, approved: 1, sent: 2, partial: 3, received: 4, closed: 5 };
@@ -465,10 +498,22 @@ TX.ready(() => {
     const gstIntra = v.city === "Bengaluru";
     const gst = Math.round(po.value * 0.18);
     const si = stepIdx[po.st];
+    const pend = po.ord - po.rec;
+    const NEXT = {
+      draft: [`Check the lines, prices and delivery date, then <b>Submit for approval</b>. At this value it will need <b>${t[0]}</b> approval. Nothing is sent to the supplier yet.`, "new-po", "Edit draft"],
+      approval: [`Waiting for <b>${t[0]}</b> approval (${t[1]}). The approver checks the supplier, quantities and prices, then clicks <b>Approve</b> or <b>Reject</b> below (a rejection needs a reason). The person who created the PO cannot approve it; if they are the named approver, the alternate decides.`],
+      approved: [`Approved but not sent yet. Click <b>Send to supplier</b> below (email and vendor portal), then wait for ${esc(v.name)} to confirm the order.`],
+      sent: [`Waiting for ${esc(v.name)} to confirm the order (a reminder goes automatically after 48 h). When the delivery arrives, receive it against this PO.`, "receive", "Go to receiving"],
+      partial: [`${pend} units still to come${po.late ? ` and the delivery is late (expected ${po.exp}) — remind the supplier` : ""}. Receive the next delivery against this PO, or decide on the rest: keep it as a backorder with a new date, or cancel the remaining quantity.`, "receive", "Go to receiving"],
+      received: [`Everything has arrived. Finance matches the supplier's bill with this PO and its receipts (three-way match)${po.no === "PO-2026-0185" ? " — BL-0331 is on hold for a price difference" : ""}. When the bill is settled, close the PO.`, "bills", "Go to supplier bills"],
+      closed: ["Nothing to do — this PO is closed. Its receipts and bills stay linked for audit.", "bills", "See supplier bills"],
+    }[po.st];
+    const nextHTML = `<div class="next-step">${ic(po.late ? "alert" : "arrow-right")}<div class="grow"><b>Next step:</b> ${NEXT[0]}</div>${NEXT[1] ? `<button type="button" class="btn btn-xs" data-close data-go-tab="${NEXT[1]}">${NEXT[2]}</button>` : ""}</div>`;
     $("#d-po-card").innerHTML = `
-      <div class="drawer-head"><div><div class="small muted">Purchase order · created by ${po.by}</div><h3 class="row gap-8" style="font-size:19px"><span class="mono" style="font-size:18px">${po.no}</span><span class="status ${s[1]}">${s[0]}</span></h3><div class="small subtle mt-4">${v.name} · ${v.id} · ${v.city} · GSTIN ${gstIntra ? "29AAGCP4471K1Z5" : v.id === "V-031" ? "27AACCC9812M1Z2" : v.id === "V-022" ? "33AAHCR2231F1ZQ" : "36AAFCN7812P1Z9"}</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close">${ic("x")}</button></div>
+      <div class="drawer-head"><div><div class="small muted">Purchase order · created by ${po.by}</div><h3 class="row gap-8" style="font-size:19px" data-help="d-po"><span class="mono" style="font-size:18px">${po.no}</span><span class="status ${s[1]}">${s[0]}</span></h3><div class="small subtle mt-4">${v.name} · ${v.id} · ${v.city} · GSTIN ${gstIntra ? "29AAGCP4471K1Z5" : v.id === "V-031" ? "27AACCC9812M1Z2" : v.id === "V-022" ? "33AAHCR2231F1ZQ" : "36AAFCN7812P1Z9"}</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close">${ic("x")}</button></div>
       <div class="drawer-body col gap-16">
         <div class="stepper" style="flex-wrap:nowrap">${tlSteps.map((l, i) => `<div class="step ${i < si || (po.st === "closed") ? "done" : i === si ? "current" : ""}"><span class="dot">${i < si || po.st === "closed" ? ic("check", "ic-sm") : i + 1}</span><span class="small">${l}</span></div>`).join("")}</div>
+        ${nextHTML}
         <div class="grid g-4">
           <div class="stat-tile"><div class="l">Value ex-GST</div><div class="n" style="font-size:18px">${inr(po.value)}</div></div>
           <div class="stat-tile"><div class="l">GST ${gstIntra ? "(CGST+SGST)" : "(IGST)"}</div><div class="n" style="font-size:18px">${inr(gst)}</div></div>
@@ -476,22 +521,22 @@ TX.ready(() => {
           <div class="stat-tile"><div class="l">Received</div><div class="n" style="font-size:18px">${po.rec}/${po.ord}</div></div>
         </div>
         <div class="card"><table class="table compact">
-          <thead><tr><th>SKU</th><th class="r">Ordered</th><th class="r">Received</th><th class="r">Pending</th><th class="r">Unit cost</th><th class="r">Line total</th></tr></thead>
+          <thead><tr><th>SKU</th><th class="r">Ordered</th><th class="r">Received</th><th class="r" data-help="d-col-pending">Pending</th><th class="r">Unit cost</th><th class="r">Line total</th></tr></thead>
           <tbody>${po.lines.map(([id, q, r]) => { const p = TX.byId(id); return `<tr><td><div class="row" style="gap:8px">${TX.ph(p.img, "thumb")}<div><div class="cell-main truncate" style="max-width:280px">${esc(p.title)}</div><div class="cell-sub mono">${p.sku}</div></div></div></td><td class="r">${q}</td><td class="r">${r}</td><td class="r ${q - r ? "text-warn strong" : "muted"}">${q - r}</td><td class="r">${inr(cost(id))}</td><td class="r strong">${inr(q * cost(id))}</td></tr>`; }).join("")}</tbody>
         </table></div>
         <div class="grid g-2">
-          <div class="card card-pad"><h4 class="mb-8">Approval</h4><dl class="kv"><dt>Required</dt><dd>${t[0]} (${t[1]})</dd><dt>Decision</dt><dd>${po.st === "draft" ? "Not submitted" : po.st === "approval" ? `<span class="text-warn">Pending · requested ${po.no === "PO-2026-0194" ? "25 Sep 17:20" : "26 Sep 09:10"}</span>` : "Approved with reason “festive demand / within budget”"}</dd><dt>Terms</dt><dd>Net 30 · FOR destination</dd></dl></div>
-          <div class="card card-pad"><h4 class="mb-8">Linked documents</h4><dl class="kv"><dt>Receipts</dt><dd>${po.grn ? po.grn.join(" · ") : "—"}</dd><dt>Bills</dt><dd>${po.no === "PO-2026-0185" ? "BL-0331 (on hold), BL-0332 (blocked)" : po.st === "received" || po.st === "closed" ? "Matched" : "—"}</dd><dt>Quotation</dt><dd>${ic("paperclip", "ic-sm ii")} quotation.pdf</dd></dl></div>
+          <div class="card card-pad"><h4 class="mb-8" data-help="d-po-approval">Approval</h4><dl class="kv"><dt>Required</dt><dd>${t[0]} (${t[1]})</dd><dt>Decision</dt><dd>${po.st === "draft" ? "Not submitted" : po.st === "approval" ? `<span class="text-warn">Pending · requested ${po.no === "PO-2026-0194" ? "25 Sep 17:20" : "26 Sep 09:10"}</span>` : "Approved with reason “festive demand / within budget”"}</dd><dt>Terms</dt><dd>Net 30 · FOR destination</dd></dl></div>
+          <div class="card card-pad"><h4 class="mb-8" data-help="d-po-links">Linked documents</h4><dl class="kv"><dt>Receipts</dt><dd>${po.grn ? po.grn.join(" · ") : "—"}</dd><dt>Bills</dt><dd>${po.no === "PO-2026-0185" ? "BL-0331 (on hold), BL-0332 (blocked)" : po.st === "received" || po.st === "closed" ? "Matched" : "—"}</dd><dt>Quotation</dt><dd>${ic("paperclip", "ic-sm ii")} quotation.pdf</dd></dl></div>
         </div>
-        ${po.st === "partial" ? `<div class="callout c-warn">${ic("alert")}<div><strong>${po.ord - po.rec} units still pending.</strong> Keep as backorder with a new expected date, or cancel the remaining quantity (supplier notified, reorder rule re-evaluates).</div></div>` : ""}
-        <div><div class="label mb-8">Activity</div><ul class="timeline">
+        ${po.st === "partial" ? `<div class="callout c-warn">${ic("alert")}<div><strong data-help="d-backorder">${po.ord - po.rec} units still pending.</strong> Keep as backorder with a new expected date, or cancel the remaining quantity (supplier notified, reorder rule re-evaluates).</div></div>` : ""}
+        <div><div class="label mb-8" data-help="d-po-activity">Activity</div><ul class="timeline">
           <li class="done"><span class="t-dot">${ic("edit")}</span><div class="t-title">Created</div><div class="t-meta">${po.by}</div></li>
           ${si >= 1 ? `<li class="done"><span class="t-dot">${ic("check")}</span><div class="t-title">Approved by ${t[0] === "Owner" ? "Rajesh M." : "Anita R."}</div><div class="t-meta">Threshold: ${t[1]}</div></li>` : ""}
           ${si >= 2 ? `<li class="done"><span class="t-dot">${ic("send")}</span><div class="t-title">Sent to supplier (email + vendor portal)</div><div class="t-meta">${po.st === "sent" ? "Awaiting confirmation · reminder at 48 h" : "Confirmed by supplier"}</div></li>` : ""}
           ${si >= 3 && po.grn ? `<li class="${po.st === "partial" ? "current" : "done"}"><span class="t-dot">${ic("scan")}</span><div class="t-title">${po.grn.join(", ")}</div><div class="t-meta">${po.rec} of ${po.ord} units received</div></li>` : ""}
         </ul></div>
       </div>
-      <div class="drawer-foot">${po.st === "approval" ? `<button class="btn btn-danger" data-close data-toast="Rejected · reason sent to buyer">Reject</button><button class="btn btn-ok" data-close data-toast="Approved · PO will be sent to supplier">Approve</button>` : po.st === "draft" ? `<a class="btn" href="#new-po" data-close>Edit draft</a><button class="btn btn-primary" data-close data-toast="Submitted for ${t[0]} approval">Submit for approval</button>` : po.st === "partial" || po.st === "sent" || po.st === "approved" ? `<button class="btn" data-toast="Reminder sent to ${v.name}">Remind supplier</button><button class="btn" data-toast="Remaining quantity cancelled · supplier notified" data-toast-icon="alert">Cancel remaining</button><a class="btn btn-primary" href="#receive" data-close>Receive goods</a>` : `<button class="btn" data-toast="PDF downloaded">Download PDF</button>${po.st === "received" ? `<button class="btn btn-primary" data-close data-toast="PO closed">Close PO</button>` : ""}`}</div>`;
+      <div class="drawer-foot">${po.st === "approval" ? `<button class="btn btn-danger" data-close data-toast="Rejected · reason sent to buyer" data-help="d-reject">Reject</button><button class="btn btn-ok" data-close data-toast="Approved · PO will be sent to supplier" data-help="d-approve">Approve</button>` : po.st === "draft" ? `<a class="btn" href="#new-po" data-close>Edit draft</a><button class="btn btn-primary" data-close data-toast="Submitted for ${t[0]} approval" data-help="d-submit">Submit for approval</button>` : po.st === "partial" || po.st === "sent" || po.st === "approved" ? `<button class="btn" data-toast="Reminder sent to ${v.name}">Remind supplier</button><button class="btn" data-toast="Remaining quantity cancelled · supplier notified" data-toast-icon="alert" data-help="d-cancel-rem">Cancel remaining</button><a class="btn ${po.st === "approved" ? "" : "btn-primary"}" href="#receive" data-close data-help="act-receive">Receive goods</a>${po.st === "approved" ? `<button class="btn btn-primary" data-close data-toast="${po.no} sent to ${esc(v.name)} · email + vendor portal · confirmation requested" data-help="d-send">Send to supplier</button>` : ""}` : `<button class="btn" data-toast="PDF downloaded">Download PDF</button>${po.st === "received" ? `<button class="btn btn-primary" data-close data-toast="PO closed" data-help="d-close-po">Close PO</button>` : ""}`}</div>`;
     TX.open("d-po");
   };
   $("#po-body").addEventListener("click", (e) => { const tr = e.target.closest("tr[data-po]"); if (tr) openPo(tr.dataset.po); });
@@ -581,6 +626,11 @@ TX.ready(() => {
     TX.toast(l[0] === "ok" ? "Serial accepted" : "Scan rejected — see log", l[0] === "ok" ? "check-circle" : "alert");
   };
   $("#scan-go").addEventListener("click", doScan);
+  $$("[data-rc-jump]").forEach((b) => b.addEventListener("click", () => {
+    const t = document.getElementById(b.dataset.rcJump); if (!t) return;
+    t.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "center" });
+    if (t.matches("input")) t.focus({ preventScroll: true });
+  }));
   $("#scan-in").addEventListener("keydown", (e) => { if (e.key === "Enter") doScan(); });
 
   /* ---------- Bills ---------- */
@@ -610,7 +660,7 @@ TX.ready(() => {
   $("#lt-tbl").addEventListener("click", () => TX.charts.toggleTable($("#ch-lead")));
   $("#sp-body").innerHTML = TX.vendors.map((v) => { const s = SP[v.id]; const sc = v.score;
     return `<tr><td><div class="cell-main">${v.name}</div><div class="cell-sub">${v.id} · ${v.model} · ${v.city}</div></td><td class="mono small">${s[0]}</td>
-      <td><span class="status ${v.status === "Active" ? "s-ok" : v.status === "Pilot" ? "s-info" : "s-muted"}">${v.status}</span>${v.status === "Applied" ? '<div class="cell-sub">Not eligible for POs</div>' : ""}</td>
+      <td><span class="status ${v.status === "Active" ? "s-ok" : v.status === "Pilot" ? "s-info" : "s-muted"}">${v.status}</span>${v.status === "Applied" ? '<div class="cell-sub">Not eligible for POs</div>' : `<div class="cell-sub ${s[7].startsWith("Stale") ? "text-warn strong" : ""}">Stock feed: ${s[7]}</div>`}</td>
       <td class="r small">${s[1]}</td><td class="r ${s[2] !== null && s[2] < 85 ? "text-warn strong" : ""}">${s[2] === null ? "—" : s[2] + "%"}</td><td class="r">${s[3] === null ? "—" : s[3] + "%"}</td><td class="r ${s[4] > 3 ? "text-warn strong" : ""}">${s[4] === null ? "—" : s[4] + "%"}</td>
       <td class="small">${s[5]}</td><td class="r">${s[6]}</td>
       <td>${sc ? `<div class="row gap-8"><div class="meter thin ${sc >= 90 ? "m-ok" : sc >= 80 ? "m-warn" : "m-bad"}" style="width:56px"><span style="width:${sc}%"></span></div><b class="small">${sc}</b></div>` : '<span class="muted small">—</span>'}</td>

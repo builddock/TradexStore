@@ -102,6 +102,7 @@ below as evidence of the intended phase/requirement for the block they label (ci
 | X17 | Vendor-portal specific: every vendor call is scoped to the vendor organisation of the session; no Tradex margins, other vendors' data, cost of other suppliers or full customer data are ever returned or rendered (§9.1) | BP §3.1, §11.2, §19.1, T11 | DOCUMENTED |
 | X18 | KPI tiles, scores and summary figures on these screens follow the definitions decided under D-173 (proposed in `04b-frontend-workspace-1.md`); tile values shown in the mockup are samples | 04b §2.3; D-173 | REQUIRES_DECISION (D-173) |
 | X19 | Supplier cost, landed cost and margin columns appear only for roles allowed under D-197 (proposed in `10-erp.md`); otherwise the column is omitted, not blanked | BP §3.1, §14.4; D-197 | REQUIRES_DECISION (D-197) |
+| X20 | Contextual help per `04b-frontend-workspace-1.md` §2.21: ⓘ explanations, help panel with page guide, glossary and search on P-E09–P-E15 and P-V01–P-V04 (vendor wording addresses the vendor); the guided-workflow elements (§2.21 #6–#9) on P-E09 and P-E12; vendor help never reveals Tradex-internal rules, margins or other vendors' data (X17) | D-224; BP §11.2, §24.2 | DECIDED (D-224) · content REQUIRES_DECISION (D-225) |
 
 ---
 

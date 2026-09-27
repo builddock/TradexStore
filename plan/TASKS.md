@@ -1798,6 +1798,27 @@ needed to implement it. **This file is the source of truth for task status.** `S
    7. TASKS.md and STATE.md updated per the continuation protocol.
 - **Evidence:** —
 
+#### T-1A.3-M24-02 · Contextual help framework and guided-workflow components for the workspace and vendor portal: ⓘ help buttons, help panel (page guide, glossary A–Z, search), glossary term marking, "How it works" strip, tab intro, next-step box (D-224)
+- **Status:** NOT_STARTED
+- **Stage / Module:** 1A.3 / M24
+- **Depends on:** T-1A.3-M09-02, T-1A.3-M24-01
+- **Decisions:** D-224
+- **References:** 04b §1.4 rule 23, §2.21, §3.2 #5; 04c X20; MK assets/tradex.js "Contextual help" and "Guided workflow strip", assets/tradex.css (end), assets/help/*.js; BP §24.2
+- **Description:** Build the shared help and guidance components of 04b §2.21 in `frontend/design-system/` (presentational) and the workspace shell: the ⓘ button (placement after headings, KPI labels, column headers, form labels, switches and actions; never inside another control or inside a `<label>`), one "About this tab" button per tab bar explaining the active tab, the help panel (entry layout in the fixed section order of §2.21 #2, status lists rendered with the real status pills, links between entries, back history, search over loaded entries, "This page" and "Glossary A–Z" views, "Show help icons" preference stored per user), glossary marking of abbreviations at their first mention per card/panel/modal/drawer (hover/focus tooltip, click/Enter opens the entry; identifiers never marked), and the guided-workflow components ("How it works" strip with steps, counts, role and attention state, remembered "Hide guide"; tab intro; next-step box driven by record state). The top-bar Help (?) button opens the page guide (replaces MK v0.1's link to Settings). Help entries are loaded per screen from the content source chosen in D-225 through one typed content interface, so screens only reference entry keys; configured values (windows, limits, thresholds, provider names) are inserted from live configuration, never hard-coded. Page tasks use these components per 04b rule 23; content for all screens is T-1A.16-M24-06 (ERP) and T-1B.1-M14-16 (vendor portal). Not part of this task: D-171 explanatory panels (T-1A.16-M24-04), prototype toolbar "Help icons" button (never built).
+- **Files/components:** `frontend/design-system/` (help button, help panel, glossary term, flow strip, tab intro, next-step box); `frontend/workspace/shell/` (Help button wiring, panel host); component tests next to the code (finer structure per D-101)
+- **Database impact:** None (help-icon preference stored with the user's UI preferences if such storage exists; otherwise device-local)
+- **API impact:** None new; consumes API-M02-01 (user context) and the screens' existing count endpoints for step counts (API-M18-15 per D-172)
+- **Frontend impact:** Shared components used by every P-E and P-V screen; shell Help button; vendor shell uses the same components (T-1B.1-M14-02)
+- **Backend impact:** None
+- **Testing requirements:** TS-FE-01 component states (loading, empty "help not available", error); TS-A11Y-02: every ⓘ has an accessible name "About “<title>”", keyboard open/close, `Esc` closes the panel only (an underlying modal stays open), focus returns to the opener, focus trap when the panel is modal on narrow screens, tooltips reachable by keyboard, labels' accessible names unchanged by help buttons; glossary marking never alters identifiers and never marks text inside buttons, links or inputs; "Hide guide" and "Show help icons" preferences persist.
+- **Acceptance criteria:**
+   1. Every component of 04b §2.21 #1–#8 exists with its states and keyboard behaviour and passes the TS-A11Y-02 cases above.
+   2. A screen can declare help by entry key only; a key without content renders no ⓘ (and is reported in development builds).
+   3. The Help (?) button opens the page guide; the panel search finds page entries and glossary terms.
+   4. No help text on a screen contains a hard-coded configured value; such values come from configuration (reviewed in T-1A.16-M24-06).
+   5. TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
 #### T-1A.3-M02-01 · P-E16 staff sign-in, MFA challenge/enrolment, password reset and invitation acceptance
 - **Status:** REQUIRES_DECISION
 - **Stage / Module:** 1A.3 / M02
@@ -5900,7 +5921,7 @@ needed to implement it. **This file is the source of truth for task status.** `S
 - **Depends on:** T-1A.3-M24-01, T-1A.14-M17-05
 - **Decisions:** D-172, D-174
 - **References:** 04b §3.1, §3.2, §3.3; 06 API-M18-15, API-M02-33; 16 TS-ADM-15
-- **Description:** Complete the workspace shell (04b §3.1–3.3): sidebar queue-count badges for the queues each user may read, with "hot" marking and refresh as decided (API-M18-15; semantics D-172 — needs-action queue, all open items, breached only, or no counts; refresh D-146; BR-M18-11); the top-bar Help destination (D-174: role-based SOP/walkthrough library whose content comes from T-1A.17-M26-06, a link to P-E15, or no in-app help); "My profile" showing own account, roles, location scope and MFA state (API-M02-01) and, if D-174 chooses editable contact fields, own display name, contact mobile (with verification token) and language (API-M02-33) — roles, location scope and approval fields are never editable there (BP §19.1 property level). API-M02-33 and API-M18-15 accept vendor principals; the vendor shell's badges, help and profile are placed with the vendor shell (T-1B.1-M14-02) and are not built here. Not in scope: notification bell (T-1A.13-M20-03), delegation item (T-1A.14-M17-08), health card (T-1A.16-M24-01), company/location switcher semantics (D-170).
+- **Description:** Complete the workspace shell (04b §3.1–3.3): sidebar queue-count badges for the queues each user may read, with "hot" marking and refresh as decided (API-M18-15; semantics D-172 — needs-action queue, all open items, breached only, or no counts; refresh D-146; BR-M18-11); the top-bar Help destination (since D-224 the Help button opens the contextual help panel of T-1A.3-M24-02; D-174 still decides whether it also links to a role-based SOP/walkthrough library whose content comes from T-1A.17-M26-06); "My profile" showing own account, roles, location scope and MFA state (API-M02-01) and, if D-174 chooses editable contact fields, own display name, contact mobile (with verification token) and language (API-M02-33) — roles, location scope and approval fields are never editable there (BP §19.1 property level). API-M02-33 and API-M18-15 accept vendor principals; the vendor shell's badges, help and profile are placed with the vendor shell (T-1B.1-M14-02) and are not built here. Not in scope: notification bell (T-1A.13-M20-03), delegation item (T-1A.14-M17-08), health card (T-1A.16-M24-01), company/location switcher semantics (D-170).
 - **Files/components:** `backend/reporting/` (DashboardService queue counts), `backend/identity/` (own-profile update), `frontend/workspace/` (sidebar badges, Help destination, My profile); tests in the backend folders and component tests (finer structure per D-001/D-002; workspace per D-101)
 - **Database impact:** None new — reads queue entities (E-sales_order, E-fulfilment, E-return_request, E-support_conversation, E-exception_case, E-approval_request, E-vendor_submission when 1B exists); updates E-user_account own fields; E-audit_event
 - **API impact:** Implements API-M18-15 (`workspace.counts`) and API-M02-33 (`identity.self`; `409` on stale version); consumes API-M02-01
@@ -5934,6 +5955,27 @@ needed to implement it. **This file is the source of truth for task status.** `S
   3. Items not approved are absent from the screens.
   4. Any approved item lacking an API/entity has a new decision recorded before implementation.
   5. TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1A.16-M24-06 · Help content and guided-workflow wiring for P-E01…P-E15: page guides, section/tab/field/status/action explanations, glossary; How it works strips, tab intros and next-step boxes on P-E02, P-E03, P-E04, P-E06, P-E07, P-E08, P-E09, P-E12 (D-224)
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1A.16 / M24
+- **Depends on:** T-1A.3-M24-02, T-1A.16-M24-03
+- **Decisions:** D-224, D-225, D-172
+- **References:** 04b §1.4 rule 23, §2.21, §2.22; 04c X20; MK assets/help/glossary.js, assets/help/shell.js, assets/help/erp-*.js; BP §24.2
+- **Description:** Write, review and publish the help content for every ERP workspace screen P-E01…P-E15 and the workspace frame, using the MK help files as the draft: page guide per screen; entries for every section, tab and sub-tab, KPI tile, table and non-obvious column, modal, drawer, form field, setting, status set (each state value of the screen's state machines), important action and notification; the shared glossary. Content follows D-225 (owner, review, storage, languages): each process owner confirms the texts for their screens; every configured value is a live configuration reference; MK sample values are not carried over. Wire the guided-workflow elements on P-E02, P-E03, P-E04, P-E06, P-E07, P-E08, P-E09 and P-E12 (steps, tab/queue targets, filters, counts from the queue-count definitions of D-172, attention rules) and the next-step boxes of their record drawers from the API state fields. Not part of this task: vendor-portal content (T-1B.1-M14-16), SOP/walkthrough library (D-174, T-1A.17-M26-06).
+- **Files/components:** help content per D-225 (e.g. `frontend/workspace/help/` if versioned with the code); P-E screen modules for flow strips and next-step boxes; content tests next to the code
+- **Database impact:** None, unless D-225 chooses staff-editable help content (then a content entity is added to `03-database.md` first, with a new decision for its API)
+- **API impact:** None new unless D-225 chooses staff-editable content; consumes API-M18-15 counts
+- **Frontend impact:** P-E01…P-E15 help entries and glossary; guided-workflow elements on the eight operational screens
+- **Backend impact:** None
+- **Testing requirements:** Content check: every help key referenced by a screen has content, no broken links between entries, every tab has an entry, every status value returned by the screen's APIs has an explanation; flow counts equal the tab/queue counts for the same scope (TS-ADM-15 scope rules); TS-A11Y-02 on the help panel with real content; review sign-off per D-225 recorded in Evidence.
+- **Acceptance criteria:**
+   1. The content check passes on all P-E screens (no missing keys, no broken links, all tabs and status values covered).
+   2. Each process owner has approved the texts of their screens (D-225); the approval is recorded in Evidence.
+   3. Flow strip counts and next-step texts come from API data and match the queues they link to.
+   4. No help text contains a hard-coded configured value.
+   5. TASKS.md and STATE.md updated per the continuation protocol.
 - **Evidence:** —
 
 #### T-1A.16-M26-01 · Alert catalogue: conditions, page vs daily review, named owners; alert routing drills (API-M24-14)
@@ -6694,6 +6736,26 @@ needed to implement it. **This file is the source of truth for task status.** `S
    5. Publishing and archiving are possible only for the editor decided under D-142 and each is audited with actor and time.
    6. TS-ECOM-14, TS-DB-01, TS-API-01 (announcements section) and TS-FE-04 pass.
    7. TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1B.1-M14-16 · Vendor-portal help content (P-V01–P-V04 and the vendor shell): page guides, explanations of sections, tabs, fields, statuses and actions written for vendor users, vendor glossary (D-224)
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1B.1 / M14
+- **Depends on:** T-1A.3-M24-02, T-1B.1-M14-02
+- **Decisions:** D-224, D-225
+- **References:** 04c X17, X20; 04b §2.21; MK assets/help/shell.js (vendor part), assets/help/vendor-*.js; BP §11.2, §24.2
+- **Description:** Write, review and publish the help content for the vendor portal P-V01…P-V04 and the vendor shell with the components of T-1A.3-M24-02, using the MK vendor help files as the draft: page guides; entries for every section, tab, KPI tile, table column, form field, submission and review status, availability/freshness state, PO and supplier-return state, statement line and important action; glossary terms relevant to vendors. Texts address the vendor ("you"), never reveal Tradex-internal rules, margins, other vendors' data or customers' personal data (X17), and insert configured values (deadlines, freshness windows, review timings — D-185, D-186) from live configuration. Review and storage per D-225.
+- **Files/components:** vendor help content per D-225 (e.g. `frontend/vendor-portal/help/`); content tests next to the code
+- **Database impact:** None, unless D-225 chooses staff-editable help content
+- **API impact:** None new
+- **Frontend impact:** P-V01…P-V04 and vendor shell help entries
+- **Backend impact:** None
+- **Testing requirements:** Content check as in T-1A.16-M24-06 for P-V screens; TS-VEN isolation review of help texts (no internal data); TS-A11Y-02 on the vendor help panel
+- **Acceptance criteria:**
+   1. The content check passes on all P-V screens.
+   2. No help text exposes Tradex-internal or other vendors' information; configured values come from configuration.
+   3. The texts are approved per D-225 and the approval is recorded in Evidence.
+   4. TASKS.md and STATE.md updated per the continuation protocol.
 - **Evidence:** —
 
 #### T-1B.1-M14-15 · Stage 1B.1 verification: T11, T12, T13 with two vendors; TS-VEN-01/02/05/06/08/09/10; TS-PROOF-06, TS-PROOF-09; TS-E2E-03

@@ -65,6 +65,23 @@
     .mf-row:last-child { border-bottom: 0; }
     .stale { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 650; color: var(--warn-tx); }
     .stale .ic { width: 12px; height: 12px; }
+    #pk-next { margin: 12px 20px; }
+    .page-head .actions > .field > .hi-lab { align-self: center; }
+    @media (max-width: 760px) {
+      .page-head .actions > .field { flex: 1 1 100%; min-width: 0; }
+      #loc { width: auto !important; flex: 1 1 auto; min-width: 0; }
+      .steps4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .cmp { grid-template-columns: 84px minmax(0, 1fr) minmax(0, 1fr) 20px; }
+      .cmp > div { padding: 8px; overflow-wrap: anywhere; }
+      .cmp .cond { white-space: normal; height: auto; }
+      .exc { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+      .exc > .sev { justify-self: start; }
+      .exc .e-act { flex-wrap: wrap; }
+      #pk-next { margin: 12px 16px; }
+      .alloc-line { grid-template-columns: 44px minmax(0, 1fr); }
+      .alloc-line > .badge { grid-column: 2; justify-self: start; }
+      .pk-head { flex-wrap: wrap; }
+    }
   </style>
 </head>
 <body data-app="erp" data-page="fulfilment">
@@ -72,93 +89,113 @@
   <div class="page-head">
     <div>
       <div class="crumbs"><span>Sell &amp; serve</span><i data-icon="chevron-right"></i><span>Pick · pack · dispatch</span></div>
-      <h1>Pick · pack · dispatch</h1>
+      <h1 data-help="page">Pick · pack · dispatch</h1>
       <p class="sub" id="loc-sub">Central Warehouse (WH-BLR) · Sat 26 Sep · shift 09:00–18:00 · courier cut-off 16:30 · Delhivery pickup 17:00</p>
     </div>
     <div class="actions">
       <div class="field" style="flex-direction:row;align-items:center;gap:8px" data-anno="1A · R14 Location-scoped work queue">
-        <label for="loc" class="small muted">Location</label>
+        <label for="loc" class="small muted" data-help="loc">Location</label>
         <select class="select" id="loc" style="width:270px;height:38px"></select>
       </div>
-      <button class="btn" data-toast="Pick list for wave W-26-07 sent to printer ZB-02"><i data-icon="printer"></i> Pick list</button>
-      <button class="btn" onclick="TX.activateTab('ready')"><i data-icon="clipboard"></i> Handover manifest</button>
-      <button class="btn btn-primary" data-toast="Wave W-26-08 created · 4 orders · route optimised by bin sequence"><i data-icon="play"></i> Start next wave</button>
+      <button class="btn" data-help="act-picklist" data-toast="Pick list for wave W-26-07 sent to printer ZB-02"><i data-icon="printer"></i> Print pick list</button>
+      <button class="btn" data-help="act-manifest" onclick="TX.activateTab('ready')"><i data-icon="clipboard"></i> Open handover manifest</button>
+      <button class="btn btn-primary" data-help="act-wave" data-toast="Wave W-26-08 created · 4 orders · route optimised by bin sequence"><i data-icon="play"></i> Start next wave</button>
     </div>
   </div>
 
+  <section class="flow" data-flow="fulfilment" aria-labelledby="flow-h" data-anno="1A · §10.4 Pick, pack, dispatch · §10.5 Delivery · guided">
+    <div class="flow-head">
+      <div><h2 class="flow-title" id="flow-h" data-help="flow"><i data-icon="route"></i> How an order gets out of the door</h2>
+        <p class="flow-sub">Every paid order moves through these steps, from the warehouse shelf to the customer. Click a step to see the orders waiting at it.</p></div>
+      <button class="btn btn-ghost btn-sm flow-toggle" data-flow-toggle aria-expanded="true" aria-controls="flow-steps"><span class="when-open">Hide guide</span><span class="when-closed">Show how it works</span></button>
+    </div>
+    <ol class="flow-steps" id="flow-steps">
+      <li class="flow-step"><button type="button" class="flow-btn" data-go-tab="topick"><span class="fs-n">1</span><span class="fs-t">Release &amp; plan the pick</span><span class="fs-d">Paid orders with reserved stock join the queue by themselves. Group them into a wave for a picker.</span><span class="fs-f"><span class="fs-c"><span data-fn="topick">14</span> to pick</span><span class="fs-who">Automatic · supervisor</span></span></button></li>
+      <li class="flow-step"><button type="button" class="flow-btn" data-go-tab="picking"><span class="fs-n">2</span><span class="fs-t">Pick &amp; scan</span><span class="fs-d">Scan the bin, the SKU and the unit's serial. The wrong unit is blocked, never sent.</span><span class="fs-f"><span class="fs-c"><span data-fn="picking">5</span> being picked<span class="text-warn" data-fx> · 3 wrong units blocked today</span></span><span class="fs-who">Picker</span></span></button></li>
+      <li class="flow-step"><button type="button" class="flow-btn" data-go-tab="topack"><span class="fs-n">3</span><span class="fs-t">Pack &amp; check</span><span class="fs-d">Re-check serial, condition and accessories, add the invoice and documents, weigh and photograph.</span><span class="fs-f"><span class="fs-c"><span data-fn="topack">6</span> to pack</span><span class="fs-who">Packer</span></span></button></li>
+      <li class="flow-step is-attn" data-attn><button type="button" class="flow-btn" data-go-tab="ready"><span class="fs-n">4</span><span class="fs-t">Book courier &amp; print label</span><span class="fs-d">The courier is booked automatically. If the connection fails, check first, then book manually.</span><span class="fs-f"><span class="fs-c"><span data-fn="ready">8</span> ready<span class="text-bad" data-fx> · 1 booking lost · 1 not booked</span></span><span class="fs-who">Dispatch desk</span></span></button></li>
+      <li class="flow-step"><button type="button" class="flow-btn" data-go-tab="ready"><span class="fs-n">5</span><span class="fs-t">Hand over to the courier</span><span class="fs-d">Stage and scan every parcel on the manifest. The rider scans them and gives an OTP; you sign.</span><span class="fs-f"><span class="fs-c" data-fx>9 of 12 staged · pickup 17:00</span><span class="fs-who">Dispatch desk · rider</span></span></button></li>
+      <li class="flow-step"><button type="button" class="flow-btn" data-go-tab="dispatched"><span class="fs-n">6</span><span class="fs-t">Track to delivery</span><span class="fs-d">Courier updates show where each parcel is, until it is delivered or comes back.</span><span class="fs-f"><span class="fs-c"><span data-fn="dispatched">41</span> sent today<span class="text-warn" data-fx> · tracking paused</span></span><span class="fs-who">Courier · support</span></span></button></li>
+    </ol>
+    <div class="flow-foot"><span><i data-icon="alert"></i> When something goes wrong — a short pick, a failed or refused delivery, a return to origin (RTO), damage — it goes to <button type="button" class="hp-link" data-go-tab="exceptions">Problems (exceptions)</button> · <span data-fn="exceptions">6</span> open<span data-fx>, 1 critical</span>.</span><span>Courier connection down or PIN code not served? <button type="button" class="hp-link" data-open="m-manual">Book manually</button> · RTO parcels are received in <a class="hp-link" href="erp-returns.html#quarantine">Returns &amp; warranty</a></span></div>
+  </section>
+
   <section class="grid g-6">
-    <div class="kpi"><div class="k-label"><i data-icon="clock"></i> <span>Due today</span></div><div class="k-value" id="k-due">23</div><div class="k-foot"><span>9 before 14:00 express cut-off</span></div></div>
-    <div class="kpi"><div class="k-label"><i data-icon="activity"></i> <span>Paid → dispatched</span></div><div class="k-value">5.8 h</div><div class="k-foot"><span class="delta down-good"><i data-icon="trending-down"></i> −1.4 h</span><span id="sp1"></span></div></div>
-    <div class="kpi"><div class="k-label"><i data-icon="alert"></i> <span>Overdue (&gt; 24 h)</span></div><div class="k-value text-bad" id="k-over">2</div><div class="k-foot"><span>Oldest 26 h · TXO-10471</span></div></div>
-    <div class="kpi"><div class="k-label"><i data-icon="scan"></i> <span>Scan accuracy</span></div><div class="k-value">99.6%</div><div class="k-foot"><span>3 wrong units blocked today</span></div></div>
-    <div class="kpi"><div class="k-label"><i data-icon="truck"></i> <span>Courier integration</span></div><div class="k-value" style="font-size:18px;margin-top:6px"><span class="status s-warn">Degraded</span></div><div class="k-foot"><span>Booking OK · tracking sync paused</span></div></div>
-    <div class="kpi"><div class="k-label"><i data-icon="package"></i> <span>Next pickup 17:00</span></div><div class="k-value">12</div><div class="k-foot"><span>parcels on MF-0926-02 · 9 staged</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-due"><i data-icon="clock"></i> <span>Due today</span></div><div class="k-value" id="k-due">23</div><div class="k-foot"><span>9 before 14:00 express cut-off</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-speed"><i data-icon="activity"></i> <span>Paid → dispatched</span></div><div class="k-value">5.8 h</div><div class="k-foot"><span class="delta down-good"><i data-icon="trending-down"></i> −1.4 h</span><span id="sp1"></span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-overdue"><i data-icon="alert"></i> <span>Overdue (&gt; 24 h)</span></div><div class="k-value text-bad" id="k-over">2</div><div class="k-foot"><span>Oldest 26 h · TXO-10471</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-accuracy"><i data-icon="scan"></i> <span>Scan accuracy</span></div><div class="k-value">99.6%</div><div class="k-foot"><span>3 wrong units blocked today</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-courier"><i data-icon="truck"></i> <span>Courier integration</span></div><div class="k-value" style="font-size:18px;margin-top:6px"><span class="status s-warn">Degraded</span></div><div class="k-foot"><span>Booking OK · tracking sync paused</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-pickup"><i data-icon="package"></i> <span>Next pickup 17:00</span></div><div class="k-value">12</div><div class="k-foot"><span>parcels on MF-0926-02 · 9 staged</span></div></div>
   </section>
 
   <section class="card mt-16" data-tabset>
     <div class="tabs stage-tabs" style="padding:0 12px">
-      <button class="tab active" data-tab="topick"><i data-icon="list" class="ic-sm"></i> To pick <span class="count" data-n="topick">14</span></button>
-      <button class="tab" data-tab="picking"><i data-icon="scan" class="ic-sm"></i> Picking <span class="count" data-n="picking">5</span></button>
-      <button class="tab" data-tab="topack"><i data-icon="package" class="ic-sm"></i> To pack <span class="count" data-n="topack">6</span></button>
-      <button class="tab" data-tab="ready"><i data-icon="truck" class="ic-sm"></i> Ready to ship <span class="count" data-n="ready">8</span></button>
-      <button class="tab" data-tab="dispatched"><i data-icon="check-circle" class="ic-sm"></i> Dispatched today <span class="count" data-n="dispatched">41</span></button>
-      <button class="tab" data-tab="exceptions"><i data-icon="alert" class="ic-sm"></i> Exceptions <span class="count hot" data-n="exceptions">6</span></button>
+      <button class="tab active" data-tab="topick" data-help="tab-topick"><i data-icon="list" class="ic-sm"></i> To pick <span class="count" data-n="topick">14</span></button>
+      <button class="tab" data-tab="picking" data-help="tab-picking"><i data-icon="scan" class="ic-sm"></i> Pick &amp; scan <span class="count" data-n="picking">5</span></button>
+      <button class="tab" data-tab="topack" data-help="tab-topack"><i data-icon="package" class="ic-sm"></i> To pack <span class="count" data-n="topack">6</span></button>
+      <button class="tab" data-tab="ready" data-help="tab-ready"><i data-icon="truck" class="ic-sm"></i> Ready to ship <span class="count" data-n="ready">8</span></button>
+      <button class="tab" data-tab="dispatched" data-help="tab-dispatched"><i data-icon="check-circle" class="ic-sm"></i> Dispatched today <span class="count" data-n="dispatched">41</span></button>
+      <button class="tab" data-tab="exceptions" data-help="tab-exceptions"><i data-icon="alert" class="ic-sm"></i> Problems (exceptions) <span class="count hot" data-n="exceptions">6</span></button>
     </div>
 
     <!-- ============ TO PICK ============ -->
     <div class="tab-panel active" data-panel="topick">
-      <div class="ful-grid" style="padding:16px;grid-template-columns:minmax(0,1fr) 360px">
+      <div class="tab-intro"><i data-icon="info"></i><div><b>Paid orders whose stock is reserved, waiting to be picked.</b> Tick orders to group them into a <b data-help="g.wave">wave</b> and give them to a picker; the wave card on the right shows the pick route in bin order.<span class="ti-next">Start with red “Dispatch by” times. Held and cancel-requested orders cannot be picked until the order team releases them.</span></div></div>
+      <div class="ful-grid stack-md" style="padding:16px;grid-template-columns:minmax(0,1fr) 360px">
         <div class="card" style="border-radius:var(--r)">
-          <div class="card-head" data-anno="1A · R09 A11 Auto-release: paid + reserved"><div><h3>Released orders</h3><div class="sub">Paid + stock reserved → released automatically by rule A11 · held and cancel-requested orders are blocked</div></div>
+          <div class="card-head" data-anno="1A · R09 A11 Auto-release: paid + reserved"><div><h3 data-help="released">Released orders</h3><div class="sub">Paid + stock reserved → released automatically by rule A11 · held and cancel-requested orders are blocked</div></div>
             <div class="seg"><button class="active">Priority</button><button>Promise time</button><button>Zone</button></div></div>
-          <div class="bulkbar"><b><span class="bulk-count">0</span> selected</b>
+          <div class="bulkbar"><b data-help="pick-bulk"><span class="bulk-count">0</span> selected</b>
             <button class="btn btn-sm" data-toast="Wave W-26-08 created · pick route by bin sequence"><i data-icon="layers" class="ic-sm"></i> Create wave</button>
             <button class="btn btn-sm" data-toast="Assigned to Ravi T. (picker)"><i data-icon="user" class="ic-sm"></i> Assign picker</button>
             <button class="btn btn-sm" data-toast="Pick lists printed"><i data-icon="printer" class="ic-sm"></i> Print</button></div>
           <div class="table-wrap"><table class="table compact">
-            <thead><tr><th class="check-col"><input type="checkbox" data-check-all aria-label="Select all"></th><th>Order</th><th>Items</th><th>Priority</th><th>Bins</th><th>Dispatch by</th></tr></thead>
+            <thead><tr><th class="check-col"><input type="checkbox" data-check-all aria-label="Select all"></th><th>Order</th><th>Items</th><th data-help="col-priority">Priority</th><th data-help="col-bins">Bins</th><th data-help="col-dispatch-by">Dispatch by</th></tr></thead>
             <tbody id="pick-body"></tbody>
           </table></div>
           <div class="card-foot"><span class="small muted">Held orders (e.g. TXO-10488 GSTIN check) stay out of this queue until released.</span><a class="small strong" href="erp-orders.html">Orders →</a></div>
         </div>
 
         <div class="col gap-16">
-          <div class="card hidden" id="wave-empty" style="border-radius:var(--r)"><div class="empty"><i data-icon="layers"></i><h4>No active wave</h4><p>Waves are created when at least 3 released orders are waiting, or at 14:00 for express cut-off.</p><button class="btn btn-sm mt-12" data-toast="Wave created">Create wave now</button></div></div>
+          <div class="card hidden" id="wave-empty" style="border-radius:var(--r)"><div class="empty"><i data-icon="layers"></i><h4 data-help="wave">No active wave</h4><p>Waves are created when at least 3 released orders are waiting, or at 14:00 for express cut-off.</p><button class="btn btn-sm mt-12" data-toast="Wave created">Create wave now</button></div></div>
           <div class="card" id="wave-card" style="border-radius:var(--r)">
-            <div class="card-head"><div><h3>Wave W-26-07 · in progress</h3><div class="sub">Irfan M. · started 10:31 · 3 orders · route by bin sequence</div></div><span class="badge b-info dot">Picking</span></div>
+            <div class="card-head"><div><h3 data-help="wave">Wave W-26-07 · in progress</h3><div class="sub">Irfan M. · started 10:31 · 3 orders · route by bin sequence</div></div><span class="badge b-info dot">Picking</span></div>
             <div style="padding:12px 20px 4px"><div class="row-between small mb-8"><span>14 of 17 units picked</span><b>82%</b></div><div class="meter m-ok"><span style="width:82%"></span></div></div>
             <ul class="route mt-8" id="route"></ul>
             <div class="card-foot"><button class="btn btn-sm" data-toast="Pick list re-printed"><i data-icon="printer" class="ic-sm"></i> Re-print</button><button class="btn btn-sm btn-primary" onclick="TX.activateTab('picking')"><i data-icon="scan" class="ic-sm"></i> Open scan station</button></div>
           </div>
-          <div class="callout c-info small"><i data-icon="info"></i><div>Refurbished and open-box units are <b>serial-specific</b>: the listing's own photos and inspection report travel with that unit. New stock reserves quantity; the serial is captured at pick.</div></div>
+          <div class="callout c-info small"><i data-icon="info"></i><div>Refurbished and open-box units are <b data-help="serial-specific">serial-specific</b>: the listing's own photos and inspection report travel with that unit. New stock reserves quantity; the serial is captured at pick.</div></div>
         </div>
       </div>
     </div>
 
     <!-- ============ PICKING / SCAN STATION ============ -->
     <div class="tab-panel" data-panel="picking">
-      <div class="scan-grid" style="padding:16px">
+      <div class="tab-intro"><i data-icon="info"></i><div><b>The scan station: every item is scanned from its shelf before it can leave.</b> Scan the bin, then the SKU label, then the unit's serial — each scan is checked against what the order is allocated.<span class="ti-next">A red box means the wrong item was scanned: put it back and scan the right one. When every line is verified, complete the pick to send the order to packing.</span></div></div>
+      <div class="scan-grid stack-md" style="padding:16px">
         <div class="col gap-16">
           <div class="card" style="border-radius:var(--r)" data-anno="1A · §10.4 Scan bin → SKU → serial vs allocation">
-            <div class="card-head"><div><h3>Scan station · Bench 2</h3><div class="sub">Irfan M. · wave W-26-07 · order <b class="mono">TXO-10486</b> · line 2 of 3</div></div>
+            <div class="card-head"><div><h3 data-help="scan-station">Scan station · Bench 2</h3><div class="sub">Irfan M. · wave W-26-07 · order <b class="mono">TXO-10486</b> · line 2 of 3</div></div>
               <div class="row gap-8"><span class="badge b-ok dot">Scanner connected</span><button class="btn btn-sm btn-ghost" data-toast="Switched to camera scanning"><i data-icon="camera" class="ic-sm"></i></button></div></div>
             <div class="card-body col gap-16">
               <div class="steps4" id="steps">
-                <div class="s4 done" data-s="bin"><span class="n">1</span><div><div>Bin</div><div class="mono v">R-12</div></div></div>
+                <div class="s4 done" data-s="bin"><span class="n">1</span><div><div data-help="scan-steps">Bin</div><div class="mono v">R-12</div></div></div>
                 <div class="s4 done" data-s="sku"><span class="n">2</span><div><div>SKU</div><div class="mono v">LAP01-RA</div></div></div>
                 <div class="s4 err" data-s="serial"><span class="n">3</span><div><div>Serial</div><div class="mono v" id="s-serial">U-000819</div></div></div>
                 <div class="s4" data-s="ok"><span class="n">4</span><div><div>Verified</div><div class="v">against allocation</div></div></div>
               </div>
+              <div id="sc-next" aria-live="polite"></div>
               <form class="scanbox" id="scanform" autocomplete="off">
                 <i data-icon="scan" class="ic-xl" style="color:var(--brand)"></i>
                 <input class="input" id="scan-in" placeholder="Scan bin, SKU or serial…" aria-label="Scan input">
                 <button class="btn btn-primary" type="submit">Enter</button>
               </form>
-              <div class="row gap-8 wrap"><span class="tiny muted">Simulate scan:</span><div class="quick-scan" id="quick">
+              <div class="row gap-8 wrap"><span class="tiny muted" data-help="quick-scan">Simulate scan:</span><div class="quick-scan" id="quick">
                 <button type="button">R-12</button><button type="button">LAP01-RA</button><button type="button">U-000819</button><button type="button">U-000806</button><button type="button">LAP01-RB</button><button type="button">X-99999</button></div></div>
 
               <div data-anno="1A · R19 Substitution blocked, never silent"><div class="verify bad" id="verify">
-                <div class="v-head"><i data-icon="x-circle"></i><div class="grow"><div class="v-title">Scanned unit is Grade B; order requires Grade A — substitution not allowed</div>
+                <div class="v-head"><i data-icon="x-circle"></i><div class="grow"><div class="v-title">Scanned unit is Grade B; order requires Grade A — substitution not allowed<span data-help="verify"></span></div>
                   <div class="small mt-4">U-000819 is a Refurbished Grade B Dell Latitude 5420 found in bin R-12. The customer bought the Grade A unit U-000806 with its own photos and inspection report.</div></div></div>
                 <div class="cmp">
                   <div class="h">Check</div><div class="h">Allocated (TXO-10486)</div><div class="h">Scanned</div><div class="h"></div>
@@ -170,27 +207,27 @@
                 </div>
                 <div class="row wrap gap-8" style="padding:12px 16px;border-top:1px solid var(--line-2);background:#fff">
                   <button class="btn btn-sm btn-primary" id="rescan"><i data-icon="scan" class="ic-sm"></i> Scan the correct unit</button>
-                  <button class="btn btn-sm" data-toast="Mis-slot reported · recount task CC-0318 for bins R-12/R-14"><i data-icon="flag" class="ic-sm"></i> Report mis-slotted unit</button>
-                  <button class="btn btn-sm" data-tip="Needs customer consent + manager approval from the order — not at the bench" disabled><i data-icon="transfer" class="ic-sm"></i> Substitute</button>
+                  <button class="btn btn-sm" data-help="act-misslot" data-toast="Mis-slot reported · recount task CC-0318 for bins R-12/R-14"><i data-icon="flag" class="ic-sm"></i> Report mis-slotted unit</button>
+                  <button class="btn btn-sm" data-help="act-substitute" data-tip="Needs customer consent + manager approval from the order — not at the bench" disabled><i data-icon="transfer" class="ic-sm"></i> Substitute</button>
                   <span class="small muted ml-auto">Put U-000819 back to R-14</span>
                 </div>
               </div></div>
             </div>
           </div>
           <div class="card" style="border-radius:var(--r)">
-            <div class="card-head"><h3>Scan log · this order</h3><span class="small muted">Every scan is stored with user, device and time</span></div>
+            <div class="card-head"><h3 data-help="scan-log">Scan log · this order</h3><span class="small muted">Every scan is stored with user, device and time</span></div>
             <ul class="slog" id="slog"></ul>
           </div>
         </div>
 
         <div class="col gap-16">
           <div class="card" style="border-radius:var(--r)">
-            <div class="card-head"><div><h3>Allocation · <span class="mono">TXO-10486</span></h3><div class="sub">Metro Computers · Dealer Gold · dispatch by 16:00</div></div><a class="small strong" href="erp-orders.html?order=TXO-10486">Order →</a></div>
+            <div class="card-head"><div><h3 data-help="allocation">Allocation · <span class="mono">TXO-10486</span></h3><div class="sub">Metro Computers · Dealer Gold · dispatch by 16:00</div></div><a class="small strong" href="erp-orders.html?order=TXO-10486">Order →</a></div>
             <div id="alloc"></div>
             <div class="panel small" style="margin:12px 16px 16px"><b>Include with U-000806:</b> 65 W USB-C charger · battery health report (91%) · inspection sheet IR-2297 · Tradex 6-month warranty card</div>
           </div>
           <div class="card" style="border-radius:var(--r)">
-            <div class="card-head"><h3>Bench actions</h3></div>
+            <div class="card-head"><h3 data-help="bench-actions">Bench actions</h3></div>
             <div class="card-body col gap-8">
               <button class="btn btn-block" data-toast="Short pick recorded · cycle-count task CC-0319 · order moved to Exceptions" style="justify-content:flex-start"><i data-icon="alert"></i> Short pick · bin empty or damaged</button>
               <button class="btn btn-block" data-toast="Line parked · supervisor notified" style="justify-content:flex-start"><i data-icon="pause"></i> Park line &amp; continue wave</button>
@@ -200,7 +237,7 @@
             </div>
           </div>
           <div class="card" style="border-radius:var(--r)">
-            <div class="card-head"><h3>Next in wave</h3></div>
+            <div class="card-head"><h3 data-help="next-in-wave">Next in wave</h3></div>
             <div class="list-row"><span class="li-icon ok"><i data-icon="check"></i></span><div class="grow small"><b class="mono">TXO-10468</b> · Intel i5-12400F + ID-COOLING cooler<div class="muted">2/2 verified · to packing</div></div></div>
             <div class="list-row"><span class="li-icon brand"><i data-icon="scan"></i></span><div class="grow small"><b class="mono">TXO-10472</b> · Crucial 16 GB SODIMM × 2<div class="muted">0/2 · bin B-11</div></div></div>
           </div>
@@ -210,22 +247,23 @@
 
     <!-- ============ TO PACK ============ -->
     <div class="tab-panel" data-panel="topack">
-      <div class="ful-grid" style="padding:16px;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr)">
+      <div class="tab-intro"><i data-icon="info"></i><div><b>Picked orders waiting to be checked and packed.</b> Take the next order on the left; on the right, tick each check as you do it — serial, condition, accessories, documents, packaging, weight and photo.<span class="ti-next">When every check is ticked, click “Mark packed &amp; book courier”: the courier is booked, the label prints and the order moves to Ready to ship.</span></div></div>
+      <div class="ful-grid stack-md" style="padding:16px;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr)">
         <div class="card" style="border-radius:var(--r)">
-          <div class="card-head"><div><h3>Picked · waiting to pack</h3><div class="sub">Bench 1 &amp; 2 · FIFO by promise time</div></div></div>
+          <div class="card-head"><div><h3 data-help="pack-queue">Picked · waiting to pack</h3><div class="sub">Bench 1 &amp; 2 · FIFO by promise time</div></div></div>
           <div id="pack-list"></div>
           <div class="card-body col gap-8" style="border-top:1px solid var(--line-2)">
-            <div class="upper muted">Benches</div>
+            <div class="upper muted" data-help="benches">Benches</div>
             <div class="row-between small"><span class="il"><span class="status s-ok"></span><b>Bench 1</b> · Meena K.</span><span class="muted">packing TXO-10465</span></div>
             <div class="row-between small"><span class="il"><span class="status s-info"></span><b>Bench 2</b> · Irfan M.</span><span class="muted">picking W-26-07</span></div>
             <div class="row-between small"><span class="il"><span class="status s-muted"></span><b>Bench 3</b></span><span class="muted">idle · scale SC-03 offline</span></div>
           </div>
         </div>
         <div class="card" style="border-radius:var(--r)" data-anno="1A · A12 Packing checklist & documents">
-          <div class="card-head"><div><h3>Packing · <span class="mono">TXO-10465</span></h3><div class="sub">Sanjay Kulkarni · consumer · Bengaluru 560076 · Standard · dispatch by 16:00</div></div><span class="badge b-info dot">Packing</span></div>
-          <div class="row gap-16" style="padding:14px 20px;border-bottom:1px solid var(--line-2)">
+          <div class="card-head"><div><h3 data-help="pack-checklist">Packing · <span class="mono">TXO-10465</span></h3><div class="sub">Sanjay Kulkarni · consumer · Bengaluru 560076 · Standard · dispatch by 16:00</div></div><span class="badge b-info dot">Packing</span></div>
+          <div class="row gap-16 pk-head" style="padding:14px 20px;border-bottom:1px solid var(--line-2)">
             <div data-ph="lap-side" class="thumb-lg"></div>
-            <div class="grow"><div class="strong">Apple MacBook Pro 14" M1 Pro</div><div class="row gap-8 mt-4"><span class="cond refurb">Refurbished · Grade A</span><span class="unit-chip badge b-brand"><i data-icon="qr"></i> U-000788</span><span class="small muted mono">S/N C02G71QXMD6T</span></div></div>
+            <div class="grow"><div class="strong">Apple MacBook Pro 14" M1 Pro</div><div class="row gap-8 mt-4 wrap"><span class="cond refurb">Refurbished · Grade A</span><span class="unit-chip badge b-brand"><i data-icon="qr"></i> U-000788</span><span class="small muted mono">S/N C02G71QXMD6T</span></div></div>
             <div class="r small"><div class="muted">Pack progress</div><b id="pk-prog">6 / 10</b></div>
           </div>
           <ul class="chk" id="chk">
@@ -240,6 +278,7 @@
             <li><input type="checkbox" aria-label="Weight"><div><b>Weight &amp; dimensions</b><div class="sub">Scale reads <b>2.34 kg</b> · 40 × 30 × 10 cm · volumetric 2.4 kg</div></div><button class="btn btn-xs" data-toast="Weight captured from scale SC-01">Capture</button></li>
             <li><input type="checkbox" aria-label="Photo"><div><b>Packed-box photo (evidence)</b><div class="sub">Required for items above ₹50,000 · used in courier damage claims</div></div><button class="btn btn-xs" data-toast="Photo captured from bench camera"><i data-icon="camera" class="ic-sm"></i> Capture</button></li>
           </ul>
+          <div id="pk-next" aria-live="polite"></div>
           <div class="card-foot">
             <div class="row gap-8"><button class="btn btn-sm" data-toast="Invoice printed"><i data-icon="file" class="ic-sm"></i> Invoice</button><button class="btn btn-sm" disabled data-tip="Available after AWB is booked"><i data-icon="printer" class="ic-sm"></i> Shipping label</button></div>
             <button class="btn btn-sm btn-primary" id="pk-done" disabled>Mark packed &amp; book courier <i data-icon="arrow-right" class="ic-sm"></i></button>
@@ -250,40 +289,41 @@
 
     <!-- ============ READY TO SHIP ============ -->
     <div class="tab-panel" data-panel="ready">
+      <div class="tab-intro"><i data-icon="info"></i><div><b>Packed parcels: book the courier, print labels and hand them over.</b> Most parcels are booked automatically when packing finishes; book manually when the courier connection is down or a PIN code is not served.<span class="ti-next">Fix red booking states first — always check with the courier before booking again, so a parcel is never booked twice. Stage and scan every parcel on the manifest before the pickup; the rider's scan and OTP complete the handover.</span></div></div>
       <div style="padding:16px" class="col gap-16">
         <div class="card" style="border-radius:var(--r)" data-anno="1A/C · A13 One courier API + manual fallback · T20">
-          <div class="card-head"><div><h3>Courier booking</h3><div class="sub">Delhivery API (primary integration) · booking is idempotent per parcel reference · manual fallback captures the carrier's reference</div></div>
-            <div class="row gap-8"><button class="btn btn-sm" data-open="m-manual"><i data-icon="edit" class="ic-sm"></i> Manual booking</button><button class="btn btn-sm btn-primary" data-toast="3 parcels booked · AWBs assigned · labels queued to ZB-01"><i data-icon="truck" class="ic-sm"></i> Book selected</button></div></div>
+          <div class="card-head"><div><h3 data-help="booking">Courier booking</h3><div class="sub">Delhivery API (primary integration) · booking is idempotent per parcel reference · manual fallback captures the carrier's reference</div></div>
+            <div class="row gap-8"><button class="btn btn-sm" data-help="act-manual" data-open="m-manual"><i data-icon="edit" class="ic-sm"></i> Book manually</button><button class="btn btn-sm btn-primary" data-toast="3 parcels booked · AWBs assigned · labels queued to ZB-01"><i data-icon="truck" class="ic-sm"></i> Book selected</button></div></div>
           <div class="table-wrap"><table class="table compact">
-            <thead><tr><th class="check-col"><input type="checkbox" data-check-all aria-label="Select all"></th><th>Order · parcel ref</th><th>Parcel</th><th>Destination</th><th>Courier · service</th><th>AWB / reference</th><th>Label</th><th>Booking state</th><th></th></tr></thead>
+            <thead><tr><th class="check-col"><input type="checkbox" data-check-all aria-label="Select all"></th><th data-help="col-parcel-ref">Order · parcel ref</th><th>Parcel</th><th>Destination</th><th data-help="col-courier">Courier · service</th><th data-help="g.awb">AWB / reference</th><th>Label</th><th data-help="col-booking-state">Booking state</th><th></th></tr></thead>
             <tbody id="ready-body"></tbody>
           </table></div>
-          <div class="bulkbar"><b><span class="bulk-count">0</span> selected</b><button class="btn btn-sm" data-toast="Booked via Delhivery API">Book via API</button><button class="btn btn-sm" data-toast="Labels printed">Print labels</button><button class="btn btn-sm" data-toast="Added to manifest MF-0926-02">Add to manifest</button></div>
+          <div class="bulkbar"><b data-help="ready-bulk"><span class="bulk-count">0</span> selected</b><button class="btn btn-sm" data-toast="Booked via Delhivery API">Book via API</button><button class="btn btn-sm" data-toast="Labels printed">Print labels</button><button class="btn btn-sm" data-toast="Added to manifest MF-0926-02">Add to manifest</button></div>
         </div>
 
         <div class="grid g-2">
           <div class="card" style="border-radius:var(--r)">
-            <div class="card-head"><div><h3>Handover manifest · <span class="mono">MF-0926-02</span></h3><div class="sub">Delhivery · pickup 17:00 · dock-scanned when staged, re-scanned by the rider at handover</div></div><button class="btn btn-sm" data-toast="Manifest PDF printed (2 copies)"><i data-icon="printer" class="ic-sm"></i> Print</button></div>
+            <div class="card-head"><div><h3 data-help="manifest">Handover manifest · <span class="mono">MF-0926-02</span></h3><div class="sub">Delhivery · pickup 17:00 · dock-scanned when staged, re-scanned by the rider at handover</div></div><button class="btn btn-sm" data-toast="Manifest PDF printed (2 copies)"><i data-icon="printer" class="ic-sm"></i> Print</button></div>
             <div style="padding:12px 16px 4px"><div class="row-between small mb-8"><span>9 of 12 parcels staged &amp; dock-scanned</span><b>75%</b></div><div class="meter"><span style="width:75%"></span></div></div>
             <div id="mf-list" class="mt-8"></div>
             <div class="card-body col gap-12" style="border-top:1px solid var(--line-2)">
               <div class="form-grid">
                 <div class="field"><label for="rider">Courier rider</label><input class="input" id="rider" value="Manjunath G. · DLV-BLR-2291"></div>
-                <div class="field"><label for="otp">Pickup OTP from rider app</label><input class="input mono" id="otp" placeholder="6-digit OTP" inputmode="numeric"></div>
+                <div class="field"><label for="otp" data-help="otp">Pickup OTP from rider app</label><input class="input mono" id="otp" placeholder="6-digit OTP" inputmode="numeric"></div>
               </div>
-              <div class="row-between"><span class="small muted">Rider OTP + photo of the handed-over parcels are stored as evidence. Parcels the rider doesn't scan stay in <b>Ready to ship</b>.</span><button class="btn btn-primary btn-sm" data-toast="Handover recorded · rider-scanned parcels → Dispatched · others stay Ready to ship">Sign &amp; hand over</button></div>
+              <div class="row-between"><span class="small muted">Rider OTP + photo of the handed-over parcels are stored as evidence. Parcels the rider doesn't scan stay in <b>Ready to ship</b>.</span><button class="btn btn-primary btn-sm" data-help="act-handover" data-toast="Handover recorded · rider-scanned parcels → Dispatched · others stay Ready to ship">Sign &amp; hand over</button></div>
             </div>
           </div>
           <div class="col gap-16">
             <div class="callout c-bad" data-anno="T20 Lost booking response → reconcile first">
               <i data-icon="alert-octagon"></i>
-              <div class="grow"><strong>Booking response lost for TXO-10469 · parcel P1.</strong> Delhivery timed out at 10:02. Before retrying, Tradex queries the carrier by client reference <span class="mono">TXO-10469-P1</span> so a second consignment is never created.
+              <div class="grow"><strong data-help="lost-booking">Booking response lost for TXO-10469 · parcel P1.</strong> Delhivery timed out at 10:02. Before retrying, Tradex queries the carrier by client reference <span class="mono">TXO-10469-P1</span> so a second consignment is never created.
                 <div class="row gap-8 mt-8"><button class="btn btn-sm" data-toast="Carrier found existing AWB 1490 2233 8847 · linked, no duplicate created">Check booking status</button><button class="btn btn-sm btn-ghost" data-open="m-manual">Book manually instead</button></div></div>
             </div>
             <div class="card" style="border-radius:var(--r)">
-              <div class="card-head"><h3>Serviceability checks</h3><span class="small muted">at booking</span></div>
+              <div class="card-head"><h3 data-help="serviceability">Serviceability checks</h3><span class="small muted">at booking</span></div>
               <div class="list-row"><span class="li-icon ok"><i data-icon="check"></i></span><div class="grow small"><b>12 of 14 parcels serviceable by Delhivery Surface</b><div class="muted">Pickup slot 17:00 confirmed</div></div></div>
-              <div class="list-row"><span class="li-icon warn"><i data-icon="alert"></i></span><div class="grow small"><b>PIN 571438 (Mandya rural) not served for &gt; ₹50,000</b><div class="muted">TXO-10463 · use Blue Dart manually or branch runner from Mysuru</div></div><button class="btn btn-xs" data-open="m-manual">Manual</button></div>
+              <div class="list-row"><span class="li-icon warn"><i data-icon="alert"></i></span><div class="grow small"><b>PIN 571438 (Mandya rural) not served for &gt; ₹50,000</b><div class="muted">TXO-10463 · use Blue Dart manually or branch runner from Mysuru</div></div><button class="btn btn-xs" data-open="m-manual">Book manually</button></div>
               <div class="list-row"><span class="li-icon brand"><i data-icon="store"></i></span><div class="grow small"><b>2 orders are customer pickups</b><div class="muted">Moved to SP Road counter · pickup OTP sent</div></div></div>
             </div>
           </div>
@@ -293,11 +333,12 @@
 
     <!-- ============ DISPATCHED TODAY ============ -->
     <div class="tab-panel" data-panel="dispatched">
+      <div class="tab-intro"><i data-icon="info"></i><div><b>Parcels handed to couriers today, and where they are now.</b> Each row shows the courier's own latest update next to Tradex's standard delivery state, and the delivery date promised to the customer.<span class="ti-next">Nothing to do for parcels on time. Failed deliveries, returns to origin (RTO) and damage move to Problems (exceptions).</span></div></div>
       <div style="padding:16px" class="col gap-12">
-        <div class="callout c-warn small" data-anno="Stale-data state · raw events preserved"><i data-icon="alert"></i><div class="grow"><strong>Tracking sync paused since 08:15</strong> — 17 shipments show their last known carrier event. Canonical states won't change until sync resumes; raw events are kept as evidence.</div><button class="btn btn-xs" data-toast="Manual sync queued">Sync now</button></div>
+        <div class="callout c-warn small" data-anno="Stale-data state · raw events preserved"><i data-icon="alert"></i><div class="grow"><strong data-help="sync-paused">Tracking sync paused since 08:15</strong> — 17 shipments show their last known carrier event. Canonical states won't change until sync resumes; raw events are kept as evidence.</div><button class="btn btn-xs" data-toast="Manual sync queued">Sync now</button></div>
         <div class="card" style="border-radius:var(--r)" data-anno="1A · §10.5 Carrier status → canonical state">
           <div class="table-wrap"><table class="table compact">
-            <thead><tr><th>Order</th><th>Customer</th><th>Courier · AWB</th><th>Handed over</th><th>Last raw carrier event</th><th>Canonical state</th><th>Promise</th></tr></thead>
+            <thead><tr><th>Order</th><th>Customer</th><th>Courier · AWB</th><th>Handed over</th><th data-help="col-raw-event">Last raw carrier event</th><th data-help="col-canonical">Canonical state</th><th data-help="col-promise">Promise</th></tr></thead>
             <tbody id="disp-body"></tbody>
           </table></div>
           <div class="pager"><span>Showing 8 of 41 dispatched today</span><div class="pages"><button class="active">1</button><button>2</button><button>3</button><button>…</button><button>6</button></div></div>
@@ -307,47 +348,48 @@
 
     <!-- ============ EXCEPTIONS ============ -->
     <div class="tab-panel" data-panel="exceptions">
+      <div class="tab-intro"><i data-icon="info"></i><div><b>Orders and parcels that could not continue normally and need a person</b> — short picks, failed or refused deliveries, returns to origin (RTO), damage in transit and courier sync problems.<span class="ti-next">Work Critical cases first, then by due time. Each case shows its owner and the actions allowed; if it is not solved by the due time it escalates once to the operations manager.</span></div></div>
       <div style="padding:8px 0" data-anno="1A · R06 Exceptions: severity · age · owner · due">
         <div class="row-between" style="padding:8px 20px 12px">
           <div class="seg"><button class="active">All (6)</button><button>Overdue dispatch (1)</button><button>Delivery (3)</button><button>Warehouse (2)</button></div>
-          <span class="small muted">Escalates to the operations manager once if not resolved by the due time · owner sees only above-authority cases</span>
+          <span class="small muted" data-help="exc-escalation">Escalates to the operations manager once if not resolved by the due time · owner sees only above-authority cases</span>
         </div>
         <div class="exc">
           <span class="sev critical"><i data-icon="alert-octagon"></i> Critical</span>
-          <div><div class="e-title">Overdue dispatch — short pick, bin A-21 empty</div>
+          <div><div class="e-title" data-help="exc-shortpick">Overdue dispatch — short pick, bin A-21 empty</div>
             <div class="e-meta"><span><i data-icon="receipt"></i> TXO-10471 · ASUS TUF RTX 4070 Ti · ₹79,990</span><span><i data-icon="clock"></i> 26 h since payment</span><span><i data-icon="user"></i> Irfan M. → Anita R.</span><span><i data-icon="flag"></i> Due 12:00</span></div>
             <div class="small subtle mt-4">System shows 1 allocated unit in A-21; picker found the bin empty at 09:12. Cycle-count task CC-0317 opened. Unit available at SP Road (BR-SPR). Customer informed at 09:30 (template delay_notice v1).</div></div>
           <div class="e-act"><button class="btn btn-sm btn-primary" data-toast="Transfer TR-0219 requested · SP Road → WH-BLR · arrives 14:30">Transfer from SP Road</button><button class="btn btn-sm" data-toast="Cancel & refund needs customer consent — request sent">Offer cancel</button></div>
         </div>
         <div class="exc">
           <span class="sev serious"><i data-icon="alert"></i> Serious</span>
-          <div><div class="e-title">Returned to origin (RTO) after 3 failed attempts</div>
+          <div><div class="e-title" data-help="exc-rto">Returned to origin (RTO) after 3 failed attempts</div>
             <div class="e-meta"><span><i data-icon="receipt"></i> TXO-10452 · Canon EOS 1500D kit</span><span><i data-icon="truck"></i> Delhivery AWB 1490 2233 8712</span><span><i data-icon="clock"></i> RTO arriving today</span><span><i data-icon="user"></i> Support · Karthik R.</span></div>
             <div class="small subtle mt-4">RTO parcels are received into <b>quarantine</b> and inspected before stock returns to sellable. Refund or reship per customer choice; COD not involved.</div></div>
           <div class="e-act"><a class="btn btn-sm" href="erp-returns.html">Receive RTO</a><button class="btn btn-sm" data-toast="Customer contacted · template rto_choice v1">Contact customer</button></div>
         </div>
         <div class="exc">
           <span class="sev serious"><i data-icon="alert"></i> Serious</span>
-          <div><div class="e-title">Damaged in transit — customer refused delivery</div>
+          <div><div class="e-title" data-help="exc-damaged">Damaged in transit — customer refused delivery</div>
             <div class="e-meta"><span><i data-icon="receipt"></i> TXO-10461 · Dell UltraSharp U2723QE</span><span><i data-icon="image"></i> 3 courier photos</span><span><i data-icon="user"></i> Anita R.</span><span><i data-icon="flag"></i> Claim window 7 days</span></div>
             <div class="small subtle mt-4">Courier claim <span class="mono">DLV-CLM-2231</span> raised with packed-box photo evidence (captured at pack). Replacement needs a new allocation — stock available at WH-BLR.</div></div>
-          <div class="e-act"><button class="btn btn-sm btn-primary" data-toast="Replacement order TXO-10496 created · linked to claim">Create replacement</button><button class="btn btn-sm">Claim</button></div>
+          <div class="e-act"><button class="btn btn-sm btn-primary" data-toast="Replacement order TXO-10496 created · linked to claim">Create replacement</button><button class="btn btn-sm" data-toast="Courier claim DLV-CLM-2231 opened · courier photos and packed-box photo attached">View courier claim</button></div>
         </div>
         <div class="exc">
           <span class="sev warning"><i data-icon="info"></i> Warning</span>
-          <div><div class="e-title">Address issue — consignee unreachable</div>
+          <div><div class="e-title" data-help="exc-address">Address issue — consignee unreachable</div>
             <div class="e-meta"><span><i data-icon="receipt"></i> TXO-10484 · Xiaomi 34" monitor</span><span><i data-icon="pin"></i> Mysuru 570009</span><span><i data-icon="clock"></i> Attempt 2 of 3 on 28 Sep</span><span><i data-icon="user"></i> Support</span></div></div>
           <div class="e-act"><button class="btn btn-sm" data-toast="Address confirmation request sent (template address_check v2)">Ask customer</button><button class="btn btn-sm" data-toast="Updated address sent to courier as instruction">Update address</button></div>
         </div>
         <div class="exc">
           <span class="sev warning"><i data-icon="info"></i> Warning</span>
-          <div><div class="e-title">Mis-slotted unit found during pick</div>
+          <div><div class="e-title" data-help="exc-misslot">Mis-slotted unit found during pick</div>
             <div class="e-meta"><span><i data-icon="qr"></i> U-000819 · Grade B in Grade A bin R-12</span><span><i data-icon="scan"></i> Blocked at scan 10:36</span><span><i data-icon="user"></i> Irfan M.</span></div></div>
           <div class="e-act"><button class="btn btn-sm" data-toast="Recount task CC-0318 created">Recount R-12/R-14</button></div>
         </div>
         <div class="exc">
           <span class="sev warning"><i data-icon="info"></i> Warning</span>
-          <div><div class="e-title">Courier tracking sync paused — auto-retry stopped after 3 attempts</div>
+          <div><div class="e-title" data-help="exc-sync">Courier tracking sync paused — auto-retry stopped after 3 attempts</div>
             <div class="e-meta"><span><i data-icon="truck"></i> 17 shipments without update since 08:15</span><span><i data-icon="zap"></i> Job A38 · one incident, not 17 alerts</span><span><i data-icon="user"></i> Ops · Anita R.</span></div></div>
           <div class="e-act"><a class="btn btn-sm" href="erp-automation.html">View job</a></div>
         </div>
@@ -357,18 +399,18 @@
 
   <!-- Manual booking modal -->
   <div class="modal" id="m-manual"><div class="modal-card lg">
-    <div class="modal-head"><div><h3>Manual courier booking</h3><div class="small muted">Fallback when the API is down, a PIN isn't serviceable, or the parcel is bulky</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-head"><div><h3 data-help="m-manual">Manual courier booking</h3><div class="small muted">Fallback when the API is down, a PIN isn't serviceable, or the parcel is bulky</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
     <div class="modal-body col gap-16">
       <div class="form-grid">
         <div class="field"><label for="mb-o">Order · parcel</label><select class="select" id="mb-o"><option>TXO-10463 · P1 · Mandya 571438 · 1.9 kg</option><option>TXO-10469 · P1 · Bengaluru 560102 · 2.3 kg</option></select></div>
         <div class="field"><label for="mb-c" class="req">Carrier</label><select class="select" id="mb-c"><option>Blue Dart · Apex</option><option>DTDC · Priority</option><option>India Post · Speed Post</option><option>Branch runner (own delivery)</option></select></div>
-        <div class="field"><label for="mb-awb" class="req">AWB / carrier reference</label><input class="input mono is-ok" id="mb-awb" value="77884512331"><span class="hint">Format checked for Blue Dart (11 digits) · duplicate AWBs are rejected</span></div>
-        <div class="field"><label for="mb-r" class="req">Reason for manual booking</label><select class="select" id="mb-r"><option>PIN not serviceable by primary courier</option><option>Courier API unavailable</option><option>Bulky / high-value handling</option></select></div>
+        <div class="field"><label for="mb-awb" class="req" data-help="mb-awb">AWB / carrier reference</label><input class="input mono is-ok" id="mb-awb" value="77884512331"><span class="hint">Format checked for Blue Dart (11 digits) · duplicate AWBs are rejected</span></div>
+        <div class="field"><label for="mb-r" class="req" data-help="mb-reason">Reason for manual booking</label><select class="select" id="mb-r"><option>PIN not serviceable by primary courier</option><option>Courier API unavailable</option><option>Bulky / high-value handling</option></select></div>
         <div class="field full"><label>Carrier label or booking receipt</label><div class="dropzone" style="padding:18px"><i data-icon="upload"></i><b>Upload label PDF / photo</b><div class="small">Stored with the shipment as evidence</div></div></div>
       </div>
-      <div class="callout c-info small"><i data-icon="info"></i><div>Tracking for manual bookings is updated by staff (or the carrier's email feed) — the shipment shows <b>Manual tracking</b> so nobody mistakes it for live data.</div></div>
+      <div class="callout c-info small"><i data-icon="info"></i><div>Tracking for manual bookings is updated by staff (or the carrier's email feed) — the shipment shows <b data-help="manual-tracking">Manual tracking</b> so nobody mistakes it for live data.</div></div>
     </div>
-    <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-primary" data-close data-toast="Manual booking saved · AWB 77884512331 · added to Blue Dart manifest MF-0926-B1">Save booking</button></div>
+    <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-primary" data-close data-toast="Manual booking saved · AWB 77884512331 · added to Blue Dart manifest MF-0926-B1">Save manual booking</button></div>
   </div></div>
 </main>
 <script src="assets/tradex.js"></script>
@@ -384,6 +426,11 @@ TX.ready(() => {
   const applyLoc = () => {
     const c = sel.value, L = TX.locations.find((l) => l.code === c), n = COUNTS[c];
     ["topick", "picking", "topack", "ready", "dispatched", "exceptions"].forEach((k, i) => ($(`[data-n="${k}"]`).textContent = n[i]));
+    /* "How it works" strip: same counts; the warehouse-only details (blocked scans, lost booking, manifest) hide for branches */
+    const FN = ["topick", "picking", "topack", "ready", "dispatched", "exceptions"];
+    $$("[data-fn]").forEach((el) => (el.textContent = n[FN.indexOf(el.dataset.fn)]));
+    $$("[data-fx]").forEach((el) => el.classList.toggle("hidden", c !== "WH-BLR"));
+    $$(".flow-step[data-attn]").forEach((el) => el.classList.toggle("is-attn", c === "WH-BLR"));
     $("#k-due").textContent = n[6]; $("#k-over").textContent = n[7];
     $("#loc-sub").textContent = `${L.name} (${c}) · Sat 26 Sep · ${c === "WH-BLR" ? "shift 09:00–18:00 · courier cut-off 16:30 · Delhivery pickup 17:00" : "branch hours 10:00–21:00 · courier pickup 18:00 · counter pickups enabled"}`;
     $$("#pick-body tr[data-loc]").forEach((tr) => tr.classList.toggle("hidden", tr.dataset.loc !== c));
@@ -452,41 +499,63 @@ TX.ready(() => {
   const verify = (cls, icon, title, body) => {
     const v = $("#verify");
     v.className = "verify " + cls;
-    v.innerHTML = `<div class="v-head">${ic(icon)}<div class="grow"><div class="v-title">${title}</div><div class="small mt-4">${body}</div></div></div>`;
+    v.innerHTML = `<div class="v-head">${ic(icon)}<div class="grow"><div class="v-title">${title}<span data-help="verify"></span></div><div class="small mt-4">${body}</div></div></div>`;
   };
+  /* Next-step guidance for the order at the bench — says what to scan or do now */
+  const SC_NEXT = {
+    wrong: ["x-circle", "put U-000819 back (it belongs in bin R-14), then scan the allocated unit <b>U-000806</b> from bin R-12. A different unit is never sent instead — if the bins are mixed up, report the mis-slotted unit.", "Scan now", "scan"],
+    skuwrong: ["x-circle", "that label is for a different grade. Scan the SKU label <b>LAP01-RA</b> on the correct item in bin R-12.", "Scan now", "scan"],
+    bin: ["arrow-right", "bin confirmed. Scan the SKU label on the item (<b>LAP01-RA</b>).", "Scan now", "scan"],
+    sku: ["arrow-right", "scan the unit's serial sticker. Only <b>U-000806</b> is accepted for this order (serial-specific refurbished listing).", "Scan now", "scan"],
+    ok: ["check-circle", "line 2 is verified and every other line is verified or set aside. Click <b>Complete pick → move to packing</b> in Bench actions.", "Go to Complete pick", "complete"],
+    unknown: ["alert", "that code is not part of this wave, so nothing changed. Check the label and scan again.", "Scan now", "scan"],
+    done: ["check-circle", "pick complete — TXO-10486 is now waiting in To pack (the cancel-requested line stays set aside).", "Open To pack", "topack"],
+  };
+  const scanNext = (k) => {
+    const [icon, text, btn, go] = SC_NEXT[k];
+    $("#sc-next").innerHTML = `<div class="next-step">${ic(icon)}<div class="grow"><b>Next step:</b> ${text}</div><button type="button" class="btn btn-xs" data-sc-go="${go}">${btn}</button></div>`;
+  };
+  $("#sc-next").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-sc-go]"); if (!b) return;
+    const go = b.dataset.scGo;
+    if (go === "scan") $("#scan-in").focus();
+    else if (go === "complete") { const c = $("#complete"); c.scrollIntoView({ block: "center", behavior: "smooth" }); c.focus({ preventScroll: true }); }
+    else TX.goTab(go);
+  });
+  scanNext("wrong");
   const now = () => { const d = new Date(2026, 8, 26, 10, 37 + LOG.length - 7); return d.toTimeString().slice(0, 5); };
   function handle(code) {
     code = code.trim().toUpperCase(); if (!code) return;
     if (code === "U-000806") {
       state.serialOk = true; setStep("serial", "done", "U-000806"); setStep("ok", "done");
       verify("ok", "check-circle", "Unit verified — matches the allocation", "U-000806 · Refurbished Grade A · inspection IR-2297 attached to the sale · S/N 5CD2147QX recorded on the invoice. Line 2 complete.");
-      LOG.push([now(), code, "ok", "Serial matches allocation · IR-2297 linked"]);
+      LOG.push([now(), code, "ok", "Serial matches allocation · IR-2297 linked"]); scanNext("ok");
     } else if (code === "U-000819") {
       state.serialOk = false; setStep("serial", "err", code); setStep("ok", "");
       verify("bad", "x-circle", "Scanned unit is Grade B; order requires Grade A — substitution not allowed", "U-000819 (IR-2310, 39/42) belongs in bin R-14. Put it back and scan U-000806.");
-      LOG.push([now(), code, "bad", "Grade B unit — order requires Grade A · blocked"]);
+      LOG.push([now(), code, "bad", "Grade B unit — order requires Grade A · blocked"]); scanNext("wrong");
     } else if (code === "LAP01-RB") {
       state.serialOk = false; setStep("sku", "err"); setStep("serial", "", "—"); setStep("ok", "");
       verify("bad", "x-circle", "Wrong SKU — LAP01-RB is Grade B stock", "The allocated line is LAP01-RA (Refurbished Grade A). Condition is part of the SKU, so a different grade can never pass as the same item.");
-      LOG.push([now(), code, "bad", "SKU/condition mismatch · blocked"]);
+      LOG.push([now(), code, "bad", "SKU/condition mismatch · blocked"]); scanNext("skuwrong");
     } else if (code === "R-12" || code === "BIN R-12") {
       setStep("bin", "done"); setStep("sku", "cur");
       verify("ok", "check-circle", "Bin R-12 confirmed", "Expected: LAP01-RA × 1 — scan the SKU label, then the unit's serial sticker.");
-      LOG.push([now(), "BIN R-12", "ok", "Bin confirmed"]);
+      LOG.push([now(), "BIN R-12", "ok", "Bin confirmed"]); scanNext("bin");
     } else if (code === "LAP01-RA") {
       setStep("sku", "done"); setStep("serial", "cur", "—");
       verify("ok", "check-circle", "SKU matches allocation line 2", "Now scan the unit serial. Only U-000806 is accepted for this order (serial-specific refurbished listing).");
-      LOG.push([now(), code, "ok", "SKU matches allocation line 2"]);
+      LOG.push([now(), code, "ok", "SKU matches allocation line 2"]); scanNext("sku");
     } else {
       verify("warn", "alert", `Unknown code “${TX.esc(code)}” — not part of wave W-26-07`, "Check the label or rescan. Unknown scans are logged but change nothing.");
-      LOG.push([now(), TX.esc(code), "warn", "Unknown code · ignored"]);
+      LOG.push([now(), TX.esc(code), "warn", "Unknown code · ignored"]); scanNext("unknown");
     }
     renderLog(); renderAlloc();
   }
   $("#scanform").addEventListener("submit", (e) => { e.preventDefault(); handle($("#scan-in").value); $("#scan-in").value = ""; });
   $("#quick").addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) { $("#scan-in").value = b.textContent; handle(b.textContent); $("#scan-in").value = ""; } });
   document.addEventListener("click", (e) => { if (e.target.closest("#rescan")) { $("#scan-in").focus(); TX.toast("Scan U-000806 from bin R-12", "scan"); } });
-  $("#complete").addEventListener("click", () => { TX.toast("Pick complete · TXO-10486 moved to To pack (line 3 set aside)"); });
+  $("#complete").addEventListener("click", () => { TX.toast("Pick complete · TXO-10486 moved to To pack (line 3 set aside)"); scanNext("done"); });
 
   /* To pack */
   const PACK = [
@@ -499,7 +568,14 @@ TX.ready(() => {
   ];
   $("#pack-list").innerHTML = PACK.map(([id, pid, t, by, act]) => `<div class="list-row" style="${act ? "background:var(--brand-50);box-shadow:inset 3px 0 0 var(--brand)" : ""};cursor:pointer">${TX.ph(P(pid).img, "thumb")}<div class="grow small"><b class="mono">${id}</b><div class="truncate" style="max-width:220px">${t}</div></div><div class="r small"><div class="muted">by</div><b>${by}</b></div></div>`).join("");
   const chk = $("#chk");
-  const syncPack = () => { const all = $$("input", chk), n = all.filter((i) => i.checked).length; $("#pk-prog").textContent = `${n} / ${all.length}`; $("#pk-done").disabled = n < all.length; };
+  const syncPack = () => {
+    const all = $$("input", chk), n = all.filter((i) => i.checked).length; $("#pk-prog").textContent = `${n} / ${all.length}`; $("#pk-done").disabled = n < all.length;
+    /* Next-step guidance: which checks are still open, and why the button is locked */
+    const left = all.filter((i) => !i.checked).map((i) => i.getAttribute("aria-label"));
+    $("#pk-next").innerHTML = left.length
+      ? `<div class="next-step">${ic("clipboard")}<div class="grow"><b>Next step:</b> ${left.length} check${left.length > 1 ? "s" : ""} left — ${left.join(", ")}. Tick each one as you do it; <b>Mark packed &amp; book courier</b> unlocks when all ${all.length} are ticked.</div></div>`
+      : `<div class="next-step">${ic("check-circle")}<div class="grow"><b>Next step:</b> all checks are done. Click <b>Mark packed &amp; book courier</b> — the courier is booked, the label prints and the parcel appears in Ready to ship.</div><button type="button" class="btn btn-xs" onclick="TX.goTab('ready')">Open Ready to ship</button></div>`;
+  };
   chk.addEventListener("change", syncPack); syncPack();
   $("#pk-done").addEventListener("click", () => TX.toast("Packed · Delhivery booking requested (idempotent ref TXO-10465-P1) · label printing"));
 
@@ -518,7 +594,7 @@ TX.ready(() => {
     <td class="small nowrap">${parcel}</td><td class="small">${dest}</td><td class="small">${cour}</td>
     <td class="mono small">${awb}</td><td class="small">${lab === "Printed" ? `<span class="text-ok il">${ic("check", "ic-sm")} Printed</span>` : lab}</td>
     <td><span class="status s-${s[0]}">${s[1]}</span></td>
-    <td class="r">${s[0] === "bad" ? `<button class="btn btn-xs" data-toast="Existing AWB 1490 2233 8847 found · linked">Check status</button>` : s[0] === "warn" ? `<button class="btn btn-xs btn-soft" data-toast="Booked · AWB 1490 2233 8850">Book</button>` : ""}</td></tr>`).join("");
+    <td class="r">${s[0] === "bad" ? `<button class="btn btn-xs" data-toast="Existing AWB 1490 2233 8847 found · linked">Check with courier</button>` : s[0] === "warn" ? `<button class="btn btn-xs btn-soft" data-toast="Booked · AWB 1490 2233 8850">Book</button>` : ""}</td></tr>`).join("");
   const MF = [["TXO-10489", "1490 2233 8839", 1], ["TXO-10466", "1490 2233 8841", 1], ["TXO-10464", "1490 2233 8843 (2 pcs)", 1], ["TXO-10459", "1490 2233 8829", 1], ["TXO-10457", "1490 2233 8826", 0], ["TXO-10455", "1490 2233 8821", 0]];
   $("#mf-list").innerHTML = MF.map(([o, a, s], i) => `<div class="mf-row"><span class="${s ? "text-ok" : "muted"}">${ic(s ? "check-circle" : "clock")}</span><div><b class="mono">${o}</b> <span class="muted mono small">· AWB ${a}</span></div><span class="small ${s ? "text-ok" : "muted"}">${s ? "Staged 10:2" + (i + 1) : "Not staged"}</span></div>`).join("") + `<div class="mf-row"><span></span><span class="small muted">+ 6 more parcels (5 staged)</span><span></span></div>`;
 

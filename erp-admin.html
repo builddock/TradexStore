@@ -58,35 +58,35 @@
   <div class="page-head">
     <div>
       <div class="crumbs"><span>Administration</span><i data-icon="chevron-right"></i><span>Settings &amp; access</span></div>
-      <h1>Settings &amp; access</h1>
-      <p class="sub">Tradex Electronics Pvt Ltd · GSTIN 29AAKCT4821M1Z6 · access, threshold and integration changes are audited; privileged changes need a second approver</p>
+      <h1 data-help="page">Settings &amp; access</h1>
+      <p class="sub">Tradex Electronics Pvt Ltd · GSTIN 29AAKCT4821M1Z6 · access, threshold and integration changes are audited; <span data-help="g.privileged">privileged changes need a second approver</span></p>
     </div>
     <div class="actions">
       <span class="badge b-warn dot">Quarterly access review due 30 Sep</span>
-      <button class="btn" data-toast="Access review AR-2026-Q3 started · 18 accounts assigned to managers for confirmation"><i data-icon="shield"></i> Start access review</button>
-      <button class="btn btn-primary" data-open="m-invite"><i data-icon="plus"></i> Invite user</button>
+      <button class="btn" data-help="act-review" data-toast="Access review AR-2026-Q3 started · 18 accounts assigned to managers for confirmation"><i data-icon="shield"></i> Start access review</button>
+      <button class="btn btn-primary" data-help="act-invite" data-open="m-invite"><i data-icon="plus"></i> Invite user</button>
     </div>
   </div>
 
   <section class="grid g-6 mb-16">
-    <div class="kpi"><div class="k-label"><i data-icon="users"></i> <span>Staff accounts</span></div><div class="k-value">18</div><div class="k-foot"><span>active · 2 invited</span></div></div>
-    <div class="kpi"><div class="k-label"><i data-icon="key"></i> <span>MFA enrolled</span></div><div class="k-value">17<span class="muted" style="font-size:15px"> / 18</span></div><div class="k-foot"><span class="text-warn strong">1 in grace period</span></div></div>
-    <div class="kpi"><div class="k-label"><i data-icon="lock"></i> <span>Privileged</span></div><div class="k-value">3</div><div class="k-foot"><span>Owner · Ops admin · Finance</span></div></div>
-    <div class="kpi"><div class="k-label"><i data-icon="users"></i> <span>Delegation</span></div><div class="k-value" style="font-size:18px;padding:5px 0">Anita R. active</div><div class="k-foot"><span>until Sat 27 Sep 21:00</span></div></div>
-    <div class="kpi"><div class="k-label"><i data-icon="link"></i> <span>Integrations</span></div><div class="k-value">7</div><div class="k-foot"><span><b class="text-bad">1 degraded</b> · 1 stale feed</span></div></div>
-    <div class="kpi"><div class="k-label"><i data-icon="database"></i> <span>Restore test</span></div><div class="k-value" style="font-size:18px;padding:5px 0">Passed 21 Sep</div><div class="k-foot"><span>2 h 48 m · target ≤ 4 h</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-staff"><i data-icon="users"></i> <span>Staff accounts</span></div><div class="k-value">18</div><div class="k-foot"><span>active · 2 invited</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-mfa"><i data-icon="key"></i> <span>MFA enrolled</span></div><div class="k-value">17<span class="muted" style="font-size:15px"> / 18</span></div><div class="k-foot"><span class="text-warn strong">1 in grace period</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-priv"><i data-icon="lock"></i> <span>Privileged</span></div><div class="k-value">3</div><div class="k-foot"><span>Owner · Ops admin · Finance</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-deleg"><i data-icon="users"></i> <span>Delegation</span></div><div class="k-value" style="font-size:18px;padding:5px 0">Anita R. active</div><div class="k-foot"><span>until Sat 27 Sep 21:00</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-int"><i data-icon="link"></i> <span>Integrations</span></div><div class="k-value">7</div><div class="k-foot"><span><b class="text-bad">1 degraded</b> · 1 stale feed</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-restore"><i data-icon="database"></i> <span>Restore test</span></div><div class="k-value" style="font-size:18px;padding:5px 0">Passed 21 Sep</div><div class="k-foot"><span>2 h 48 m · target ≤ 4 h</span></div></div>
   </section>
 
   <section class="card" data-tabset>
     <div class="tabs adm-tabs">
-      <button class="tab active" data-tab="users">Users <span class="count">21</span></button>
-      <button class="tab" data-tab="roles">Roles &amp; permissions</button>
-      <button class="tab" data-tab="thresholds">Thresholds <span class="count">TBC</span></button>
-      <button class="tab" data-tab="delegation">Delegation</button>
-      <button class="tab" data-tab="locations">Locations</button>
-      <button class="tab" data-tab="integrations">Integrations <span class="count">1 degraded</span></button>
-      <button class="tab" data-tab="audit">Audit log</button>
-      <button class="tab" data-tab="system">System</button>
+      <button class="tab active" data-tab="users" data-help="tab-users">Users <span class="count">21</span></button>
+      <button class="tab" data-tab="roles" data-help="tab-roles">Roles &amp; permissions</button>
+      <button class="tab" data-tab="thresholds" data-help="tab-thresholds">Thresholds <span class="count">TBC</span></button>
+      <button class="tab" data-tab="delegation" data-help="tab-delegation">Delegation</button>
+      <button class="tab" data-tab="locations" data-help="tab-locations">Locations</button>
+      <button class="tab" data-tab="integrations" data-help="tab-integrations">Integrations <span class="count">1 degraded</span></button>
+      <button class="tab" data-tab="audit" data-help="tab-audit">Audit log</button>
+      <button class="tab" data-tab="system" data-help="tab-system">System</button>
     </div>
 
     <!-- ============================== USERS ============================== -->
@@ -95,28 +95,28 @@
         <div class="input-icon" style="width:240px"><i data-icon="search"></i><input class="input input-sm" id="u-q" placeholder="Search name, email, role…" aria-label="Search users"></div>
         <select class="select input-sm" style="width:auto" id="u-role" aria-label="Role"><option value="">All roles</option><option>Owner</option><option>Operations admin</option><option>Branch manager</option><option>Finance</option><option>Warehouse</option><option>Catalog</option><option>Support</option><option>Sales associate</option></select>
         <select class="select input-sm" style="width:auto" aria-label="Location"><option>All locations</option><option>WH-BLR</option><option>BR-SPR</option><option>BR-KRM</option><option>BR-MYS</option></select>
-        <button class="chip" id="u-mfa"><i data-icon="alert"></i> MFA issues 2</button>
-        <button class="chip" id="u-priv"><i data-icon="lock"></i> Privileged 3</button>
+        <button class="chip" id="u-mfa" data-help="f-mfa"><i data-icon="alert"></i> MFA issues 2</button>
+        <button class="chip" id="u-priv" data-help="f-priv"><i data-icon="lock"></i> Privileged 3</button>
         <span class="ml-auto small muted">Vendor users are managed per vendor in <a href="erp-vendors.html">Vendors</a> · no shared logins</span>
       </div>
-      <div class="bulkbar"><b class="bulk-count">0</b> selected <button class="btn btn-sm" data-toast="Selected users signed out of all sessions">Force sign-out</button><button class="btn btn-sm" data-toast="MFA re-enrolment required at next sign-in">Require MFA re-enrolment</button><button class="btn btn-sm btn-danger" data-toast="Deactivation needs a reason · sessions revoked, records kept">Deactivate…</button></div>
+      <div class="bulkbar"><b class="bulk-count">0</b> <span data-help="u-bulk">selected</span> <button class="btn btn-sm" data-toast="Selected users signed out of all sessions">Force sign-out</button><button class="btn btn-sm" data-toast="MFA re-enrolment required at next sign-in">Require MFA re-enrolment</button><button class="btn btn-sm btn-danger" data-toast="Deactivation needs a reason · sessions revoked, records kept">Deactivate…</button></div>
       <div class="table-wrap"><table class="table">
-        <thead><tr><th class="check-col"><input type="checkbox" data-check-all aria-label="Select all users"></th><th>User</th><th>Role</th><th>Location scope</th><th>MFA</th><th style="min-width:170px">Last sign-in</th><th>Status</th><th class="r">Actions</th></tr></thead>
+        <thead><tr><th class="check-col"><input type="checkbox" data-check-all aria-label="Select all users"></th><th>User</th><th data-help="col-role">Role</th><th data-help="col-scope">Location scope</th><th data-help="col-mfa">MFA</th><th style="min-width:170px" data-help="col-last">Last sign-in</th><th data-help="col-ustatus">Status</th><th class="r" data-help="col-uactions">Actions</th></tr></thead>
         <tbody id="u-body"></tbody>
       </table></div>
-      <div class="pager"><span id="u-count"></span><span>Accounts are never deleted — deactivation revokes sessions and keeps history for audit.</span></div>
+      <div class="pager"><span id="u-count"></span><span data-help="never-deleted">Accounts are never deleted — deactivation revokes sessions and keeps history for audit.</span></div>
     </div>
 
     <!-- ============================== ROLES ============================== -->
     <div class="tab-panel" data-panel="roles">
       <div class="pad">
         <div class="row-between mb-12">
-          <div data-anno="1A · R06 Authority matrix (blueprint §18.1)"><h3>Permission matrix</h3><div class="small muted">Blueprint §18.1 authority matrix · enforced on the server for every operation, not just hidden in the UI</div></div>
+          <div data-anno="1A · R06 Authority matrix (blueprint §18.1)"><h3 data-help="perm-matrix">Permission matrix</h3><div class="small muted">Blueprint §18.1 authority matrix · enforced on the server for every operation, not just hidden in the UI</div></div>
           <div class="row gap-16 small">
             <span class="row gap-6"><span class="perm"><span class="yes"><i data-icon="check-circle"></i></span></span> Allowed</span>
             <span class="row gap-6"><span class="tbc" style="border-style:solid;background:#fff;color:var(--warn-tx)">Limited</span> Condition shown</span>
             <span class="row gap-6"><span class="perm"><span class="no"><i data-icon="minus"></i></span></span> Not allowed</span>
-            <button class="btn btn-sm" data-toast="Draft role ‘Seasonal packer’ created from Warehouse · edits need owner approval"><i data-icon="plus" class="ic-sm"></i> New role</button>
+            <button class="btn btn-sm" data-help="act-new-role" data-toast="Draft role ‘Seasonal packer’ created from Warehouse · edits need owner approval"><i data-icon="plus" class="ic-sm"></i> New role</button>
           </div>
         </div>
         <div class="card" style="overflow:hidden">
@@ -127,7 +127,7 @@
         </div>
         <div class="grid g-3 mt-16">
           <div class="card">
-            <div class="card-head"><div><h3>Roles</h3><div class="sub">8 staff roles + vendor role</div></div></div>
+            <div class="card-head"><div><h3 data-help="roles-list">Roles</h3><div class="sub">8 staff roles + vendor role</div></div></div>
             <div class="table-wrap"><table class="table compact">
               <tbody>
                 <tr><td><b>Owner · Super admin</b> <span class="priv"><i data-icon="lock"></i> Privileged</span></td><td class="r">1</td></tr>
@@ -143,7 +143,7 @@
             </table></div>
           </div>
           <div class="card">
-            <div class="card-head"><div><h3>Record-scope notes</h3><div class="sub">Who sees which records and fields</div></div></div>
+            <div class="card-head"><div><h3 data-help="record-scope">Record-scope notes</h3><div class="sub">Who sees which records and fields</div></div></div>
             <div class="card-body">
               <ul class="scope-list">
                 <li><i data-icon="store"></i><span><b>Branch managers &amp; staff</b> — orders, stock and customers of their assigned location; company-wide availability is read-only (reserved and in-transit shown separately).</span></li>
@@ -156,7 +156,7 @@
             </div>
           </div>
           <div class="card" data-anno="§18.2 Separation of duties">
-            <div class="card-head"><div><h3>Separation of duties</h3><div class="sub">Checked when roles are assigned and on every approval</div></div></div>
+            <div class="card-head"><div><h3 data-help="sod">Separation of duties</h3><div class="sub">Checked when roles are assigned and on every approval</div></div></div>
             <div class="list-row"><span class="li-icon ok"><i data-icon="check"></i></span><div class="grow small"><b>Requester cannot approve own request</b><div class="muted">Discounts, refunds, write-offs, price changes</div></div><span class="badge b-ok">Enforced</span></div>
             <div class="list-row"><span class="li-icon ok"><i data-icon="check"></i></span><div class="grow small"><b>User admin separate from warehouse work</b></div><span class="badge b-ok">Enforced</span></div>
             <div class="list-row"><span class="li-icon ok"><i data-icon="check"></i></span><div class="grow small"><b>Payout account: separate maker &amp; checker</b><div class="muted">+ call-back on registered number</div></div><span class="badge b-ok">Enforced</span></div>
@@ -171,11 +171,11 @@
     <!-- ============================== THRESHOLDS ============================== -->
     <div class="tab-panel" data-panel="thresholds">
       <div class="pad">
-        <div class="callout c-warn mb-16" data-anno="§18.1 Exact ₹ limits must come from the client"><i data-icon="alert"></i><div><strong>All values are placeholders — to be confirmed by the client.</strong> Blueprint §18.1: exact monetary thresholds must be supplied by the business and are not enforced as approved until signed off (decision log D-07, target 3 Oct). Until then the system routes these cases to the owner.</div></div>
+        <div class="callout c-warn mb-16" data-anno="§18.1 Exact ₹ limits must come from the client"><i data-icon="alert"></i><div><strong data-help="thr-tbc">All values are placeholders — to be confirmed by the client.</strong> Blueprint §18.1: exact monetary thresholds must be supplied by the business and are not enforced as approved until signed off (decision log D-07, target 3 Oct). Until then the system routes these cases to the owner.</div></div>
         <div class="col gap-16">
           <div class="card" style="overflow:hidden">
             <div class="table-wrap"><table class="table compact thr">
-              <thead><tr><th style="min-width:190px">Control</th><th>Staff</th><th>Branch manager</th><th>Ops admin</th><th>Finance</th><th>Owner</th><th>Status</th><th></th></tr></thead>
+              <thead><tr><th style="min-width:190px" data-help="thr-table">Control</th><th>Staff</th><th>Branch manager</th><th>Ops admin</th><th>Finance</th><th>Owner</th><th data-help="thr-status">Status</th><th></th></tr></thead>
               <tbody>
                 <tr><td><div class="cell-main">Stock adjustment</div><div class="cell-sub">Per adjustment, at cost</div></td><td class="v">Request only</td><td class="v">≤ ₹10,000</td><td class="v">≤ ₹25,000</td><td class="v">Value review<small>above ₹25,000</small></td><td class="v">Above ₹25,000</td><td><span class="tbc">TBC by client</span></td><td><button class="btn btn-xs btn-icon" aria-label="Edit stock adjustment threshold" data-open="m-thr"><i data-icon="edit" class="ic-sm"></i></button></td></tr>
                 <tr><td><div class="cell-main">Discount off list price</div><div class="cell-sub">Per order</div></td><td class="v">≤ 3%</td><td class="v">≤ 8%<small>proposed from 5%</small></td><td class="v">≤ 10%</td><td class="v">—</td><td class="v">Above 10%</td><td><span class="tbc">TBC by client</span></td><td><button class="btn btn-xs btn-icon" aria-label="Edit discount threshold" data-open="m-thr"><i data-icon="edit" class="ic-sm"></i></button></td></tr>
@@ -191,7 +191,7 @@
           </div>
           <div class="grid g-2">
             <div class="card">
-              <div class="card-head"><div><h3>Deadlines &amp; escalation</h3><div class="sub">Applies to every approval type</div></div></div>
+              <div class="card-head"><div><h3 data-help="deadlines">Deadlines &amp; escalation</h3><div class="sub">Applies to every approval type</div></div></div>
               <div class="card-body">
                 <dl class="kv tight" style="grid-template-columns:130px 1fr">
                   <dt>Default deadline</dt><dd>4 working hours <span class="tbc">TBC</span></dd>
@@ -204,7 +204,7 @@
               </div>
             </div>
             <div class="card">
-              <div class="card-head"><div><h3>Pending change</h3><div class="sub">Proposed by Rajesh M. · 10:42 · needs second approver</div></div><span class="badge b-warn">Awaiting Anita R.</span></div>
+              <div class="card-head"><div><h3 data-help="pending-change">Pending change</h3><div class="sub">Proposed by Rajesh M. · 10:42 · needs second approver</div></div><span class="badge b-warn">Awaiting Anita R.</span></div>
               <div class="card-body">
                 <div class="diff" style="grid-template-columns:170px 1fr 1fr">
                   <div class="dh">Field</div><div class="dh">Current</div><div class="dh">Proposed</div>
@@ -227,13 +227,13 @@
             <div class="deleg" data-anno="1A · R10 Owner-away delegation: named, time-bounded, scoped (§12.6)">
               <div class="card-head" style="border-color:var(--brand-100)">
                 <div class="row gap-12"><div class="av-stack"><div class="avatar" style="background:#2e5bff">RM</div><div class="avatar" style="background:#7c3aed">AR</div></div>
-                  <div><h3>Rajesh Menon → Anita Rao</h3><div class="sub">DEL-0010 · Fri 26 Sep 09:00 → Sat 27 Sep 21:00 · “Supplier meetings in Mumbai”</div></div></div>
+                  <div><h3 data-help="deleg-active">Rajesh Menon → Anita Rao</h3><div class="sub">DEL-0010 · Fri 26 Sep 09:00 → Sat 27 Sep 21:00 · “Supplier meetings in Mumbai”</div></div></div>
                 <span class="status s-ok">Active · 34 h left</span>
               </div>
               <div class="card-body">
                 <div class="grid g-2" style="gap:16px">
                   <div>
-                    <div class="upper muted mb-8">Delegated</div>
+                    <div class="upper muted mb-8" data-help="deleg-scope">Delegated</div>
                     <div class="col gap-6 small">
                       <span class="row gap-6"><i data-icon="check-circle" class="ic-sm text-ok"></i> Discounts up to 10% (margin floor still applies)</span>
                       <span class="row gap-6"><i data-icon="check-circle" class="ic-sm text-ok"></i> Write-offs &amp; adjustments ≤ ₹25,000</span>
@@ -243,7 +243,7 @@
                     </div>
                   </div>
                   <div>
-                    <div class="upper muted mb-8">Stays with owner</div>
+                    <div class="upper muted mb-8" data-help="deleg-owner-only">Stays with owner</div>
                     <div class="col gap-6 small">
                       <span class="row gap-6"><i data-icon="x-circle" class="ic-sm text-bad"></i> Permission &amp; role changes</span>
                       <span class="row gap-6"><i data-icon="x-circle" class="ic-sm text-bad"></i> Payout / bank account changes</span>
@@ -255,19 +255,19 @@
                 </div>
                 <div class="panel small mt-16 row gap-8"><i data-icon="info" class="ic-sm"></i><span>3 decisions made under delegation so far (TR-0212, RMA-0091, TXO-10489) — each is tagged “delegated” in the audit log. Rajesh still gets the 08:00 digest and urgent critical items.</span></div>
               </div>
-              <div class="card-foot" style="border-color:var(--brand-100)"><span class="small muted">Ends automatically · no silent owner-level access</span><div class="row gap-8"><button class="btn btn-sm" data-toast="Extension request sent to Rajesh M. (owner approval required)">Extend…</button><button class="btn btn-sm btn-danger" data-toast="Delegation DEL-0010 ended · Anita R. back to normal limits">End now</button></div></div>
+              <div class="card-foot" style="border-color:var(--brand-100)"><span class="small muted">Ends automatically · no silent owner-level access</span><div class="row gap-8"><button class="btn btn-sm" data-toast="Extension request sent to Rajesh M. (owner approval required)">Extend…</button><button class="btn btn-sm btn-danger" data-help="deleg-end" data-toast="Delegation DEL-0010 ended · Anita R. back to normal limits">End now</button></div></div>
             </div>
 
             <div class="card">
-              <div class="card-head"><div><h3>Create a delegation</h3><div class="sub">Named alternate · time-bounded · explicit scope</div></div></div>
+              <div class="card-head"><div><h3 data-help="deleg-create">Create a delegation</h3><div class="sub">Named alternate · time-bounded · explicit scope</div></div></div>
               <div class="card-body">
                 <div class="form-grid">
-                  <div class="field"><label for="dg-to" class="req">Delegate to</label><select class="select" id="dg-to"><option>Anita Rao · Operations admin</option><option>Deepa Krishnan · Finance</option><option>Vikram Shetty · Branch manager</option></select></div>
+                  <div class="field"><label for="dg-to" class="req" data-help="dg-to">Delegate to</label><select class="select" id="dg-to"><option>Anita Rao · Operations admin</option><option>Deepa Krishnan · Finance</option><option>Vikram Shetty · Branch manager</option></select></div>
                   <div class="field"><label for="dg-r" class="req">Reason</label><input class="input" id="dg-r" placeholder="e.g. Annual leave"></div>
                   <div class="field"><label for="dg-f" class="req">From</label><input class="input" id="dg-f" value="Mon 5 Oct 2026 · 09:00"></div>
-                  <div class="field"><label for="dg-u" class="req">Until (max 14 days)</label><input class="input" id="dg-u" value="Fri 9 Oct 2026 · 21:00"></div>
+                  <div class="field"><label for="dg-u" class="req" data-help="dg-until">Until (max 14 days)</label><input class="input" id="dg-u" value="Fri 9 Oct 2026 · 21:00"></div>
                   <div class="full">
-                    <div class="label mb-8">Scope</div>
+                    <div class="label mb-8" data-help="dg-scope">Scope</div>
                     <div class="grid g-2" style="gap:8px">
                       <label class="check small"><input type="checkbox" checked> Discounts up to <input class="input input-sm" style="width:56px;display:inline-block" value="10%" aria-label="Discount limit"></label>
                       <label class="check small"><input type="checkbox" checked> Write-offs ≤ <input class="input input-sm" style="width:84px;display:inline-block" value="₹25,000" aria-label="Write-off limit"></label>
@@ -285,7 +285,7 @@
 
           <div class="col gap-16">
             <div class="card" data-anno="§18.2 Emergency access: time-bounded + post-review">
-              <div class="card-head"><div><h3>Emergency access</h3><div class="sub">Break-glass for when the right person is unreachable</div></div><button class="btn btn-sm btn-danger" data-open="m-ea"><i data-icon="key" class="ic-sm"></i> Request</button></div>
+              <div class="card-head"><div><h3 data-help="emergency">Emergency access</h3><div class="sub">Break-glass for when the right person is unreachable</div></div><button class="btn btn-sm btn-danger" data-help="act-ea" data-open="m-ea"><i data-icon="key" class="ic-sm"></i> Request</button></div>
               <div class="card-body">
                 <ul class="scope-list mb-16">
                   <li><i data-icon="clock"></i><span>Maximum <b>4 hours</b>, specific scope, reason required; expires automatically.</span></li>
@@ -293,7 +293,7 @@
                   <li><i data-icon="history"></i><span>Every action tagged <b>EMERGENCY</b>; <b>post-event review within 2 working days</b>.</span></li>
                 </ul>
                 <div class="table-wrap"><table class="table compact">
-                  <thead><tr><th>Request</th><th>Window</th><th>Post-review</th></tr></thead>
+                  <thead><tr><th>Request</th><th>Window</th><th data-help="col-post-review">Post-review</th></tr></thead>
                   <tbody>
                     <tr><td><div class="cell-main">EA-0013 · Deepa K.</div><div class="cell-sub">Re-run failed refunds during provider incident · granted by Anita R. · 6 actions</div></td><td class="small">26 Sep 06:10–10:10<div class="cell-sub">expired</div></td><td><span class="status s-warn">Due 28 Sep</span><div><button class="btn btn-xs mt-4" data-toast="Post-review opened · 6 actions to confirm">Review</button></div></td></tr>
                     <tr><td><div class="cell-main">EA-0012 · Mohammed I.</div><div class="cell-sub">Adjust stock at WH-BLR while Ops admin unreachable · granted by Rajesh M. · 3 actions</div></td><td class="small">19 Sep 18:00–20:00</td><td><span class="status s-ok">Done 20 Sep</span><div class="cell-sub">by Rajesh M. · no issues</div></td></tr>
@@ -303,7 +303,7 @@
               </div>
             </div>
             <div class="card">
-              <div class="card-head"><div><h3>Delegation history</h3><div class="sub">Last 90 days</div></div></div>
+              <div class="card-head"><div><h3 data-help="deleg-history">Delegation history</h3><div class="sub">Last 90 days</div></div></div>
               <div class="table-wrap"><table class="table compact">
                 <thead><tr><th>Delegation</th><th>Window</th><th class="r">Decisions</th><th>Review</th></tr></thead>
                 <tbody>
@@ -323,7 +323,7 @@
     <div class="tab-panel" data-panel="locations">
       <div class="pad col gap-16">
         <div class="card">
-          <div class="card-head"><div><h3>Company</h3><div class="sub">Legal entity used on invoices, credit notes and exports</div></div><button class="btn btn-xs" data-toast="Company details are edited by Owner only · changes need second approver"><i data-icon="edit" class="ic-sm"></i> Edit</button></div>
+          <div class="card-head"><div><h3 data-help="company">Company</h3><div class="sub">Legal entity used on invoices, credit notes and exports</div></div><button class="btn btn-xs" data-toast="Company details are edited by Owner only · changes need second approver"><i data-icon="edit" class="ic-sm"></i> Edit</button></div>
           <div class="card-body">
             <div class="grid" style="grid-template-columns:1fr 1fr 1fr;gap:24px">
               <dl class="kv tight">
@@ -338,23 +338,23 @@
                 <dt>Financial year</dt><dd>April – March · FY 2026-27</dd>
               </dl>
               <dl class="kv tight">
-                <dt>Invoice series</dt><dd class="mono">TX/{LOC}/26-27/#####</dd>
-                <dt>Grievance officer</dt><dd>Anita Rao · grievance@tradex.example</dd>
+                <dt data-help="invoice-series">Invoice series</dt><dd class="mono">TX/{LOC}/26-27/#####</dd>
+                <dt data-help="grievance">Grievance officer</dt><dd>Anita Rao · grievance@tradex.example</dd>
                 <dt>Currency · tax</dt><dd>INR · GST (Karnataka)</dd>
               </dl>
             </div>
-            <div class="callout c-info small mt-16"><i data-icon="info"></i><div><b>Separate businesses later (R15):</b> not configured. A second business would be its own company with its own GSTIN, stock, price lists and reports — not just another location.</div></div>
+            <div class="callout c-info small mt-16"><i data-icon="info"></i><div><b data-help="multi-company">Separate businesses later (R15):</b> not configured. A second business would be its own company with its own GSTIN, stock, price lists and reports — not just another location.</div></div>
           </div>
         </div>
         <div class="card">
-          <div class="card-head"><div><h3>Locations</h3><div class="sub">Each is a stock location with its own bins, staff and reports</div></div><button class="btn btn-sm" data-toast="New location draft · needs GST place-of-business check"><i data-icon="plus" class="ic-sm"></i> Add location</button></div>
+          <div class="card-head"><div><h3 data-help="locations">Locations</h3><div class="sub">Each is a stock location with its own bins, staff and reports</div></div><button class="btn btn-sm" data-help="act-add-location" data-toast="New location draft · needs GST place-of-business check"><i data-icon="plus" class="ic-sm"></i> Add location</button></div>
           <div class="table-wrap"><table class="table compact">
-            <thead><tr><th>Location</th><th>Address</th><th>Capabilities</th><th class="r">Bins</th><th>Manager</th><th>Status</th></tr></thead>
+            <thead><tr><th>Location</th><th>Address</th><th data-help="col-capabilities">Capabilities</th><th class="r">Bins</th><th>Manager</th><th data-help="col-loc-status">Status</th></tr></thead>
             <tbody id="loc-body"></tbody>
           </table></div>
         </div>
         <div class="card">
-          <div class="card-head"><div><h3>Central Warehouse · bins</h3><div class="sub">WH-BLR · 77 bins in 5 zones · the bin’s disposition decides what is sellable</div></div><div class="row gap-8"><button class="btn btn-sm" data-toast="Bin labels (QR) sent to printer WH-LP1"><i data-icon="printer" class="ic-sm"></i> Print labels</button><button class="btn btn-sm" data-toast="New bin draft in zone A"><i data-icon="plus" class="ic-sm"></i> Add bin</button></div></div>
+          <div class="card-head"><div><h3 data-help="bins">Central Warehouse · bins</h3><div class="sub">WH-BLR · 77 bins in 5 zones · the bin’s disposition decides what is sellable</div></div><div class="row gap-8"><button class="btn btn-sm" data-toast="Bin labels (QR) sent to printer WH-LP1"><i data-icon="printer" class="ic-sm"></i> Print labels</button><button class="btn btn-sm" data-toast="New bin draft in zone A"><i data-icon="plus" class="ic-sm"></i> Add bin</button></div></div>
           <div class="card-body">
             <div class="grid g-5" style="gap:10px">
               <div class="zone"><div class="z-h">Zone A <span class="badge b-ok">Sellable</span></div><b>40</b><span class="small muted">Fast movers · 1,284 units</span></div>
@@ -365,7 +365,7 @@
             </div>
           </div>
           <div class="table-wrap"><table class="table compact">
-            <thead><tr><th>Bin</th><th>Zone</th><th>Disposition</th><th class="r">Units</th><th class="r">SKUs</th><th>Last count</th><th>Status</th></tr></thead>
+            <thead><tr><th>Bin</th><th>Zone</th><th data-help="col-bin-disp">Disposition</th><th class="r">Units</th><th class="r">SKUs</th><th data-help="g.cycle-count">Last count</th><th data-help="col-bin-status">Status</th></tr></thead>
             <tbody>
               <tr><td class="mono nowrap">A-12</td><td>A</td><td>Sellable</td><td class="r">86</td><td class="r">4</td><td class="small">22 Sep · 0 variance</td><td><span class="status s-ok">Open</span></td></tr>
               <tr><td class="mono nowrap">A-14</td><td>A</td><td>Sellable</td><td class="r">61</td><td class="r">1</td><td class="small text-bad">Today · −2 units (Samsung T7 1 TB)</td><td><span class="status s-bad">Locked for picking · count variance</span></td></tr>
@@ -382,10 +382,10 @@
     <!-- ============================== INTEGRATIONS ============================== -->
     <div class="tab-panel" data-panel="integrations">
       <div class="pad">
-        <div class="row-between mb-12"><div><h3>Integrations</h3><div class="small muted">Each has an owner, retries, idempotency, reconciliation and a fallback (§16.4). Secrets are write-only and stored in the secrets manager.</div></div><button class="btn btn-sm" data-toast="All connections tested · 1 degraded (courier tracking)"><i data-icon="refresh" class="ic-sm"></i> Test all</button></div>
+        <div class="row-between mb-12"><div><h3 data-help="integrations">Integrations</h3><div class="small muted">Each has an owner, retries, idempotency, reconciliation and a fallback (§16.4). Secrets are write-only and stored in the secrets manager.</div></div><button class="btn btn-sm" data-help="act-test-all" data-toast="All connections tested · 1 degraded (courier tracking)"><i data-icon="refresh" class="ic-sm"></i> Test all</button></div>
         <div class="grid g-3" id="int-grid" data-anno="1A/1B · R18 Integrations: status, last sync, masked credentials, health"></div>
         <div class="card mt-16">
-          <div class="card-head"><div><h3>Integration contract checklist</h3><div class="sub">Blueprint §16.4 — must be complete before an integration goes live</div></div></div>
+          <div class="card-head"><div><h3 data-help="contract">Integration contract checklist</h3><div class="sub">Blueprint §16.4 — must be complete before an integration goes live</div></div></div>
           <div class="table-wrap"><table class="table compact" id="contract"></table></div>
         </div>
       </div>
@@ -396,15 +396,15 @@
       <div class="table-toolbar">
         <div class="input-icon" style="width:240px"><i data-icon="search"></i><input class="input input-sm" id="a-q" placeholder="Search actor, object, reason…" aria-label="Search audit log"></div>
         <select class="select input-sm" style="width:auto" id="a-actor" aria-label="Actor"><option value="">All actors</option><option>Rajesh M.</option><option>Anita R.</option><option>Deepa K.</option><option>Mohammed I.</option><option>Sneha P.</option><option>Karthik R.</option><option>System</option></select>
-        <select class="select input-sm" style="width:auto" id="a-obj" aria-label="Object type"><option value="">All objects</option><option>Access</option><option>Stock</option><option>Price</option><option>Order</option><option>Automation</option><option>Security</option><option>Export</option></select>
+        <select class="select input-sm" style="width:auto" id="a-obj" aria-label="Object type" data-help="audit-objects"><option value="">All objects</option><option>Access</option><option>Stock</option><option>Price</option><option>Order</option><option>Automation</option><option>Security</option><option>Export</option></select>
         <div class="seg"><button class="active">Today</button><button>7 days</button><button>30 days</button><button>Custom…</button></div>
-        <button class="btn btn-sm ml-auto" data-toast="Audit export EXP-0414 queued · ≤ 50,000 rows · link expires in 24 h"><i data-icon="download" class="ic-sm"></i> Export</button>
+        <button class="btn btn-sm ml-auto" data-help="audit-export" data-toast="Audit export EXP-0414 queued · ≤ 50,000 rows · link expires in 24 h"><i data-icon="download" class="ic-sm"></i> Export</button>
       </div>
       <div class="table-wrap"><table class="table compact audit-tbl">
-        <thead><tr><th>Time</th><th>Actor</th><th>Action</th><th>Object</th><th>Before → after</th><th>Reason</th><th>IP · device</th></tr></thead>
+        <thead><tr><th>Time</th><th data-help="col-actor">Actor</th><th>Action</th><th data-help="col-object">Object</th><th data-help="col-before-after">Before → after</th><th data-help="col-reason">Reason</th><th data-help="col-ip">IP · device</th></tr></thead>
         <tbody id="a-body"></tbody>
       </table></div>
-      <div class="pager"><span id="a-count"></span><span class="row gap-6"><i data-icon="lock" class="ic-sm"></i> Append-only, hash-chained · retention 8 years <span class="tbc">TBC</span> · viewing the log is itself logged</span></div>
+      <div class="pager"><span id="a-count"></span><span class="row gap-6" data-help="audit-integrity"><i data-icon="lock" class="ic-sm"></i> Append-only, hash-chained · retention 8 years <span class="tbc">TBC</span> · viewing the log is itself logged</span></div>
     </div>
 
     <!-- ============================== SYSTEM ============================== -->
@@ -412,28 +412,28 @@
       <div class="pad col gap-16">
         <div class="grid g-2">
           <div class="card">
-            <div class="card-head"><div><h3>Environments</h3><div class="sub">Production and staging are separate accounts with separate credentials</div></div></div>
+            <div class="card-head"><div><h3 data-help="environments">Environments</h3><div class="sub">Production and staging are separate accounts with separate credentials</div></div></div>
             <div class="card-body">
               <div class="env">
                 <div><div class="e-h"><b>Production</b><span class="status s-ok">Healthy</span></div>
-                  <dl class="kv tight"><dt>Domain</dt><dd class="small">tradex.example<br><span class="muted">www · erp · vendors</span></dd><dt>Version</dt><dd>v1.4.2 · 22 Sep</dd><dt>Release</dt><dd>R-24 · approved by Rajesh M.</dd><dt>Data</dt><dd>Live</dd><dt>Admin</dt><dd>MFA + IP allow-list</dd></dl></div>
+                  <dl class="kv tight"><dt>Domain</dt><dd class="small">tradex.example<br><span class="muted">www · erp · vendors</span></dd><dt>Version</dt><dd>v1.4.2 · 22 Sep</dd><dt>Release</dt><dd>R-24 · approved by Rajesh M.</dd><dt>Data</dt><dd>Live</dd><dt data-help="ip-allowlist">Admin</dt><dd>MFA + IP allow-list</dd></dl></div>
                 <div><div class="e-h"><b>Staging</b><span class="status s-info">UAT</span></div>
                   <dl class="kv tight"><dt>Domain</dt><dd class="small">tradex.example<br><span class="muted">staging · uat-vendors</span></dd><dt>Version</dt><dd>v1.5.0-rc2 · 25 Sep</dd><dt>Next release</dt><dd>Tue 29 Sep 22:00</dd><dt>Data</dt><dd>Masked copy · 20 Sep</dd><dt>Access</dt><dd>Team + client UAT users</dd></dl></div>
               </div>
               <div class="row wrap gap-8 mt-16 small">
-                <span class="muted">Feature flags:</span>
+                <span class="muted" data-help="feature-flags">Feature flags:</span>
                 <span class="badge b-ok">WhatsApp ordering · pilot (SP Road)</span><span class="badge b-ok">Dealer quick order</span><span class="badge">Marketplace sellers · off (Phase 2)</span><span class="badge">COD for dealers · off</span>
               </div>
-              <div class="callout c-info small mt-12"><i data-icon="calendar"></i><div>Change freeze for the Diwali sale: <b>15–25 Oct</b> (security fixes only).</div></div>
+              <div class="callout c-info small mt-12"><i data-icon="calendar"></i><div><span data-help="change-freeze">Change freeze</span> for the Diwali sale: <b>15–25 Oct</b> (security fixes only).</div></div>
             </div>
           </div>
           <div class="card" data-anno="§20.1 Backups, RPO/RTO & restore rehearsal">
-            <div class="card-head"><div><h3>Backups &amp; restore</h3><div class="sub">Stored outside the primary runtime · encrypted · separate cloud account</div></div><button class="btn btn-sm" data-toast="Restore test scheduled · Wed 21 Oct 22:00 on staging"><i data-icon="calendar" class="ic-sm"></i> Schedule test</button></div>
+            <div class="card-head"><div><h3 data-help="backups">Backups &amp; restore</h3><div class="sub">Stored outside the primary runtime · encrypted · separate cloud account</div></div><button class="btn btn-sm" data-toast="Restore test scheduled · Wed 21 Oct 22:00 on staging"><i data-icon="calendar" class="ic-sm"></i> Schedule test</button></div>
             <div class="card-body col gap-12">
               <div class="row-between"><span class="small"><b>Last full backup</b> · today 02:00 · 41.2 GB</span><span class="status s-ok">OK · copied to 2nd region</span></div>
-              <div class="row-between"><span class="small"><b>Point-in-time logs</b> · every 5 min · last 10:40</span><span class="status s-ok">RPO ≈ 5 min (target ≤ 1 h)</span></div>
+              <div class="row-between"><span class="small"><b data-help="pitr">Point-in-time logs</b> · every 5 min · last 10:40</span><span class="status s-ok">RPO ≈ 5 min (target ≤ 1 h)</span></div>
               <div>
-                <div class="row-between small mb-4"><b>Last restore rehearsal · 21 Sep</b><span>2 h 48 m of 4 h target</span></div>
+                <div class="row-between small mb-4"><b data-help="restore-rehearsal">Last restore rehearsal · 21 Sep</b><span>2 h 48 m of 4 h target</span></div>
                 <div class="meter m-ok"><span style="width:70%"></span></div>
                 <div class="small muted mt-4">Restored to staging; reconciled 18,442 orders, payment totals and opening stock by location — passed. Evidence RR-0009.</div>
               </div>
@@ -444,9 +444,9 @@
         </div>
 
         <div class="card">
-          <div class="card-head"><div><h3>Monitoring &amp; alerts</h3><div class="sub">Page only for urgent customer, revenue or stock risk — everything else goes to the daily review</div></div></div>
+          <div class="card-head"><div><h3 data-help="alerts">Monitoring &amp; alerts</h3><div class="sub">Page only for urgent customer, revenue or stock risk — everything else goes to the daily review</div></div></div>
           <div class="table-wrap"><table class="table compact">
-            <thead><tr><th>Alert</th><th>Condition</th><th>Route</th><th>Owner</th><th>Last fired</th></tr></thead>
+            <thead><tr><th>Alert</th><th>Condition</th><th data-help="col-route">Route</th><th>Owner</th><th>Last fired</th></tr></thead>
             <tbody>
               <tr><td class="strong">Checkout errors</td><td class="small">&gt; 2% of attempts for 5 min</td><td><span class="badge b-bad">Page · call + SMS</span></td><td class="small">Anita R. + tech partner on-call</td><td class="small muted">Never</td></tr>
               <tr><td class="strong">Captured but unconfirmed payment</td><td class="small">Any, older than 15 min</td><td><span class="badge b-bad">Page</span></td><td class="small">Deepa K.</td><td class="small text-warn">Today 10:19 · TXO-10477</td></tr>
@@ -461,9 +461,9 @@
         </div>
 
         <div class="card" data-anno="§19.3 Data retention matrix (proposed)">
-          <div class="card-head"><div><h3>Data retention matrix</h3><div class="sub">Proposed — to be confirmed with the accountant and privacy adviser (§19.2–19.3)</div></div><span class="tbc">TBC by client</span></div>
+          <div class="card-head"><div><h3 data-help="retention">Data retention matrix</h3><div class="sub">Proposed — to be confirmed with the accountant and privacy adviser (§19.2–19.3)</div></div><span class="tbc">TBC by client</span></div>
           <div class="table-wrap"><table class="table compact ret">
-            <thead><tr><th>Data</th><th>Purpose</th><th>Access</th><th>Retention</th><th>Deletion / anonymisation</th><th>Exceptions</th></tr></thead>
+            <thead><tr><th>Data</th><th>Purpose</th><th>Access</th><th>Retention</th><th data-help="col-deletion">Deletion / anonymisation</th><th data-help="col-ret-exceptions">Exceptions</th></tr></thead>
             <tbody>
               <tr><td class="strong">Customer accounts</td><td>Sign-in, addresses, preferences</td><td>Support (masked), Ops</td><td>Until closure, or 3 years inactive</td><td>Profile removed on request; orders de-linked, not deleted</td><td>Open orders, disputes</td></tr>
               <tr><td class="strong">Orders &amp; invoices</td><td>Tax records, warranty, support</td><td>Finance, Ops, own branch</td><td>8 years <span class="tbc">TBC</span></td><td>Anonymise personal fields after retention</td><td>Statutory hold</td></tr>
@@ -478,10 +478,10 @@
         </div>
 
         <div class="card">
-          <div class="card-head"><div><h3>Support &amp; maintenance</h3><div class="sub">Support hours Mon–Sat 09:00–21:00 IST · response targets set in the support agreement</div></div><span class="tbc">Targets TBC</span></div>
+          <div class="card-head"><div><h3 data-help="support">Support &amp; maintenance</h3><div class="sub">Support hours Mon–Sat 09:00–21:00 IST · response targets set in the support agreement</div></div><span class="tbc">Targets TBC</span></div>
           <div class="grid g-2" style="gap:0">
             <div class="table-wrap" style="border-right:1px solid var(--line-2)"><table class="table compact">
-              <thead><tr><th>Severity</th><th>Example</th><th>Response</th></tr></thead>
+              <thead><tr><th data-help="col-support-sev">Severity</th><th>Example</th><th>Response</th></tr></thead>
               <tbody>
                 <tr><td><span class="sev critical"><i data-icon="alert-octagon"></i> Critical</span></td><td class="small">Duplicate charges, checkout down, stock corruption</td><td class="small">Target TBC · 24×7 contact route</td></tr>
                 <tr><td><span class="sev serious"><i data-icon="alert"></i> High</span></td><td class="small">Branch cannot fulfil, refunds failing broadly</td><td class="small">Target TBC · workaround first</td></tr>
@@ -490,7 +490,7 @@
               </tbody>
             </table></div>
             <div class="card-body">
-              <div class="upper muted mb-8">Maintenance calendar</div>
+              <div class="upper muted mb-8" data-help="maintenance">Maintenance calendar</div>
               <ul class="scope-list">
                 <li><i data-icon="shield"></i><span><b>Security patches</b> — monthly, Sun 02:00–04:00 · next 4 Oct</span></li>
                 <li><i data-icon="layers"></i><span><b>Dependency &amp; provider API review</b> — monthly · next 7 Oct</span></li>
@@ -507,41 +507,41 @@
 
   <!-- ========================= Drawers & modals ========================= -->
   <div class="drawer" id="d-audit"><div class="drawer-card">
-    <div class="drawer-head"><div><div class="row gap-8"><span class="badge b-dark sq mono" id="ad-id">AUD-7781204</span><span class="badge b-outline sq" id="ad-obj">Access</span></div><h2 class="mt-8" id="ad-title">Role changed</h2><div class="small muted mt-4" id="ad-sub"></div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="drawer-head"><div><div class="row gap-8"><span class="badge b-dark sq mono" id="ad-id">AUD-7781204</span><span class="badge b-outline sq" id="ad-obj">Access</span><span data-help="d-audit" data-help-pos="in" class="hi-host"></span></div><h2 class="mt-8" id="ad-title">Role changed</h2><div class="small muted mt-4" id="ad-sub"></div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
     <div class="drawer-body col gap-16">
       <dl class="kv" id="ad-kv"></dl>
       <div><div class="label mb-8">Change</div><div id="ad-diff"></div></div>
-      <div><div class="label mb-8">Event record</div><div class="event-json" id="ad-json"></div></div>
+      <div><div class="label mb-8" data-help="d-event-record">Event record</div><div class="event-json" id="ad-json"></div></div>
       <div class="callout c-info small"><i data-icon="lock"></i><div>Tamper-evident: each event stores the hash of the previous event. A broken chain raises a Critical security alert.</div></div>
     </div>
     <div class="drawer-foot"><button class="btn" data-toast="Showing all events for this object">All events for this object</button><button class="btn btn-primary" data-close>Close</button></div>
   </div></div>
 
   <div class="modal" id="m-invite"><div class="modal-card lg">
-    <div class="modal-head"><div><h3>Invite a staff user</h3><div class="small muted">Individual account · no shared logins · invite link expires in 48 h</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-head"><div><h3 data-help="m-invite">Invite a staff user</h3><div class="small muted">Individual account · no shared logins · invite link expires in 48 h</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
     <div class="modal-body">
       <div class="form-grid">
         <div class="field"><label for="iv-n" class="req">Full name</label><input class="input" id="iv-n" placeholder="e.g. Pooja Hegde"></div>
         <div class="field"><label for="iv-e" class="req">Work email</label><input class="input" id="iv-e" placeholder="name@tradex.example"></div>
-        <div class="field"><label for="iv-m">Mobile (for OTP fallback)</label><div class="input-group"><span class="addon">+91</span><input class="input" id="iv-m" placeholder="98xxxxxxxx"></div></div>
-        <div class="field"><label for="iv-r" class="req">Role</label><select class="select" id="iv-r"><option>Sales associate</option><option>Warehouse</option><option>Support executive</option><option>Catalog specialist</option><option>Branch manager</option><option>Finance (privileged)</option><option>Operations admin (privileged)</option></select><span class="hint">Privileged roles need a second approver and app-based MFA.</span></div>
-        <div class="full"><div class="label mb-8">Location scope</div><div class="row wrap gap-16" id="iv-locs"></div></div>
-        <div class="field"><label for="iv-x">Access expires (optional)</label><input class="input" id="iv-x" placeholder="e.g. 31 Oct 2026 for seasonal staff"></div>
-        <div class="field"><label for="iv-mfa">MFA</label><select class="select" id="iv-mfa"><option>Authenticator app (required)</option><option>Security key</option></select></div>
+        <div class="field"><label for="iv-m" data-help="iv-mobile">Mobile (for OTP fallback)</label><div class="input-group"><span class="addon">+91</span><input class="input" id="iv-m" placeholder="98xxxxxxxx"></div></div>
+        <div class="field"><label for="iv-r" class="req" data-help="iv-role">Role</label><select class="select" id="iv-r"><option>Sales associate</option><option>Warehouse</option><option>Support executive</option><option>Catalog specialist</option><option>Branch manager</option><option>Finance (privileged)</option><option>Operations admin (privileged)</option></select><span class="hint">Privileged roles need a second approver and app-based MFA.</span></div>
+        <div class="full"><div class="label mb-8" data-help="iv-scope">Location scope</div><div class="row wrap gap-16" id="iv-locs"></div></div>
+        <div class="field"><label for="iv-x" data-help="iv-expires">Access expires (optional)</label><input class="input" id="iv-x" placeholder="e.g. 31 Oct 2026 for seasonal staff"></div>
+        <div class="field"><label for="iv-mfa" data-help="iv-mfa">MFA</label><select class="select" id="iv-mfa"><option>Authenticator app (required)</option><option>Security key</option></select></div>
       </div>
     </div>
     <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-primary" data-close data-toast="Invite sent · link expires in 48 h · MFA required at first sign-in">Send invite</button></div>
   </div></div>
 
   <div class="modal" id="m-thr"><div class="modal-card">
-    <div class="modal-head"><h3>Change approval threshold</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-head"><h3 data-help="m-thr">Change approval threshold</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
     <div class="modal-body col gap-12">
       <div class="callout c-warn small"><i data-icon="alert"></i><div>Placeholder values are for discussion. A change takes effect only after a second approver confirms it, from the effective date, and is audited.</div></div>
       <div class="form-grid">
         <div class="field"><label for="th-c">Control</label><input class="input" id="th-c" value="Discount · branch manager" readonly></div>
         <div class="field"><label for="th-v" class="req">New limit</label><div class="input-group"><input class="input" id="th-v" value="8"><span class="addon">% of list price</span></div></div>
-        <div class="field"><label for="th-d" class="req">Effective from</label><input class="input" id="th-d" value="1 Oct 2026 00:00"></div>
-        <div class="field"><label for="th-a">Second approver</label><select class="select" id="th-a"><option>Anita Rao</option><option>Deepa Krishnan</option></select></div>
+        <div class="field"><label for="th-d" class="req" data-help="th-effective">Effective from</label><input class="input" id="th-d" value="1 Oct 2026 00:00"></div>
+        <div class="field"><label for="th-a" data-help="th-second">Second approver</label><select class="select" id="th-a"><option>Anita Rao</option><option>Deepa Krishnan</option></select></div>
         <div class="field full"><label for="th-r" class="req">Reason</label><textarea class="textarea" id="th-r" style="min-height:64px"></textarea></div>
       </div>
     </div>
@@ -549,11 +549,11 @@
   </div></div>
 
   <div class="modal" id="m-ea"><div class="modal-card">
-    <div class="modal-head"><div><h3>Request emergency access</h3><div class="small muted">Time-bounded · reviewed afterwards</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-head"><div><h3 data-help="m-ea">Request emergency access</h3><div class="small muted">Time-bounded · reviewed afterwards</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
     <div class="modal-body col gap-12">
-      <div class="field"><label for="ea-s" class="req">Scope</label><select class="select" id="ea-s"><option>Stock adjustments at one location</option><option>Refund retry (failed refunds only)</option><option>Order release from hold</option></select></div>
-      <div class="field"><label for="ea-d" class="req">Duration</label><select class="select" id="ea-d"><option>1 hour</option><option>2 hours</option><option>4 hours (maximum)</option></select></div>
-      <div class="field"><label for="ea-r" class="req">Reason</label><textarea class="textarea" id="ea-r" placeholder="What is blocked, who was tried, and why it cannot wait"></textarea></div>
+      <div class="field"><label for="ea-s" class="req" data-help="ea-scope">Scope</label><select class="select" id="ea-s"><option>Stock adjustments at one location</option><option>Refund retry (failed refunds only)</option><option>Order release from hold</option></select></div>
+      <div class="field"><label for="ea-d" class="req" data-help="ea-duration">Duration</label><select class="select" id="ea-d"><option>1 hour</option><option>2 hours</option><option>4 hours (maximum)</option></select></div>
+      <div class="field"><label for="ea-r" class="req" data-help="ea-reason">Reason</label><textarea class="textarea" id="ea-r" placeholder="What is blocked, who was tried, and why it cannot wait"></textarea></div>
       <div class="field"><label for="ea-a">Approver</label><select class="select" id="ea-a"><option>Rajesh Menon (app approval)</option><option>Anita Rao (app approval)</option></select></div>
     </div>
     <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-danger" data-close data-toast="Emergency access request EA-0014 sent · approver notified">Send request</button></div>
@@ -589,7 +589,7 @@ TX.ready(() => {
     $("#u-body").innerHTML = list.map((u) => `<tr ${u.st === "off" ? 'style="opacity:.6"' : ""}>
       <td class="check-col"><input type="checkbox" aria-label="Select ${u.name}"></td>
       <td><div class="row gap-8"><div class="avatar sm" style="background:${u.color}">${u.init}</div><div><div class="cell-main">${u.name}</div><div class="cell-sub">${u.email}</div></div></div></td>
-      <td><div class="small strong">${u.roles}</div>${u.priv ? `<span class="priv mt-4">${ic("lock")} Privileged</span>` : ""}${u.sod ? `<span class="badge b-warn mt-4">SoD post-review</span>` : ""}</td>
+      <td><div class="small strong">${u.roles}</div>${u.priv ? `<span class="priv mt-4">${ic("lock")} Privileged</span>` : ""}${u.sod ? `<span class="badge b-warn mt-4" data-help="g.sod">SoD post-review</span>` : ""}</td>
       <td class="small">${u.scope}</td>
       <td><span class="small strong nowrap ${u.mfa[0] === "ok" ? "text-ok" : u.mfa[0] === "warn" ? "text-warn" : u.mfa[0] === "bad" ? "text-bad" : "muted"}">${ic(MFAI[u.mfa[0]], "ic-sm ic-in")} ${u.mfa[1]}</span>${u.mfa[2] ? `<div class="cell-sub">${u.mfa[2]}</div>` : ""}</td>
       <td><div class="small">${u.last[0]}</div><div class="cell-sub">${u.last[1]}</div></td>
@@ -651,8 +651,9 @@ TX.ready(() => {
     { n: "Legacy ERP / POS", p: "Existing AWS system (Mysuru)", logo: ["LG", "#475467"], st: ["warn", "Transitional"], last: "Read-only sync 10:30 · lag 12 min", cred: [["DB user", "readonly_tradex", "password ••••"], ["Cutover", "Mysuru 15 Oct 2026"]], health: 98.4, owner: "Anita R. + tech partner", fb: "Segregated stock allocation — no dual live ledgers" },
     { n: "Supplier feeds", p: "Prime IT API · RenewTech CSV · NetCore SFTP", logo: ["SF", "#0e9f8a"], st: ["warn", "1 feed stale (26 h)"], last: "Prime IT 09:12 · RenewTech 06:00 · NetCore 25 Sep 08:40", cred: [["Prime IT", "••••9fa0", "API key"], ["NetCore", "ed25519 ••••7c1e", "SFTP key"]], health: 91.3, owner: "Sneha P. / Anita R.", fb: "Offers switch to “confirm before promise”" },
   ];
+  const IH = { "Payment gateway": "int-payment", "Courier": "int-courier", "WhatsApp Business": "int-whatsapp", "Email & SMS": "int-email", "Accounting export": "int-accounting", "Legacy ERP / POS": "int-legacy", "Supplier feeds": "int-supplier" };   // help keys per card
   $("#int-grid").innerHTML = INTS.map((i) => `<div class="card int-card">
-    <div class="card-head"><div class="row gap-12"><span class="int-logo" style="background:${i.logo[1]}">${i.logo[0]}</span><div><h3>${i.n}</h3><div class="sub">${i.p}</div></div></div></div>
+    <div class="card-head"><div class="row gap-12"><span class="int-logo" style="background:${i.logo[1]}">${i.logo[0]}</span><div><h3 data-help="${IH[i.n]}">${i.n}</h3><div class="sub">${i.p}</div></div></div></div>
     <div class="card-body">
       <div class="row-between"><span class="status s-${i.st[0]}">${i.st[1]}</span><span class="small muted">Owner: ${i.owner}</span></div>
       ${i.alert ? `<div class="callout c-bad small" style="padding:8px 10px">${ic("alert", "ic-sm")}<div>${i.alert}</div></div>` : ""}
@@ -663,7 +664,7 @@ TX.ready(() => {
     </div>
     <div class="card-foot"><button class="btn btn-xs" data-toast="${i.n}: test call OK · 312 ms">${ic("refresh", "ic-sm")} Test</button><div class="row gap-4"><button class="btn btn-xs" data-toast="Rotation needs a second approver · new secret is write-only">${ic("key", "ic-sm")} Rotate</button><button class="btn btn-xs" data-toast="Opening ${i.n} logs (credentials redacted)">Logs</button></div></div>
   </div>`).join("") + `<div class="card span-2" style="border-style:dashed;background:var(--bg)">
-    <div class="card-head" style="border-color:var(--line)"><div><h3>Planned integrations</h3><div class="sub">Not active — each needs its §16.4 contract, sandbox access and an owner before go-live</div></div><button class="btn btn-sm" data-toast="Integration request logged · change control CR-032">${ic("plus", "ic-sm")} Request integration</button></div>
+    <div class="card-head" style="border-color:var(--line)"><div><h3 data-help="int-planned">Planned integrations</h3><div class="sub">Not active — each needs its §16.4 contract, sandbox access and an owner before go-live</div></div><button class="btn btn-sm" data-toast="Integration request logged · change control CR-032">${ic("plus", "ic-sm")} Request integration</button></div>
     <div class="card-body"><div class="grid g-2" style="gap:10px 20px">
       <div class="row-top gap-8 small">${ic("truck", "ic-sm")}<span><b>Second courier</b> <span class="badge sq">1B</span><br><span class="muted">Only if PIN-code coverage needs it; booking de-duplication per provider</span></span></div>
       <div class="row-top gap-8 small">${ic("receipt", "ic-sm")}<span><b>E-invoice / e-way bill</b> <span class="badge sq">TBC</span><br><span class="muted">Only where applicable to the entity — accountant decision (§19.2)</span></span></div>

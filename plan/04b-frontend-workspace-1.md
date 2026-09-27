@@ -119,6 +119,7 @@ D-048, D-078).
 | 20 | Printing (pick lists, invoices, labels, manifests) and devices (scanners, scale, camera, erasure station, POS terminal) follow D-110, D-111, D-147 | BP §10.4; D-110, D-111, D-147 | REQUIRES_DECISION |
 | 21 | Page tabs update the URL fragment; tabs inside drawers/modals do not; records open by link parameter (MK `?order=`, `?rma=`, `?conv=`, `?loc=`, `&tab=`). Route scheme NOT SPECIFIED | MK `assets/tradex.js` `bindEvents`, page scripts; D-101 | MOCKUP |
 | 22 | Keyboard: `Esc` closes open modals, drawers and menus; charts are focusable and navigable with arrow keys | MK `assets/tradex.js`; BP §6.7 | MOCKUP |
+| 23 | Every screen carries contextual help (§2.21): an ⓘ explanation for each section, tab, sub-tab, KPI tile, table and non-obvious column, modal, drawer, form field, setting, status set and important action; abbreviations link to the glossary; the operational screens P-E02, P-E03, P-E04, P-E06, P-E07, P-E08, P-E09, P-E12 also show the guided-workflow elements of §2.21 | D-224 (user request 2026-09-28); BP §24.2 | DECIDED (D-224) · content ownership REQUIRES_DECISION (D-225) |
 
 ### 1.5 The D-004 rule
 
@@ -188,6 +189,80 @@ Chart rendering technology is REQUIRES_DECISION (D-103); the mockup's SVG helper
 | 5 | **Assignee picker** | Select of staff users eligible for the task (role + location scope), "me" first | gap-7 | BP §13.4 (owner), §12.5 (assigned role/person) | DOCUMENTED |
 | 6 | **Reason-coded form** | Select of reason codes + free-text note; reason catalogues are D-139 (mockup lists are samples) | per action | BP §9.6, §10.3, §18.2; D-139 | REQUIRES_DECISION (D-139) |
 
+### 2.21 Contextual help, glossary and guided workflow (ERP workspace and vendor portal)
+
+Added to the mockup on 2026-09-28 at the user's request (D-224). Used on every P-E and P-V screen; the vendor portal
+(04c) uses the help parts (#1–#5) only. MK: `assets/tradex.js` sections "Contextual help" and "Guided workflow strip";
+styles at the end of `assets/tradex.css`; content in `assets/help/` (`glossary.js`, `shell.js`, one file per page).
+
+| # | Element | Anatomy (MK) | Behaviour rules | Source | Label |
+|---|---|---|---|---|---|
+| 1 | **ⓘ help button** | Small circled "i" after a heading, KPI label, column header, form label, switch or important button (`data-help="<key>"`); one "About this tab" button at the end of each tab bar explains the active tab | Opens the help panel on that entry and outlines the explained element; accessible name "About “<title>”"; kept outside `<label>` so field names stay clean; never nested inside another control | D-224; MK | DECIDED (D-224) |
+| 2 | **Help panel** | Right-side panel (full-height sheet on narrow screens): kind + title (+ expansion for terms), search box, "This page" / "Glossary A–Z" switch, body, back button, "Show help icons" switch | Entry sections in fixed order: What it is · What it's for · How to read it · What you do here · lists (columns, statuses shown as the real pills, buttons, fields, options) · What happens next · Good to know · Terms used here · Related help; links between entries; `Esc` closes and returns focus; non-modal on desktop so the screen stays visible | D-224; BP §24.2 (role walkthroughs, owner guide) | DECIDED (D-224) |
+| 3 | **Page guide** | Top-bar ? button (and the ⓘ on the page `h1`) opens the page guide: purpose, how the page is organised, daily routine, where the work continues, "On this page" links | Replaces the MK v0.1 Help link to Settings (§3.2 #5) | D-224; D-174 | DECIDED (D-224) |
+| 4 | **Glossary terms** | Abbreviations (RMA, GRN, ATP, SKU, GST…) dotted-underlined at their first mention in each card, panel, modal or drawer | Hover/focus shows a one-line meaning; click/Enter opens the full entry; IDs such as `PO-2026-0192` are not marked; switch in the panel hides icons and underlines (remembered per user) | D-224 | DECIDED (D-224) |
+| 5 | **Help content** | Entries per screen and a shared glossary | Plain language for non-experts; values that are configuration (windows, limits, thresholds, providers) must be read from live configuration, never hard-coded — the MK text calls them sample values; content owner, review and change process per D-225 | D-224; 00-conventions §1.1; D-225 | DECIDED (D-224) · REQUIRES_DECISION (D-225) |
+| 6 | **"How it works" strip** | Card under the page head: 4–7 numbered steps of the screen's workflow in the order the work happens, each with a plain title, one sentence, a live count and the responsible role; attention step highlighted; "Hide guide" (remembered per user) | Clicking a step opens the tab/queue (and filter) for that step; counts come from the same queue/facet counts as the tabs (gap-2, D-172) — never separate client arithmetic | D-224; MK P-E02, P-E03, P-E04, P-E06, P-E07, P-E08, P-E09, P-E12 | DECIDED (D-224) |
+| 7 | **Tab intro** | One line at the top of each main tab: what the tab is for, how to use it, what to do first | Static help text (from the help content, #5) | D-224 | DECIDED (D-224) |
+| 8 | **Next-step box** | In record drawers/modals that move through states: "Next step: …" + button to the tab where it is done | Text chosen from the record's current state(s) returned by the API; hidden when no action is open | D-224 | DECIDED (D-224) |
+| 9 | **Plain tab labels** | Jargon tab names shown in plain words with the official term in brackets (e.g. "Return cases (RMA)") | Tab ids / URL fragments unchanged; crosswalk of renamed labels in §2.22 | D-224 | DECIDED (D-224) |
+
+Out of scope for §2.21: the prototype toolbar's "Help icons" button (review aid, rule 17), and the D-171 explanatory
+panels (formula cards, worked examples, "Try:" presets), which stay under D-171.
+
+### 2.22 Tab labels renamed in the mockup (2026-09-28, D-224)
+
+Plain-language labels (§2.21 #9). Tab ids and URL fragments did not change, so every `#id` reference in this file and
+in `04c` still applies; where a section heading below quotes an old label, the new label is the one on screen.
+
+| Page | MK file | Tab id | Label in v0.1 | Label now |
+|---|---|---|---|---|
+| P-E06 | `erp-catalog.html` | `#templates` | Attribute templates | Category fields (templates) |
+| P-E06 | `erp-catalog.html` | `#review` | Review queue | Review & approve |
+| P-E12 | `erp-finance.html` | `#payments` | Payment attempts | Customer payments |
+| P-E12 | `erp-finance.html` | `#events` | Webhook events | Provider messages (webhooks) |
+| P-E12 | `erp-finance.html` | `#recon` | Settlement reconciliation | Match & resolve |
+| P-E12 | `erp-finance.html` | `#cod` | COD remittance | Courier cash (COD) |
+| P-E12 | `erp-finance.html` | `#export` | Accounting export & GST series | Accounting export & invoices |
+| P-E03 | `erp-fulfilment.html` | `#picking` | Picking | Pick & scan |
+| P-E03 | `erp-fulfilment.html` | `#exceptions` | Exceptions | Problems (exceptions) |
+| P-E08 | `erp-inventory.html` | `#stock` | Stock by SKU | Stock by product |
+| P-E08 | `erp-inventory.html` | `#serials` | Serials | Serial lookup |
+| P-E08 | `erp-inventory.html` | `#counts` | Counts | Stock counts |
+| P-E08 | `erp-inventory.html` | `#reservations` | Reservations | Order holds |
+| P-E02 | `erp-orders.html` | `#all` | All | All orders |
+| P-E02 | `erp-orders.html` | `#od-notes` | Notes | Internal notes |
+| P-E07 | `erp-pricing.html` | `#tiers` | Quantity tiers | Bulk prices (tiers) |
+| P-E07 | `erp-pricing.html` | `#simulator` | Price simulator | Price preview (simulator) |
+| P-E07 | `erp-pricing.html` | `#promotions` | Promotions | Promotions & coupons |
+| P-E07 | `erp-pricing.html` | `#controls` | Margin & authority | Margin & approval limits |
+| P-E07 | `erp-pricing.html` | `#rules` | Edge cases | Special cases |
+| P-E07 | `erp-pricing.html` | `#approvals` | Pending changes | Awaiting approval |
+| P-E07 | `erp-pricing.html` | `#audit` | Change audit | Change history (audit) |
+| P-E09 | `erp-purchasing.html` | `#new-po` | New PO | New purchase order |
+| P-E09 | `erp-purchasing.html` | `#receive` | Receive (GRN) | Receive goods (GRN) |
+| P-E09 | `erp-purchasing.html` | `#bills` | Bills & 3-way match | Supplier bills |
+| P-E04 | `erp-returns.html` | `#rma` | RMA queue | Return cases (RMA) |
+| P-E04 | `erp-returns.html` | `#refunds` | Refunds pending | Refunds |
+| P-E04 | `erp-returns.html` | `#supplier` | Supplier RMAs | Returns to suppliers |
+| P-E04 | `erp-returns.html` | `#quarantine` | Quarantine | Quarantine stock |
+| P-E04 | `erp-returns.html` | `#rd-dec` | Decisions | Refund & stock decisions |
+
+
+### 2.23 Other mockup changes made with D-224 (2026-09-28)
+
+Guidance-related additions on the operational screens; each keeps every v0.1 feature. Sample texts remain samples.
+
+| Page | Change in MK | Note |
+|---|---|---|
+| All P-E, P-V | ⓘ help, help panel, glossary terms (§2.21 #1–#5); Help (?) opens the page guide | Content: T-1A.16-M24-06, T-1B.1-M14-16 |
+| P-E02, P-E03, P-E04, P-E06, P-E07, P-E08, P-E09, P-E12 | "How it works" strip; tab intros; next-step boxes in record drawers/forms; clearer action labels (e.g. "Place on hold", "Send payment reminder", "Approve & post adjustment", "Submit to provider") | Strip steps open the matching tab/saved view and, where the page supports it, a filter (P-E02 step filter; P-E04 RMA state; P-E06 status; P-E08 movements/stock filters; P-E09 PO stage) |
+| P-E03 | Row button "Claim" (no action in v0.1) → "View courier claim" | Behaviour per §6 of this file |
+| P-E07 | Decide modal explains the discount-override case separately (`data-decide-ctx="override"`) | Same decision endpoint |
+| P-E09 | "Send to supplier" action for approved POs in `d-po`; supplier stock-feed freshness line in `#suppliers` | Sending a PO is part of BP §9.3; freshness data already existed in the page data |
+| P-E12 | New read-only drawer `d-um` for an unmatched reconciliation item: what it means, how to resolve it, the action and a link to the related tab | Resolution texts in MK are illustrative; real matching rules per D-011/D-012 (finance) |
+| P-E02, P-E06, P-E08, P-E12 and others | Layout: detail headers, button rows and card footers wrap at laptop widths; wide tables inside scroll wrappers; stacked grids on tablets | No horizontal page overflow at 1024–1440 px on the changed tabs |
+
 ---
 
 ## 3. Workspace shell (MK `assets/tradex.js` `buildWorkspaceShell("erp")`)
@@ -223,7 +298,7 @@ Chart rendering technology is REQUIRES_DECISION (D-103); the mockup's SVG helper
 | 2 | Location scope switcher | Button "All locations" ▾; menu "Scope": All locations, then each location with type icon (warehouse/branch) and code | Lists locations the user may see (API-M03-02 is `loc`-scoped; full list for R-owner/R-ops_admin). Semantics — global filter vs default for page filters, persistence per user, availability of "All locations" for branch-scoped roles, relation to page-level location filters on P-E01/P-E02/P-E03/P-E08 — not specified | API-M03-02 | MOCKUP; BP §3.1, §9.5; D-029 | REQUIRES_DECISION (D-170, D-029) |
 | 3 | "New" menu (primary) | Assisted order → P-E02 `#assisted`; Purchase order → P-E09 `#new-po`; Goods receipt (GRN) → P-E09 `#receive`; Stock transfer → P-E08 `#transfers` (MK opens the tab; the create form is `m-transfer`); Product draft → P-E06 `#editor`; Bulk import → P-E06 `#import` | Each item shown only if the user may perform the create operation; the target screen performs the call (server re-authorises) | via targets: API-M10-18, API-M07-04, API-M07-09, API-M06-13, API-M04-16, API-M04-30 | MOCKUP; BP §19.1 | NOT_STARTED |
 | 4 | Notifications (bell + unread pip) | Menu (360 px): "Notifications", "Mark all read"; items with icon + text linking to the relevant screen (samples: payment captured not confirmed → P-E12; cycle-count variance → P-E08#counts; vendor submissions waiting → P-E11; courier sync failed → P-E14) | Lists own in-app notifications (unread first); each item links to its entity; "Mark all read" marks all; routine notifications stay in staff queues, owner receives digest + urgent material exceptions only; refresh per D-146; staff notification events per D-058 | API-M20-01, API-M20-02 | MOCKUP; BP §12.5, §12.3 (Notification: recipient, urgency, dedup, frequency cap) | REQUIRES_DECISION (D-146, D-058) |
-| 5 | Help | Icon button; MK links to `erp-admin.html` (Settings) | Destination not specified. BP §24.2 requires staff SOPs, role walkthroughs and an owner guide to the dashboard | — | MOCKUP | REQUIRES_DECISION (D-174) |
+| 5 | Help | Icon button (?); since 2026-09-28 MK opens the contextual help panel on the page guide (§2.21 #3); MK v0.1 linked to `erp-admin.html` (Settings) | Opens the help panel (page guide, glossary, search) — D-224. Whether it also links to a role-based SOP/walkthrough library (BP §24.2) stays under D-174 | — | MOCKUP | DECIDED (D-224) · SOP library REQUIRES_DECISION (D-174) |
 | 6 | User menu | Avatar, name, role; items: My profile, Security & MFA, **Delegation while away** → P-E15 `#delegation`, Sign out | See §3.3 | see §3.3 | MOCKUP | see §3.3 |
 
 ### 3.3 User menu items

@@ -53,11 +53,11 @@
   <div class="page-head">
     <div>
       <div class="crumbs"><a href="vendor-dashboard.html">Vendor portal</a><i data-icon="chevron-right"></i><span>Profile &amp; statements</span></div>
-      <h1>Business profile &amp; statements</h1>
+      <h1 data-help="page">Business profile &amp; statements</h1>
       <p class="sub">Verified details, documents, users, statements, terms and payout bank account for RenewTech Refurbishers (V-022).</p>
     </div>
     <div class="actions">
-      <button class="btn" data-open="m-req"><i data-icon="edit"></i> Request a change</button>
+      <button class="btn" data-open="m-req" data-help="m-req"><i data-icon="edit"></i> Request a change</button>
       <button class="btn btn-vendor" data-toast="Statement for Sep 2026 downloaded (PDF)"><i data-icon="download"></i> Download statement</button>
     </div>
   </div>
@@ -65,7 +65,7 @@
   <section class="card idcard" data-anno="1B · Verified identity: GSTIN, PAN, approval">
     <div class="v-logo">RT</div>
     <div>
-      <h2 style="font-size:18px">RenewTech Refurbishers Pvt Ltd</h2>
+      <h2 style="font-size:18px" data-help="idcard">RenewTech Refurbishers Pvt Ltd</h2>
       <div class="row wrap gap-6 mt-8"><span class="badge b-vendor dot">Approved supplier</span><span class="badge b-info">Supplier-fulfilment pilot</span><span class="badge"><i data-icon="lock"></i> Marketplace · Phase 2</span></div>
       <div class="row wrap gap-16 small muted mt-8">
         <span class="row gap-4"><i data-icon="building" class="ic-sm"></i> Vendor V-022 · since 14 Mar 2026</span>
@@ -82,28 +82,28 @@
 
   <div data-tabset class="mt-16">
     <div class="tabs">
-      <button class="tab active" data-tab="profile"><i data-icon="building"></i> Profile</button>
-      <button class="tab" data-tab="documents"><i data-icon="file"></i> Documents <span class="count" style="background:var(--warn-50);color:var(--warn-tx)" title="1 document expiring">1 expiring</span></button>
-      <button class="tab" data-tab="users"><i data-icon="users"></i> Users &amp; roles <span class="count">5</span></button>
-      <button class="tab" data-tab="statements"><i data-icon="receipt"></i> Statements</button>
-      <button class="tab" data-tab="marketplace"><i data-icon="lock"></i> Marketplace · Phase 2</button>
-      <button class="tab" data-tab="terms"><i data-icon="history"></i> Terms <span class="count" style="background:var(--warn-50);color:var(--warn-tx)">v3.1</span></button>
-      <button class="tab" data-tab="bank"><i data-icon="wallet"></i> Bank details <span class="count" style="background:var(--warn-50);color:var(--warn-tx)">Pending</span></button>
+      <button class="tab active" data-tab="profile" data-help="tab-profile"><i data-icon="building"></i> Profile</button>
+      <button class="tab" data-tab="documents" data-help="tab-documents"><i data-icon="file"></i> Documents <span class="count" style="background:var(--warn-50);color:var(--warn-tx)" title="1 document expiring">1 expiring</span></button>
+      <button class="tab" data-tab="users" data-help="tab-users"><i data-icon="users"></i> Users &amp; roles <span class="count">5</span></button>
+      <button class="tab" data-tab="statements" data-help="tab-statements"><i data-icon="receipt"></i> Statements</button>
+      <button class="tab" data-tab="marketplace" data-help="tab-marketplace"><i data-icon="lock"></i> Marketplace · Phase 2</button>
+      <button class="tab" data-tab="terms" data-help="tab-terms"><i data-icon="history"></i> Terms <span class="count" style="background:var(--warn-50);color:var(--warn-tx)">v3.1</span></button>
+      <button class="tab" data-tab="bank" data-help="tab-bank"><i data-icon="wallet"></i> Bank details <span class="count" style="background:var(--warn-50);color:var(--warn-tx)">Pending</span></button>
     </div>
 
     <!-- ===================== PROFILE ===================== -->
     <div class="tab-panel active" data-panel="profile">
       <div class="grid g-2 mt-16">
         <div class="card">
-          <div class="card-head"><div><h3>Verified business details</h3><div class="sub">Locked fields <span class="lockf"><i data-icon="lock"></i></span> change only through a verified change request</div></div><button class="btn btn-sm" data-open="m-req">Request change</button></div>
+          <div class="card-head"><div><h3 data-help="biz">Verified business details</h3><div class="sub">Locked fields <span class="lockf"><i data-icon="lock"></i></span> change only through a verified change request</div></div><button class="btn btn-sm" data-open="m-req">Request change</button></div>
           <div class="card-body">
             <dl class="kv">
               <dt>Legal name</dt><dd>RenewTech Refurbishers Pvt Ltd <span class="lockf"><i data-icon="lock"></i></span></dd>
               <dt>Trade name</dt><dd>RenewTech Refurbishers</dd>
               <dt>Constitution</dt><dd>Private limited company · CIN U52609TN2019PTC128811</dd>
-              <dt>GSTIN</dt><dd class="mono">33AAKCR4821M1Z6 <span class="lockf"><i data-icon="lock"></i></span><span class="vbadge"><i data-icon="check-circle"></i> Active · verified 12 Mar 2026</span></dd>
-              <dt>PAN</dt><dd class="mono">AAKCR4821M <span class="lockf"><i data-icon="lock"></i></span><span class="vbadge"><i data-icon="check-circle"></i> Verified</span></dd>
-              <dt>Udyam (MSME)</dt><dd class="mono">UDYAM-TN-02-0045817 <span class="badge" style="font-family:var(--font)">Small</span></dd>
+              <dt data-help="g.gstin">GSTIN</dt><dd class="mono">33AAKCR4821M1Z6 <span class="lockf"><i data-icon="lock"></i></span><span class="vbadge"><i data-icon="check-circle"></i> Active · verified 12 Mar 2026</span></dd>
+              <dt data-help="g.pan">PAN</dt><dd class="mono">AAKCR4821M <span class="lockf"><i data-icon="lock"></i></span><span class="vbadge"><i data-icon="check-circle"></i> Verified</span></dd>
+              <dt data-help="g.cin">Udyam (MSME)</dt><dd class="mono">UDYAM-TN-02-0045817 <span class="badge" style="font-family:var(--font)">Small</span></dd>
               <dt>Registered address</dt><dd>Plot 14, SIDCO Industrial Estate, Guindy, Chennai, Tamil Nadu 600032 <span class="lockf"><i data-icon="lock"></i></span></dd>
               <dt>Established</dt><dd>2019 · 34 employees · refurbishing capacity ~600 units/month</dd>
               <dt>Website</dt><dd><a href="#" data-toast="Opens renewtech.example (sample)">renewtech.example</a></dd>
@@ -111,7 +111,7 @@
           </div>
         </div>
         <div class="card">
-          <div class="card-head"><div><h3>Contacts</h3><div class="sub">Who Tradex contacts for what — notifications follow these roles</div></div><button class="btn btn-sm" data-toast="Contact editor opened">Edit</button></div>
+          <div class="card-head"><div><h3 data-help="contacts">Contacts</h3><div class="sub">Who Tradex contacts for what — notifications follow these roles</div></div><button class="btn btn-sm" data-toast="Contact editor opened">Edit</button></div>
           <div class="list-row"><div class="avatar" style="background:#0e9f8a">SB</div><div class="grow"><b>Suresh Babu</b> <span class="badge b-vendor">Primary · escalation</span><div class="small muted">Director · suresh@renewtech.example · +91 98410 22077</div></div></div>
           <div class="list-row"><div class="avatar" style="background:#0b8ec9">MR</div><div class="grow"><b>Meena R.</b> <span class="badge">Operations</span><div class="small muted">Availability, POs, dispatch · ops@renewtech.example · +91 98840 51290</div></div></div>
           <div class="list-row"><div class="avatar" style="background:#c2410c">KS</div><div class="grow"><b>Karthikeyan S.</b> <span class="badge">Accounts</span><div class="small muted">Invoices, statements, payments · accounts@renewtech.example · +91 94440 18832</div></div></div>
@@ -121,9 +121,9 @@
       </div>
 
       <div class="card mt-16" data-anno="1B · §11.1 Permitted categories & locations set by Tradex">
-        <div class="card-head"><div><h3>Permitted categories &amp; locations</h3><div class="sub">Set by Tradex at approval — every submission, feed and PO is checked against this scope</div></div><button class="btn btn-sm" data-open="m-req"><i data-icon="plus"></i> Request category or location</button></div>
+        <div class="card-head"><div><h3 data-help="scope">Permitted categories &amp; locations</h3><div class="sub">Set by Tradex at approval — every submission, feed and PO is checked against this scope</div></div><button class="btn btn-sm" data-open="m-req"><i data-icon="plus"></i> Request category or location</button></div>
         <div class="table-wrap"><table class="table">
-          <thead><tr><th>Scope</th><th>Conditions</th><th>Supply model</th><th>Decision</th><th>Reviewer</th><th>Status</th></tr></thead>
+          <thead><tr><th>Scope</th><th>Conditions</th><th data-help="col-supply-model">Supply model</th><th>Decision</th><th>Reviewer</th><th data-help="col-scope-status">Status</th></tr></thead>
           <tbody>
             <tr><td><div class="row"><span class="li-icon vendor" style="width:32px;height:32px;border-radius:8px;display:grid;place-items:center;background:var(--vendor-50);color:#07695b"><i data-icon="laptop"></i></span><b>Laptops</b></div></td><td><span class="cond refurb">Refurbished · Grade A / B</span></td><td class="small">Supplier (POs) · supplier-fulfilment pilot (4 SKUs, from 15 Sep)</td><td class="small">Approved 14 Mar 2026</td><td class="small">Anita Rao</td><td><span class="status s-ok">Active</span></td></tr>
             <tr><td><div class="row"><span style="width:32px;height:32px;border-radius:8px;display:grid;place-items:center;background:var(--vendor-50);color:#07695b"><i data-icon="monitor"></i></span><b>Monitors</b></div></td><td><span class="cond refurb">Refurbished · Grade A / B</span></td><td class="small">Supplier (POs)</td><td class="small">Approved 14 Mar 2026</td><td class="small">Anita Rao</td><td><span class="status s-ok">Active</span></td></tr>
@@ -140,7 +140,7 @@
       </div>
 
       <div class="card mt-16">
-        <div class="card-head"><div><h3>Approval record</h3><div class="sub">Kept for audit — who approved your account, why, and on which terms</div></div></div>
+        <div class="card-head"><div><h3 data-help="approval">Approval record</h3><div class="sub">Kept for audit — who approved your account, why, and on which terms</div></div></div>
         <div class="card-body grid g-2">
           <dl class="kv"><dt>Decision</dt><dd>Approved as supplier (refurbished)</dd><dt>Reviewer</dt><dd>Anita Rao · Operations admin</dd><dt>Date</dt><dd>14 Mar 2026</dd><dt>Terms at approval</dt><dd>Supplier terms v2 → now v3</dd><dt>Next review</dt><dd>14 Mar 2027</dd></dl>
           <dl class="kv"><dt>Reasons</dt><dd style="font-weight:500">Documents verified (GST, PAN, CIN, EPR). Sample batch of 5 units passed inbound QC (4 × Grade A, 1 × Grade B). Two trade references confirmed.</dd><dt>Pilot addendum</dt><dd>Supplier fulfilment approved 15 Sep 2026 by Rajesh Menon (owner) · 4 SKUs · ends 31 Dec 2026</dd></dl>
@@ -150,10 +150,10 @@
 
     <!-- ===================== DOCUMENTS ===================== -->
     <div class="tab-panel" data-panel="documents">
-      <div class="callout c-warn mt-16"><i data-icon="alert"></i><div><strong>EPR authorisation expires in 19 days (15 Oct 2026).</strong> Upload the renewed certificate — if it lapses, your account is suspended automatically and offers pause until it's verified.</div><button class="btn btn-sm ml-auto" data-toast="Upload dialog opened · EPR authorisation">Upload renewal</button></div>
+      <div class="callout c-warn mt-16"><i data-icon="alert"></i><div><strong data-help="doc-expiry">EPR authorisation expires in 19 days (15 Oct 2026).</strong> Upload the renewed certificate — if it lapses, your account is suspended automatically and offers pause until it's verified.</div><button class="btn btn-sm ml-auto" data-toast="Upload dialog opened · EPR authorisation">Upload renewal</button></div>
       <div class="card mt-16" data-anno="1B · GST, PAN, agreement v3 with validity dates">
         <div class="table-wrap"><table class="table">
-          <thead><tr><th>Document</th><th>Number / reference</th><th>Uploaded</th><th>Valid</th><th>Verification</th><th class="r"></th></tr></thead>
+          <thead><tr><th>Document</th><th>Number / reference</th><th>Uploaded</th><th data-help="col-valid">Valid</th><th data-help="col-verif">Verification</th><th class="r"></th></tr></thead>
           <tbody>
             <tr><td><div class="row"><i data-icon="file"></i><b>GST registration certificate (REG-06)</b></div></td><td class="mono small">33AAKCR4821M1Z6</td><td class="small">2 Mar 2026</td><td class="small">No expiry · status Active</td><td><span class="status s-ok">Verified 12 Mar</span><div class="cell-sub">GST portal check · re-checked monthly</div></td><td class="r"><button class="btn btn-xs" data-toast="Opened GST certificate (PDF)">View</button></td></tr>
             <tr><td><div class="row"><i data-icon="file"></i><b>PAN card</b></div></td><td class="mono small">AAKCR4821M</td><td class="small">2 Mar 2026</td><td class="small">No expiry</td><td><span class="status s-ok">Verified 12 Mar</span></td><td class="r"><button class="btn btn-xs" data-toast="Opened PAN (PDF)">View</button></td></tr>
@@ -166,7 +166,7 @@
             <tr><td><div class="row"><i data-icon="wallet"></i><b>Cancelled cheque — ICICI ••7710</b></div></td><td class="small">For bank change BCR-0007</td><td class="small">25 Sep 2026</td><td class="small">—</td><td><span class="status s-warn">Pending verification</span><div class="cell-sub"><a href="#" data-goto="bank">See bank change</a></div></td><td class="r"><button class="btn btn-xs" data-toast="Opened cheque image">View</button></td></tr>
           </tbody>
         </table></div>
-        <div class="card-foot"><div class="row gap-8"><select class="select input-sm" style="width:220px" aria-label="Document type"><option>Choose document type…</option><option>EPR authorisation</option><option>Trade licence</option><option>Quality certificate (ISO)</option><option>Other</option></select><button class="btn btn-sm" data-toast="File picker opened (prototype)"><i data-icon="upload"></i> Upload document</button></div><span class="small muted">PDF/JPG · max 10 MB · verified by Tradex within 3 working days</span></div>
+        <div class="card-foot"><div class="row gap-8"><select class="select input-sm" style="width:220px" aria-label="Document type"><option>Choose document type…</option><option>EPR authorisation</option><option>Trade licence</option><option>Quality certificate (ISO)</option><option>Other</option></select><button class="btn btn-sm" data-help="doc-upload" data-toast="File picker opened (prototype)"><i data-icon="upload"></i> Upload document</button></div><span class="small muted">PDF/JPG · max 10 MB · verified by Tradex within 3 working days</span></div>
       </div>
     </div>
 
@@ -174,9 +174,9 @@
     <div class="tab-panel" data-panel="users">
       <div class="col gap-16 mt-16">
         <div class="card" data-anno="1B · §18 Vendor users & roles — own organisation only">
-          <div class="card-head"><div><h3>Users</h3><div class="sub">Only people in your organisation · max 10 users</div></div><button class="btn btn-sm btn-vendor" data-open="m-invite"><i data-icon="plus"></i> Invite user</button></div>
+          <div class="card-head"><div><h3 data-help="users">Users</h3><div class="sub">Only people in your organisation · max 10 users</div></div><button class="btn btn-sm btn-vendor" data-open="m-invite" data-help="m-invite"><i data-icon="plus"></i> Invite user</button></div>
           <div class="table-wrap"><table class="table">
-            <thead><tr><th>User</th><th>Role</th><th>MFA</th><th>Last active</th><th>Status</th><th class="r"></th></tr></thead>
+            <thead><tr><th>User</th><th data-help="col-role">Role</th><th data-help="g.mfa">MFA</th><th>Last active</th><th data-help="col-ustatus">Status</th><th class="r"></th></tr></thead>
             <tbody>
               <tr><td><div class="row"><div class="avatar sm" style="background:#0e9f8a">SB</div><div><div class="cell-main">Suresh Babu</div><div class="cell-sub">suresh@renewtech.example</div></div></div></td><td><span class="badge b-vendor">Admin</span></td><td><span class="status s-ok">On</span></td><td class="small">Today 10:40</td><td><span class="status s-ok">Active</span></td><td class="r"><span class="small muted">You</span></td></tr>
               <tr><td><div class="row"><div class="avatar sm" style="background:#0b8ec9">MR</div><div><div class="cell-main">Meena R.</div><div class="cell-sub">ops@renewtech.example</div></div></div></td><td><span class="badge">Operations</span></td><td><span class="status s-ok">On</span></td><td class="small">Today 09:55</td><td><span class="status s-ok">Active</span></td><td class="r"><div class="dd"><button class="btn btn-xs btn-ghost btn-icon" data-dd-toggle aria-label="Actions"><i data-icon="more"></i></button><div class="dd-menu"><a href="#" data-toast="Role editor opened">Change role</a><a href="#" data-toast="Password reset link sent">Reset password</a><a href="#" data-toast="Meena R. deactivated · history kept">Deactivate</a></div></div></td></tr>
@@ -190,7 +190,7 @@
         </div>
         <div class="grid g-2">
         <div class="card">
-          <div class="card-head"><div><h3>What each role can do</h3><div class="sub">Fixed vendor roles · always limited to RenewTech's records</div></div></div>
+          <div class="card-head"><div><h3 data-help="roles">What each role can do</h3><div class="sub">Fixed vendor roles · always limited to RenewTech's records</div></div></div>
           <div class="table-wrap"><table class="table compact perm-t">
             <thead><tr><th>Action</th><th>Admin</th><th>Catalog</th><th>Ops</th><th>Accounts</th></tr></thead>
             <tbody id="perm-body"></tbody>
@@ -198,11 +198,11 @@
           <div class="card-foot"><span class="small muted">Bank changes need two people on your side (maker + checker) and Tradex Finance verification.</span></div>
         </div>
         <div class="card">
-          <div class="card-head"><div><h3>Security &amp; sign-in</h3><div class="sub">Policy set by Tradex for all vendor accounts</div></div><button class="btn btn-sm btn-danger" data-toast="All other sessions signed out · users must sign in again">Sign out other sessions</button></div>
+          <div class="card-head"><div><h3 data-help="security">Security &amp; sign-in</h3><div class="sub">Policy set by Tradex for all vendor accounts</div></div><button class="btn btn-sm btn-danger" data-help="act-signout" data-toast="All other sessions signed out · users must sign in again">Sign out other sessions</button></div>
           <div class="card-body col gap-12">
             <dl class="kv"><dt>MFA</dt><dd>Required for every user within 7 days (authenticator app or SMS OTP)</dd><dt>Session timeout</dt><dd>30 minutes idle · 12 hours maximum</dd><dt>Password</dt><dd>12+ characters · breached-password check</dd></dl>
             <div class="table-wrap"><table class="table compact">
-              <thead><tr><th>Recent sign-ins</th><th>Device · IP</th><th>Result</th></tr></thead>
+              <thead><tr><th data-help="signins">Recent sign-ins</th><th>Device · IP</th><th>Result</th></tr></thead>
               <tbody>
                 <tr><td class="small">Today 10:38 · Suresh Babu</td><td class="small mono">Chrome · Windows · 49.207.54.18</td><td><span class="status s-ok">MFA ok</span></td></tr>
                 <tr><td class="small">Today 09:52 · Meena R.</td><td class="small mono">Chrome · Android · 49.207.54.19</td><td><span class="status s-ok">MFA ok</span></td></tr>
@@ -220,12 +220,12 @@
       <div class="grid g-4 mt-16" id="st-kpis" data-anno="1B · Supplier statements (if finance integrated)"></div>
       <div class="card mt-16">
         <div class="card-head">
-          <div><h3>Supplier statement · September 2026</h3><div class="sub">Between RenewTech and Tradex only · amounts incl. GST · source: Tradex accounts, synced today 07:10</div></div>
+          <div><h3 data-help="statement">Supplier statement · September 2026</h3><div class="sub">Between RenewTech and Tradex only · amounts incl. GST · source: Tradex accounts, synced today 07:10</div></div>
           <div class="row gap-8"><select class="select input-sm" style="width:170px" aria-label="Period"><option>September 2026</option><option>August 2026</option><option>Q2 FY 2026-27</option><option>FY 2026-27 to date</option></select><button class="btn btn-sm" data-toast="Downloaded statement_V-022_2026-09.pdf"><i data-icon="download"></i> PDF</button><button class="btn btn-sm" data-toast="Downloaded statement_V-022_2026-09.csv"><i data-icon="download"></i> CSV</button></div>
         </div>
-        <div class="table-toolbar"><div class="seg" id="st-seg"><button class="active" data-v="all">All</button><button data-v="inv">Invoices</button><button data-v="pay">Payments</button><button data-v="dn">Debit notes &amp; TDS</button></div><span class="small muted ml-auto">Invoices are matched to PO + GRN before they become payable (3-way match)</span></div>
+        <div class="table-toolbar"><div class="seg" id="st-seg"><button class="active" data-v="all">All</button><button data-v="inv">Invoices</button><button data-v="pay">Payments</button><button data-v="dn">Debit notes &amp; TDS</button></div><span class="small muted ml-auto" data-help="g.three-way">Invoices are matched to PO + GRN before they become payable (3-way match)</span></div>
         <div class="table-wrap"><table class="table">
-          <thead><tr><th>Date</th><th>Document</th><th>Reference</th><th class="r">Payable to you</th><th class="r">Paid / deducted</th><th class="r">Balance</th><th>Status</th><th class="r"></th></tr></thead>
+          <thead><tr><th>Date</th><th>Document</th><th>Reference</th><th class="r" data-help="col-payable">Payable to you</th><th class="r" data-help="col-deducted">Paid / deducted</th><th class="r" data-help="col-balance">Balance</th><th data-help="col-st-status">Status</th><th class="r"></th></tr></thead>
           <tbody id="st-body"></tbody>
         </table></div>
         <div class="card-foot"><span class="small muted">Tradex's selling prices and margins are never part of your statement. Questions? Raise a query on any line — Tradex finance replies within 2 working days.</span></div>
@@ -234,19 +234,19 @@
 
     <!-- ===================== MARKETPLACE (PHASE 2) ===================== -->
     <div class="tab-panel" data-panel="marketplace">
-      <div class="callout mt-16" style="background:var(--ink-900);border-color:var(--ink-900);color:#dfe5f1"><i data-icon="lock"></i><div><strong style="color:#fff">Marketplace selling is a Phase 2 extension — not active for your account.</strong> This is a <b style="color:#ffcf70">sample</b> settlement statement so you can see how seller settlements would work. Nothing here is calculated from your data or paid out.</div><button class="btn btn-sm ml-auto" data-toast="Thanks — Tradex will contact you when marketplace selling opens">Notify me</button></div>
+      <div class="callout mt-16" style="background:var(--ink-900);border-color:var(--ink-900);color:#dfe5f1"><i data-icon="lock"></i><div><strong style="color:#fff" data-help="mkt-locked">Marketplace selling is a Phase 2 extension — not active for your account.</strong> This is a <b style="color:#ffcf70">sample</b> settlement statement so you can see how seller settlements would work. Nothing here is calculated from your data or paid out.</div><button class="btn btn-sm ml-auto" data-toast="Thanks — Tradex will contact you when marketplace selling opens">Notify me</button></div>
       <div class="grid mt-16" style="grid-template-columns:minmax(0,1.5fr) minmax(0,1fr)">
         <div class="card sample" data-anno="2 · §11.5 Settlement components with basis & version">
-          <div class="card-head"><div><h3>Marketplace settlement statement <span class="badge b-dark"><i data-icon="lock"></i> Sample</span></h3><div class="sub">Period 16–30 Sep 2026 · MS-SAMPLE-0001 · fortnightly cycle · payout to verified account HDFC ••4821</div></div></div>
+          <div class="card-head"><div><h3 data-help="mkt-statement">Marketplace settlement statement <span class="badge b-dark"><i data-icon="lock"></i> Sample</span></h3><div class="sub">Period 16–30 Sep 2026 · MS-SAMPLE-0001 · fortnightly cycle · payout to verified account HDFC ••4821</div></div></div>
           <div class="table-wrap"><table class="table settle">
-            <thead><tr><th>Component</th><th>Basis &amp; version</th><th>Amount</th></tr></thead>
+            <thead><tr><th>Component</th><th data-help="col-basis">Basis &amp; version</th><th>Amount</th></tr></thead>
             <tbody id="settle-body"></tbody>
           </table></div>
           <div class="card-foot"><span class="small muted">Illustrative rates — commission, fees, TCS/TDS and reserves need finance/legal approval before Phase 2.</span><button class="btn btn-sm" disabled><i data-icon="download"></i> Download</button></div>
         </div>
         <div class="col gap-16">
           <div class="card">
-            <div class="card-head"><h3>How a settlement would flow</h3></div>
+            <div class="card-head"><h3 data-help="mkt-flow">How a settlement would flow</h3></div>
             <div class="card-body">
               <ul class="timeline">
                 <li class="done"><span class="t-dot"><i data-icon="check"></i></span><div class="t-title">Order delivered to customer</div><div class="t-meta">Courier proof of delivery</div></li>
@@ -258,7 +258,7 @@
             </div>
           </div>
           <div class="card">
-            <div class="card-head"><div><h3>Decided before activation</h3><div class="sub">Blueprint §11.4 — pending Tradex owner/finance</div></div></div>
+            <div class="card-head"><div><h3 data-help="mkt-decisions">Decided before activation</h3><div class="sub">Blueprint §11.4 — pending Tradex owner/finance</div></div></div>
             <div class="card-body">
               <ul class="dec-list">
                 <li><i data-icon="clock"></i> Seller of record &amp; who issues the customer invoice</li>
@@ -277,10 +277,10 @@
 
     <!-- ===================== TERMS ===================== -->
     <div class="tab-panel" data-panel="terms">
-      <div class="callout c-info mt-16"><i data-icon="file"></i><div><strong>Terms v3.1 published 24 Sep 2026 — review by 25 Oct.</strong> Adds an EPR-lapse suspension clause and clarifies pilot courier costs. Terms v3 stays in force until you accept v3.1 or it takes effect on 1 Nov 2026.</div><button class="btn btn-sm ml-auto" data-open="m-terms">Review changes</button></div>
+      <div class="callout c-info mt-16"><i data-icon="file"></i><div><strong data-help="terms-new">Terms v3.1 published 24 Sep 2026 — review by 25 Oct.</strong> Adds an EPR-lapse suspension clause and clarifies pilot courier costs. Terms v3 stays in force until you accept v3.1 or it takes effect on 1 Nov 2026.</div><button class="btn btn-sm ml-auto" data-open="m-terms">Review changes</button></div>
       <div class="card mt-16" data-anno="1B · Terms version history with acceptance evidence">
         <div class="table-wrap"><table class="table">
-          <thead><tr><th>Document</th><th>Version</th><th>Effective</th><th>Accepted</th><th>Evidence</th><th>Status</th><th class="r"></th></tr></thead>
+          <thead><tr><th>Document</th><th>Version</th><th>Effective</th><th>Accepted</th><th data-help="col-evidence">Evidence</th><th data-help="col-terms-status">Status</th><th class="r"></th></tr></thead>
           <tbody>
             <tr><td><b>Supplier terms</b></td><td class="mono">v3.1</td><td class="small">1 Nov 2026</td><td class="small muted">Not yet</td><td class="small muted">—</td><td><span class="status s-warn">Awaiting your acceptance</span><div class="cell-sub">Review by 25 Oct</div></td><td class="r"><button class="btn btn-xs btn-vendor" data-open="m-terms">Review</button></td></tr>
             <tr><td><b>Supplier terms</b></td><td class="mono">v3</td><td class="small">1 Sep 2026</td><td class="small">2 Sep 2026 14:22 · Suresh Babu</td><td class="small mono">OTP · IP 49.207.54.18</td><td><span class="status s-ok">Current</span></td><td class="r"><button class="btn btn-xs" data-toast="Downloaded supplier_terms_v3.pdf"><i data-icon="download"></i></button></td></tr>
@@ -292,7 +292,7 @@
         </table></div>
       </div>
       <div class="card mt-16">
-        <div class="card-head"><div><h3>What changed in v3 (accepted 2 Sep)</h3><div class="sub">Compared with v2</div></div></div>
+        <div class="card-head"><div><h3 data-help="terms-diff">What changed in v3 (accepted 2 Sep)</h3><div class="sub">Compared with v2</div></div></div>
         <div class="card-body" style="padding:0">
           <div class="diff" style="border:0;border-radius:0">
             <div class="dh">Clause</div><div class="dh">v2</div><div class="dh">v3</div>
@@ -311,7 +311,7 @@
       <div class="grid mt-16" style="grid-template-columns:minmax(0,1fr) minmax(0,1.2fr)">
         <div class="col gap-16">
           <div class="card">
-            <div class="card-head"><div><h3>Current payout account</h3><div class="sub">All Tradex payments go here until a change is approved</div></div><span class="badge b-ok"><i data-icon="check-circle"></i> Verified</span></div>
+            <div class="card-head"><div><h3 data-help="bank-current">Current payout account</h3><div class="sub">All Tradex payments go here until a change is approved</div></div><span class="badge b-ok"><i data-icon="check-circle"></i> Verified</span></div>
             <div class="card-body col gap-12">
               <dl class="acct"><dt>Bank</dt><dt>Account</dt><dt>IFSC</dt><dt>Type</dt>
                 <dd>HDFC Bank · Guindy</dd><dd class="mono">••••••••4821</dd><dd class="mono">HDFC0000523</dd><dd>Current</dd></dl>
@@ -320,7 +320,7 @@
             </div>
           </div>
           <div class="card">
-            <div class="card-head"><h3>Change history</h3></div>
+            <div class="card-head"><h3 data-help="bank-history">Change history</h3></div>
             <div class="table-wrap"><table class="table compact">
               <thead><tr><th>Request</th><th>Account</th><th>Outcome</th></tr></thead>
               <tbody>
@@ -330,11 +330,11 @@
               </tbody>
             </table></div>
           </div>
-          <div class="callout c-bad small"><i data-icon="alert-octagon"></i><div><strong>Tradex will never ask you to change bank details by email, phone or WhatsApp.</strong> If you didn't request BCR-0007, cancel it now and call +91 80 4000 1234.</div></div>
+          <div class="callout c-bad small"><i data-icon="alert-octagon"></i><div><strong data-help="bank-fraud">Tradex will never ask you to change bank details by email, phone or WhatsApp.</strong> If you didn't request BCR-0007, cancel it now and call +91 80 4000 1234.</div></div>
         </div>
 
         <div class="card pending-card" data-anno="1B · §11.5 Maker-checker for payout-account changes">
-          <div class="card-head" style="border-color:#f8dca6"><div><h3>Change request BCR-0007 <span class="status s-warn" style="margin-left:6px">Pending verification</span></h3><div class="sub">Requested 25 Sep 2026 · effective only after Tradex Finance approval + 24 h cooling-off</div></div></div>
+          <div class="card-head" style="border-color:#f8dca6"><div><h3 data-help="bank-bcr">Change request BCR-0007 <span class="status s-warn" style="margin-left:6px">Pending verification</span></h3><div class="sub">Requested 25 Sep 2026 · effective only after Tradex Finance approval + 24 h cooling-off</div></div></div>
           <div class="card-body col gap-16">
             <dl class="acct"><dt>New bank</dt><dt>Account</dt><dt>IFSC</dt><dt>Type</dt>
               <dd>ICICI Bank · T. Nagar</dd><dd class="mono">••••••7710</dd><dd class="mono">ICIC0000456</dd><dd>Current</dd></dl>
@@ -349,7 +349,7 @@
               <li><span class="t-dot"></span><div class="t-title">24 h cooling-off, then effective</div><div class="t-meta">All your admins are notified by email + WhatsApp</div></li>
             </ul>
           </div>
-          <div class="card-foot"><button class="btn btn-sm btn-danger" data-toast="BCR-0007 cancelled · HDFC ••4821 remains your payout account">Cancel change request</button><button class="btn btn-sm" disabled data-tip="One change at a time">Request another change</button></div>
+          <div class="card-foot"><button class="btn btn-sm btn-danger" data-help="bank-cancel" data-toast="BCR-0007 cancelled · HDFC ••4821 remains your payout account">Cancel change request</button><button class="btn btn-sm" disabled data-tip="One change at a time">Request another change</button></div>
         </div>
       </div>
     </div>
@@ -357,9 +357,9 @@
 
   <!-- Modals -->
   <div class="modal" id="m-req"><div class="modal-card">
-    <div class="modal-head"><h3>Request a profile change</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-head"><h3 data-help="m-req">Request a profile change</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
     <div class="modal-body col gap-12">
-      <div class="field"><label class="req" for="rq-t">What do you want to change?</label><select class="select" id="rq-t"><option>Add a permitted category</option><option>Add a dispatch location</option><option>Legal name / address</option><option>GSTIN (new registration)</option><option>Contact details</option></select></div>
+      <div class="field"><label class="req" for="rq-t" data-help="rq-type">What do you want to change?</label><select class="select" id="rq-t"><option>Add a permitted category</option><option>Add a dispatch location</option><option>Legal name / address</option><option>GSTIN (new registration)</option><option>Contact details</option></select></div>
       <div class="field"><label for="rq-d">Details</label><textarea class="textarea" id="rq-d" placeholder="e.g. We'd like to supply refurbished desktops (Dell OptiPlex, HP ProDesk)."></textarea></div>
       <div class="dropzone" style="padding:14px"><i data-icon="paperclip"></i><div class="small">Attach supporting documents</div></div>
       <div class="callout c-info small"><i data-icon="info"></i><div>Changes are reviewed by Tradex vendor management. Your current approved profile stays in force until a decision is recorded.</div></div>
@@ -368,18 +368,18 @@
   </div></div>
 
   <div class="modal" id="m-invite"><div class="modal-card">
-    <div class="modal-head"><h3>Invite a user</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-head"><h3 data-help="m-invite">Invite a user</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
     <div class="modal-body form-grid">
       <div class="field"><label class="req" for="iv-n">Full name</label><input class="input" id="iv-n" placeholder="e.g. Lakshmi V."></div>
       <div class="field"><label class="req" for="iv-e">Work email</label><input class="input" id="iv-e" placeholder="name@renewtech.example"></div>
-      <div class="field full"><label class="req" for="iv-r">Role</label><select class="select" id="iv-r"><option>Catalog — products &amp; submissions</option><option>Operations — availability, POs, tasks, returns</option><option>Accounts — statements, bank change requests</option><option>Admin — everything incl. users</option></select></div>
+      <div class="field full"><label class="req" for="iv-r" data-help="col-role">Role</label><select class="select" id="iv-r"><option>Catalog — products &amp; submissions</option><option>Operations — availability, POs, tasks, returns</option><option>Accounts — statements, bank change requests</option><option>Admin — everything incl. users</option></select></div>
       <div class="callout c-info small full"><i data-icon="info"></i><div>Only <b>@renewtech.example</b> addresses can be invited. MFA is required within 7 days.</div></div>
     </div>
     <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-vendor" data-close data-toast="Invitation sent · expires in 7 days">Send invitation</button></div>
   </div></div>
 
   <div class="modal" id="m-terms"><div class="modal-card lg">
-    <div class="modal-head"><div><h3>Supplier terms v3.1 — changes from v3</h3><div class="small muted">Published 24 Sep 2026 · takes effect 1 Nov 2026</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-head"><div><h3 data-help="m-terms">Supplier terms v3.1 — changes from v3</h3><div class="small muted">Published 24 Sep 2026 · takes effect 1 Nov 2026</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
     <div class="modal-body col gap-16">
       <div class="diff">
         <div class="dh">Clause</div><div class="dh">v3 (current)</div><div class="dh">v3.1</div>
@@ -388,7 +388,7 @@
       </div>
       <label class="check"><input type="checkbox" id="terms-ok"> I have read supplier terms v3.1 and accept them on behalf of RenewTech Refurbishers Pvt Ltd</label>
     </div>
-    <div class="modal-foot"><button class="btn" data-close>Decide later</button><button class="btn btn-vendor" data-close data-toast="Terms v3.1 accepted · OTP verified · recorded in terms history">Accept with OTP</button></div>
+    <div class="modal-foot"><button class="btn" data-close>Decide later</button><button class="btn btn-vendor" data-help="terms-accept" data-close data-toast="Terms v3.1 accepted · OTP verified · recorded in terms history">Accept with OTP</button></div>
   </div></div>
 </main>
 <script src="assets/tradex.js"></script>
@@ -422,11 +422,11 @@ TX.ready(() => {
   let bal = 0; L.forEach((r) => { bal += (r.cr || 0) - (r.dr || 0); r.bal = bal; });
   const onHold = Math.round(319000 * G) + 13594;
   $("#st-kpis").innerHTML = [
-    ["wallet", "Balance payable to you", fmt(bal), "as of 26 Sep · incl. GST"],
-    ["calendar", "Next payment run", "30 Sep", fmt(Math.round(264360 * G)) + " scheduled"],
-    ["pause", "On hold", `<span class="text-warn">${fmt(onHold)}</span>`, "1 price variance · 1 RTV unit"],
-    ["check-circle", "Last payment", fmt(486200), "10 Sep · NEFT · reconciled"],
-  ].map(([i, l, v, s]) => `<div class="kpi"><div class="k-label">${ic(i)} <span>${l}</span></div><div class="k-value">${v}</div><div class="k-sub">${s}</div></div>`).join("");
+    ["wallet", "Balance payable to you", fmt(bal), "as of 26 Sep · incl. GST", "st-balance"],
+    ["calendar", "Next payment run", "30 Sep", fmt(Math.round(264360 * G)) + " scheduled", "st-next"],
+    ["pause", "On hold", `<span class="text-warn">${fmt(onHold)}</span>`, "1 price variance · 1 RTV unit", "st-hold"],
+    ["check-circle", "Last payment", fmt(486200), "10 Sep · NEFT · reconciled", "st-last"],
+  ].map(([i, l, v, s, h]) => `<div class="kpi"><div class="k-label" data-help="${h}">${ic(i)} <span>${l}</span></div><div class="k-value">${v}</div><div class="k-sub">${s}</div></div>`).join("");
   let sf = "all";
   const renderSt = () => {
     $("#st-body").innerHTML = L.filter((r) => sf === "all" || r.t === sf || r.t === "open").map((r) => `<tr ${r.t === "open" ? 'style="background:#fafbfc"' : ""}>

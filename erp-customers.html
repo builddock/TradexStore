@@ -54,33 +54,33 @@
   <div class="page-head">
     <div>
       <div class="crumbs"><span>Partners</span><i data-icon="chevron-right"></i><span>Customers & dealers</span></div>
-      <h1>Customers & dealers</h1>
+      <h1 data-help="page">Customers & dealers</h1>
       <p class="sub">Consumers (B2C) and approved business accounts (B2B) · personal data is masked by default — every reveal is logged with a reason</p>
     </div>
     <div class="actions">
       <div class="dd"><button class="btn" data-dd-toggle><i data-icon="download"></i> Export <i data-icon="chevron-down" class="ic-sm"></i></button>
-        <div class="dd-menu"><div class="dd-label">Governed exports</div><a href="#" data-toast="Masked customer list queued · link expires in 24 h">Customer list (masked)</a><a href="#" data-toast="Request sent to Owner · full PII export needs approval">Full contact details (needs approval)</a><a href="#" data-toast="Dealer account summary exported">Dealer accounts & price lists</a></div></div>
-      <button class="btn" data-goto="duplicates"><i data-icon="users"></i> Review duplicates</button>
-      <button class="btn btn-primary" data-open="m-invite"><i data-icon="plus"></i> Invite business account</button>
+        <div class="dd-menu"><div class="dd-label" data-help="act-export">Governed exports</div><a href="#" data-toast="Masked customer list queued · link expires in 24 h">Customer list (masked)</a><a href="#" data-toast="Request sent to Owner · full PII export needs approval">Full contact details (needs approval)</a><a href="#" data-toast="Dealer account summary exported">Dealer accounts & price lists</a></div></div>
+      <button class="btn" data-goto="duplicates" data-help="act-duplicates"><i data-icon="users"></i> Review duplicates</button>
+      <button class="btn btn-primary" data-open="m-invite" data-help="act-invite"><i data-icon="plus"></i> Invite business account</button>
     </div>
   </div>
 
   <section class="grid g-6">
-    <div class="kpi"><div class="k-label"><i data-icon="user"></i> <span>Consumers</span></div><div class="k-value">12,480</div><div class="k-foot"><span class="delta up-good"><i data-icon="trending-up"></i> +312</span><span>30 d</span></div></div>
-    <div class="kpi"><div class="k-label"><i data-icon="activity"></i> <span>Active · 90 d</span></div><div class="k-value">3,914</div><div class="k-foot"><span>repeat rate 31%</span></div></div>
-    <div class="kpi" data-anno="1A · R03 Approved dealers only"><div class="k-label"><i data-icon="briefcase"></i> <span>Business accounts</span></div><div class="k-value">46</div><div class="k-foot"><span>42 approved · 3 suspended · 1 invited</span></div></div>
-    <div class="kpi"><div class="k-label"><i data-icon="inbox"></i> <span>Applications</span></div><div class="k-value text-warn">3</div><div class="k-foot"><span>oldest 3 d · SLA 2 working d</span></div></div>
-    <div class="kpi"><div class="k-label"><i data-icon="rupee"></i> <span>Dealer share</span></div><div class="k-value">38%</div><div class="k-foot"><span class="delta up-good"><i data-icon="trending-up"></i> +3 pt</span><span>net, 30 d</span></div></div>
-    <div class="kpi"><div class="k-label"><i data-icon="copy"></i> <span>Duplicates</span></div><div class="k-value">7</div><div class="k-foot"><span>2 eligible to merge</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-consumers"><i data-icon="user"></i> <span>Consumers</span></div><div class="k-value">12,480</div><div class="k-foot"><span class="delta up-good"><i data-icon="trending-up"></i> +312</span><span>30 d</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-active"><i data-icon="activity"></i> <span>Active · 90 d</span></div><div class="k-value">3,914</div><div class="k-foot"><span>repeat rate 31%</span></div></div>
+    <div class="kpi" data-anno="1A · R03 Approved dealers only"><div class="k-label" data-help="kpi-business"><i data-icon="briefcase"></i> <span>Business accounts</span></div><div class="k-value">46</div><div class="k-foot"><span>42 approved · 3 suspended · 1 invited</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-applications"><i data-icon="inbox"></i> <span>Applications</span></div><div class="k-value text-warn">3</div><div class="k-foot"><span>oldest 3 d · SLA 2 working d</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-dealer-share"><i data-icon="rupee"></i> <span>Dealer share</span></div><div class="k-value">38%</div><div class="k-foot"><span class="delta up-good"><i data-icon="trending-up"></i> +3 pt</span><span>net, 30 d</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-duplicates"><i data-icon="copy"></i> <span>Duplicates</span></div><div class="k-value">7</div><div class="k-foot"><span>2 eligible to merge</span></div></div>
   </section>
 
   <section class="card mt-16" data-tabset id="tabs-main">
     <div class="tabs" style="padding:0 12px">
-      <button class="tab active" data-tab="all">All customers <span class="count">12,526</span></button>
-      <button class="tab" data-tab="business">Business accounts <span class="count">46</span></button>
-      <button class="tab" data-tab="applications">Dealer applications <span class="count">3</span></button>
-      <button class="tab" data-tab="duplicates">Duplicates <span class="count">7</span></button>
-      <button class="tab" data-tab="privacy">Consent & data requests <span class="count">1</span></button>
+      <button class="tab active" data-tab="all" data-help="tab-all">All customers <span class="count">12,526</span></button>
+      <button class="tab" data-tab="business" data-help="tab-business">Business accounts <span class="count">46</span></button>
+      <button class="tab" data-tab="applications" data-help="tab-applications">Dealer applications <span class="count">3</span></button>
+      <button class="tab" data-tab="duplicates" data-help="tab-duplicates">Duplicates <span class="count">7</span></button>
+      <button class="tab" data-tab="privacy" data-help="tab-privacy">Consent & data requests <span class="count">1</span></button>
     </div>
 
     <!-- ALL CUSTOMERS -->
@@ -91,11 +91,12 @@
         <button class="chip" data-toggle data-f="open">Open return / support</button>
         <button class="chip" data-toggle data-f="wa">WhatsApp opt-in</button>
         <button class="chip" data-toggle data-f="flag">Needs attention</button>
+        <span data-help="c-filters" data-help-pos="in" class="hi-host"></span>
         <span class="ml-auto small muted" id="c-count"></span>
       </div>
-      <div class="bulkbar"><b><span class="bulk-count">0</span> selected</b><button class="btn btn-sm btn-ghost" style="color:#fff" data-toast="Tag added to selected customers">Add tag</button><button class="btn btn-sm btn-ghost" style="color:#fff" data-toast="Masked export queued">Export (masked)</button><button class="btn btn-sm btn-ghost" style="color:#fff" data-toast="Only customers with marketing consent will receive this · 2 excluded">Send consented message</button></div>
+      <div class="bulkbar"><b data-help="c-bulk"><span class="bulk-count">0</span> selected</b><button class="btn btn-sm btn-ghost" style="color:#fff" data-toast="Tag added to selected customers">Add tag</button><button class="btn btn-sm btn-ghost" style="color:#fff" data-toast="Masked export queued">Export (masked)</button><button class="btn btn-sm btn-ghost" style="color:#fff" data-toast="Only customers with marketing consent will receive this · 2 excluded">Send consented message</button></div>
       <div class="table-wrap"><table class="table">
-        <thead><tr><th class="check-col"><input type="checkbox" data-check-all aria-label="Select all"></th><th>Customer</th><th>Type</th><th class="r">Orders</th><th class="r">Net lifetime value</th><th>Last order</th><th>Open items</th><th>Consent</th><th>Status</th></tr></thead>
+        <thead><tr><th class="check-col"><input type="checkbox" data-check-all aria-label="Select all"></th><th>Customer</th><th data-help="col-ctype">Type</th><th class="r">Orders</th><th class="r" data-help="col-ltv">Net lifetime value</th><th>Last order</th><th data-help="col-open">Open items</th><th data-help="col-consent">Consent</th><th data-help="col-cstatus">Status</th></tr></thead>
         <tbody id="c-body"></tbody>
       </table></div>
       <div class="pager"><span>Showing 12 of 12,526 · values are net of returns, excl. GST</span><div class="pages"><button class="active">1</button><button>2</button><button>3</button><button>…</button><button>1,044</button></div></div>
@@ -116,7 +117,7 @@
     <div class="tab-panel" data-panel="applications">
       <div class="split">
         <div class="side">
-          <div class="row-between" style="padding:12px 16px;border-bottom:1px solid var(--line-2)"><b class="small">Queue · oldest first</b><span class="small muted">SLA 2 working days</span></div>
+          <div class="row-between" style="padding:12px 16px;border-bottom:1px solid var(--line-2)"><b class="small" data-help="app-queue">Queue · oldest first</b><span class="small muted">SLA 2 working days</span></div>
           <div id="app-list"></div>
           <div style="padding:12px 16px" class="small muted"><div class="upper mb-8">Recently decided</div>
             <div class="row-between mb-8"><span>Pixel Point, Belagavi</span><span class="status s-bad">Rejected</span></div>
@@ -132,10 +133,10 @@
     <div class="tab-panel" data-panel="duplicates">
       <div class="card-body">
         <div class="callout c-info mb-16" data-anno="Merge safeguards — never merge on name only">
-          <i data-icon="shield"></i><div><strong>Merge safeguards.</strong> Candidates need at least <b>two strong identifiers</b> (verified phone, verified email, GSTIN or matching delivery address + one verified contact). Name similarity alone never qualifies. Consumer and business accounts are never merged. Orders, invoices and consent records keep their original IDs; merges are reversible for 30 days and fully audited.</div>
+          <i data-icon="shield"></i><div><strong data-help="dup-safeguards">Merge safeguards.</strong> Candidates need at least <b>two strong identifiers</b> (verified phone, verified email, GSTIN or matching delivery address + one verified contact). Name similarity alone never qualifies. Consumer and business accounts are never merged. Orders, invoices and consent records keep their original IDs; merges are reversible for 30 days and fully audited.</div>
         </div>
         <div class="table-wrap" style="border:1px solid var(--line);border-radius:var(--r)"><table class="table">
-          <thead><tr><th>Candidate pair</th><th>Match signals</th><th>Assessment</th><th class="r">Action</th></tr></thead>
+          <thead><tr><th>Candidate pair</th><th data-help="col-signals">Match signals</th><th data-help="col-assess">Assessment</th><th class="r">Action</th></tr></thead>
           <tbody>
             <tr class="selected"><td><div class="cell-main">Priya Nair ↔ Priya N</div><div class="cell-sub">C-100231 · C-118870 · both Bengaluru 560034</div></td>
               <td><div class="row wrap gap-4"><span class="sig strong"><i data-icon="check"></i> Verified phone</span><span class="sig strong"><i data-icon="check"></i> Same delivery address</span><span class="sig weak">Name similar</span><span class="sig weak">Different email</span></div></td>
@@ -153,7 +154,7 @@
         </table></div>
 
         <div class="card mt-16" id="merge-review" style="overflow:hidden">
-          <div class="card-head"><div><h3>Merge review · Priya Nair ↔ Priya N</h3><div class="sub">Choose the surviving value per field · the survivor keeps ID C-100231</div></div><span class="badge b-ok">Eligible</span></div>
+          <div class="card-head"><div><h3 data-help="merge-review">Merge review · Priya Nair ↔ Priya N</h3><div class="sub">Choose the surviving value per field · the survivor keeps ID C-100231</div></div><span class="badge b-ok">Eligible</span></div>
           <div class="card-body">
             <div class="merge-grid">
               <div class="mh">Field</div><div class="mh">Record A · C-100231 (survivor)</div><div class="mh">Record B · C-118870</div><div class="mh">After merge</div>
@@ -169,7 +170,7 @@
             <div class="grid g-3 mt-16">
               <div class="panel small"><b>Record B after merge</b><div class="muted mt-4">Closed as “merged into C-100231”; sign-in redirected; kept 30 days for undo.</div></div>
               <div class="panel small"><b>Customer notice</b><div class="muted mt-4">Email to both addresses explaining the merge and how to report a mistake.</div></div>
-              <div class="panel small"><b>Separation of duties</b><div class="muted mt-4">Suggested by automation (A25-style match) · executed by Support lead · audited.</div></div>
+              <div class="panel small"><b data-help="g.maker-checker">Separation of duties</b><div class="muted mt-4">Suggested by automation (A25-style match) · executed by Support lead · audited.</div></div>
             </div>
           </div>
           <div class="card-foot"><span class="small muted">Merge is reversible until 26 Oct 2026</span><div class="row gap-8"><button class="btn" data-toast="Marked as different people">Not the same person</button><button class="btn btn-primary" data-open="m-merge">Merge records…</button></div></div>
@@ -181,14 +182,14 @@
     <div class="tab-panel" data-panel="privacy">
       <div class="card-body">
         <div class="grid g-4 mb-16">
-          <div class="panel"><div class="small muted">Order updates on WhatsApp</div><div class="strong" style="font-size:18px">71% opted in</div></div>
-          <div class="panel"><div class="small muted">Marketing · email</div><div class="strong" style="font-size:18px">46% opted in</div></div>
-          <div class="panel"><div class="small muted">Marketing · WhatsApp</div><div class="strong" style="font-size:18px">22% opted in</div></div>
-          <div class="panel"><div class="small muted">Opt-outs (30 d)</div><div class="strong" style="font-size:18px">184 <span class="small muted">· 61 via “STOP”</span></div></div>
+          <div class="panel"><div class="small muted" data-help="consent-transactional">Order updates on WhatsApp</div><div class="strong" style="font-size:18px">71% opted in</div></div>
+          <div class="panel"><div class="small muted" data-help="consent-marketing">Marketing · email</div><div class="strong" style="font-size:18px">46% opted in</div></div>
+          <div class="panel"><div class="small muted" data-help="consent-marketing">Marketing · WhatsApp</div><div class="strong" style="font-size:18px">22% opted in</div></div>
+          <div class="panel"><div class="small muted" data-help="consent-optouts">Opt-outs (30 d)</div><div class="strong" style="font-size:18px">184 <span class="small muted">· 61 via “STOP”</span></div></div>
         </div>
-        <div class="row-between mb-8"><h4>Data requests</h4><span class="small muted">Deletion separates profile removal from legally retained transaction records</span></div>
+        <div class="row-between mb-8"><h4 data-help="dr-table">Data requests</h4><span class="small muted">Deletion separates profile removal from legally retained transaction records</span></div>
         <div class="table-wrap" style="border:1px solid var(--line);border-radius:var(--r)" data-anno="§19.3 Deletion keeps statutory invoice/warranty records"><table class="table">
-          <thead><tr><th>Request</th><th>Customer</th><th>Type</th><th>Received</th><th>Due</th><th>Retention check</th><th>Status</th><th class="r"></th></tr></thead>
+          <thead><tr><th>Request</th><th>Customer</th><th>Type</th><th>Received</th><th data-help="col-dr-due">Due</th><th data-help="col-retention">Retention check</th><th>Status</th><th class="r"></th></tr></thead>
           <tbody>
             <tr><td class="mono">DR-0012</td><td><div class="cell-main">Mohammed Salim</div><div class="cell-sub">C-111902</div></td><td>Delete account</td><td class="nowrap">20 Sep</td><td class="nowrap">20 Oct</td><td class="small">1 invoice (retain 8 yrs, masked) · warranty open until 2 Feb 2027</td><td><span class="status s-warn">In review</span></td><td class="r"><button class="btn btn-sm" data-toast="Profile & marketing data scheduled for deletion · invoice and warranty records retained (masked)">Process</button></td></tr>
             <tr><td class="mono">DR-0013</td><td><div class="cell-main">Kavya Reddy</div><div class="cell-sub">C-116045</div></td><td>Access / copy of data</td><td class="nowrap">22 Sep</td><td class="nowrap">22 Oct</td><td class="small">No restriction</td><td><span class="status s-ok">Completed 24 Sep</span></td><td class="r"><button class="btn btn-sm btn-ghost" data-toast="Secure link re-sent · expires in 72 h">Re-send link</button></td></tr>
@@ -204,15 +205,15 @@
   <div class="drawer" id="d-360"><div class="drawer-card wide">
     <div class="drawer-head"><div id="c360-head" class="grow"></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
     <div class="drawer-body" id="c360-body"></div>
-    <div class="drawer-foot"><button class="btn" data-toast="Data request DR-0014 opened for this customer">Data request</button><a class="btn" href="erp-returns.html">Start return</a><a class="btn btn-primary" href="erp-orders.html#assisted"><i data-icon="receipt" class="ic-sm"></i> Assisted order</a></div>
+    <div class="drawer-foot"><button class="btn" data-help="act-data-request" data-toast="Data request DR-0014 opened for this customer">Data request</button><a class="btn" href="erp-returns.html">Start return</a><a class="btn btn-primary" href="erp-orders.html#assisted"><i data-icon="receipt" class="ic-sm"></i> Assisted order</a></div>
   </div></div>
 
   <!-- Suspend modal -->
   <div class="modal" id="m-suspend"><div class="modal-card">
-    <div class="modal-head"><h3>Suspend business account</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-head"><h3 data-help="m-suspend">Suspend business account</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
     <div class="modal-body col gap-12">
       <div class="callout c-warn small"><i data-icon="alert"></i><div>Suspension hides dealer prices and blocks new orders. Open orders continue under their confirmed terms; invoices and history stay accessible to authorised members.</div></div>
-      <div class="field"><label class="req" for="susp-reason">Reason</label><select class="select" id="susp-reason"><option value="">Select a reason…</option><option>GSTIN cancelled / inactive on portal</option><option>Suspected misuse of dealer pricing (resale to consumers)</option><option>Chargeback / payment dispute</option><option>Account owner request</option></select><span class="err hidden" id="susp-err">Choose a reason — it is shown to approvers and kept in the audit log.</span></div>
+      <div class="field"><label class="req" for="susp-reason" data-help="susp-reason">Reason</label><select class="select" id="susp-reason"><option value="">Select a reason…</option><option>GSTIN cancelled / inactive on portal</option><option>Suspected misuse of dealer pricing (resale to consumers)</option><option>Chargeback / payment dispute</option><option>Account owner request</option></select><span class="err hidden" id="susp-err">Choose a reason — it is shown to approvers and kept in the audit log.</span></div>
       <div class="field"><label for="susp-note">Note to account owner</label><textarea class="textarea" id="susp-note" placeholder="Optional explanation sent by email"></textarea></div>
     </div>
     <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-danger" id="susp-go">Suspend account</button></div>
@@ -220,7 +221,7 @@
 
   <!-- Merge modal -->
   <div class="modal" id="m-merge"><div class="modal-card">
-    <div class="modal-head"><h3>Confirm merge</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-head"><h3 data-help="m-merge">Confirm merge</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
     <div class="modal-body col gap-12">
       <p>Merge <b>C-118870 (Priya N)</b> into <b>C-100231 (Priya Nair)</b>?</p>
       <dl class="kv"><dt>Strong identifiers</dt><dd>Verified phone · same delivery address</dd><dt>Records moved</dt><dd>1 order, 1 wishlist item, 1 address</dd><dt>Consent result</dt><dd>WhatsApp marketing: opted out</dd><dt>Undo until</dt><dd>26 Oct 2026</dd></dl>
@@ -231,11 +232,11 @@
 
   <!-- Invite modal -->
   <div class="modal" id="m-invite"><div class="modal-card">
-    <div class="modal-head"><h3>Invite a business account</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-head"><h3 data-help="m-invite">Invite a business account</h3><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
     <div class="modal-body col gap-12">
       <p class="small subtle">The business completes the same application (GSTIN check, documents). An invitation never creates an approved account on its own.</p>
       <div class="form-grid"><div class="field"><label class="req" for="inv-biz">Business name</label><input class="input" id="inv-biz" placeholder="e.g. Karavali Computers"></div><div class="field"><label class="req" for="inv-mail">Contact email</label><input class="input" id="inv-mail" type="email" placeholder="owner@business.example"></div>
-      <div class="field"><label for="inv-list">Suggested price list</label><select class="select" id="inv-list"><option>Dealer Standard</option><option>Dealer Gold (needs manager approval)</option></select></div><div class="field"><label for="inv-city">City</label><input class="input" id="inv-city" placeholder="City"></div></div>
+      <div class="field"><label for="inv-list" data-help="inv-list">Suggested price list</label><select class="select" id="inv-list"><option>Dealer Standard</option><option>Dealer Gold (needs manager approval)</option></select></div><div class="field"><label for="inv-city">City</label><input class="input" id="inv-city" placeholder="City"></div></div>
     </div>
     <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-primary" data-close data-toast="Invitation sent · link valid for 7 days">Send invitation</button></div>
   </div></div>
@@ -301,27 +302,27 @@ TX.ready(() => {
     const n = Math.max(1, Math.min(c.orders, 5));
     const orders = [...Array(n)].map((_, i) => { const p = TX.byId(PROD[(i + c.orders) % PROD.length]); return { id: i === 0 ? c.last.split("· ")[1] : "TXO-" + (10470 - i * 37 - c.orders), p, date: i === 0 ? c.last.split(" · ")[0] : ["18 Aug", "2 Jul", "11 May", "20 Feb"][i - 1] }; });
     const isPriya = c.id === "C-100231";
-    $("#c360-head").innerHTML = `<div class="row gap-12"><span class="avatar lg" style="background:${colors[C.indexOf(c) % colors.length]}">${init(c.name)}</span><div class="grow"><div class="row gap-8"><h3>${c.name}</h3><span class="badge">${c.seg}</span><span class="status ${c.status[0]}">${c.status[1]}</span></div>
+    $("#c360-head").innerHTML = `<div class="row gap-12"><span class="avatar lg" style="background:${colors[C.indexOf(c) % colors.length]}">${init(c.name)}</span><div class="grow"><div class="row gap-8"><h3>${c.name}</h3><span data-help="d-360" data-help-pos="in" class="hi-host"></span><span class="badge">${c.seg}</span><span class="status ${c.status[0]}">${c.status[1]}</span></div>
       <div class="small muted mt-4">${c.id} · customer since ${c.since} · ${c.city}</div>
-      <div class="small mt-4 row gap-8"><span class="mono">${c.email}</span>·<span class="mono">${c.phone}</span><button class="link-btn small" style="display:inline-flex;align-items:center;gap:4px" data-toast="Reveal logged · reason: “support call SUP-7731” · visible for 5 min">${ic("eye", "ic-sm")} Reveal</button></div></div></div>`;
+      <div class="small mt-4 row gap-8"><span class="mono">${c.email}</span>·<span class="mono">${c.phone}</span><button class="link-btn small" style="display:inline-flex;align-items:center;gap:4px" data-help="c360-reveal" data-toast="Reveal logged · reason: “support call SUP-7731” · visible for 5 min">${ic("eye", "ic-sm")} Reveal</button></div></div></div>`;
     $("#c360-body").innerHTML = `
-      ${c.status[1] === "Deletion requested" ? `<div class="callout c-warn mb-16 small">${ic("shield")}<div><b>Deletion requested (DR-0012).</b> Marketing stopped. Profile removal is scheduled after retention review; the invoice and open warranty stay as statutory records.</div></div>` : ""}
-      ${c.dup ? `<div class="callout c-info mb-16 small">${ic("copy")}<div><b>Possible duplicate:</b> ${isPriya ? "Priya N (C-118870) shares a verified phone and address." : "a similar account exists."} <button class="link-btn" data-close data-goto="duplicates">Review</button></div></div>` : ""}
+      ${c.status[1] === "Deletion requested" ? `<div class="callout c-warn mb-16 small">${ic("shield")}<div><b data-help="c360-deletion">Deletion requested (DR-0012).</b> Marketing stopped. Profile removal is scheduled after retention review; the invoice and open warranty stay as statutory records.</div></div>` : ""}
+      ${c.dup ? `<div class="callout c-info mb-16 small">${ic("copy")}<div><b data-help="c360-dup">Possible duplicate:</b> ${isPriya ? "Priya N (C-118870) shares a verified phone and address." : "a similar account exists."} <button class="link-btn" data-close data-goto="duplicates">Review</button></div></div>` : ""}
       <div class="mini-kpis mb-16" data-anno="Customer 360 · lifetime value is net of returns, excl. GST">
-        <div><div class="mk-v">${c.ltv ? fmt(c.ltv) : "—"}</div><div class="mk-l">Lifetime value (net)</div></div>
+        <div><div class="mk-v">${c.ltv ? fmt(c.ltv) : "—"}</div><div class="mk-l" data-help="col-ltv">Lifetime value (net)</div></div>
         <div><div class="mk-v">${c.orders}</div><div class="mk-l">Orders</div></div>
         <div><div class="mk-v">${c.orders ? fmt(c.ltv / c.orders) : "—"}</div><div class="mk-l">Avg. order</div></div>
         <div><div class="mk-v">${isPriya ? 1 : c.open.some((o) => o[0] === "return") ? 1 : 0}</div><div class="mk-l">Returns</div></div>
         <div><div class="mk-v">${isPriya ? 3 : c.open.some((o) => o[0] === "support") ? 1 : 0}</div><div class="mk-l">Conversations</div></div>
       </div>
       <div data-tabset>
-        <div class="tabs mb-16"><button class="tab active" data-tab="c-orders">Orders</button><button class="tab" data-tab="c-returns">Returns</button><button class="tab" data-tab="c-support">Support</button><button class="tab" data-tab="c-consent">Consent</button><button class="tab" data-tab="c-profile">Profile & notes</button></div>
+        <div class="tabs mb-16"><button class="tab active" data-tab="c-orders" data-help="d-tab-orders">Orders</button><button class="tab" data-tab="c-returns" data-help="d-tab-returns">Returns</button><button class="tab" data-tab="c-support" data-help="d-tab-support">Support</button><button class="tab" data-tab="c-consent" data-help="d-tab-consent">Consent</button><button class="tab" data-tab="c-profile" data-help="d-tab-profile">Profile & notes</button></div>
         <div class="tab-panel active" data-panel="c-orders">
           <table class="table compact" style="border:1px solid var(--line);border-radius:var(--r)"><thead><tr><th>Order</th><th>Item</th><th class="r">Total</th><th>Order</th><th>Payment</th><th>Fulfilment</th></tr></thead><tbody>
           ${orders.map((o, i) => `<tr data-href="erp-orders.html"><td><div class="cell-main mono">${o.id}</div><div class="cell-sub">${o.date}</div></td><td><div class="row gap-8">${TX.ph(o.p.img, "thumb")}<span class="small truncate" style="max-width:190px">${o.p.title}</span></div></td><td class="r">${fmt(o.p.price)}</td>
             <td><span class="status ${i === 0 ? "s-info" : "s-ok"}">${i === 0 ? "Confirmed" : "Closed"}</span></td><td><span class="status s-ok">Captured</span></td><td><span class="status ${i === 0 ? "s-brand" : "s-ok"}">${i === 0 ? "Packed" : "Delivered"}</span></td></tr>`).join("")}
           </tbody></table>
-          <p class="small muted mt-8">Order, payment and fulfilment are separate states — see each order for its own timeline.</p>
+          <p class="small muted mt-8" data-help="c360-states">Order, payment and fulfilment are separate states — see each order for its own timeline.</p>
         </div>
         <div class="tab-panel" data-panel="c-returns">
           ${isPriya || c.open.some((o) => o[0] === "return") ? `<div class="list-row" style="padding:12px 0"><span class="li-icon warn">${ic("undo")}</span><div class="grow"><b>${isPriya ? "RMA-0088" : "RMA-0091"}</b> · ${isPriya ? "Logitech G305 — double-click fault" : "Dell Latitude 5420 — battery health below grade"}<div class="small muted">${isPriya ? "Resolved 14 Jul · replaced under warranty · serial matched" : "Received 24 Sep · in quarantine · inspection due 27 Sep"}</div></div><span class="status ${isPriya ? "s-ok" : "s-warn"}">${isPriya ? "Resolved" : "Inspecting"}</span></div>` : `<div class="empty">${ic("undo")}<h4>No returns</h4><p>This customer hasn't returned anything.</p></div>`}
@@ -333,7 +334,7 @@ TX.ready(() => {
           : c.open.some((o) => o[0] === "support") ? `<div class="list-row" style="padding:12px 0"><span class="li-icon brand">${ic("chat")}</span><div class="grow"><b>${c.open.find((o) => o[0] === "support")[1]}</b> · Delivery date question<div class="small muted">Web chat · yesterday</div></div><span class="status s-info">Open</span></div>` : `<div class="empty">${ic("headset")}<h4>No conversations</h4></div>`}
         </div>
         <div class="tab-panel" data-panel="c-consent">
-          <table class="table compact" style="border:1px solid var(--line);border-radius:var(--r)"><thead><tr><th>Purpose</th><th>Channel</th><th>Status</th><th>Captured</th><th>Evidence</th></tr></thead><tbody>
+          <table class="table compact" style="border:1px solid var(--line);border-radius:var(--r)"><thead><tr><th>Purpose</th><th>Channel</th><th>Status</th><th>Captured</th><th data-help="col-evidence">Evidence</th></tr></thead><tbody>
             <tr><td>Order & delivery updates</td><td>WhatsApp · SMS</td><td>${c.consent[0] ? '<span class="status s-ok">Opted in</span>' : '<span class="status s-muted">Off</span>'}</td><td class="small">${c.since} · checkout</td><td class="small mono">notice v3</td></tr>
             <tr><td>Offers & new arrivals</td><td>Email</td><td>${c.consent[1] ? '<span class="status s-ok">Opted in</span>' : '<span class="status s-muted">Not given</span>'}</td><td class="small">${c.since} · account signup</td><td class="small mono">notice v3 · double opt-in</td></tr>
             <tr><td>Offers & new arrivals</td><td>WhatsApp</td><td>${c.consent[2] ? '<span class="status s-ok">Opted in</span>' : '<span class="status s-bad">Opted out</span>'}</td><td class="small">${c.consent[2] ? "Mar 2026 · product page" : "3 Aug 2026 · replied “STOP”"}</td><td class="small mono">${c.consent[2] ? "template opt-in" : "WA msg wamid.HBg…"}</td></tr>
@@ -344,7 +345,7 @@ TX.ready(() => {
         <div class="tab-panel" data-panel="c-profile">
           <div class="grid g-2"><dl class="kv"><dt>Addresses</dt><dd>${isPriya ? "Home — Koramangala 560034<br>Office — Whitefield 560066" : c.city}</dd><dt>Preferred branch</dt><dd>${c.city.includes("Mysuru") ? "Mysuru" : "Koramangala"}</dd><dt>Buyer type</dt><dd>Consumer · public prices incl. GST</dd></dl>
           <dl class="kv"><dt>Tags</dt><dd><span class="badge">Refurb buyer</span> <span class="badge">EMI</span></dd><dt>Risk flags</dt><dd>None · COD eligible</dd><dt>Account manager</dt><dd>—</dd></dl></div>
-          <div class="field mt-16"><label for="c-note">Internal note (staff only)</label><textarea class="textarea" id="c-note" placeholder="Visible to staff; never shown to the customer"></textarea></div>
+          <div class="field mt-16"><label for="c-note" data-help="c360-note">Internal note (staff only)</label><textarea class="textarea" id="c-note" placeholder="Visible to staff; never shown to the customer"></textarea></div>
         </div>
       </div>`;
     TX.hydrate($("#c360-body"));
@@ -376,24 +377,24 @@ TX.ready(() => {
       <div class="${susp ? "is-suspended" : ""}" style="padding:20px">
         <div class="row-between mb-16" style="align-items:flex-start">
           <div class="row gap-12"><span class="avatar lg sq" style="background:${colors[Object.keys(BIZ).indexOf(id) + 2]}">${init(b.name)}</span>
-            <div><div class="row gap-8"><h2 style="font-size:19px">${b.name}</h2><span class="badge b-vendor">${ic("briefcase")} ${b.list.split(" v")[0]}</span>${susp ? '<span class="badge b-bad">Suspended</span>' : '<span class="badge b-ok">Approved</span>'}</div>
+            <div><div class="row gap-8"><h2 style="font-size:19px">${b.name}</h2><span data-help="biz-detail" data-help-pos="in" class="hi-host"></span><span class="badge b-vendor">${ic("briefcase")} ${b.list.split(" v")[0]}</span>${susp ? '<span class="badge b-bad">Suspended</span>' : '<span class="badge b-ok">Approved</span>'}</div>
             <div class="small muted mt-4">${b.legal} · approved ${b.since} · account manager ${b.manager}</div></div></div>
-          <div class="row gap-8">${susp ? `<button class="btn btn-sm" data-toast="Reinstatement request sent · GSTIN re-check required first">Request reinstatement</button>` : `<button class="btn btn-sm btn-danger" data-open="m-suspend">Suspend</button>`}<button class="btn btn-sm" data-toast="Price-list change request created · needs Operations admin approval">Change price list</button><a class="btn btn-sm" href="store-dealer.html">${ic("external", "ic-sm")} View as dealer</a></div>
+          <div class="row gap-8">${susp ? `<button class="btn btn-sm" data-help="biz-reinstate" data-toast="Reinstatement request sent · GSTIN re-check required first">Request reinstatement</button>` : `<button class="btn btn-sm btn-danger" data-open="m-suspend" data-help="biz-suspend">Suspend</button>`}<button class="btn btn-sm" data-help="biz-price-list" data-toast="Price-list change request created · needs Operations admin approval">Change price list</button><a class="btn btn-sm" href="store-dealer.html" data-help="biz-view-as">${ic("external", "ic-sm")} View as dealer</a></div>
         </div>
-        <div class="callout c-bad mb-16 banner-susp" data-anno="Suspension: prices hidden, new orders blocked, history kept">${ic("alert-octagon")}<div class="grow"><b>Suspended 22 Sep 2026 by Anita Rao</b> — reason: GSTIN cancelled on GST portal (automatic re-check 21 Sep).<br>Effects: dealer prices hidden (members see public prices), new orders and quotes blocked, open order TXO-09790 continues, invoices & history remain available to members. Reinstatement requires a fresh GSTIN verification.</div></div>
+        <div class="callout c-bad mb-16 banner-susp" data-anno="Suspension: prices hidden, new orders blocked, history kept">${ic("alert-octagon")}<div class="grow"><b data-help="biz-suspended">Suspended 22 Sep 2026 by Anita Rao</b> — reason: GSTIN cancelled on GST portal (automatic re-check 21 Sep).<br>Effects: dealer prices hidden (members see public prices), new orders and quotes blocked, open order TXO-09790 continues, invoices & history remain available to members. Reinstatement requires a fresh GSTIN verification.</div></div>
         <div class="mini-kpis mb-16"><div><div class="mk-v">${b.orders}</div><div class="mk-l">Orders</div></div><div><div class="mk-v">${b.net}</div><div class="mk-l">Net sales</div></div><div><div class="mk-v">${b.aov}</div><div class="mk-l">Avg. order</div></div><div><div class="mk-v" style="font-size:14px;padding-top:4px">${b.last}</div><div class="mk-l">Last order</div></div><div><div class="mk-v">${b.returns}</div><div class="mk-l">Returns</div></div></div>
         <div class="grid g-2 mb-16">
-          <div class="panel"><div class="upper muted mb-8">Business & tax</div><dl class="kv"><dt>GSTIN</dt><dd><span class="mono">${b.gstin}</span><br>${susp ? '<span class="status s-bad">Cancelled on portal · 21 Sep</span>' : '<span class="status s-ok">Verified · GST portal check</span>'}</dd><dt>PAN</dt><dd class="mono">${b.pan}</dd><dt>Address</dt><dd>${b.addr}</dd><dt>Place of supply</dt><dd>Karnataka (29)</dd></dl></div>
-          <div class="panel" data-anno="§8.3 Default prepaid; credit is separate finance scope"><div class="upper muted mb-8">Commercial terms</div><dl class="kv"><dt>Price list</dt><dd>${b.list}<br><span class="small muted">${b.list2}</span></dd><dt>Tiers</dt><dd>All-units · 5+ / 10+</dd><dt>Payment terms</dt><dd><span class="row gap-4">${ic("lock", "ic-sm")} Prepaid — credit not enabled</span></dd><dt>COD</dt><dd>Not offered on dealer orders</dd></dl></div>
+          <div class="panel"><div class="upper muted mb-8" data-help="biz-tax">Business & tax</div><dl class="kv"><dt>GSTIN</dt><dd><span class="mono">${b.gstin}</span><br>${susp ? '<span class="status s-bad">Cancelled on portal · 21 Sep</span>' : '<span class="status s-ok">Verified · GST portal check</span>'}</dd><dt>PAN</dt><dd class="mono">${b.pan}</dd><dt>Address</dt><dd>${b.addr}</dd><dt>Place of supply</dt><dd>Karnataka (29)</dd></dl></div>
+          <div class="panel" data-anno="§8.3 Default prepaid; credit is separate finance scope"><div class="upper muted mb-8" data-help="biz-terms">Commercial terms</div><dl class="kv"><dt>Price list</dt><dd>${b.list}<br><span class="small muted">${b.list2}</span></dd><dt>Tiers</dt><dd>All-units · 5+ / 10+</dd><dt>Payment terms</dt><dd><span class="row gap-4">${ic("lock", "ic-sm")} Prepaid — credit not enabled</span></dd><dt>COD</dt><dd>Not offered on dealer orders</dd></dl></div>
         </div>
-        <div class="row-between mb-8"><h4>Members & roles</h4><div class="row gap-8"><span class="small muted">Only the account owner can invite members</span><button class="btn btn-sm" ${susp ? "disabled" : ""} data-toast="Invitation sent on behalf of the account owner (logged)">${ic("plus", "ic-sm")} Invite member</button></div></div>
+        <div class="row-between mb-8"><h4 data-help="biz-members">Members & roles</h4><div class="row gap-8"><span class="small muted">Only the account owner can invite members</span><button class="btn btn-sm" ${susp ? "disabled" : ""} data-toast="Invitation sent on behalf of the account owner (logged)">${ic("plus", "ic-sm")} Invite member</button></div></div>
         <div class="table-wrap mb-16" style="border:1px solid var(--line);border-radius:var(--r)" data-anno="§8.3 Who can order, who sees invoices"><table class="table compact">
           <thead><tr><th>Member</th><th>Role</th><th class="c">Orders</th><th class="c">Invoices & GST</th><th class="c">Invite</th><th>Last sign-in</th><th>Status</th></tr></thead>
           <tbody>${b.members.map((m) => `<tr><td class="strong">${m[0]}</td><td>${m[1]}</td><td class="c">${m[2] ? Y : N}</td><td class="c">${m[3] ? Y : N}</td><td class="c">${m[4] ? Y : N}</td><td class="small">${m[5]}</td><td><span class="status ${m[6] === "Active" ? (susp ? "s-muted" : "s-ok") : "s-warn"}">${susp && m[6] === "Active" ? "Active · read-only" : m[6]}</span></td></tr>`).join("")}</tbody>
         </table></div>
         <div class="grid g-2">
-          <div class="panel"><div class="row-between"><b>Credit terms</b><label class="switch small"><input type="checkbox" disabled aria-label="Enable credit terms"> Off</label></div><p class="small muted mt-4">Phase 1 policy: dealer orders are prepaid. Credit limits, ageing, overdue blocking, partial payments and collections are a separate finance scope — enable only after that scope is approved.</p></div>
-          <div class="panel"><b>Account history</b><ul class="timeline mt-8">
+          <div class="panel"><div class="row-between"><b data-help="biz-credit">Credit terms</b><label class="switch small"><input type="checkbox" disabled aria-label="Enable credit terms"> Off</label></div><p class="small muted mt-4">Phase 1 policy: dealer orders are prepaid. Credit limits, ageing, overdue blocking, partial payments and collections are a separate finance scope — enable only after that scope is approved.</p></div>
+          <div class="panel"><b data-help="biz-history">Account history</b><ul class="timeline mt-8">
             ${susp ? `<li class="warn"><span class="t-dot">${ic("alert")}</span><div class="t-title">Suspended · GSTIN cancelled</div><div class="t-meta">22 Sep 2026 · Anita Rao</div></li>` : ""}
             <li class="done"><span class="t-dot">${ic("check")}</span><div class="t-title">Price list: ${b.list.split(" v")[0]}</div><div class="t-meta">${id === "coastal" ? "23 Sep 2026 · approved by Rajesh Menon (APR-0381)" : b.since}</div></li>
             <li class="done"><span class="t-dot">${ic("check")}</span><div class="t-title">Application approved</div><div class="t-meta">${b.since} · GSTIN verified via portal check</div></li>
@@ -420,25 +421,25 @@ TX.ready(() => {
     const a = APPS[curApp]; const allOk = a.checks.every((c) => c[0] === "ok" || c[0] === "muted");
     const ico = { ok: "check", bad: "x", warn: "alert", muted: "minus" };
     $("#app-detail").innerHTML = `<div style="padding:20px">
-      <div class="row-between mb-16" style="align-items:flex-start"><div><div class="row gap-8"><h2 style="font-size:19px">${a.name}</h2><span class="status ${a.st[0]}">${a.st[1]}</span></div><div class="small muted mt-4">Applicant ${a.who} · submitted ${a.sub} · reviewer Anita Rao · due ${curApp === "bp" ? "29 Sep" : curApp === "nandi" ? "28 Sep" : "paused (awaiting applicant)"}</div></div>
+      <div class="row-between mb-16" style="align-items:flex-start"><div><div class="row gap-8"><h2 style="font-size:19px">${a.name}</h2><span data-help="app-detail" data-help-pos="in" class="hi-host"></span><span class="status ${a.st[0]}">${a.st[1]}</span></div><div class="small muted mt-4">Applicant ${a.who} · submitted ${a.sub} · reviewer Anita Rao · due ${curApp === "bp" ? "29 Sep" : curApp === "nandi" ? "28 Sep" : "paused (awaiting applicant)"}</div></div>
         <span class="badge b-outline">A27 · completeness auto-checked · approval is never automatic</span></div>
       <div class="grid" style="grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:20px">
         <div>
-          <h4 class="mb-8">Application</h4>
+          <h4 class="mb-8" data-help="app-form">Application</h4>
           <dl class="kv mb-16"><dt>Legal name</dt><dd>${a.legal}</dd><dt>Constitution</dt><dd>${a.constitution}</dd><dt>GSTIN</dt><dd class="mono">${a.gstin}</dd><dt>PAN</dt><dd class="mono">${a.pan}</dd><dt>Address</dt><dd>${a.addr}</dd><dt>Business</dt><dd>${a.biz}</dd><dt>Expected volume</dt><dd>${a.vol}</dd><dt>Interested in</dt><dd><div class="row wrap gap-4">${a.cats.map((c) => `<span class="badge">${c}</span>`).join("")}</div></dd></dl>
-          <h4 class="mb-8">Decision</h4>
+          <h4 class="mb-8" data-help="app-decision">Decision</h4>
           <div class="col gap-12">
             <div class="form-grid">
-              <div class="field"><label for="ap-list">Assign price list</label><select class="select" id="ap-list"><option>Dealer Standard</option><option>Dealer Gold (needs manager approval)</option></select></div>
-              <div class="field"><label for="ap-terms">Payment terms</label><input class="input" id="ap-terms" value="Prepaid only" readonly><span class="hint">Credit not enabled in Phase 1</span></div>
+              <div class="field"><label for="ap-list" data-help="app-price-list">Assign price list</label><select class="select" id="ap-list"><option>Dealer Standard</option><option>Dealer Gold (needs manager approval)</option></select></div>
+              <div class="field"><label for="ap-terms" data-help="app-terms">Payment terms</label><input class="input" id="ap-terms" value="Prepaid only" readonly><span class="hint">Credit not enabled in Phase 1</span></div>
             </div>
-            <div class="field"><label class="req" for="ap-reason">Reason (sent to applicant for rejections; always audited)</label><textarea class="textarea" id="ap-reason" placeholder="${allOk ? "e.g. GSTIN and documents verified; retail shop confirmed via trade licence." : "e.g. GSTIN legal name doesn't match the application — please apply under the registered name or upload an authorisation letter."}"></textarea><span class="err hidden" id="ap-err">A reason is mandatory for approve, reject and request-info decisions.</span></div>
-            <div class="row gap-8"><button class="btn btn-danger" data-ap="reject">Reject</button><button class="btn" data-ap="info">Request info</button><span class="ml-auto"></span><button class="btn btn-ok" data-ap="approve" ${allOk ? "" : "disabled"}>${ic("check", "ic-sm")} Approve</button></div>
+            <div class="field"><label class="req" for="ap-reason" data-help="app-reason">Reason (sent to applicant for rejections; always audited)</label><textarea class="textarea" id="ap-reason" placeholder="${allOk ? "e.g. GSTIN and documents verified; retail shop confirmed via trade licence." : "e.g. GSTIN legal name doesn't match the application — please apply under the registered name or upload an authorisation letter."}"></textarea><span class="err hidden" id="ap-err">A reason is mandatory for approve, reject and request-info decisions.</span></div>
+            <div class="row gap-8"><button class="btn btn-danger" data-ap="reject">Reject</button><button class="btn" data-ap="info">Request info</button><span class="ml-auto"></span><button class="btn btn-ok" data-ap="approve" data-help="app-approve" ${allOk ? "" : "disabled"}>${ic("check", "ic-sm")} Approve</button></div>
             ${allOk ? "" : `<div class="small text-warn">Approve is disabled until every required check passes.</div>`}
           </div>
         </div>
         <div>
-          <div class="row-between mb-8"><h4>Verification checklist</h4><button class="btn btn-xs" data-toast="GST portal re-checked · response unchanged">${ic("refresh", "ic-sm")} Re-run GSTIN check</button></div>
+          <div class="row-between mb-8"><h4 data-help="app-checks">Verification checklist</h4><button class="btn btn-xs" data-help="app-rerun" data-toast="GST portal re-checked · response unchanged">${ic("refresh", "ic-sm")} Re-run GSTIN check</button></div>
           <div class="panel" style="padding:4px 14px">${a.checks.map((c) => `<div class="chk"><span class="ci ${c[0]}">${ic(ico[c[0]])}</span><div><div class="c-t">${c[1]}</div><div class="c-s">${c[2]}</div></div>${c[3] ? `<button class="btn btn-xs btn-ghost" data-toast="Opens document viewer (watermarked, access logged)">${c[3]}</button>` : "<span></span>"}</div>`).join("")}</div>
           <p class="small muted mt-8">A typed GSTIN alone is not verification — the check stores the portal response, time and reference.</p>
         </div>

@@ -494,6 +494,7 @@
       ${app === "store" ? `<span class="pb-sep"></span><div class="pb-view"><span style="color:#7d89a3">View as</span>
       <div class="seg"><button data-view="guest">Guest</button><button data-view="consumer">Consumer</button><button data-view="dealer">Approved dealer</button></div></div>` : ""}
       <div class="ml-auto row gap-8 pb-tools">
+        ${app === "erp" || app === "vendor" ? `<button class="pb-btn" id="pb-help" title="Show or hide the ⓘ help icons and underlined terms">${ic("info", "ic-sm")} Help icons</button>` : ""}
         <button class="pb-btn" id="pb-annot" title="Show the phase and requirement ID for each feature">${ic("flag", "ic-sm")} Phase notes</button>
         <button class="pb-btn" id="pb-hide" title="Hide the prototype toolbar" aria-label="Hide the prototype toolbar">${ic("eye-off", "ic-sm")}</button>
       </div>
@@ -513,6 +514,8 @@
     const setAnnot = (on) => { document.body.classList.toggle("annot-on", on); $("#pb-annot").classList.toggle("on", on); store.set("annot", on); };
     $("#pb-annot").onclick = () => setAnnot(!document.body.classList.contains("annot-on"));
     setAnnot(store.get("annot", false));
+    const pbHelp = $("#pb-help");
+    if (pbHelp) { pbHelp.classList.toggle("on", !store.get("hi-off", false)); pbHelp.onclick = () => TX.setHelpIcons(document.documentElement.classList.contains("hi-off")); }
   }
 
   /* ------------------------------------------------------------------------ */
@@ -793,7 +796,7 @@
   function buildWorkspaceShell(app, page) {
     const main = $("main"); main.classList.add("ws-main");
     const nav = app === "erp" ? ERP_NAV : VENDOR_NAV;
-    const navHTML = nav.map(([grp, items]) => `<div class="grp">${grp}</div>` + items.map(([id, href, label, icon, n, hot]) =>
+    const navHTML = nav.map(([grp, items]) => `<div class="grp" data-help="ws.nav.${grp.toLowerCase().replace(/[^a-z]+/g, "-").replace(/-$/, "")}">${grp}</div>` + items.map(([id, href, label, icon, n, hot]) =>
       `<a href="${href}" class="${id === page ? "active" : ""}">${ic(icon)} <span>${label}</span>${n ? `<span class="n ${hot ? "hot" : ""}">${n}</span>` : ""}</a>`).join("")).join("");
     const isV = app === "vendor";
     const who = isV ? { name: "Suresh Babu", role: "RenewTech Refurbishers", init: "SB", color: "#0e9f8a" } : TX.staff[0];
@@ -802,10 +805,10 @@
     shell.innerHTML = `
       <aside class="ws-side">
         <div class="ws-brand">${TX.logoMark()}<div><span class="logo-word">trade<b>x</b></span><div class="logo-sub">${isV ? "Vendor portal" : "ERP workspace"}</div></div></div>
-        <div class="ws-org">${isV ? `<div class="avatar sm sq" style="background:#0e9f8a">RT</div><div class="grow"><b>RenewTech Refurbishers</b><small>Vendor V-022 · Approved supplier</small></div>` : `<div class="avatar sm sq" style="background:#2e5bff">TX</div><div class="grow"><b>Tradex Electronics Pvt Ltd</b><small>All locations · FY 2026-27</small></div>`}${ic("chevron-down", "ic-sm")}</div>
+        <div class="ws-org" data-help="ws.org">${isV ? `<div class="avatar sm sq" style="background:#0e9f8a">RT</div><div class="grow"><b>RenewTech Refurbishers</b><small>Vendor V-022 · Approved supplier</small></div>` : `<div class="avatar sm sq" style="background:#2e5bff">TX</div><div class="grow"><b>Tradex Electronics Pvt Ltd</b><small>All locations · FY 2026-27</small></div>`}${ic("chevron-down", "ic-sm")}</div>
         <nav class="ws-nav">${navHTML}</nav>
         ${isV ? "" : `<div style="margin:0 12px 12px;padding:12px;border-radius:10px;background:#121b2f;border:1px solid #1f2a44;font-size:12px;color:#aab4c8">
-          <div class="row-between"><b style="color:#fff">System health</b><span class="status s-ok" style="color:#5ee29a">All good</span></div>
+          <div class="row-between"><b style="color:#fff" data-help="ws.health">System health</b><span class="status s-ok" style="color:#5ee29a">All good</span></div>
           <div class="mt-8">Stock sync lag <b style="color:#fff">14 s</b> · Jobs queue <b style="color:#fff">3</b></div>
           <div>Last backup <b style="color:#fff">02:00 today</b> · restore tested 21 Sep</div></div>`}
         <div class="ws-foot"><div class="avatar" style="background:${who.color}">${who.init}</div><div class="grow"><b>${who.name}</b><small>${who.role}</small></div><a href="store-home.html" data-tip="Open storefront" style="color:#7d89a3">${ic("external", "ic-sm")}</a></div>
@@ -814,18 +817,18 @@
         <div class="ws-top">
           <div class="ws-search">${ic("search")}<input class="input" placeholder="${isV ? "Search your products, POs, submissions…" : "Search orders, SKUs, serials, customers, POs…"}"><span class="kbd">Ctrl K</span></div>
           ${isV ? "" : `<div class="dd"><button class="btn btn-sm" data-dd-toggle>${ic("pin", "ic-sm")} All locations ${ic("chevron-down", "ic-sm")}</button>
-            <div class="dd-menu left"><div class="dd-label">Scope</div><a href="#">${ic("globe", "ic-sm")} All locations</a>${TX.locations.map((l) => `<a href="#">${ic(l.type === "Warehouse" ? "warehouse" : "store", "ic-sm")} ${l.name} <span class="muted small ml-auto">${l.code}</span></a>`).join("")}</div></div>`}
+            <div class="dd-menu left"><div class="dd-label" data-help="ws.scope">Scope</div><a href="#">${ic("globe", "ic-sm")} All locations</a>${TX.locations.map((l) => `<a href="#">${ic(l.type === "Warehouse" ? "warehouse" : "store", "ic-sm")} ${l.name} <span class="muted small ml-auto">${l.code}</span></a>`).join("")}</div></div>`}
           <div class="ml-auto row gap-8">
             ${isV ? `<a class="btn btn-sm" href="vendor-products.html#new" style="--b-bg:#0e9f8a;--b-fg:#fff;--b-bd:#0e9f8a">${ic("plus", "ic-sm")} Submit product</a>` : `<div class="dd"><button class="btn btn-primary btn-sm" data-dd-toggle>${ic("plus", "ic-sm")} New ${ic("chevron-down", "ic-sm")}</button>
-              <div class="dd-menu"><a href="erp-orders.html#assisted">${ic("receipt", "ic-sm")} Assisted order</a><a href="erp-purchasing.html#new-po">${ic("clipboard", "ic-sm")} Purchase order</a><a href="erp-purchasing.html#receive">${ic("scan", "ic-sm")} Goods receipt (GRN)</a><a href="erp-inventory.html#transfers">${ic("transfer", "ic-sm")} Stock transfer</a><a href="erp-catalog.html#editor">${ic("tag", "ic-sm")} Product draft</a><a href="erp-catalog.html#import">${ic("upload", "ic-sm")} Bulk import</a></div></div>`}
+              <div class="dd-menu"><div class="dd-label" data-help="ws.new">Create new</div><a href="erp-orders.html#assisted">${ic("receipt", "ic-sm")} Assisted order</a><a href="erp-purchasing.html#new-po">${ic("clipboard", "ic-sm")} Purchase order</a><a href="erp-purchasing.html#receive">${ic("scan", "ic-sm")} Goods receipt (GRN)</a><a href="erp-inventory.html#transfers">${ic("transfer", "ic-sm")} Stock transfer</a><a href="erp-catalog.html#editor">${ic("tag", "ic-sm")} Product draft</a><a href="erp-catalog.html#import">${ic("upload", "ic-sm")} Bulk import</a></div></div>`}
             <div class="dd"><button class="top-btn" data-dd-toggle aria-label="Notifications">${ic("bell")}<span class="pip"></span></button>
-              <div class="dd-menu" style="width:360px"><div class="row-between" style="padding:6px 10px"><b>Notifications</b><a href="#" class="small">Mark all read</a></div><hr>
+              <div class="dd-menu" style="width:360px"><div class="row-between" style="padding:6px 10px"><b data-help="ws.notifications">Notifications</b><a href="#" class="small">Mark all read</a></div><hr>
                 ${isV ? `<a href="vendor-products.html">${ic("alert", "ic-sm")} VS-0218 needs changes: warranty provider missing</a><a href="vendor-availability.html">${ic("clock", "ic-sm")} Availability feed goes stale in 6 h</a><a href="vendor-availability.html">${ic("clipboard", "ic-sm")} New PO-2026-0192 awaiting confirmation</a>`
                 : `<a href="erp-finance.html">${ic("alert-octagon", "ic-sm")} Payment captured, order not confirmed · TXO-10477</a><a href="erp-inventory.html#counts">${ic("alert", "ic-sm")} Cycle-count variance −2 units · WH-BLR bin A-14</a><a href="erp-vendors.html">${ic("building", "ic-sm")} 3 vendor submissions waiting review</a><a href="erp-automation.html">${ic("zap", "ic-sm")} Courier sync failed 3× · auto-retry paused</a>`}
               </div></div>
-            <a class="top-btn" href="${isV ? "store-help.html" : "erp-admin.html"}" aria-label="Help">${ic("help")}</a>
+            <button type="button" class="top-btn" data-help-home aria-label="Help for this page" data-tip="Help for this page">${ic("help")}</button>
             <div class="dd"><div class="ws-user" data-dd-toggle><div class="avatar" style="background:${who.color}">${who.init}</div><div><b>${who.name}</b><small>${who.role}</small></div>${ic("chevron-down", "ic-sm")}</div>
-              <div class="dd-menu"><a href="#">${ic("user", "ic-sm")} My profile</a><a href="#">${ic("key", "ic-sm")} Security & MFA</a>${isV ? "" : `<a href="erp-admin.html#delegation">${ic("users", "ic-sm")} Delegation while away</a>`}<hr><a href="store-home.html">${ic("logout", "ic-sm")} Sign out</a></div></div>
+              <div class="dd-menu"><div class="dd-label" data-help="ws.user">Your account</div><a href="#">${ic("user", "ic-sm")} My profile</a><a href="#">${ic("key", "ic-sm")} Security & MFA</a>${isV ? "" : `<a href="erp-admin.html#delegation">${ic("users", "ic-sm")} Delegation while away</a>`}<hr><a href="store-home.html">${ic("logout", "ic-sm")} Sign out</a></div></div>
           </div>
         </div>
       </div>`;
@@ -923,6 +926,11 @@
         else { const open = el.closest(".s-catbar").classList.toggle("mega-open"); el.setAttribute("aria-expanded", open); }
       }
       else if (!t.closest(".s-mega")) closeMega();
+      if ((el = t.closest("[data-go-tab]"))) { e.preventDefault(); TX.goTab(el.dataset.goTab); }
+      if ((el = t.closest("[data-flow-toggle]"))) {
+        const f = el.closest(".flow"), hide = !f.classList.contains("collapsed");
+        f.classList.toggle("collapsed", hide); el.setAttribute("aria-expanded", String(!hide)); store.set("flow-" + f.dataset.flow, hide);
+      }
       if ((el = t.closest("[data-compare-clear]"))) { store.set("compare", []); $$("[data-compare]").forEach((c) => (c.checked = false)); updateCompareTray(); }
       if ((el = t.closest("tr[data-href]")) && !t.closest("a,button,input,label")) { location.href = el.dataset.href; }
       if ((el = t.closest("tr[data-drawer]")) && !t.closest("a,button,input,label")) { TX.open(el.dataset.drawer); }
@@ -957,6 +965,308 @@
     const wrap = table.closest(".card") || document; const bar = $(".bulkbar", wrap); if (!bar) return;
     const n = $$("tbody input[type=checkbox]:checked", table).length; bar.classList.toggle("show", n > 0); const c = $(".bulk-count", bar); if (c) c.textContent = n;
   }
+
+  /* ------------------------------------------------------------------------ */
+  /* Contextual help — ERP workspace & vendor portal                           */
+  /* ------------------------------------------------------------------------ */
+  // data-help="<key>" on an element adds a small ⓘ button that opens the help panel on that entry
+  // (inside headings/labels-in-text; after buttons, links and switches; beside form labels). A tab bar
+  // whose tabs carry data-help gets one "About this tab" button that explains the active tab.
+  // Glossary entries ("g.*" with an `ab` list of abbreviations) are underlined at their first mention
+  // in each card/panel, show a short meaning on hover or focus, and open in full on click.
+  // Content lives in assets/help/glossary.js, shell.js and <page>.js, each calling TX.help.add({ key: entry }):
+  //   { t: title, k: kind ("Tab", "Section", "Table", "Modal", "Button", "Status", "Setting", "Page"…),
+  //     full: expansion (terms), short: one-line meaning (tooltips, lists), ab: ["RMA", "RMAs"] (terms),
+  //     what, why, read, do, next, notes: string or string[],
+  //     lists: [{ h: "Columns" | "Buttons" | "Statuses" | "Fields" | "Options"…, items: [[label, meaning, "s-ok" | "b-info"?]] }],
+  //     terms: ["rma"] (glossary keys without "g."), rel: ["key"], map: [["key", "note"]] (page guides),
+  //     see: "g.other" (alias: opens that entry instead; not listed separately in the glossary) }
+  // Text may contain <b>, <i> and [[key]] / [[key|label]] links to other entries.
+  const H = TX.help = { e: {} };
+  let hpEl = null, hpHist = [], hpOpener = null, hpTarget = null, glRe = null, glMap = {}, glDone = new WeakSet(), glTip = null, helpMo = null;
+  const hiOff = () => document.documentElement.classList.contains("hi-off");
+  H.add = (entries) => {
+    const newTerms = Object.keys(entries).some((k) => k.startsWith("g.") && entries[k].ab);
+    Object.assign(H.e, entries);
+    if (newTerms) { glRe = null; glDone = new WeakSet(); }
+    helpQueue(document.body);
+  };
+  const hpText = (s) => String(s == null ? "" : s).replace(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g, (m, k, l) =>
+    H.e[k] ? `<button type="button" class="hp-link" data-hp-go="${k}">${l || H.e[k].t}</button>` : (l || k));
+  const hpPara = (v) => !v ? "" : Array.isArray(v) ? `<ul class="hp-ul">${v.map((x) => `<li>${hpText(x)}</li>`).join("")}</ul>` : `<p>${hpText(v)}</p>`;
+  const hpSteps = (v) => Array.isArray(v) ? `<ol class="hp-ol">${v.map((x) => `<li>${hpText(x)}</li>`).join("")}</ol>` : hpPara(v);
+  const hpSec = (icon, h, body) => body ? `<section class="hp-sec"><h3>${ic(icon, "ic-sm")}<span>${h}</span></h3>${body}</section>` : "";
+  const hpLabel = (a, c) => !c ? hpText(a) : c.startsWith("s-") ? `<span class="status ${c}">${a}</span>` : `<span class="badge ${c}">${a}</span>`;
+  function hpEntryHTML(key) {
+    const e = H.e[key];
+    const alias = (k) => (H.e[k] && H.e[k].see && H.e[H.e[k].see] ? H.e[k].see : k);
+    const terms = [...new Set((e.terms || []).map((t) => alias("g." + t)))].filter((k) => H.e[k] && k !== key);
+    const rel = [...new Set((e.rel || []).map(alias))].filter((k) => H.e[k] && k !== key);
+    return [
+      e.short && key.startsWith("g.") ? `<p class="hp-lead">${hpText(e.short)}</p>` : "",
+      hpSec("info", key.startsWith("g.") ? "What it means" : "What it is", hpPara(e.what)),
+      hpSec("target", "What it's for", hpPara(e.why)),
+      hpSec("eye", "How to read it", hpPara(e.read)),
+      hpSec("check-circle", "What you do here", hpSteps(e.do)),
+      (e.lists || []).map((l) => hpSec("list", l.h, `<dl class="hp-dl">${l.items.map(([a, b, c]) => `<dt>${hpLabel(a, c)}</dt><dd>${hpText(b)}</dd>`).join("")}</dl>`)).join(""),
+      hpSec("arrow-right", "What happens next", hpSteps(e.next)),
+      hpSec("alert", "Good to know", hpPara(e.notes)),
+      e.map ? hpSec("layers", "On this page", `<ul class="hp-map">${e.map.filter(([k]) => H.e[k]).map(([k, n]) => `<li><button type="button" class="hp-link" data-hp-go="${k}">${H.e[k].t}</button>${n ? `<span>${hpText(n)}</span>` : ""}</li>`).join("")}</ul>`) : "",
+      terms.length ? hpSec("help", "Terms used here", `<dl class="hp-dl">${terms.map((k) => `<dt><button type="button" class="hp-link" data-hp-go="${k}">${H.e[k].t}</button></dt><dd>${hpText(H.e[k].short || H.e[k].full || "")}</dd>`).join("")}</dl>`) : "",
+      rel.length ? hpSec("link", "Related help", `<div class="hp-rel">${rel.map((k) => `<button type="button" class="hp-chip" data-hp-go="${k}">${H.e[k].t}</button>`).join("")}</div>`) : "",
+    ].join("");
+  }
+  function hpGlossaryHTML() {
+    const ks = Object.keys(H.e).filter((k) => k.startsWith("g.") && !H.e[k].see).sort((a, b) => H.e[a].t.localeCompare(H.e[b].t, "en", { sensitivity: "base" }));
+    if (!ks.length) return `<p class="hp-lead">The glossary is still loading…</p>`;
+    let cur = "", out = `<p class="hp-lead">Short names, abbreviations and business terms used in this workspace. Underlined words on the screen open here too.</p>`;
+    ks.forEach((k) => {
+      const L = H.e[k].t[0].toUpperCase().replace(/[^A-Z]/, "#");
+      if (L !== cur) { out += `${cur ? "</div>" : ""}<h3 class="hp-letter">${L}</h3><div class="hp-gl">`; cur = L; }
+      out += `<button type="button" class="hp-gi" data-hp-go="${k}"><b>${H.e[k].t}</b>${H.e[k].full ? `<i>${H.e[k].full}</i>` : ""}<span>${hpText(H.e[k].short || "").replace(/<[^>]+>/g, "")}</span></button>`;
+    });
+    return out + "</div>";
+  }
+  function hpSearchHTML(q) {
+    const words = q.toLowerCase().split(/\s+/).filter(Boolean);
+    const hay = (e) => [e.t, e.full, e.short, e.what, e.why, e.k].concat((e.lists || []).flatMap((l) => l.items.map((i) => i[0] + " " + i[1]))).join(" ").replace(/<[^>]+>/g, "").toLowerCase();
+    const hits = Object.keys(H.e).filter((k) => !H.e[k].see).map((k) => { const e = H.e[k], h = hay(e), t = (e.t + " " + (e.full || "")).toLowerCase();
+      return words.every((w) => h.includes(w)) ? { k, s: words.filter((w) => t.includes(w)).length * 10 + (k.startsWith("g.") ? 1 : 0) } : null; })
+      .filter(Boolean).sort((a, b) => b.s - a.s).slice(0, 40);
+    if (!hits.length) return `<p class="hp-lead">No help found for “${TX.esc(q)}”. Try a shorter word, or browse the glossary.</p>`;
+    return `<p class="hp-lead">${hits.length}${hits.length === 40 ? "+" : ""} result${hits.length > 1 ? "s" : ""} for “${TX.esc(q)}”</p><div class="hp-gl">` + hits.map(({ k }) => { const e = H.e[k];
+      return `<button type="button" class="hp-gi" data-hp-go="${k}"><b>${e.t}</b><i>${k.startsWith("g.") ? "Term" : e.k || "Help"}</i><span>${hpText(e.short || (Array.isArray(e.what) ? e.what[0] : e.what) || "").replace(/<[^>]+>/g, "").slice(0, 150)}</span></button>`; }).join("") + "</div>";
+  }
+  function hpShow(v, push = true) {
+    if (v.key && H.e[v.key] && H.e[v.key].see && H.e[H.e[v.key].see]) v = { key: H.e[v.key].see };
+    if (push) hpHist.push(v);
+    let kind = "", title = "", full = "", body = "";
+    if (v.view === "glossary") { kind = "Help"; title = "Glossary A–Z"; body = hpGlossaryHTML(); }
+    else if (v.view === "search") { kind = "Help"; title = "Search help"; body = hpSearchHTML(v.q); }
+    else if (v.view === "page" || !H.e[v.key]) {
+      const p = H.e.page; kind = "Page guide"; title = p ? p.t : document.title.split(" · ")[0];
+      body = (p ? hpEntryHTML("page") : `<p class="hp-lead">The guide for this page is still loading.</p>`) +
+        (H.e["ws.basics"] ? hpSec("layers", "Using the workspace", `<div class="hp-rel"><button type="button" class="hp-chip" data-hp-go="ws.basics">${H.e["ws.basics"].t}</button><button type="button" class="hp-chip" data-hp-view="glossary">Glossary A–Z</button></div>`) : "");
+    } else { const e = H.e[v.key]; kind = e.k || (v.key.startsWith("g.") ? "Term" : "Help"); title = e.t; full = e.full || ""; body = hpEntryHTML(v.key); }
+    $("#hp-kind").textContent = kind; $("#hp-title").textContent = title;
+    const f = $("#hp-full"); f.textContent = full; f.hidden = !full;
+    $("#hp-body").innerHTML = body; $("#hp-body").scrollTop = 0;
+    $("[data-hp-back]", hpEl).hidden = hpHist.length < 2;
+    $$(".hp-seg button", hpEl).forEach((b) => b.classList.toggle("active", b.dataset.hpView === (v.view === "glossary" ? "glossary" : v.view === "page" ? "page" : "")));
+    if (v.view !== "search") $("#hp-q").value = "";
+  }
+  function hpBuild() {
+    hpEl = document.createElement("div"); hpEl.className = "hp"; hpEl.id = "tx-help"; hpEl.hidden = true;
+    hpEl.innerHTML = `<div class="hp-bd" data-hp-close></div>
+      <aside class="hp-panel" role="dialog" aria-labelledby="hp-title">
+        <div class="hp-head">
+          <button type="button" class="hp-ib" data-hp-back aria-label="Back to previous help" hidden>${ic("arrow-left")}</button>
+          <div class="hp-ttl"><div class="hp-kind" id="hp-kind"></div><h2 id="hp-title" tabindex="-1"></h2><div class="hp-full" id="hp-full"></div></div>
+          <button type="button" class="hp-ib" data-hp-close aria-label="Close help">${ic("x")}</button>
+        </div>
+        <div class="hp-tools">
+          <div class="hp-q">${ic("search")}<input type="search" id="hp-q" placeholder="Search help and terms…" aria-label="Search help and terms" autocomplete="off"></div>
+          <div class="seg hp-seg"><button type="button" data-hp-view="page">This page</button><button type="button" data-hp-view="glossary">Glossary A–Z</button></div>
+        </div>
+        <div class="hp-body" id="hp-body"></div>
+        <div class="hp-foot"><label class="switch small"><input type="checkbox" id="hp-icons"> Show ⓘ help icons and underlined terms</label></div>
+      </aside>`;
+    document.body.appendChild(hpEl);
+    const icons = $("#hp-icons", hpEl); icons.checked = !hiOff();
+    icons.addEventListener("change", () => setHelpIcons(icons.checked));
+    let qt; $("#hp-q", hpEl).addEventListener("input", (e) => { clearTimeout(qt); qt = setTimeout(() => {
+      const q = e.target.value.trim(), top = hpHist[hpHist.length - 1];
+      if (q) { if (top && top.view === "search") { top.q = q; hpShow(top, false); } else hpShow({ view: "search", q }); }
+      else if (top && top.view === "search") { hpHist.pop(); hpShow(hpHist[hpHist.length - 1] || { view: "page" }, !hpHist.length); }
+    }, 120); });
+  }
+  const hpModal = () => window.matchMedia("(max-width: 760px)").matches;
+  function hpSetTarget(el) { if (hpTarget) hpTarget.classList.remove("hp-hl"); hpTarget = el || null; if (hpTarget) hpTarget.classList.add("hp-hl"); }
+  H.open = (key, opener, target) => {
+    if (!hpEl) hpBuild();
+    const wasOpen = !hpEl.hidden;
+    if (!wasOpen) hpHist = [];
+    hpOpener = opener || document.activeElement;
+    hpSetTarget(target);
+    hpShow(key ? { key } : { view: "page" });
+    const panel = $(".hp-panel", hpEl); panel.setAttribute("aria-modal", hpModal() ? "true" : "false");
+    if (!wasOpen) { hpEl.hidden = false; document.documentElement.classList.add("hp-open"); }
+    setTimeout(() => $("#hp-title").focus({ preventScroll: true }), 30);
+  };
+  H.close = () => {
+    if (!hpEl || hpEl.hidden) return;
+    hpEl.hidden = true; document.documentElement.classList.remove("hp-open"); hpSetTarget(null);
+    if (hpOpener && document.contains(hpOpener) && hpOpener.offsetParent !== null) hpOpener.focus({ preventScroll: true });
+  };
+  H.isOpen = () => !!hpEl && !hpEl.hidden;
+  function setHelpIcons(on) {
+    document.documentElement.classList.toggle("hi-off", !on); store.set("hi-off", !on);
+    $$(".gl").forEach((g) => (g.tabIndex = on ? 0 : -1));
+    const pb = $("#pb-help"); if (pb) pb.classList.toggle("on", on);
+    const cb = $("#hp-icons"); if (cb) cb.checked = on;
+  }
+  TX.setHelpIcons = setHelpIcons;
+
+  // ⓘ buttons
+  function hiButton(key) {
+    const b = document.createElement("button"); b.type = "button"; b.className = "hi";
+    if (key) { b.dataset.hk = key; b.setAttribute("aria-label", `About “${H.e[key].t.replace(/<[^>]+>/g, "")}”`); }
+    b.innerHTML = ic("info"); return b;
+  }
+  function hiAttach(el) {
+    const key = el.dataset.help; if (!H.e[key] || el.classList.contains("tab")) return;
+    if (el.__hi && el.__hi.isConnected) return;
+    const b = hiButton(key); b.__for = el; el.__hi = b;
+    const host = el.closest("button,a,summary,select,input,textarea,.chip,label.switch");
+    const pos = el.dataset.helpPos || (host ? "after" : el.tagName === "LABEL" ? "label" : "in");
+    if (pos === "label") {   // keep the ⓘ out of the label so the field's accessible name stays clean
+      const w = document.createElement("span"); w.className = "hi-lab"; el.before(w); w.append(el, b);
+    } else if (pos === "after") (host || el).after(b);
+    else el.appendChild(b);
+  }
+  function hiAttachBar(bar) {
+    if (bar.__hi && bar.__hi.isConnected) return;
+    if (!$$(".tab", bar).some((t) => t.dataset.help && H.e[t.dataset.help])) return;
+    const b = hiButton(null); b.classList.add("hi-tab"); b.dataset.hkTabs = "";
+    b.setAttribute("aria-label", "About this tab"); b.innerHTML = `${ic("info")}<span>About this tab</span>`;
+    b.__bar = bar; bar.__hi = b;
+    if (bar.getAttribute("role") === "tablist") { b.classList.add("hi-tab-out"); bar.after(b); } else bar.appendChild(b);
+  }
+
+  // Glossary terms: first mention per card / panel / modal
+  const GL_SKIP = "a,button,input,textarea,select,option,script,style,svg,code,kbd,.mono,.hi,.gl,.tab,.seg,.chip,.k-value,.chart,.chart-tip,.pages,.protobar,.ws-side,.ws-top,.hp,.toasts,.gl-tip,[data-no-gl],[contenteditable]";
+  const GL_SCOPE = ".modal-card,.drawer-card,.tab-panel,.card,.kpi,.callout,.panel,section,main";
+  function glBuild() {
+    glMap = {}; const toks = [];
+    Object.keys(H.e).forEach((k) => { if (k.startsWith("g.") && H.e[k].ab) H.e[k].ab.forEach((a) => { glMap[a] = k; toks.push(a); }); });
+    toks.sort((a, b) => b.length - a.length);
+    glRe = toks.length ? new RegExp(`(?<![\\w\\-.])(${toks.map((t) => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})(?![\\w\\-])`, "g") : false;
+  }
+  function glScan(root) {
+    if (glRe === null) glBuild();
+    if (!glRe || !root.isConnected) return;
+    const nodes = [];
+    if (root.nodeType === 3) { if (!glDone.has(root)) nodes.push(root); }
+    else {
+      if (root.closest && root.closest(GL_SKIP)) return;
+      const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+      while (w.nextNode()) { const n = w.currentNode; if (!glDone.has(n) && /[A-Z]{2}/.test(n.data)) nodes.push(n); else glDone.add(n); }
+    }
+    nodes.forEach((n) => {
+      glDone.add(n);
+      const p = n.parentElement; if (!p || p.closest(GL_SKIP)) return;
+      const s = n.data; glRe.lastIndex = 0; if (!glRe.test(s)) return;
+      const scope = p.closest(GL_SCOPE) || document.body, seen = scope.__gl || (scope.__gl = {});
+      const parts = []; let last = 0, m; glRe.lastIndex = 0;
+      while ((m = glRe.exec(s))) {
+        const k = glMap[m[1]], prev = seen[k];
+        if (prev && prev.isConnected && scope.contains(prev)) continue;
+        const a = document.createElement("abbr"); a.className = "gl"; a.dataset.g = k; a.tabIndex = hiOff() ? -1 : 0; a.setAttribute("role", "button"); a.textContent = m[1];
+        parts.push(s.slice(last, m.index), a); seen[k] = a; last = m.index + m[1].length;
+      }
+      if (!parts.length) return;
+      parts.push(s.slice(last));
+      const frag = document.createDocumentFragment();
+      parts.forEach((x) => { if (typeof x === "string") { if (!x) return; const t = document.createTextNode(x); glDone.add(t); frag.appendChild(t); } else frag.appendChild(x); });
+      n.replaceWith(frag);
+    });
+  }
+  function glShowTip(g) {
+    let e = H.e[g.dataset.g]; if (e && e.see && H.e[e.see]) e = H.e[e.see];
+    if (!e || hiOff()) return;
+    if (!glTip) { glTip = document.createElement("div"); glTip.className = "gl-tip"; glTip.id = "gl-tip"; glTip.setAttribute("role", "tooltip"); document.body.appendChild(glTip); }
+    glTip.innerHTML = `<b>${e.t}</b>${e.full ? ` <span class="f">· ${e.full}</span>` : ""}<div>${hpText(e.short || "").replace(/<(?!\/?(b|i)>)[^>]+>/g, "")}</div><div class="m">Click for the full explanation</div>`;
+    glTip.style.display = "block";
+    const r = g.getBoundingClientRect(), tw = glTip.offsetWidth, th = glTip.offsetHeight;
+    const x = Math.max(8, Math.min(window.innerWidth - tw - 8, r.left + r.width / 2 - tw / 2));
+    const y = r.top - th - 8 < 8 ? r.bottom + 8 : r.top - th - 8;
+    glTip.style.left = x + "px"; glTip.style.top = y + "px";
+    g.setAttribute("aria-describedby", "gl-tip");
+  }
+  function glHideTip() { if (glTip) glTip.style.display = "none"; }
+
+  // Scanning: whole page when help content arrives, otherwise only the subtrees that changed
+  let helpRoots = new Set(), helpRaf = 0;
+  function helpQueue(root) { helpRoots.add(root); if (!helpRaf) helpRaf = requestAnimationFrame(helpFlush); }
+  function helpFlush() {
+    helpRaf = 0;
+    const roots = [...helpRoots].filter((r) => r.isConnected && ![...helpRoots].some((o) => o !== r && o.nodeType === 1 && o.contains(r)));
+    helpRoots = new Set();
+    roots.forEach((r) => {
+      if (r.nodeType === 1) {
+        if (r.matches("[data-help]")) hiAttach(r);
+        $$("[data-help]", r).forEach(hiAttach);
+        const bar = r.closest(".tabs"); if (bar) hiAttachBar(bar);
+        $$(".tabs", r).forEach(hiAttachBar);
+      }
+      glScan(r);
+    });
+    if (helpMo) helpMo.takeRecords();   // our own insertions need no second pass
+  }
+  function initHelp(app) {
+    if (store.get("hi-off", false)) document.documentElement.classList.add("hi-off");
+    const file = (location.pathname.split("/").pop() || "").replace(/\.html?$/, "");
+    ["glossary", "shell", file].forEach((n) => { if (!n) return; const s = document.createElement("script"); s.src = `assets/help/${n}.js`; document.body.appendChild(s); });
+    if (window.MutationObserver) {
+      helpMo = new MutationObserver((ms) => ms.forEach((m) => { const t = m.target; if (t.nodeType === 1 && t.closest(".chart-tip,.hp,.gl-tip,.toasts")) return; helpQueue(t); }));
+      helpMo.observe(document.body, { childList: true, subtree: true });
+    }
+    helpQueue(document.body);
+    window.addEventListener("click", (e) => {
+      const t = e.target; let el;
+      if ((el = t.closest(".hi"))) {
+        e.preventDefault(); e.stopImmediatePropagation();
+        if (el.__bar) { const tab = $(".tab.active[data-help]", el.__bar) || $(".tab[data-help]", el.__bar); if (tab) H.open(tab.dataset.help, el, tab); }
+        else H.open(el.dataset.hk, el, el.__for);
+        return;
+      }
+      if ((el = t.closest(".gl")) && !hiOff()) { e.preventDefault(); e.stopImmediatePropagation(); glHideTip(); H.open(el.dataset.g, el, el); return; }
+      if ((el = t.closest("[data-help-home]"))) { e.preventDefault(); e.stopImmediatePropagation(); if (H.isOpen() && hpHist.length && hpHist[hpHist.length - 1].view === "page") H.close(); else H.open(null, el); return; }
+      if (!hpEl || !hpEl.contains(t)) return;
+      if ((el = t.closest("[data-hp-go]"))) { e.preventDefault(); hpShow({ key: el.dataset.hpGo }); $("#hp-title").focus({ preventScroll: true }); }
+      else if ((el = t.closest("[data-hp-view]"))) { e.stopImmediatePropagation(); hpShow({ view: el.dataset.hpView }); }
+      else if (t.closest("[data-hp-back]")) { hpHist.pop(); hpShow(hpHist[hpHist.length - 1] || { view: "page" }, false); $("#hp-title").focus({ preventScroll: true }); }
+      else if (t.closest("[data-hp-close]")) H.close();
+    }, true);
+    window.addEventListener("keydown", (e) => {
+      const g = e.target.closest && e.target.closest(".gl");
+      if (g && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); glHideTip(); H.open(g.dataset.g, g, g); return; }
+      if (!H.isOpen()) return;
+      if (e.key === "Escape") { e.preventDefault(); e.stopImmediatePropagation(); H.close(); return; }
+      if (e.key === "Tab" && hpModal()) {   // phones: the help sheet is modal, keep focus inside
+        const f = $$('button:not([disabled]):not([hidden]), input, [tabindex="0"], #hp-title', hpEl).filter((x) => x.offsetParent !== null);
+        if (!f.length) return;
+        if (!hpEl.contains(document.activeElement)) { e.preventDefault(); f[0].focus(); }
+        else if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
+        else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
+      }
+    }, true);
+    document.addEventListener("mouseover", (e) => { const g = e.target.closest && e.target.closest(".gl"); if (g) glShowTip(g); });
+    document.addEventListener("mouseout", (e) => { const g = e.target.closest && e.target.closest(".gl"); if (g && !g.contains(e.relatedTarget)) glHideTip(); });
+    document.addEventListener("focusin", (e) => { const g = e.target.closest && e.target.closest(".gl"); if (g) glShowTip(g); else glHideTip(); });
+    window.addEventListener("scroll", glHideTip, true);
+  }
+
+  /* ------------------------------------------------------------------------ */
+  /* Guided workflow strip — "How it works" (ERP pages)                         */
+  /* ------------------------------------------------------------------------ */
+  // <section class="flow" data-flow="returns"> … <button class="flow-toggle" data-flow-toggle aria-expanded="true">
+  // Steps may carry data-go-tab="<tab id>" (opens that tab and scrolls to it). The collapsed state is remembered per page.
+  function initFlows() {
+    $$(".flow[data-flow]").forEach((f) => {
+      const hidden = store.get("flow-" + f.dataset.flow, false);
+      f.classList.toggle("collapsed", hidden);
+      const b = $("[data-flow-toggle]", f); if (b) b.setAttribute("aria-expanded", String(!hidden));
+    });
+  }
+  TX.goTab = (id) => {
+    const t = $(`.tab[data-tab="${id}"]`); if (!t) return;
+    activateTab(t);
+    if (!t.closest(".modal,.drawer") && history.replaceState) history.replaceState(null, "", "#" + id);
+    const set = t.closest("[data-tabset]") || t.closest(".card") || t;
+    set.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+    t.focus({ preventScroll: true });
+  };
 
   /* ------------------------------------------------------------------------ */
   /* Charts (SVG) — thin marks, hairline grid, legend + direct labels,         */
@@ -1110,6 +1420,7 @@
     if (app === "erp" || app === "vendor") buildWorkspaceShell(app, page);
     TX.hydrate();
     bindEvents();
+    if (app === "erp" || app === "vendor") { initHelp(app); initFlows(); }
     TX.setView(TX.view);
     ready = true; queue.forEach((f) => f());
     if (app === "store" && window.MutationObserver) {

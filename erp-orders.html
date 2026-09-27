@@ -27,6 +27,9 @@
     .sla.ok { color: var(--ok-tx); } .sla.warn { color: var(--warn-tx); } .sla.bad { color: var(--bad-tx); } .sla.none { color: var(--tx-4); font-weight: 500; }
     .sv-tabs { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; border-bottom: 1px solid var(--line); padding: 0 12px; }
     .sv-tabs .tabs { border-bottom: 0; }
+    .sv-tabs > .tabs { flex: 1 1 auto; min-width: 0; }
+    .sv-tabs > button.hi.hi-tab-out { flex: none; margin: 0 0 8px; }
+    .sv-tabs > .row { flex: none; flex-wrap: nowrap !important; }
     .sv-tabs .tab { padding: 12px 10px; font-size: 13px; }
     .legend-states { display: flex; gap: 14px; align-items: center; font-size: 12px; color: var(--tx-3); }
     /* Drawer */
@@ -48,7 +51,7 @@
     .evt td { font-size: 12.5px; }
     .evt tr.ign td { background: #fafbfc; color: var(--tx-3); }
     .evt tr.ign .mono { text-decoration: line-through; text-decoration-color: rgba(0,0,0,.25); }
-    .drawer-foot { justify-content: space-between; }
+    .drawer-foot { justify-content: space-between; flex-wrap: wrap; }
     .drawer .table.compact td, .drawer .table.compact th { padding-left: 9px; padding-right: 9px; }
     .drawer-foot .dd-menu { top: auto; bottom: calc(100% + 6px); }
     .drawer .tabs { margin: 0 -22px; padding: 0 12px; position: sticky; top: -22px; background: #fff; z-index: 3; }
@@ -74,6 +77,24 @@
     .pay-opt:has(input:checked) { border-color: var(--brand); box-shadow: var(--ring); }
     .cancel-line { display: grid; grid-template-columns: auto 44px 1fr auto; gap: 10px; align-items: center; padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--r); margin-bottom: 8px; font-size: 13px; }
     .cancel-line.dis { opacity: .55; background: var(--bg); }
+    /* Guided workflow & help */
+    #od-next { margin-top: 12px; }
+    #m-assisted .tab-intro { margin-bottom: 12px; }
+    .auth-row .row { flex-wrap: wrap; }
+    #p-pay .card, #p-ship .card, #p-time .card { overflow-x: auto; }
+    @media (max-width: 980px) {
+      .as-grid { grid-template-columns: minmax(0, 1fr); }
+      .bulkbar { flex-wrap: wrap; }
+    }
+    @media (max-width: 760px) {
+      .states { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .snap { grid-template-columns: minmax(0, 1fr); }
+      #p-time > .grid { grid-template-columns: minmax(0, 1fr) !important; }
+      .auth-row { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+      #m-assisted .modal-head { flex-wrap: wrap; gap: 10px; }
+      #m-assisted .modal-head > .row { flex: 1 1 100%; min-width: 0; }
+      #as-role { flex: 1 1 0; min-width: 0; width: auto !important; }
+    }
   </style>
 </head>
 <body data-app="erp" data-page="orders">
@@ -81,24 +102,41 @@
   <div class="page-head">
     <div>
       <div class="crumbs"><span>Sell &amp; serve</span><i data-icon="chevron-right"></i><span>Orders</span></div>
-      <h1>Orders</h1>
+      <h1 data-help="page">Orders</h1>
       <p class="sub">All channels · Saturday, 26 September 2026 · live, refreshed 10:42:08 · stock authority in sync (lag 14 s)</p>
     </div>
     <div class="actions">
       <button class="btn"><i data-icon="download"></i> Export</button>
-      <button class="btn" data-toast="Pick lists for 6 released orders sent to WH-BLR printer"><i data-icon="printer"></i> Print pick lists</button>
-      <button class="btn btn-primary" data-open="m-assisted" data-anno="1A/1B · R11 Assisted order"><i data-icon="plus"></i> Assisted order</button>
+      <button class="btn" data-help="act-picklists" data-toast="Pick lists for 6 released orders sent to WH-BLR printer"><i data-icon="printer"></i> Print pick lists</button>
+      <button class="btn btn-primary" data-help="act-assisted" data-open="m-assisted" data-anno="1A/1B · R11 Assisted order"><i data-icon="plus"></i> New assisted order</button>
     </div>
   </div>
 
+  <section class="flow" data-flow="orders" aria-labelledby="flow-h" data-anno="1A · §10.1 Order ≠ payment ≠ fulfilment · guided">
+    <div class="flow-head">
+      <div><h2 class="flow-title" id="flow-h" data-help="flow"><i data-icon="route"></i> How orders work</h2>
+        <p class="flow-sub">Every order — website, WhatsApp, branch counter or staff-assisted — moves through these steps. Click a step to see the orders at it.</p></div>
+      <button class="btn btn-ghost btn-sm flow-toggle" data-flow-toggle aria-expanded="true" aria-controls="flow-steps"><span class="when-open">Hide guide</span><span class="when-closed">Show how it works</span></button>
+    </div>
+    <ol class="flow-steps" id="flow-steps">
+      <li class="flow-step"><button type="button" class="flow-btn" data-go-sv="all"><span class="fs-n">1</span><span class="fs-t">Take the order</span><span class="fs-d">From the website, WhatsApp, a branch or staff. The system sets the price and reserves the stock for a short time.</span><span class="fs-f"><span class="fs-c">47 today</span><span class="fs-who">Customer · Support</span></span></button></li>
+      <li class="flow-step"><button type="button" class="flow-btn" data-go-sv="awaiting"><span class="fs-n">2</span><span class="fs-t">Receive payment</span><span class="fs-d">The order is confirmed only when the payment provider confirms the money. Unpaid reservations expire and free the stock.</span><span class="fs-f"><span class="fs-c warn">3 awaiting payment</span><span class="fs-who">Customer · automatic</span></span></button></li>
+      <li class="flow-step is-attn"><button type="button" class="flow-btn" data-go-step="hold"><span class="fs-n">3</span><span class="fs-t">Clear approvals &amp; holds</span><span class="fs-d">A person decides when a check is needed: a discount above authority, a GSTIN check, a late payment or a stock problem.</span><span class="fs-f"><span class="fs-c bad">2 on hold · 1 approval</span><span class="fs-who">Support · Finance · Manager</span></span></button></li>
+      <li class="flow-step"><button type="button" class="flow-btn" data-go-step="pick"><span class="fs-n">4</span><span class="fs-t">Pick &amp; pack</span><span class="fs-d">Paid orders with stock allocated go to the warehouse. Staff scan every item and serial number, then pack.</span><span class="fs-f"><span class="fs-c">5 in the warehouse</span><span class="fs-who">Warehouse</span></span></button></li>
+      <li class="flow-step"><button type="button" class="flow-btn" data-go-step="ship"><span class="fs-n">5</span><span class="fs-t">Dispatch &amp; track</span><span class="fs-d">The courier collects the parcel. Tracking changes only the fulfilment status — never the order or the payment.</span><span class="fs-f"><span class="fs-c">4 on the way</span><span class="fs-c bad">1 failed delivery</span><span class="fs-who">Courier · Support</span></span></button></li>
+      <li class="flow-step is-done"><button type="button" class="flow-btn" data-go-step="done"><span class="fs-n">6</span><span class="fs-t">Deliver &amp; close</span><span class="fs-d">The customer has the goods. A later return is handled on Returns &amp; warranty.</span><span class="fs-f"><span class="fs-c ok">1 delivered</span></span></button></li>
+    </ol>
+    <div class="flow-foot"><span><i data-icon="undo"></i> Customer wants to cancel? <button type="button" class="hp-link" data-go-sv="cancel">Cancellation requests</button> — lines not yet dispatched can be cancelled; shipped items come back as a return.</span><span>Anything stuck: <button type="button" class="hp-link" data-go-sv="needs">Needs action</button> · shipping in parts: <button type="button" class="hp-link" data-go-sv="partial">Partially fulfilled</button> · phone, WhatsApp or walk-in: <button type="button" class="hp-link" data-open="m-assisted">New assisted order</button></span></div>
+  </section>
+
   <!-- KPI strip -->
   <section class="grid g-6">
-    <div class="kpi"><div class="k-label"><i data-icon="receipt"></i> <span>Orders today</span></div><div class="k-value">47</div><div class="k-foot"><span class="delta up-good"><i data-icon="trending-up"></i> +9% vs last Sat</span><span id="sp1"></span></div></div>
-    <div class="kpi"><div class="k-label"><i data-icon="clock"></i> <span>Awaiting payment</span></div><div class="k-value">12</div><div class="k-foot"><span>₹3.42 L in live reservations</span></div></div>
-    <div class="kpi"><div class="k-label"><i data-icon="flag"></i> <span>Needs action</span></div><div class="k-value text-bad">7</div><div class="k-foot"><span>Oldest 26 h · 1 critical</span></div></div>
-    <div class="kpi"><div class="k-label"><i data-icon="truck"></i> <span>Overdue dispatch</span></div><div class="k-value text-warn">2</div><div class="k-foot"><span class="delta down-good"><i data-icon="trending-down"></i> −3 vs last week</span></div></div>
-    <div class="kpi"><div class="k-label"><i data-icon="activity"></i> <span>Paid → dispatched</span></div><div class="k-value">5.8 h</div><div class="k-foot"><span class="delta down-good"><i data-icon="trending-down"></i> −1.4 h</span><span id="sp2"></span></div></div>
-    <div class="kpi"><div class="k-label"><i data-icon="undo"></i> <span>Cancel requests</span></div><div class="k-value">2</div><div class="k-foot"><span>₹39,960 at stake · SLA 4 h</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-today"><i data-icon="receipt"></i> <span>Orders today</span></div><div class="k-value">47</div><div class="k-foot"><span class="delta up-good"><i data-icon="trending-up"></i> +9% vs last Sat</span><span id="sp1"></span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-awaiting"><i data-icon="clock"></i> <span>Awaiting payment</span></div><div class="k-value">12</div><div class="k-foot"><span>₹3.42 L in live reservations</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-needs"><i data-icon="flag"></i> <span>Needs action</span></div><div class="k-value text-bad">7</div><div class="k-foot"><span>Oldest 26 h · 1 critical</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-overdue"><i data-icon="truck"></i> <span>Overdue dispatch</span></div><div class="k-value text-warn">2</div><div class="k-foot"><span class="delta down-good"><i data-icon="trending-down"></i> −3 vs last week</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-p2d"><i data-icon="activity"></i> <span>Paid → dispatched</span></div><div class="k-value">5.8 h</div><div class="k-foot"><span class="delta down-good"><i data-icon="trending-down"></i> −1.4 h</span><span id="sp2"></span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-cancel"><i data-icon="undo"></i> <span>Cancel requests</span></div><div class="k-value">2</div><div class="k-foot"><span>₹39,960 at stake · SLA 4 h</span></div></div>
   </section>
 
   <!-- Filter bar -->
@@ -108,13 +146,13 @@
     <select class="select" id="f-loc" aria-label="Location" style="width:165px"><option value="">All locations</option></select>
     <select class="select" id="f-ch" aria-label="Channel" style="width:140px"><option value="">All channels</option><option value="web">Web</option><option value="pos">Branch POS</option><option value="whatsapp">WhatsApp</option><option value="assisted">Assisted (staff)</option></select>
     <select class="select" id="f-bt" aria-label="Buyer type" style="width:150px"><option value="">All buyers</option><option value="consumer">Consumer (B2C)</option><option value="dealer">Approved dealer (B2B)</option></select>
-    <select class="select" id="f-pay" aria-label="Payment state" style="width:170px"><option value="">Any payment state</option><option value="notstarted">Not started</option><option value="pending">Pending</option><option value="failed">Failed</option><option value="captured">Captured</option><option value="cod">COD · due on delivery</option><option value="refunded">Refunded</option></select>
+    <select class="select" id="f-pay" data-help="filters" aria-label="Payment state" style="width:170px"><option value="">Any payment state</option><option value="notstarted">Not started</option><option value="pending">Pending</option><option value="failed">Failed</option><option value="captured">Captured</option><option value="cod">COD · due on delivery</option><option value="refunded">Refunded</option></select>
     <button class="btn btn-sm btn-ghost" id="f-reset"><i data-icon="x"></i> Reset</button>
   </div>
 
   <div class="callout c-warn mb-16" data-anno="Stale-data state · courier sync paused">
     <i data-icon="alert"></i>
-    <div class="grow"><strong>Courier status sync paused since 08:15</strong> (provider timeout, 3 auto-retries). Fulfilment states for 17 dispatched shipments may be stale — order and payment states are unaffected. <a href="erp-automation.html">View job</a></div>
+    <div class="grow"><strong data-help="sync-alert">Courier status sync paused since 08:15</strong> (provider timeout, 3 auto-retries). Fulfilment states for 17 dispatched shipments may be stale — order and payment states are unaffected. <a href="erp-automation.html">View job</a></div>
     <button class="btn btn-xs" data-toast="Manual courier sync queued · 17 AWBs">Sync now</button>
   </div>
 
@@ -122,34 +160,35 @@
   <section class="card">
     <div class="sv-tabs" data-anno="1A · Saved views = work queues · §10.1 order ≠ payment ≠ fulfilment">
       <div class="tabs" id="sv-tabs" role="tablist">
-        <button class="tab active" data-sv="all">All <span class="count">148</span></button>
-        <button class="tab" data-sv="needs"><i data-icon="flag" class="ic-sm"></i> Needs action <span class="count" data-c="needs"></span></button>
-        <button class="tab" data-sv="awaiting">Awaiting payment <span class="count" data-c="awaiting"></span></button>
-        <button class="tab" data-sv="hold">On hold <span class="count" data-c="hold"></span></button>
-        <button class="tab" data-sv="partial">Partially fulfilled <span class="count" data-c="partial"></span></button>
-        <button class="tab" data-sv="cancel">Cancellation requests <span class="count" data-c="cancel"></span></button>
+        <button class="tab active" data-sv="all" data-help="sv-all">All orders <span class="count">148</span></button>
+        <button class="tab" data-sv="needs" data-help="sv-needs"><i data-icon="flag" class="ic-sm"></i> Needs action <span class="count" data-c="needs"></span></button>
+        <button class="tab" data-sv="awaiting" data-help="sv-awaiting">Awaiting payment <span class="count" data-c="awaiting"></span></button>
+        <button class="tab" data-sv="hold" data-help="sv-hold">On hold <span class="count" data-c="hold"></span></button>
+        <button class="tab" data-sv="partial" data-help="sv-partial">Partially fulfilled <span class="count" data-c="partial"></span></button>
+        <button class="tab" data-sv="cancel" data-help="sv-cancel">Cancellation requests <span class="count" data-c="cancel"></span></button>
       </div>
       <div class="row gap-6" style="padding-bottom:8px">
-        <button class="btn btn-sm btn-ghost" data-toast="View saved as “Dealer orders · WH-BLR” for your team"><i data-icon="flag" class="ic-sm"></i> Save view</button>
+        <button class="btn btn-sm btn-ghost" data-help="sv-save" data-toast="View saved as “Dealer orders · WH-BLR” for your team"><i data-icon="flag" class="ic-sm"></i> Save view</button>
         <button class="btn btn-sm btn-ghost" aria-label="Columns"><i data-icon="sliders" class="ic-sm"></i></button>
       </div>
     </div>
+    <div class="tab-intro"><i data-icon="info"></i><div id="sv-intro"><b>Every order from every channel — one row each.</b> Each row shows <b data-help="states-3">three separate statuses</b>: the order, the payment and the fulfilment (warehouse and courier). Click a row to open the order; its <b>Next step</b> box tells you what to do.<span class="ti-next">Start with <b>Needs action</b> — orders that are stopped until someone decides.</span></div></div>
     <div class="bulkbar">
-      <b><span class="bulk-count">0</span> selected</b>
+      <b data-help="bulk"><span class="bulk-count">0</span> selected</b>
       <button class="btn btn-sm" data-toast="Released to fulfilment queue · eligible orders only (paid + reserved)"><i data-icon="truck" class="ic-sm"></i> Release to fulfilment</button>
       <button class="btn btn-sm" data-toast="Pick lists printed"><i data-icon="printer" class="ic-sm"></i> Print pick lists</button>
       <button class="btn btn-sm" data-toast="Assigned to Irfan M. · WH-BLR"><i data-icon="user" class="ic-sm"></i> Assign…</button>
       <button class="btn btn-sm" data-open="m-hold"><i data-icon="pause" class="ic-sm"></i> Place on hold</button>
-      <button class="btn btn-sm" data-toast="Payment reminders queued · 1 skipped (customer opted out)"><i data-icon="bell" class="ic-sm"></i> Payment reminder</button>
+      <button class="btn btn-sm" data-toast="Payment reminders queued · 1 skipped (customer opted out)"><i data-icon="bell" class="ic-sm"></i> Send payment reminder</button>
       <button class="btn btn-sm" data-toast="CSV export started"><i data-icon="download" class="ic-sm"></i> Export</button>
       <span class="ml-auto small" style="color:#9aa6bf">Each order keeps its own decision history</span>
     </div>
     <div class="table-wrap">
       <table class="table ord-table">
-        <thead><tr><th class="grp-blank" colspan="6"></th><th class="grp" colspan="3">Three independent state machines — never one status</th><th class="grp-blank" colspan="1"></th></tr><tr>
+        <thead><tr><th class="grp-blank" colspan="6"></th><th class="grp" colspan="3" data-help="states-3">Three independent state machines — never one status</th><th class="grp-blank" colspan="1"></th></tr><tr>
           <th class="check-col"><input type="checkbox" data-check-all aria-label="Select all orders"></th>
-          <th>Order</th><th>Buyer</th><th>Channel</th><th>Loc.</th><th class="r">Value</th>
-          <th>Order state</th><th>Payment</th><th>Fulfilment</th><th>SLA flag · age</th>
+          <th data-help="col-order">Order</th><th data-help="col-buyer">Buyer</th><th data-help="col-channel">Channel</th><th data-help="col-loc">Loc.</th><th class="r">Value</th>
+          <th data-help="col-ord">Order state</th><th data-help="col-pay">Payment</th><th data-help="col-ful">Fulfilment</th><th data-help="col-sla">SLA flag · age</th>
         </tr></thead>
         <tbody id="ord-body"></tbody>
       </table>
@@ -165,7 +204,7 @@
       <div class="row-between">
         <div>
           <div class="small muted" id="od-meta"></div>
-          <div class="row gap-8 mt-4"><h2 class="mono" id="od-id" style="font-size:22px"></h2><span id="od-buyer-badge"></span><span id="od-src"></span></div>
+          <div class="row gap-8 mt-4"><h2 class="mono" id="od-id" style="font-size:22px"></h2><span data-help="d-order" data-help-pos="in" class="hi-host"></span><span id="od-buyer-badge"></span><span id="od-src"></span></div>
         </div>
         <div class="row gap-6">
           <button class="btn btn-sm btn-ghost" data-toast="Link copied"><i data-icon="link" class="ic-sm"></i> Copy link</button>
@@ -174,14 +213,15 @@
       </div>
       <div class="states" id="od-states"></div>
       <div id="od-alert"></div>
+      <div id="od-next"></div>
     </div>
     <div class="drawer-body" data-tabset>
       <div class="tabs">
-        <button class="tab active" data-tab="od-lines">Lines &amp; pricing</button>
-        <button class="tab" data-tab="od-pay">Payments <span class="count" id="od-pay-n">2</span></button>
-        <button class="tab" data-tab="od-ship">Shipments</button>
-        <button class="tab" data-tab="od-time">Timeline &amp; audit</button>
-        <button class="tab" data-tab="od-notes">Notes <span class="count">2</span></button>
+        <button class="tab active" data-tab="od-lines" data-help="d-tab-lines">Lines &amp; pricing</button>
+        <button class="tab" data-tab="od-pay" data-help="d-tab-pay">Payments <span class="count" id="od-pay-n">2</span></button>
+        <button class="tab" data-tab="od-ship" data-help="d-tab-ship">Shipments</button>
+        <button class="tab" data-tab="od-time" data-help="d-tab-time">Timeline &amp; audit</button>
+        <button class="tab" data-tab="od-notes" data-help="d-tab-notes">Internal notes <span class="count">2</span></button>
       </div>
       <div class="tab-panel active" data-panel="od-lines" id="p-lines" style="padding-top:18px"></div>
       <div class="tab-panel" data-panel="od-pay" id="p-pay" style="padding-top:18px"></div>
@@ -198,11 +238,11 @@
     </div>
     <div class="drawer-foot">
       <div class="row gap-8">
-        <button class="btn btn-sm" data-open="m-hold"><i data-icon="pause" class="ic-sm"></i> Hold</button>
-        <button class="btn btn-sm btn-danger" id="btn-cancel-line"><i data-icon="x-circle" class="ic-sm"></i> Cancel line…</button>
+        <button class="btn btn-sm" data-open="m-hold"><i data-icon="pause" class="ic-sm"></i> Place on hold</button>
+        <button class="btn btn-sm btn-danger" id="btn-cancel-line" data-help="d-cancel"><i data-icon="x-circle" class="ic-sm"></i> Cancel lines…</button>
         <div class="dd"><button class="btn btn-sm" data-dd-toggle><i data-icon="send" class="ic-sm"></i> Resend notification <i data-icon="chevron-up" class="ic-sm"></i></button>
           <div class="dd-menu left" style="width:330px">
-            <div class="dd-label">Transactional · consent checked</div>
+            <div class="dd-label" data-help="d-notify">Transactional · consent checked</div>
             <button class="dd-item" data-toast="Order confirmation re-sent by email">
               <i data-icon="mail" class="ic-sm"></i> Order confirmation · email</button>
             <button class="dd-item" data-toast="WhatsApp template order_confirmed v3 queued" data-toast-icon="whatsapp"><i data-icon="whatsapp" class="ic-sm"></i> WhatsApp · template order_confirmed v3</button>
@@ -212,7 +252,7 @@
         <button class="btn btn-sm" data-tab="od-notes" onclick="TX.activateTab('od-notes')"><i data-icon="edit" class="ic-sm"></i> Add note</button>
       </div>
       <div class="row gap-8">
-        <button class="btn btn-sm" data-toast="Tax invoice INV-BLR-26-004812 opened (generated once)"><i data-icon="file" class="ic-sm"></i> Invoice</button>
+        <button class="btn btn-sm" data-toast="Tax invoice INV-BLR-26-004812 opened (generated once)"><i data-icon="file" class="ic-sm"></i> View invoice</button>
         <a class="btn btn-sm btn-primary" href="erp-fulfilment.html#picking">Open in fulfilment <i data-icon="arrow-right" class="ic-sm"></i></a>
       </div>
     </div>
@@ -220,9 +260,9 @@
 
   <!-- Hold modal -->
   <div class="modal" id="m-hold"><div class="modal-card">
-    <div class="modal-head"><div><h3>Place order on hold</h3><div class="small muted">Stops release to fulfilment · payment and reservations are kept</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-head"><div><h3 data-help="m-hold">Place order on hold</h3><div class="small muted">Stops release to fulfilment · payment and reservations are kept</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
     <div class="modal-body col gap-16">
-      <div class="field"><label for="hold-r" class="req">Reason</label><select class="select" id="hold-r"><option>Customer request — confirm details</option><option>Address / GSTIN verification</option><option>Payment review (mismatch or risk)</option><option>Stock exception</option><option>Awaiting approval</option></select></div>
+      <div class="field"><label for="hold-r" class="req" data-help="hold-reason">Reason</label><select class="select" id="hold-r"><option>Customer request — confirm details</option><option>Address / GSTIN verification</option><option>Payment review (mismatch or risk)</option><option>Stock exception</option><option>Awaiting approval</option></select></div>
       <div class="form-grid">
         <div class="field"><label for="hold-due">Review by</label><input class="input" id="hold-due" type="datetime-local" value="2026-09-26T14:00"></div>
         <div class="field"><label for="hold-own">Owner</label><select class="select" id="hold-own"><option>Karthik R. · Support</option><option>Anita R. · Operations</option><option>Deepa K. · Finance</option></select></div>
@@ -230,19 +270,20 @@
       <div class="field"><label for="hold-n">Note (internal)</label><textarea class="textarea" id="hold-n" placeholder="What must happen before release?"></textarea></div>
       <label class="switch"><input type="checkbox"> Notify customer that the order is under review (template order_review v1)</label>
       <div class="callout c-info small"><i data-icon="info"></i><div>Reservation R-5534 is extended while on hold (max 48 h by policy). If the hold exceeds the review time, the case escalates to the operations manager once.</div></div>
+      <div class="next-step"><i data-icon="arrow-right"></i><div class="grow"><b>What happens next:</b> the order shows <b>On hold</b> and cannot be released to the warehouse. The owner fixes the issue by the review time, then uses <b>Release hold</b> to send it back to the pick queue.</div></div>
     </div>
     <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-primary" data-close data-toast="Order placed on hold · reason recorded in audit log">Place on hold</button></div>
   </div></div>
 
   <!-- Cancel line modal -->
   <div class="modal" id="m-cancel"><div class="modal-card lg">
-    <div class="modal-head"><div><h3>Cancel line(s) · <span class="mono" id="cx-id"></span></h3><div class="small muted">Only lines not yet dispatched are eligible · refund uses the original allocated price</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-head"><div><h3 data-help="m-cancel">Cancel line(s) · <span class="mono" id="cx-id"></span></h3><div class="small muted">Only lines not yet dispatched are eligible · refund uses the original allocated price</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
     <div class="modal-body" data-anno="1A · T34 Partial cancel · allocated refund">
       <div id="cx-lines"></div>
-      <div class="field mt-12"><label for="cx-r" class="req">Cancellation reason</label><select class="select" id="cx-r"><option>Customer request (before dispatch)</option><option>Out of stock / cannot fulfil</option><option>Pricing error</option><option>Suspected fraud</option></select></div>
+      <div class="field mt-12"><label for="cx-r" class="req" data-help="cx-reason">Cancellation reason</label><select class="select" id="cx-r"><option>Customer request (before dispatch)</option><option>Out of stock / cannot fulfil</option><option>Pricing error</option><option>Suspected fraud</option></select></div>
       <div class="grid g-2 mt-16">
         <div class="panel">
-          <div class="upper muted mb-8">Refund preview</div>
+          <div class="upper muted mb-8" data-help="cx-refund">Refund preview</div>
           <div class="tot" id="cx-tot"></div>
         </div>
         <div class="col gap-8 small">
@@ -251,8 +292,9 @@
           <div class="callout"><i data-icon="shield"></i><div>Support initiates · <b>Finance executes</b> the refund (refund state machine: requested → approved → submitted → completed). A repeated click returns the same refund request — no duplicate refund (T18).</div></div>
         </div>
       </div>
+      <div class="next-step mt-16"><i data-icon="arrow-right"></i><div class="grow"><b>When you confirm:</b> the ticked lines are cancelled and their stock is released, a refund request goes to finance (the money is paid only after finance approves it), and the customer is notified.</div></div>
     </div>
-    <div class="modal-foot"><button class="btn" data-close>Keep lines</button><button class="btn btn-danger" data-close data-toast="Line cancelled · refund request RF-0288 sent to finance · reservation released · customer notified">Cancel selected &amp; request refund</button></div>
+    <div class="modal-foot"><button class="btn" data-close>Keep lines</button><button class="btn btn-danger" data-help="cx-confirm" data-close data-toast="Line cancelled · refund request RF-0288 sent to finance · reservation released · customer notified">Cancel selected &amp; request refund</button></div>
   </div></div>
 
   <!-- ===================================================================== -->
@@ -260,9 +302,9 @@
   <!-- ===================================================================== -->
   <div class="modal" id="m-assisted"><div class="modal-card xl">
     <div class="modal-head">
-      <div><h3>New assisted order</h3><div class="small muted">Staff-created order · uses the same pricing engine, stock reservation and payment rules as the website</div></div>
+      <div><h3 data-help="m-assisted">New assisted order</h3><div class="small muted">Staff-created order · uses the same pricing engine, stock reservation and payment rules as the website</div></div>
       <div class="row gap-8">
-        <label class="small muted" for="as-role">Acting as</label>
+        <label class="small muted" for="as-role" data-help="as-role">Acting as</label>
         <select class="select input-sm" id="as-role" style="width:300px" aria-label="Acting as role (prototype)">
           <option value="3">Karthik R. · Support executive (≤ 3%)</option>
           <option value="8">Vikram S. · Branch manager (≤ 8%)</option>
@@ -272,39 +314,40 @@
       </div>
     </div>
     <div class="modal-body">
+      <div class="tab-intro"><i data-icon="info"></i><div><b>Create an order for a customer who is on the phone, on WhatsApp or at the counter.</b> Choose the customer and the location, add products (prices come from the pricing engine), add a discount only with a reason, then choose how the customer pays.<span class="ti-next">Next: the customer confirms and pays through the link (or at the counter) and the order appears in the list as Awaiting payment. A discount above your limit goes for approval first — the order waits as a Draft.</span></div></div>
       <div class="callout c-brand mb-16" id="as-source" data-anno="1B · R11 A08 WhatsApp draft basket → order">
         <i data-icon="whatsapp"></i>
-        <div class="grow"><strong>Created from WhatsApp draft basket DB-0417</strong> · conversation <a href="erp-support.html">SUP-7742</a> with Arun Kumar (Metro Computers) · identity verified by OTP 09:31. Items and quantities were pre-filled from the guided chat — <b>chat prices are not trusted</b>; every price below is recomputed by the pricing engine.</div>
+        <div class="grow"><strong data-help="as-source">Created from WhatsApp draft basket DB-0417</strong> · conversation <a href="erp-support.html">SUP-7742</a> with Arun Kumar (Metro Computers) · identity verified by OTP 09:31. Items and quantities were pre-filled from the guided chat — <b>chat prices are not trusted</b>; every price below is recomputed by the pricing engine.</div>
         <div class="seg" aria-label="Order source"><button class="active" data-src="wa">WhatsApp basket</button><button data-src="phone">Phone</button><button data-src="walkin">Walk-in</button></div>
       </div>
       <div class="as-grid">
         <div class="col gap-16">
           <div class="form-grid">
-            <div class="field"><label for="as-cust">Customer</label>
+            <div class="field"><label for="as-cust" data-help="as-customer">Customer</label>
               <select class="select" id="as-cust">
                 <option value="dealer">Metro Computers — Arun Kumar · Dealer Gold · GSTIN 29AABCM4421F1Z6</option>
                 <option value="consumer">Priya Nair — consumer · +91 98450 •••10</option>
                 <option value="new">New walk-in customer (consumer)</option>
               </select>
               <span class="hint">Buyer type comes from the approved account — it can't be changed on the order (T10).</span></div>
-            <div class="field"><label for="as-loc">Fulfil from</label>
+            <div class="field"><label for="as-loc" data-help="as-loc">Fulfil from</label>
               <select class="select" id="as-loc"><option>Central Warehouse · WH-BLR (all lines available)</option><option>SP Road Branch · BR-SPR (1 line short)</option><option>Customer pickup · Koramangala</option></select>
               <span class="hint">Single location that can fulfil every line is suggested first.</span></div>
           </div>
           <div class="field" style="position:relative">
-            <label for="as-q">Add product</label>
+            <label for="as-q" data-help="as-product">Add product</label>
             <div class="input-icon"><i data-icon="search"></i><input class="input" id="as-q" placeholder="Search by name, model or SKU — e.g. “T7”, “SSD01”, “ThinkPad”" autocomplete="off"></div>
             <div class="as-results" id="as-results"></div>
           </div>
           <div class="card" style="border-radius:var(--r)">
             <div class="table-wrap"><table class="table compact as-lines">
-              <thead><tr><th>Item · availability</th><th>Qty</th><th class="r">Unit price · rule</th><th class="r">Line total</th><th></th></tr></thead>
+              <thead><tr><th>Item · availability</th><th>Qty</th><th class="r" data-help="as-rule">Unit price · rule</th><th class="r">Line total</th><th></th></tr></thead>
               <tbody id="as-lines"></tbody>
             </table></div>
           </div>
           <div class="panel" data-anno="1A · R10 §18 Discount above authority → approval">
             <div class="auth-row">
-              <label for="as-disc" class="label">Staff discount</label>
+              <label for="as-disc" class="label" data-help="as-discount">Staff discount</label>
               <div class="row gap-8">
                 <div class="input-group" style="width:120px"><input class="input input-sm" id="as-disc" type="text" inputmode="decimal" value="5" aria-label="Discount percent" style="text-align:right"><span class="addon">%</span></div>
                 <select class="select input-sm" id="as-disc-r" style="width:230px" aria-label="Discount reason"><option>Reason: bulk / tender quote</option><option>Reason: price match (evidence)</option><option>Reason: service recovery</option></select>
@@ -316,17 +359,17 @@
         </div>
         <div class="col gap-12">
           <div class="panel">
-            <div class="row-between mb-8"><span class="upper muted">Price summary</span><span class="small muted" id="as-list"></span></div>
+            <div class="row-between mb-8"><span class="upper muted" data-help="as-summary">Price summary</span><span class="small muted" id="as-list"></span></div>
             <div class="tot" id="as-tot"></div>
             <div class="small mt-12" id="as-margin"></div>
           </div>
           <div class="col gap-8">
-            <span class="label">Payment</span>
+            <span class="label" data-help="as-payment">Payment</span>
             <label class="pay-opt"><input type="radio" name="as-pay" checked><div><b>Send secure checkout link</b><div class="small muted">WhatsApp (service window open) · SMS · email. Customer confirms address &amp; final price, pays via Razorpay.</div></div></label>
             <label class="pay-opt"><input type="radio" name="as-pay"><div><b>Collect at branch counter (POS)</b><div class="small muted">UPI / card on terminal · invoice printed at counter</div></div></label>
             <label class="pay-opt"><input type="radio" name="as-pay"><div><b>Bank transfer (dealer prepaid)</b><div class="small muted">Released only after finance matches the credit · credit terms not enabled</div></div></label>
           </div>
-          <div class="callout c-info small"><i data-icon="lock"></i><div>Stock is <b>reserved for 30 min</b> when the link is sent (R-55xx). Checkout revalidates price &amp; stock; quantity changes re-run tier pricing.</div></div>
+          <div class="callout c-info small"><i data-icon="lock"></i><div>Stock is <b data-help="g.reservation">reserved for 30 min</b> when the link is sent (R-55xx). Checkout revalidates price &amp; stock; quantity changes re-run tier pricing.</div></div>
         </div>
       </div>
     </div>
@@ -335,7 +378,7 @@
       <div class="row gap-8">
         <button class="btn" data-close>Cancel</button>
         <button class="btn" data-close data-toast="Draft saved · no stock reserved yet">Save draft</button>
-        <button class="btn btn-primary" id="as-submit" data-close>Send checkout link</button>
+        <button class="btn btn-primary" id="as-submit" data-help="as-submit" data-close>Send checkout link</button>
       </div>
     </div>
   </div></div>
@@ -414,20 +457,56 @@ TX.ready(() => {
       <td>${slaHTML(o.sla)}<div class="cell-sub nowrap">${ic("history", "ic-sm")} ${o.age} old</div></td>
     </tr>`;
   }
+  /* ---------- Guided view: saved-view intros + "How it works" steps ---------- */
+  // Steps 3–6 of the flow strip filter the list by where the order is (steps 1–2 open saved views).
+  const STEPS = {
+    hold: { n: 3, t: "Clear approvals &amp; holds", d: "orders waiting for a discount approval (Draft) or placed on hold", next: "Open each order — its Next step box says who must decide. Release the hold once the issue is fixed.", test: (o) => ["draft", "hold"].includes(o.ord) },
+    pick: { n: 4, t: "Pick &amp; pack", d: "paid orders with stock allocated, waiting in the warehouse", next: `The warehouse works these on <a href="erp-fulfilment.html#picking">Pick · pack · dispatch</a>. Watch the SLA column for orders at risk of missing today's dispatch.`, test: (o) => o.ord === "confirmed" && ["allocated", "picking", "packed"].includes(o.ful) },
+    ship: { n: 5, t: "Dispatch &amp; track", d: "orders handed to the courier, including split shipments and failed deliveries", next: "Tracking comes from the courier. For a failed delivery, contact the customer before the next attempt.", test: (o) => ["partdisp", "dispatched", "failed"].includes(o.ful) },
+    done: { n: 6, t: "Deliver &amp; close", d: "orders delivered to the customer", next: `Nothing to do here. Returns after delivery are handled on <a href="erp-returns.html">Returns &amp; warranty</a>.`, test: (o) => o.ful === "delivered" },
+  };
+  const INTRO = {
+    all: ["Every order from every channel — one row each.", `Each row shows <b data-help="states-3">three separate statuses</b>: the order, the payment and the fulfilment (warehouse and courier). Click a row to open the order; its <b>Next step</b> box tells you what to do.`, "Start with <b>Needs action</b> — orders that are stopped until someone decides."],
+    needs: ["Orders that are stopped until a person acts", "— discount approvals, holds, cancellation requests, failed deliveries and overdue dispatches. The red or amber line under the order number says why.", "Work red (critical or overdue) first. Open each order and follow its Next step box; every decision is recorded with a reason."],
+    awaiting: ["Orders placed but not paid yet.", `The stock is <b data-help="g.reservation">reserved</b> for a short time while the customer pays with the checkout link or a UPI request.`, "Nothing to confirm by hand — the order confirms itself when the payment provider confirms the money. Send a payment reminder if a reservation is about to expire; unpaid reservations are released automatically."],
+    hold: ["Orders stopped on purpose before the warehouse can start", "— for example a GSTIN check, a payment review or a stock problem. The payment and the stock reservation are kept.", "The owner named on the hold fixes the issue by the review time, then releases the hold so the order goes back to the pick queue."],
+    partial: ["Orders where some lines have shipped and others are still to come", "— for example an item arriving by stock transfer or from a supplier.", "Check each order's Shipments tab and keep the customer informed when the next parcel ships."],
+    cancel: ["Customers or dealers asking to cancel all or part of an order.", "Lines not yet dispatched can be cancelled here; items already shipped come back through a return instead.", "Reply before the time in the SLA column. Cancelling releases the stock and sends a refund request to finance — support never pays refunds directly."],
+  };
+  let step = "";
+  function renderIntro() {
+    const s = STEPS[step], I = INTRO[sv];
+    $("#sv-intro").innerHTML = s
+      ? `<b>Step ${s.n} · ${s.t}:</b> showing ${s.d}.<span class="ti-next">${s.next} <button type="button" class="hp-link" data-go-sv="all">Show all orders</button></span>`
+      : `<b>${I[0]}</b> ${I[1]}<span class="ti-next">${I[2]}</span>`;
+  }
+  function setView(v, s) {
+    sv = v; step = STEPS[s] ? s : "";
+    $$("#sv-tabs .tab").forEach((x) => x.classList.toggle("active", x.dataset.sv === v));
+    renderIntro(); renderTable();
+  }
   function renderTable() {
     const F = f();
-    const list = O.filter((o) => (sv === "all" || o.views.includes(sv)) && (!F.loc || o.loc === F.loc) && (!F.ch || o.ch === F.ch) && (!F.bt || o.bt === F.bt) && (!F.pay || o.pay === F.pay) &&
+    const list = O.filter((o) => (sv === "all" || o.views.includes(sv)) && (!step || STEPS[step].test(o)) && (!F.loc || o.loc === F.loc) && (!F.ch || o.ch === F.ch) && (!F.bt || o.bt === F.bt) && (!F.pay || o.pay === F.pay) &&
       (!F.q || (o.id + " " + o.buyer + " " + o.lines.map((l) => X(l[0]).title + " " + (l[2] || "")).join(" ")).toLowerCase().includes(F.q)));
     $("#ord-body").innerHTML = list.length ? list.map(rowHTML).join("") :
       `<tr><td colspan="10"><div class="empty">${ic("inbox")}<h4>No orders match these filters</h4><p>Nothing in <b>${$("#sv-tabs .tab.active").childNodes[0].textContent.trim() || "this view"}</b> for the selected location, channel or payment state.</p><button class="btn btn-sm mt-12" id="empty-reset">Clear filters</button></div></td></tr>`;
-    const filtered = sv !== "all" || Object.values(F).some(Boolean);
+    const filtered = sv !== "all" || !!step || Object.values(F).some(Boolean);
     $("#pager-txt").textContent = filtered ? `Showing ${list.length} of ${list.length} matching` : "Showing 1–18 of 148";
   }
   $$("[data-c]").forEach((el) => (el.textContent = O.filter((o) => o.views.includes(el.dataset.c)).length));
-  $("#sv-tabs").addEventListener("click", (e) => { const t = e.target.closest(".tab"); if (!t) return; $$("#sv-tabs .tab").forEach((x) => x.classList.toggle("active", x === t)); sv = t.dataset.sv; renderTable(); });
+  $("#sv-tabs").addEventListener("click", (e) => { const t = e.target.closest(".tab"); if (!t) return; setView(t.dataset.sv); });
+  // "How it works" steps and footer links → saved view (data-go-sv) or step filter (data-go-step)
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-go-sv],[data-go-step]"); if (!b) return;
+    setView(b.dataset.goSv || "all", b.dataset.goStep);
+    if (!b.closest(".flow")) return;
+    $("#sv-tabs").closest(".card").scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+    $("#sv-tabs .tab.active").focus({ preventScroll: true });
+  });
   ["#f-loc", "#f-ch", "#f-bt", "#f-pay"].forEach((s) => $(s).addEventListener("change", renderTable));
   $("#f-q").addEventListener("input", renderTable);
-  const reset = () => { ["#f-loc", "#f-ch", "#f-bt", "#f-pay"].forEach((s) => ($(s).value = "")); $("#f-q").value = ""; renderTable(); };
+  const reset = () => { ["#f-loc", "#f-ch", "#f-bt", "#f-pay"].forEach((s) => ($(s).value = "")); $("#f-q").value = ""; if (step) { step = ""; renderIntro(); } renderTable(); };
   $("#f-reset").addEventListener("click", reset);
   document.addEventListener("click", (e) => { if (e.target.closest("#empty-reset")) reset(); });
   renderTable();
@@ -449,21 +528,45 @@ TX.ready(() => {
     $("#od-src").innerHTML = o.src ? `<span class="badge b-outline">${ic(o.ch === "whatsapp" ? "whatsapp" : "headset")} ${o.src}</span>` : "";
     const retTxt = ["delivered", "dispatched"].includes(o.ful) ? "Eligible until 6 Oct (policy v2026.2)" : "Not delivered yet";
     $("#od-states").innerHTML = `
-      <div class="st-box"><div class="st-l">${ic("receipt")} Order</div>${st(ORD, o.ord)}<div class="st-m">${o.ord === "hold" ? "Release blocked until resolved" : o.ord === "draft" ? "Awaiting approval APR-0231" : o.ord === "awaiting" ? "Reserved · waiting for payment" : "Guard: paid + stock allocated"}</div></div>
-      <div class="st-box"><div class="st-l">${ic("wallet")} Payment</div>${st(PAY, o.pay)}<div class="st-m">${o.pay === "captured" ? `${fmt(c.total)} · Razorpay` : o.pay === "cod" ? "Collect on delivery · COD eligible PIN" : o.pay === "refunded" ? "Refund RF-0271 completed" : o.pay === "failed" ? "1 failed attempt · link still valid" : o.pay === "pending" ? "UPI collect sent 10:25" : "No attempt yet"}</div></div>
-      <div class="st-box"><div class="st-l">${ic("truck")} Fulfilment</div>${st(FUL, o.ful)}<div class="st-m">${o.ful === "picking" ? "Wave W-26-07 · Irfan M." : o.ful === "failed" ? "Attempt 2 of 3 on 28 Sep" : o.ful === "dispatched" ? "Delhivery · in transit" : o.ful === "partdisp" ? "1 of 2 lines shipped" : o.ful === "allocated" ? "In pick queue" : "Nothing allocated"}</div></div>
-      <div class="st-box"><div class="st-l">${ic("undo")} Return</div><span class="status s-muted">None</span><div class="st-m">${retTxt}</div></div>`;
+      <div class="st-box"><div class="st-l" data-help="col-ord">${ic("receipt")} Order</div>${st(ORD, o.ord)}<div class="st-m">${o.ord === "hold" ? "Release blocked until resolved" : o.ord === "draft" ? "Awaiting approval APR-0231" : o.ord === "awaiting" ? "Reserved · waiting for payment" : "Guard: paid + stock allocated"}</div></div>
+      <div class="st-box"><div class="st-l" data-help="col-pay">${ic("wallet")} Payment</div>${st(PAY, o.pay)}<div class="st-m">${o.pay === "captured" ? `${fmt(c.total)} · Razorpay` : o.pay === "cod" ? "Collect on delivery · COD eligible PIN" : o.pay === "refunded" ? "Refund RF-0271 completed" : o.pay === "failed" ? "1 failed attempt · link still valid" : o.pay === "pending" ? "UPI collect sent 10:25" : "No attempt yet"}</div></div>
+      <div class="st-box"><div class="st-l" data-help="col-ful">${ic("truck")} Fulfilment</div>${st(FUL, o.ful)}<div class="st-m">${o.ful === "picking" ? "Wave W-26-07 · Irfan M." : o.ful === "failed" ? "Attempt 2 of 3 on 28 Sep" : o.ful === "dispatched" ? "Delhivery · in transit" : o.ful === "partdisp" ? "1 of 2 lines shipped" : o.ful === "allocated" ? "In pick queue" : "Nothing allocated"}</div></div>
+      <div class="st-box"><div class="st-l" data-help="st-return">${ic("undo")} Return</div><span class="status s-muted">None</span><div class="st-m">${retTxt}</div></div>`;
     // Alerts for exception orders
     const alerts = {
-      "TXO-10477": `<div class="callout c-bad mt-12"><i data-icon="alert-octagon"></i><div class="grow"><strong>Critical · payment captured after reservation expiry.</strong> Reservation R-5521 expired 10:02; Razorpay capture pay_Nx8QpL4 arrived 10:04. Order held automatically — stock was not oversold. Alternate unit U-000815 (Open box, same config) is free at SP Road. Owner: Deepa K. (Finance) · due 11:30.</div><div class="row gap-6"><button class="btn btn-sm btn-primary" data-toast="U-000815 reserved · customer asked to confirm via template stock_alternate v1">Reserve alternate</button><button class="btn btn-sm" data-toast="Refund request created · finance approval">Refund</button></div></div>`,
-      "TXO-10486": `<div class="callout c-warn mt-12"><i data-icon="alert"></i><div class="grow"><strong>Cancellation requested for line 3</strong> (2 × Logitech G305) by the customer on WhatsApp at 10:20. Line is picked but not packed — eligible. Respond by 14:20.</div><button class="btn btn-sm" data-cancel-open>Review &amp; cancel line</button></div>`,
-      "TXO-10476": `<div class="callout c-warn mt-12"><i data-icon="alert"></i><div class="grow"><strong>Dealer requested full cancellation</strong> (duplicate PO on their side). Nothing picked yet — whole order eligible; refund ₹${TX.num(c.total)} to original UPI.</div><button class="btn btn-sm" data-cancel-open>Review</button></div>`,
-      "TXO-10488": `<div class="callout c-bad mt-12"><i data-icon="pause"></i><div class="grow"><strong>On hold — GSTIN on invoice doesn't match the dealer profile.</strong> Customer emailed a new GSTIN (SUP-7738). Finance must verify before a B2B tax invoice is issued. Reservation extended to 27 Sep 10:00.</div><button class="btn btn-sm" data-toast="Hold released · order returns to pick queue">Release hold</button></div>`,
-      "TXO-10471": `<div class="callout c-bad mt-12"><i data-icon="alert"></i><div class="grow"><strong>Overdue dispatch (26 h).</strong> Pick failed: bin A-21 empty although 1 unit allocated — stock mismatch raised a cycle-count task. A second unit is available at SP Road (transfer TR-0219 suggested).</div><button class="btn btn-sm" data-toast="Transfer TR-0219 requested · SP Road → WH-BLR">Request transfer</button></div>`,
-      "TXO-10484": `<div class="callout c-bad mt-12"><i data-icon="truck"></i><div class="grow"><strong>Delivery failed — consignee unreachable</strong> (raw courier status “UD: CNEE NOT AVAILABLE”). Order and payment states are unchanged. Next attempt 28 Sep; RTO after attempt 3.</div><button class="btn btn-sm" data-toast="Address confirmation request sent (template address_check v2)">Ask customer</button></div>`,
-      "TXO-10491": `<div class="callout c-warn mt-12"><i data-icon="percent"></i><div class="grow"><strong>Approval request APR-0231:</strong> 14% discount requested by Vikram S. (authority 8%). Margin after discount 3.1% vs floor 6%. Waiting on owner · due 12:00. Order stays <b>Draft</b> — no stock reserved, no link sent.</div><a class="btn btn-sm" href="erp-automation.html#approvals">Open approval</a></div>`,
+      "TXO-10477": `<div class="callout c-bad mt-12"><i data-icon="alert-octagon"></i><div class="grow"><strong data-help="x-late">Critical · payment captured after reservation expiry.</strong> Reservation R-5521 expired 10:02; Razorpay capture pay_Nx8QpL4 arrived 10:04. Order held automatically — stock was not oversold. Alternate unit U-000815 (Open box, same config) is free at SP Road. Owner: Deepa K. (Finance) · due 11:30.</div><div class="row gap-6"><button class="btn btn-sm btn-primary" data-toast="U-000815 reserved · customer asked to confirm via template stock_alternate v1">Reserve alternate</button><button class="btn btn-sm" data-toast="Refund request created · finance approval">Refund</button></div></div>`,
+      "TXO-10486": `<div class="callout c-warn mt-12"><i data-icon="alert"></i><div class="grow"><strong data-help="x-cancel-req">Cancellation requested for line 3</strong> (2 × Logitech G305) by the customer on WhatsApp at 10:20. Line is picked but not packed — eligible. Respond by 14:20.</div><button class="btn btn-sm" data-cancel-open>Review &amp; cancel line</button></div>`,
+      "TXO-10476": `<div class="callout c-warn mt-12"><i data-icon="alert"></i><div class="grow"><strong data-help="x-cancel-req">Dealer requested full cancellation</strong> (duplicate PO on their side). Nothing picked yet — whole order eligible; refund ₹${TX.num(c.total)} to original UPI.</div><button class="btn btn-sm" data-cancel-open>Review</button></div>`,
+      "TXO-10488": `<div class="callout c-bad mt-12"><i data-icon="pause"></i><div class="grow"><strong data-help="x-gstin">On hold — GSTIN on invoice doesn't match the dealer profile.</strong> Customer emailed a new GSTIN (SUP-7738). Finance must verify before a B2B tax invoice is issued. Reservation extended to 27 Sep 10:00.</div><button class="btn btn-sm" data-toast="Hold released · order returns to pick queue">Release hold</button></div>`,
+      "TXO-10471": `<div class="callout c-bad mt-12"><i data-icon="alert"></i><div class="grow"><strong data-help="x-overdue">Overdue dispatch (26 h).</strong> Pick failed: bin A-21 empty although 1 unit allocated — stock mismatch raised a cycle-count task. A second unit is available at SP Road (transfer TR-0219 suggested).</div><button class="btn btn-sm" data-toast="Transfer TR-0219 requested · SP Road → WH-BLR">Request transfer</button></div>`,
+      "TXO-10484": `<div class="callout c-bad mt-12"><i data-icon="truck"></i><div class="grow"><strong data-help="x-failed">Delivery failed — consignee unreachable</strong> (raw courier status “UD: CNEE NOT AVAILABLE”). Order and payment states are unchanged. Next attempt 28 Sep; RTO after attempt 3.</div><button class="btn btn-sm" data-toast="Address confirmation request sent (template address_check v2)">Ask customer</button></div>`,
+      "TXO-10491": `<div class="callout c-warn mt-12"><i data-icon="percent"></i><div class="grow"><strong data-help="x-approval">Approval request APR-0231:</strong> 14% discount requested by Vikram S. (authority 8%). Margin after discount 3.1% vs floor 6%. Waiting on owner · due 12:00. Order stays <b>Draft</b> — no stock reserved, no link sent.</div><a class="btn btn-sm" href="erp-automation.html#approvals">Open approval</a></div>`,
     };
     $("#od-alert").innerHTML = alerts[o.id] || "";
+
+    // Next step — what to do now for this combination of order / payment / fulfilment states
+    const stale = " Courier sync is paused, so tracking may be a little behind.";
+    const N = (t, go, lbl, icon) => ({ t, go, lbl, icon: icon || "arrow-right" });
+    const nx = o.ord === "draft" ? N("wait for the discount approval (APR-0231). The order stays a Draft — no stock is reserved and no payment link is sent until the approver decides.", "od-lines", "Check lines & pricing", "clock")
+      : o.ord === "awaiting" ? N(o.pay === "failed" ? `the last payment attempt failed. The customer can retry with the same link until the reservation expires at ${o.res[1]}; send a payment reminder if they need help.`
+          : o.pay === "pending" ? `a UPI payment request is open in the customer's app. Wait — the order confirms itself when the payment provider confirms the money (reservation expires ${o.res[1]}).`
+          : `waiting for the customer to pay with the checkout link. The stock is reserved until ${o.res[1]}; if it is not paid by then, the stock is released automatically.`, "od-pay", "See payments", "clock")
+      : o.ord === "hold" ? (o.res && o.res[2] === "expired"
+          ? N("finance decides by 11:30 — reserve the alternate unit (only after the customer agrees) or refund. Use the buttons in the red box above.", "od-pay", "See payments", "flag")
+          : N(`finance checks the issue on the hold (${o.note ? o.note[1].replace(/^Hold: /, "") : "see notes"}). Once it is fixed, use <b>Release hold</b> in the red box above — the order goes back to the pick queue.`, "od-lines", "Check buyer details", "flag"))
+      : o.views.includes("cancel") ? N(o.flagship ? "decide the customer's request to cancel line 3 before it is packed (reply by 14:20). The other lines carry on being picked." : "decide the dealer's request to cancel the whole order (reply by 13:10). Nothing is picked yet, so every line can still be cancelled.", "cancel", "Review cancellation", "flag")
+      : o.ful === "failed" ? N("confirm the address or phone number with the customer before the next delivery attempt on 28 Sep. After the last attempt the courier returns the parcel to Tradex (RTO)." + stale, "od-ship", "See tracking", "flag")
+      : o.sla[0] === "bad" ? N("dispatch is overdue because the pick found the bin empty. Request the suggested stock transfer (red box above) and keep the customer informed of the new date.", "od-lines", "See lines & stock", "flag")
+      : ["allocated", "picking"].includes(o.ful) ? N(`paid and stock allocated — the warehouse picks and packs it (${o.sla[1].toLowerCase()}). Nothing to do here unless the SLA turns amber or red.`, "fulfil", "Open in fulfilment")
+      : o.ful === "packed" ? N(`packed and waiting for the courier (${o.sla[1].toLowerCase()}). Tracking starts when the parcel is handed over.`, "od-ship", "See shipment")
+      : o.ful === "partdisp" ? N(`one line has shipped; the other ships separately (${o.id === "TXO-10474" ? "partner stock — supplier confirmation due 12:00" : o.sla[1]}). If that date slips, tell the customer.` + stale, "od-ship", "See shipments")
+      : o.ful === "dispatched" ? N(`nothing to do — the parcel is with the courier (${o.sla[1]}).${o.pay === "cod" ? " The courier collects the cash on delivery; it is matched later with the courier's COD remittance." : ""}` + stale, "od-ship", "See tracking", "check-circle")
+      : o.ord === "cancelled" ? N("nothing to do — the order was cancelled and the refund is completed.", "od-pay", "See refund", "check-circle")
+      : N("nothing to do — the order is complete. If the customer returns something, it becomes a case on Returns & warranty.", "od-time", "See timeline", "check-circle");
+    const nxBtn = nx.go === "cancel" ? `<button type="button" class="btn btn-xs" data-cancel-open>${nx.lbl}</button>`
+      : nx.go === "fulfil" ? `<a class="btn btn-xs" href="erp-fulfilment.html#picking">${nx.lbl}</a>`
+      : `<button type="button" class="btn btn-xs" onclick="TX.activateTab('${nx.go}')">${nx.lbl}</button>`;
+    $("#od-next").innerHTML = `<div class="next-step">${ic(nx.icon)}<div class="grow"><b>Next step:</b> ${nx.t}</div>${nxBtn}</div>`;
 
     // Lines & pricing
     const unitTxt = (l) => {
@@ -485,7 +588,7 @@ TX.ready(() => {
     const cur10486 = o.flagship ? `<div class="callout c-info small mt-8"><i data-icon="history"></i><div>Dealer Gold v2026.4 (effective 1 Oct) lowers the T7 tier-10 price to ₹6,690 — <b>this order keeps its snapshot</b> (T33).</div></div>` : "";
     $("#p-lines").innerHTML = `
       <div class="dsec">
-        <h4>${ic("package")} Lines <span class="small muted" style="font-weight:500">· ${o.lines.length} line${o.lines.length > 1 ? "s" : ""} · condition and allocated unit per line</span></h4>
+        <h4 data-help="d-lines">${ic("package")} Lines <span class="small muted" style="font-weight:500">· ${o.lines.length} line${o.lines.length > 1 ? "s" : ""} · condition and allocated unit per line</span></h4>
         <div class="card" style="border-radius:var(--r)"><div class="table-wrap"><table class="table compact">
           <thead><tr><th>Item · condition</th><th class="r">Qty</th><th>Allocated unit</th><th class="r">Unit ${c.exGST ? "ex-GST" : "incl. GST"} · rule</th><th class="r">Line total</th><th>Line status</th></tr></thead>
           <tbody>${c.L.map((l) => `<tr>
@@ -496,7 +599,7 @@ TX.ready(() => {
       </div>
       <div class="dsec snap">
         <div data-anno="1A · R03/R04 · T33 Price snapshot + rule version">
-          <h4>${ic("tag")} Price snapshot</h4>
+          <h4 data-help="d-snapshot">${ic("tag")} Price snapshot</h4>
           <div class="panel small col gap-6">
             <div class="row-between"><span class="muted">Price list · rule</span><b>${o.bt === "dealer" ? `${o.list} v2026.3 · tier 10+ / base per line` : "Public list v2026.9 (GST-inclusive)"}</b></div>
             <div class="row-between"><span class="muted">Quote</span><b class="mono">Q-${3300 + parseInt(o.id.slice(-2), 10)} · locked ${o.flagship ? "09:52" : hhmm(o, 0)} · 30 min</b></div>
@@ -508,7 +611,7 @@ TX.ready(() => {
           ${cur10486}
         </div>
         <div>
-          <h4>${ic("rupee")} Totals</h4>
+          <h4 data-help="d-totals">${ic("rupee")} Totals</h4>
           <div class="panel"><div class="tot">
             <span class="muted">Subtotal ${c.exGST ? "(ex-GST)" : "(incl. GST)"}</span><span>${fmt(c.sub)}</span>
             ${c.disc ? `<span class="muted">Order discount</span><span class="text-ok">−${fmt(c.disc)}</span>` : ""}
@@ -521,11 +624,11 @@ TX.ready(() => {
       </div>
       <div class="dsec grid g-2">
         <div data-anno="1A · R08 Time-limited stock reservation">
-          <h4>${ic("lock")} Stock reservation</h4>
+          <h4 data-help="d-reservation">${ic("lock")} Stock reservation</h4>
           <div class="panel small">${resHTML}</div>
         </div>
         <div>
-          <h4>${ic("pin")} Customer &amp; delivery</h4>
+          <h4 data-help="d-delivery">${ic("pin")} Customer &amp; delivery</h4>
           <div class="panel small"><dl class="kv" style="grid-template-columns:110px 1fr">
             <dt>Buyer</dt><dd>${o.buyer}${o.bt === "dealer" ? " · GSTIN 29AABCM4421F1Z6" : ""}</dd>
             <dt>Contact</dt><dd>+91 98450 •••10 · verified</dd>
@@ -556,19 +659,19 @@ TX.ready(() => {
     }
     $("#od-pay-n").textContent = att.length;
     $("#p-pay").innerHTML = `
-      <div class="dsec"><h4>${ic("card")} Payment attempts</h4>
+      <div class="dsec"><h4 data-help="d-attempts">${ic("card")} Payment attempts</h4>
         ${att.length ? `<div class="card" style="border-radius:var(--r)"><table class="table compact"><thead><tr><th>Attempt</th><th>Provider reference</th><th>Method</th><th class="r">Amount</th><th>State</th><th>Time</th><th>Detail</th></tr></thead><tbody>
         ${att.map((a) => `<tr><td class="mono">${a[0]}</td><td class="mono">${a[1]}</td><td>${a[2]}</td><td class="r">${a[3]}</td><td><span class="status ${a[4][1]}">${a[4][0]}</span></td><td class="small">${a[5]}</td><td class="small muted">${a[6]}</td></tr>`).join("")}</tbody></table></div>`
         : `<div class="empty" style="padding:24px">${ic("wallet")}<h4>No payment attempt yet</h4><p>${o.ord === "draft" ? "Checkout link is sent only after the discount approval." : "Checkout link sent — waiting for the customer."}</p></div>`}
       </div>
-      ${evts.length ? `<div class="dsec" data-anno="1A · T07/T08 Idempotent, signed webhooks"><h4>${ic("server")} Webhook event log <span class="small muted" style="font-weight:500">· signature verified · recorded once · applied in legal order</span></h4>
+      ${evts.length ? `<div class="dsec" data-anno="1A · T07/T08 Idempotent, signed webhooks"><h4 data-help="d-webhooks">${ic("server")} Webhook event log <span class="small muted" style="font-weight:500">· signature verified · recorded once · applied in legal order</span></h4>
         <div class="card" style="border-radius:var(--r)"><table class="table compact evt"><thead><tr><th>Event id</th><th>Type</th><th>Received</th><th>Signature</th><th>Result</th><th>Effect</th></tr></thead><tbody>
         ${evts.map((e) => `<tr class="${e[5] ? "ign" : ""}"><td class="mono">${e[0]}</td><td class="mono">${e[1]}</td><td>${e[2]}</td><td><span class="text-ok small il">${ic("check", "ic-sm")} valid</span></td><td>${e[5] ? `<span class="badge">${ic("copy")} ${e[3]}</span>` : `<span class="badge b-ok">${ic("check")} ${e[3]}</span>`}</td><td class="small">${e[4]}</td></tr>`).join("")}</tbody></table></div>
         <div class="row-between small mt-8"><span class="muted il">${ic("refresh", "ic-sm")} Reconciled against Razorpay API at 10:15 — provider and order records match.</span><button class="btn btn-xs" data-toast="Reconciliation job queued for ${o.id}">Reconcile now</button></div></div>` : ""}
-      <div class="dsec"><h4>${ic("undo")} Refunds</h4>
+      <div class="dsec"><h4 data-help="d-refunds">${ic("undo")} Refunds</h4>
         ${o.pay === "refunded" ? `<div class="panel small row-between"><span><b class="mono">RF-0271</b> · ${amt} · original UPI · completed 25 Sep 11:02 · rfnd_OPq71Zx</span><span class="status s-ok">Completed</span></div>` : `<div class="panel small muted">No refunds. Line cancellations and returns create a refund request for finance — one provider refund per request (T18).</div>`}
       </div>
-      <div class="dsec"><h4>${ic("file")} Invoice</h4><div class="panel small row-between"><span>${o.pay === "captured" ? `<b class="mono">INV-BLR-26-004812</b> · generated once on confirmation · ${c.exGST ? "B2B tax invoice" : "B2C invoice"}` : "Invoice is generated on payment confirmation."}</span>${o.pay === "captured" ? `<button class="btn btn-xs" data-toast="Invoice PDF opened">${ic("download", "ic-sm")} PDF</button>` : ""}</div></div>`;
+      <div class="dsec"><h4 data-help="d-invoice">${ic("file")} Invoice</h4><div class="panel small row-between"><span>${o.pay === "captured" ? `<b class="mono">INV-BLR-26-004812</b> · generated once on confirmation · ${c.exGST ? "B2B tax invoice" : "B2C invoice"}` : "Invoice is generated on payment confirmation."}</span>${o.pay === "captured" ? `<button class="btn btn-xs" data-toast="Invoice PDF opened">${ic("download", "ic-sm")} PDF</button>` : ""}</div></div>`;
 
     // Shipments
     let ship;
@@ -586,7 +689,7 @@ TX.ready(() => {
       ship = `<div class="empty" style="padding:28px">${ic("truck")}<h4>No shipment yet</h4><p>${["picking", "allocated", "packed"].includes(o.ful) ? "Courier is booked automatically when the parcel is packed (Delhivery API · booking de-duplicated). Manual booking with reference capture is the fallback." : "A shipment is created after the order is confirmed and packed."}</p></div>
         <div class="panel small mt-12"><dl class="kv" style="grid-template-columns:160px 1fr"><dt>Serviceability</dt><dd class="il">${o.loc} → ${o.bt === "dealer" ? "570001" : "560034"} · ${ic("check-circle", "ic-sm")} Delhivery Surface · COD ${o.bt === "dealer" ? "not offered (B2B)" : "eligible"}</dd><dt>Promised dispatch</dt><dd>${o.sla[1]}</dd></dl></div>`;
     }
-    $("#p-ship").innerHTML = `<div class="dsec"><h4>${ic("truck")} Shipments</h4>${ship}</div>`;
+    $("#p-ship").innerHTML = `<div class="dsec"><h4 data-help="d-shipments">${ic("truck")} Shipments</h4>${ship}</div>`;
 
     // Timeline
     const T = o.flagship ? [
@@ -611,8 +714,8 @@ TX.ready(() => {
       ["current", "Now", `${o.sla[1]}`, "clock"],
     ];
     $("#p-time").innerHTML = `<div class="grid" style="grid-template-columns:1.2fr 1fr;gap:20px">
-      <div class="dsec"><h4>${ic("history")} Timeline</h4><ul class="timeline">${T.map((t) => `<li class="${t[0]}"><span class="t-dot">${ic(t[3])}</span><div class="t-title">${t[1]}</div><div class="t-meta">${t[2]}</div></li>`).join("")}</ul></div>
-      <div class="dsec"><h4>${ic("shield")} Audit trail</h4><div class="card" style="border-radius:var(--r)"><table class="table compact"><thead><tr><th>Actor</th><th>Change</th></tr></thead><tbody>
+      <div class="dsec"><h4 data-help="d-timeline">${ic("history")} Timeline</h4><ul class="timeline">${T.map((t) => `<li class="${t[0]}"><span class="t-dot">${ic(t[3])}</span><div class="t-title">${t[1]}</div><div class="t-meta">${t[2]}</div></li>`).join("")}</ul></div>
+      <div class="dsec"><h4 data-help="d-audit">${ic("shield")} Audit trail</h4><div class="card" style="border-radius:var(--r)"><table class="table compact"><thead><tr><th>Actor</th><th>Change</th></tr></thead><tbody>
         <tr><td class="small"><b>Automation A09</b><div class="cell-sub">rule v4 · ${o.flagship ? "09:58" : hhmm(o, 2)}</div></td><td class="small">order.state awaiting → confirmed<div class="cell-sub">input: evt capture · idem-key ${o.id}-pay</div></td></tr>
         <tr><td class="small"><b>Pricing engine</b><div class="cell-sub">${o.flagship ? "09:52" : hhmm(o, 0)}</div></td><td class="small">price snapshot written<div class="cell-sub">${calc(o).L[0].rule}</div></td></tr>
         ${o.flagship ? `<tr><td class="small"><b>Karthik R.</b><div class="cell-sub">Support · 10:20</div></td><td class="small">line 3 cancel request created<div class="cell-sub">reason: customer request · source SUP-7742</div></td></tr><tr><td class="small"><b>Irfan M.</b><div class="cell-sub">Warehouse · 10:31</div></td><td class="small">pick started · wave W-26-07</td></tr>` : ""}
@@ -626,12 +729,14 @@ TX.ready(() => {
     const o = cur, c = calc(o);
     $("#cx-id").textContent = o.id;
     const eligible = !["dispatched", "delivered", "partdisp", "released"].includes(o.ful) && o.pay !== "refunded";
-    $("#cx-lines").innerHTML = c.L.map((l, i) => {
+    const done = o.pay === "refunded";
+    const why = done || ["dispatched", "delivered"].includes(o.ful) ? `<div class="callout c-info small mb-12"><i data-icon="info"></i><div><b>Nothing can be cancelled on this order.</b> ${done ? "It is already cancelled and refunded." : "Only lines that have not been dispatched can be cancelled, and everything on this order has already been dispatched or handed over. Items the customer does not want come back through a return (Returns &amp; warranty) once delivered."}</div></div>` : "";
+    $("#cx-lines").innerHTML = why + c.L.map((l, i) => {
       const ok = eligible;
       const pre = o.flagship ? l.flag === "cancelreq" : o.id === "TXO-10476";
       return `<label class="cancel-line ${ok ? "" : "dis"}"><input type="checkbox" data-cx="${i}" ${ok ? "" : "disabled"} ${ok && pre ? "checked" : ""} aria-label="Cancel line ${i + 1}">${TX.ph(l.p.img, "thumb")}
         <div><div class="strong small">${l.p.title}</div><div class="small muted">${l.q} × ${fmt(l.u)} · ${TX.conditions[l.p.cond].label}${l.flag ? " · customer requested" : ""}</div></div>
-        <div class="r"><b>${fmt(l.t)}</b><div class="small muted">${ok ? (o.ful === "picking" ? "picked · return to bin" : "not picked") : "already shipped → use return"}</div></div></label>`;
+        <div class="r"><b>${fmt(l.t)}</b><div class="small muted">${ok ? (o.ful === "picking" ? "picked · return to bin" : "not picked") : done ? "already cancelled" : "shipped — use a return"}</div></div></label>`;
     }).join("");
     TX.hydrate($("#cx-lines"));
     const upd = () => {
@@ -714,8 +819,8 @@ TX.ready(() => {
     $("#as-margin").innerHTML = rows.length ? `<div class="row-between"><span class="muted">Margin after discount (est.)</span><b class="${floorBad ? "text-bad" : "text-ok"}">${m.toFixed(1)}% ${floorBad ? "· below 6% floor" : "· above 6% floor"}</b></div><div class="meter ${floorBad ? "m-bad" : "m-ok"} thin mt-4"><span style="width:${Math.max(4, Math.min(100, m * 4))}%"></span></div>` : "";
     $("#as-auth-txt").innerHTML = auth >= 100 ? "No limit (owner) · still audited" : `Your authority: up to <b>${auth}%</b> <span class="tiny">(example threshold)</span>`;
     const over = d > auth || (floorBad && auth < 100 && rows.length);
-    $("#as-approval").innerHTML = over ? `<div class="callout c-warn"><i data-icon="alert"></i><div><strong>Needs approval — becomes request APR-0232.</strong> ${d > auth ? `${d}% exceeds your ${auth}% authority` : "Margin falls below the 6% floor"}. Routed to <b>Vikram S. (Branch manager)</b>${d > 8 ? " → <b>Owner</b> (above manager limit)" : ""} with your reason. The order stays <b>Draft</b>; no stock is reserved and no link is sent until approved. Deadline 2 h, alternate approver Anita R.</div></div>`
-      : auth >= 100 && floorBad && rows.length ? `<div class="callout c-warn small"><i data-icon="shield"></i><div><b>Owner override below the 6% margin floor.</b> Allowed for your role, but a reason is mandatory and the override appears in the daily digest and audit log.</div></div>`
+    $("#as-approval").innerHTML = over ? `<div class="callout c-warn"><i data-icon="alert"></i><div><strong data-help="as-approval">Needs approval — becomes request APR-0232.</strong> ${d > auth ? `${d}% exceeds your ${auth}% authority` : "Margin falls below the 6% floor"}. Routed to <b>Vikram S. (Branch manager)</b>${d > 8 ? " → <b>Owner</b> (above manager limit)" : ""} with your reason. The order stays <b>Draft</b>; no stock is reserved and no link is sent until approved. Deadline 2 h, alternate approver Anita R.</div></div>`
+      : auth >= 100 && floorBad && rows.length ? `<div class="callout c-warn small"><i data-icon="shield"></i><div><b data-help="g.override">Owner override below the 6% margin floor.</b> Allowed for your role, but a reason is mandatory and the override appears in the daily digest and audit log.</div></div>`
       : d ? `<div class="callout c-ok small"><i data-icon="check-circle"></i><div>Within your authority — discount applies immediately and is recorded with your reason in the audit log.</div></div>` : "";
     TX.hydrate($("#as-approval"));
     const btn = $("#as-submit");
@@ -736,9 +841,9 @@ TX.ready(() => {
     const s = e.target.closest("[data-src]");
     if (s) {
       const src = s.dataset.src;
-      $("#as-source").querySelector(".grow").innerHTML = src === "wa" ? `<strong>Created from WhatsApp draft basket DB-0417</strong> · conversation <a href="erp-support.html">SUP-7742</a> with Arun Kumar (Metro Computers) · identity verified by OTP 09:31. Items were pre-filled from the guided chat — <b>chat prices are not trusted</b>; every price is recomputed by the pricing engine.`
-        : src === "phone" ? `<strong>Phone order</strong> · caller identity must be verified (OTP to the registered number) before account prices or order history are shown.`
-        : `<strong>Walk-in at branch</strong> · customer present at SP Road counter · pay at POS or send link.`;
+      $("#as-source").querySelector(".grow").innerHTML = src === "wa" ? `<strong data-help="as-source">Created from WhatsApp draft basket DB-0417</strong> · conversation <a href="erp-support.html">SUP-7742</a> with Arun Kumar (Metro Computers) · identity verified by OTP 09:31. Items were pre-filled from the guided chat — <b>chat prices are not trusted</b>; every price is recomputed by the pricing engine.`
+        : src === "phone" ? `<strong data-help="as-source">Phone order</strong> · caller identity must be verified (OTP to the registered number) before account prices or order history are shown.`
+        : `<strong data-help="as-source">Walk-in at branch</strong> · customer present at SP Road counter · pay at POS or send link.`;
     }
   });
   renderResults(); renderAssisted();
