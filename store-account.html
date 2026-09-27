@@ -92,6 +92,46 @@
     .gate-hero li { margin: 6px 0; color: #d5dcec; }
     .sess-row td { vertical-align: top; }
     .kv.tight { grid-template-columns: 116px 1fr; }
+    @media (max-width: 1200px) { .acc-layout { grid-template-columns: 220px minmax(0, 1fr); gap: 20px; } }
+    @media (max-width: 980px) {
+      .acc-head { flex-wrap: wrap; align-items: flex-start; }
+      .acc-head > .row { flex-wrap: wrap; }
+      .acc-layout { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+      .acc-side { position: static; }
+      .acc-side > .panel { display: none; }
+      .acc-menu-btn { display: flex; width: 100%; height: 48px; justify-content: flex-start; gap: 10px; }
+      .acc-menu-btn b { margin-right: auto; }
+      /* The section list slides in from the left */
+      .acc-nav { position: fixed; top: 0; bottom: 0; left: 0; z-index: 270; width: min(340px, 88vw); padding: 0 10px 20px; border: 0; border-radius: 0; overflow-y: auto; transform: translateX(-102%); visibility: hidden; transition: transform .22s ease, visibility .22s; }
+      .acc-nav.sheet-open { transform: none; visibility: visible; box-shadow: var(--sh-3); }
+      .acc-nav-head { display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 1; margin: 0 -10px; padding: 12px 10px 12px 22px; background: #fff; border-bottom: 1px solid var(--line-2); }
+      .acc-nav .tab { min-height: 46px; font-size: 14.5px; }
+      .guest-gate { grid-template-columns: minmax(0, 1fr); }
+      .gate-hero { min-height: 300px; }
+      .o-ship { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+      .o-acts { flex-direction: row; flex-wrap: wrap; }
+    }
+    @media (max-width: 760px) {
+      .acc-head h1 { font-size: 20px; }
+      .acc-head .avatar.lg { width: 40px; height: 40px; }
+      .gate-hero { min-height: 260px; padding: 22px; }
+      .gate-hero::after { background: linear-gradient(180deg, rgba(7,12,24,.5) 0%, rgba(7,12,24,.78) 45%, rgba(7,12,24,.92) 100%); }
+      .gate-hero h1 { font-size: 22px !important; }
+      .panel-head { flex-wrap: wrap; align-items: flex-start; }
+      .panel-head > .row, .panel-head > div:last-child { flex-wrap: wrap; }
+      #wl-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+      .mini-order { grid-template-columns: 48px minmax(0, 1fr); gap: 6px 12px; padding: 12px 16px; }
+      .mini-order .thumb-lg.ph { width: 48px; height: 48px; grid-row: span 2; }
+      .mini-order > :nth-child(n+3) { grid-column: 2; justify-self: start; }
+      .o-head { flex-wrap: wrap; gap: 10px 20px; padding: 12px 16px; }
+      .o-head .o-id { margin-left: 0; text-align: left; flex-basis: 100%; }
+      .o-states { gap: 8px 16px; padding: 10px 16px; }
+      .o-ship { padding: 14px 16px; }
+      .o-note { padding: 12px 16px 0; }
+      .o-item { grid-template-columns: 56px minmax(0, 1fr); gap: 12px; }
+      .o-item .thumb-lg.ph, .o-item .soft-thumb { width: 56px; height: 56px; }
+      .addr { min-height: 0; }
+    }
   </style>
 </head>
 <body data-app="store" data-page="account">
@@ -167,7 +207,9 @@
       <div class="acc-layout" data-tabset id="acc-tabs">
         <!-- Left navigation (tabs, deep-linkable by #hash) -->
         <aside class="acc-side">
-          <div class="card acc-nav" data-anno="1A · Deep-linkable account sections">
+          <button class="btn acc-menu-btn sheet-only" type="button" data-sheet-open="acc-nav" aria-controls="acc-nav" aria-expanded="false"><i data-icon="menu"></i><span class="muted">Account menu</span><b id="acc-cur">Overview</b><i data-icon="chevron-down"></i></button>
+          <div class="card acc-nav" id="acc-nav" aria-label="Account sections" data-anno="1A · Deep-linkable account sections">
+            <div class="acc-nav-head sheet-only"><b>Your account</b><button class="btn btn-ghost btn-icon btn-sm" type="button" data-sheet-close aria-label="Close account menu"><i data-icon="x"></i></button></div>
             <nav class="tabs" aria-label="Account sections">
               <div class="grp">Shopping</div>
               <button class="tab active" data-tab="overview"><i data-icon="dashboard"></i> Overview</button>
@@ -201,7 +243,7 @@
               <button class="ov-stat" data-goto="devices"><span class="l"><i data-icon="shield"></i> Under warranty</span><span class="n">4</span><span class="f muted">Next expiry 4 Feb 2027</span></button>
             </div>
 
-            <div class="grid mt-16" style="grid-template-columns: minmax(0,1.5fr) minmax(0,1fr)">
+            <div class="grid mt-16 stack-md" style="grid-template-columns: minmax(0,1.5fr) minmax(0,1fr)">
               <div class="card">
                 <div class="card-head"><div><h3>Needs your attention</h3><div class="sub">Sorted by urgency</div></div></div>
                 <div class="list-row"><span class="li-icon warn"><i data-icon="image"></i></span><div class="grow"><b>Add a photo of the drive label — RMA-0092</b><div class="small muted">Seagate BarraCuda 2 TB warranty claim can't be reviewed until the serial label photo is uploaded.</div></div><a class="btn btn-sm btn-primary" href="store-returns.html#requests">Upload</a></div>
@@ -242,7 +284,7 @@
               <a class="btn btn-sm" href="store-order.html"><i data-icon="truck"></i> Track by order number</a>
             </div>
             <div class="filterbar" data-anno="1A · Order history filters (client-side in mockup)">
-              <div class="input-icon" style="width:300px"><i data-icon="search"></i><input class="input" id="o-q" placeholder="Search order no., product or serial" aria-label="Search orders" style="height:34px"></div>
+              <div class="input-icon" style="width:300px;max-width:100%"><i data-icon="search"></i><input class="input" id="o-q" placeholder="Search order no., product or serial" aria-label="Search orders" style="height:34px"></div>
               <div class="seg" id="o-seg">
                 <button class="active" data-f="all">All <span class="muted">7</span></button>
                 <button data-f="open">Open <span class="muted">3</span></button>
@@ -508,7 +550,7 @@
   <div class="modal" id="m-consent-log"><div class="modal-card lg">
     <div class="modal-head"><div><h3>Consent history</h3><div class="small muted">Every change to your message preferences is recorded with time and source</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
     <div class="modal-body">
-      <table class="table compact">
+      <div class="table-wrap"><table class="table compact">
         <thead><tr><th>When</th><th>Channel · purpose</th><th>Change</th><th>Source</th><th>Notice version</th></tr></thead>
         <tbody>
           <tr><td>2 Sep 2026, 19:41</td><td>WhatsApp · marketing</td><td><span class="status s-muted">Opted out</span></td><td>Reply “STOP” to template promo_restock_v3</td><td>—</td></tr>
@@ -517,7 +559,7 @@
           <tr><td>12 Mar 2026, 16:20</td><td>WhatsApp · service</td><td><span class="status s-ok">Opted in</span></td><td>Checkout checkbox · TXO-10112</td><td>v2026.1</td></tr>
           <tr><td>12 Mar 2026, 16:18</td><td>Privacy notice</td><td><span class="status s-info">Accepted</span></td><td>Account created</td><td>v2026.1 → v2026.2 notified 1 Aug</td></tr>
         </tbody>
-      </table>
+      </table></div>
     </div>
     <div class="modal-foot"><button class="btn" data-close>Close</button></div>
   </div></div>
@@ -572,8 +614,13 @@ TX.ready(() => {
   window.addEventListener("hashchange", () => TX.activateTab(location.hash.slice(1)));
   document.addEventListener("click", (e) => {
     const g = e.target.closest("[data-goto]"); if (g) { e.preventDefault(); go(g.dataset.goto); }
-    const t = e.target.closest(".acc-nav .tab"); if (t) history.replaceState(null, "", "#" + t.dataset.tab);
+    const t = e.target.closest(".acc-nav .tab"); if (t) { history.replaceState(null, "", "#" + t.dataset.tab); TX.closeSheet(false); }
+    setTimeout(syncMenuLabel);
   });
+  // Tablet/phone: the "Account menu" button names the open section
+  const syncMenuLabel = () => { const a = $(".acc-nav .tab.active"); if (a) $("#acc-cur").textContent = [...a.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent).join("").trim(); };
+  window.addEventListener("hashchange", () => setTimeout(syncMenuLabel));
+  setTimeout(syncMenuLabel, 50);
 
   /* ---------- Orders ---------- */
   const st = (label, text, cls) => `<span><span class="lbl">${label}</span><span class="status ${cls}">${text}</span></span>`;

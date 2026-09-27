@@ -14,7 +14,7 @@ the codebase and passing tests win, then `TASKS.md`; fix this file to match.
 | Current task | — (none in progress). Next eligible: **T-0-M01-03** Discovery questionnaire & next-meeting pack |
 | Last session | 2026-09-27 — implementation plan created |
 | Application code present | No (`frontend/`, `backend/`, `infra/`, `tests/` not yet created) |
-| UI prototype | Mockup v0.1 (32 screens) at repo root — **awaiting client sign-off (D-049)** |
+| UI prototype | Mockup v0.1 (32 screens) at repo root — **awaiting client sign-off (D-049)**. Storefront pages responsive (desktop · tablet · phone) since 2026-09-27; Phase 1 mobile scope is D-223 |
 | Blocking decisions for Phase 1A start | D-001 (operational core), D-003 (storefront framework), D-004 (staff UI), D-005 (hosting), D-049 (UI sign-off) — see `DECISIONS.md` |
 
 ## 2. Task counts
@@ -55,6 +55,7 @@ Open decisions blocking the most tasks:
 | 2026-09-26 | (pre-plan) | Clickable HTML mockup v0.1: 32 screens + overview + credits, real product photos (WP03 prototype) | — | JS-error + link checks passed on all pages |
 | 2026-09-27 | (pre-plan) | Implementation plan written in `plan/` | — | — |
 | 2026-09-27 | T-0-M01-01 | D-210 recorded (Phase 0 records location) | — | `status.py --check` 0 issues |
+| 2026-09-27 | (mockup, user request) | Storefront mockup made responsive: phone/tablet header, menu drawer, bottom bar, filter & account panels, sticky buy/checkout bars, per-page layouts, banners & images | — | 13 widths 320–1920 px: 0 overflow; 0 image/banner issues; 0 JS errors on 34 pages; keyboard test of 3 panels passed; desktop 1440 px pixel-identical to before except live timers and the active "Refurbished" category link |
 
 ## 6. Decisions log (append-only; details in `DECISIONS.md`)
 | Date | D-ID | Decision | Approved by |
@@ -94,6 +95,7 @@ Open decisions blocking the most tasks:
 | Date | Task ID | Files |
 |---|---|---|
 | 2026-09-27 | (plan) | `plan/*` (24 files + `tools/status.py`), `CLAUDE.md` |
+| 2026-09-27 | (mockup responsive) | `assets/tradex.css`, `assets/tradex.js`, all 13 `store-*.html`; `plan/DECISIONS.md` (D-223), `plan/STATE.md` |
 
 ## 13. Known issues
 | # | Date | Issue | Affects | Status |
@@ -117,3 +119,47 @@ Open decisions blocking the most tasks:
   seed owners); remaining plan gaps recorded in Known issues #3–#7.
 - Next: "Continue implementation" → T-0-M01-03 (discovery questionnaire & next-meeting pack). The platform and
   UI decisions (D-001, D-003, D-004, D-005, D-049, D-115, D-211) gate Phase 1A.
+
+### 2026-09-27 — storefront mockup made responsive (user request)
+- Shared shell (`assets/tradex.js`, `assets/tradex.css`):
+  - collapsible prototype toolbar ("Prototype menu");
+  - phone/tablet header with a menu button, full-width search and a delivery-PIN row;
+  - swipeable category pills;
+  - accessible menu drawer: dialog, focus trap, Esc, focus return, category accordions;
+  - phone bottom bar: Home · Categories · Deals/Dealer · Account · Cart;
+  - reusable off-canvas panel helper (`TX.openSheet`);
+  - bottom-sheet modals on phones, and help/compare/toasts that sit above the bottom bar.
+  - Breakpoints: desktop ≥ 981 px, tablet 761–980 px, phone ≤ 760 px.
+- Pages:
+  - listing: filters become a left panel with a "Show N results" button;
+  - product: stacked gallery with swipeable thumbnails and a sticky Add/Buy bar;
+  - cart: sticky total + Checkout bar;
+  - checkout: stacked steps, swipeable payment tabs;
+  - order: vertical shipment tracker;
+  - account: "Account menu" panel;
+  - compare: sideways-scrolling table with pinned spec names;
+  - help, returns, dealer, refurbished, login, home: layouts, banners and photo heroes reflow.
+- ERP/vendor pages unchanged (staff mobile is Phase 2). Mockup annotations (phase notes) not edited.
+- Scope question recorded as D-223 (OPEN). BP keeps mobile-web acceptance in Phase 2; the mockup now shows the
+  responsive layouts either way.
+- Tracker unchanged (361 tasks; next task T-0-M01-03); `status.py --check`: 0 issues.
+- Follow-up (same day, user report: checkout review items not responsive):
+  - A deep state crawl was added. It covers every tab, checkout/returns step, state switch, modal, drawer and
+    guest/consumer/dealer view, plus URL variants.
+  - It checks for page overflow, squeezed text, spill and clipping at 360/768 px.
+  - Fixed:
+    - checkout review items and summary lines;
+    - stepper labels and tablet payment tabs;
+    - cart saved rows and empty state;
+    - account menu tables, list rows and field rows;
+    - order lookup/status tiles; login form rows;
+    - help store cards and tables; compare header; product breadcrumb, gallery buttons and spec columns;
+    - dealer status panels; returns request rows.
+  - Shared phone rules:
+    - rows with buttons or notes wrap;
+    - store data tables scroll with minimum column widths;
+    - the dealer tag and delivery line are shortened on phones.
+  - Result: 0 issues on all 13 store pages (~1,000 page states); 0 overflow at 13 widths 320–1920 px;
+    0 JS errors; desktop 1440 px unchanged except live timers, a 1 px checkout summary shift and the active
+    "Refurbished" link.
+

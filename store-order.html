@@ -57,6 +57,57 @@
     .sum-rows .total span:first-child { color: var(--tx-1); }
     .cancelled { opacity: .75; }
     .cancelled .strong { text-decoration: line-through; }
+    @media (max-width: 1100px) { .o-grid { grid-template-columns: minmax(0, 1fr) 320px; } }
+    @media (max-width: 980px) {
+      .o-bar { flex-wrap: wrap; }
+      .o-bar > .row { max-width: 100%; overflow-x: auto; scrollbar-width: none; }
+      .o-bar > .row::-webkit-scrollbar { display: none; }
+      .o-bar .seg, .o-bar .btn { flex: none; }
+      .o-grid { grid-template-columns: minmax(0, 1fr); }
+      .side { position: static; }
+      .next { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .next > div { border-bottom: 1px solid var(--line-2); }
+      .next > div:nth-child(2n) { border-right: 0; }
+      .machines { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .lookup { grid-template-columns: minmax(0, 1fr); }
+      .lookup > div + div { border-left: 0; border-top: 1px solid var(--line-2); }
+      .mach { min-width: 0; overflow-wrap: anywhere; }
+      .mach .status { white-space: normal; align-items: flex-start; }
+      .mach .status::before { margin-top: 5px; }
+    }
+    @media (max-width: 760px) {
+      .hero-ok { grid-template-columns: auto minmax(0, 1fr); padding: 18px; gap: 14px; }
+      .hero-ok > :nth-child(n+3) { grid-column: 1 / -1; }
+      .hero-ok .big-i { width: 48px; height: 48px; }
+      .hero-ok .big-i .ic { width: 24px; height: 24px; }
+      .hero-ok h1 { font-size: 20px; }
+      .hero-ok .row { flex-wrap: wrap; }
+      .next > div { padding: 12px 14px; }
+      .lookup { grid-template-columns: minmax(0, 1fr); }
+      .lookup > div { padding: 18px 16px; }
+      .lookup > div + div { border-left: 0; border-top: 1px solid var(--line-2); }
+      .lookup .form-grid { grid-template-columns: minmax(0, 1fr) !important; }
+      .lookup .row { flex-wrap: wrap; }
+      .o-head { flex-wrap: wrap; align-items: flex-start; }
+      .o-head .row { flex-wrap: wrap; }
+      .shp-head, .shp-foot { padding-left: 16px; padding-right: 16px; }
+      /* Shipment progress runs top-to-bottom on phones */
+      .track { grid-template-columns: minmax(0, 1fr); padding: 16px 16px 4px; }
+      .track .tk { display: grid; grid-template-columns: 28px minmax(0, 1fr); column-gap: 12px; text-align: left; padding: 0 0 16px; }
+      .track .tk .d { grid-row: span 2; margin: 0; }
+      .track .tk::before, .track .tk:first-child::before { display: block; left: 12.5px; top: 28px; bottom: 0; width: 3px; height: auto; background: var(--line); }
+      .track .tk.done::before { background: var(--ok); }
+      .track .tk.cur::before, .track .tk:last-child::before { background: var(--line); }
+      .track .tk:last-child::before { display: none; }
+      .oline { grid-template-columns: 56px minmax(0, 1fr); padding: 14px 16px; }
+      .oline .ph { width: 56px; }
+      .oline .row { flex-wrap: wrap; }
+      .oline .ser { display: block; }
+      .oline .ser > span { display: block; position: relative; padding-left: 19px; margin-top: 3px; }
+      .oline .ser > span > .ic:first-child { position: absolute; left: 0; top: 2px; }
+      .oline .acts { grid-column: 1 / -1; flex-direction: row; flex-wrap: wrap; align-items: center; min-width: 0; }
+    }
+    @media (max-width: 480px) { .machines { grid-template-columns: minmax(0, 1fr); } }
   </style>
 </head>
 <body data-app="store" data-page="order">

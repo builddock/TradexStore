@@ -103,6 +103,64 @@
     .wa-screen { background: #efe7de; border-radius: var(--r); padding: 16px; }
     .spec-missing { color: var(--tx-4); font-style: italic; display: inline-flex; align-items: center; gap: 5px; }
     .ph-contain img { object-fit: contain; }
+    .m-buybar { display: none; }
+    @media (max-width: 1200px) {
+      .pd-top { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-areas: "gal info" "buy info"; gap: 24px; }
+      .gal { grid-area: gal; position: static; }
+      .pd-info { grid-area: info; }
+      .buybox { grid-area: buy; position: static; }
+    }
+    @media (max-width: 980px) {
+      .pd-bar { flex-wrap: wrap; }
+      .pd-bar > .row { max-width: 100%; overflow-x: auto; scrollbar-width: none; }
+      .pd-bar > .row::-webkit-scrollbar { display: none; }
+      .pd-bar .seg { flex: none; }
+      .pd-bar > .crumbs { flex: 1 1 100%; min-width: 0; }
+      .pd-bar > .crumbs .truncate { min-width: 0; flex: 1 1 0; }
+      .gal .g-actions { flex-wrap: wrap; }
+      .gal .g-actions .btn { flex: 1 1 auto; }
+      .insp-grid { grid-template-columns: minmax(0, 1fr); }
+      .insp-grid > div { border-right: 0; border-bottom: 1px solid var(--line-2); }
+      .insp-grid > div:last-child { border-bottom: 0; }
+      .fbt { grid-template-columns: minmax(0, 1fr); }
+    }
+    @media (max-width: 760px) {
+      body[data-app="store"][data-page="product"] { --s-bottom: 68px; }
+      .pd-top { grid-template-columns: minmax(0, 1fr); grid-template-areas: "gal" "info" "buy"; gap: 18px; }
+      /* Gallery: main photo first, thumbnails in a swipeable row underneath */
+      .gal { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+      .gal .thumbs { order: 2; flex-direction: row; overflow-x: auto; scrollbar-width: none; padding: 3px 2px; }
+      .gal .thumbs::-webkit-scrollbar { display: none; }
+      .gal .thumbs > div { flex: none; }
+      .gal .thumbs .ph { width: 56px; height: 56px; }
+      .gal .main .g-cap span { font-size: 11px; }
+      .gal .g-actions .btn { padding: 0 8px; }
+      .pd-info h1 { font-size: 19px; }
+      .offers { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: minmax(132px, 42%); overflow-x: auto; scrollbar-width: none; padding: 3px 2px; }
+      .offers::-webkit-scrollbar { display: none; }
+      .bank-offers { grid-template-columns: minmax(0, 1fr); }
+      .tier-table th, .tier-table td { padding: 6px 5px; }
+      .fbt-items { overflow-x: auto; scrollbar-width: none; padding-bottom: 4px; }
+      .fbt-items::-webkit-scrollbar { display: none; }
+      .fbt-item { flex: 0 0 136px; }
+      .acc-row { grid-template-columns: 48px minmax(0, 1fr) auto; grid-template-areas: "th info info" "th price btn"; gap: 6px 12px; padding: 12px 16px; }
+      .acc-row > :nth-child(1) { grid-area: th; width: 48px; height: 48px; }
+      .acc-row > :nth-child(2) { grid-area: info; }
+      .acc-row > :nth-child(3) { grid-area: price; }
+      .acc-row > :nth-child(4) { grid-area: btn; align-self: end; }
+      .acc-row[style] > :nth-child(2) { grid-area: auto; }
+      .acc-row .row { flex-wrap: wrap; gap: 4px 8px; }
+      .qa { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+      .chk-row { grid-template-columns: minmax(0, 1fr) 60px 36px; }
+      .spec-table th { width: 36%; }
+      .spec-table th, .spec-table td { padding: 8px 10px; }
+      /* Sticky buy bar replaces the bottom navigation on product pages */
+      .m-buybar { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 8px; align-items: center; position: fixed; left: 0; right: 0; bottom: 0; z-index: 150; padding: 10px 12px calc(10px + env(safe-area-inset-bottom)); background: #fff; border-top: 1px solid var(--line); box-shadow: 0 -4px 16px rgba(16, 24, 40, .08); }
+      .mb-price { font-size: 17px; font-weight: 750; line-height: 1.15; min-width: 0; }
+      .mb-price small { display: block; font-size: 11px; font-weight: 500; color: var(--tx-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .m-buybar .btn { height: 44px; padding: 0 14px; }
+    }
+    @media (max-width: 360px) { .m-buybar #mb-buy .ic { display: none; } }
   </style>
 </head>
 <body data-app="store" data-page="product">
@@ -130,6 +188,13 @@
     <section class="section" id="similar-sec"></section>
   </div>
 </main>
+
+<!-- Phone: sticky buy bar (mirrors the buy box) -->
+<div class="m-buybar" id="m-buybar" role="region" aria-label="Buy this product">
+  <div class="mb-price" id="mb-price"></div>
+  <button class="btn btn-primary" id="mb-add" type="button"></button>
+  <button class="btn btn-accent" id="mb-buy" type="button"><i data-icon="zap"></i> Buy now</button>
+</div>
 
 <!-- WhatsApp click-to-chat preview -->
 <div class="modal" id="m-wa"><div class="modal-card">
@@ -264,7 +329,7 @@ TX.ready(() => {
   document.title = `${p.title} · Tradex`;
 
   /* ---------------- Crumbs ---------------- */
-  $("#crumbs").innerHTML = [`<a href="store-home.html">Home</a>`, `<a href="store-listing.html?cat=${p.cat}">${catObj.name}</a>`, `<a href="store-listing.html?cat=${p.cat}&brand=${encodeURIComponent(p.brand.toLowerCase())}">${p.brand}</a>`, `<span class="truncate" style="max-width:420px">${esc(p.title)}</span>`].join(ic("chevron-right"));
+  $("#crumbs").innerHTML = [`<a href="store-home.html">Home</a>`, `<a href="store-listing.html?cat=${p.cat}">${catObj.name}</a>`, `<a href="store-listing.html?cat=${p.cat}&brand=${encodeURIComponent(p.brand.toLowerCase())}">${p.brand}</a>`, `<span class="truncate" style="max-width:min(420px, 100%)">${esc(p.title)}</span>`].join(ic("chevron-right"));
 
   /* ---------------- Offers for this model (condition variants) ---------------- */
   function offers() {
@@ -569,7 +634,7 @@ TX.ready(() => {
       </div>
       <div class="card" style="border-top-left-radius:0;border-top-right-radius:0;border-top:0">
         <div class="tab-panel active card-body" data-panel="specs">
-          <div class="grid" style="grid-template-columns:minmax(0,1fr) 300px;gap:24px">
+          <div class="grid stack-md" style="grid-template-columns:minmax(0,1fr) 300px;gap:24px">
             <table class="spec-table">${specRows}</table>
             <div class="col gap-12">
               <div class="panel small"><b>Specifications by category</b><div class="subtle mt-4">Fields come from the <b>${catObj.name}</b> attribute template, so every ${catObj.name.toLowerCase()} listing shows the same comparable fields. Missing values are marked, never guessed.</div></div>
@@ -578,7 +643,7 @@ TX.ready(() => {
           </div>
         </div>
         <div class="tab-panel card-body" data-panel="description">
-          <div class="grid" style="grid-template-columns:minmax(0,1fr) 360px;gap:28px;align-items:start">
+          <div class="grid stack-md" style="grid-template-columns:minmax(0,1fr) 360px;gap:28px;align-items:start">
             <div class="col gap-12" style="font-size:14px;line-height:1.7;color:var(--tx-2)">
               <h3 style="color:var(--tx-1)">${esc(p.title)}</h3>
               <p>${p.specs}. ${isUnit ? `This is a ${TX.conditions[p.cond].label.toLowerCase()} unit that has been inspected, cleaned and tested by the Tradex refurbishment team in Bengaluru. What you see in the photos and report is the exact unit you'll receive.` : p.cond === "openbox" ? "This open-box unit is unused — the packaging has been opened for a display check or an unused return. It has been fully tested and carries the full manufacturer warranty." : `Brand-new and factory-sealed, sourced through ${p.brand}'s authorised channel in India.`}</p>
@@ -597,12 +662,12 @@ TX.ready(() => {
           </div>
         </div>
         <div class="tab-panel card-body" data-panel="qa">
-          <div class="row-between mb-8"><div class="input-icon" style="width:420px">${ic("search")}<input class="input" placeholder="Search questions & answers" aria-label="Search questions"></div><button class="btn btn-primary btn-sm" data-open="m-ask">${ic("help", "ic-sm")} Ask a question</button></div>
+          <div class="row-between mb-8"><div class="input-icon" style="width:420px;max-width:100%">${ic("search")}<input class="input" placeholder="Search questions & answers" aria-label="Search questions"></div><button class="btn btn-primary btn-sm" data-open="m-ask">${ic("help", "ic-sm")} Ask a question</button></div>
           ${qas.map(([q, a]) => `<div class="qa"><span class="k">Question</span><b>${q}</b><span class="k">Answer</span><div>${a}<div class="tiny muted mt-4">${ic("award", "ic-sm").replace('class="ic', 'style="display:inline;vertical-align:-2px" class="ic')} Tradex product specialist · 21 Sep 2026 · <button class="link-btn tiny" data-toast="Thanks for your feedback">Helpful (7)</button></div></div></div>`).join("")}
           <button class="btn btn-sm mt-12">See all 14 questions</button>
         </div>
         <div class="tab-panel card-body" data-panel="reviews">
-          <div class="grid" style="grid-template-columns:280px minmax(0,1fr);gap:32px">
+          <div class="grid stack-md" style="grid-template-columns:280px minmax(0,1fr);gap:32px">
             <div class="col gap-12">
               <div class="row gap-12"><span style="font-size:40px;font-weight:750;line-height:1">${p.rating}</span><div>${TX.stars(p.rating)}<div class="small muted">${TX.num(p.reviews)} verified ratings</div></div></div>
               <div>${dist.map((d, i) => `<div class="dist"><span>${5 - i} ★</span><div class="meter"><span style="width:${d}%"></span></div><span class="small muted tnum">${d}%</span></div>`).join("")}</div>
@@ -681,6 +746,9 @@ TX.ready(() => {
     }
     $("#add-btn").dataset.qty = qty;
     $("#add-btn").innerHTML = `${ic("cart")} Add ${qty > 1 ? qty + " " : ""}to cart`;
+    $("#mb-price").innerHTML = dealer ? `${fmt(unit)}<small>+ GST / unit${qty > 1 ? ` · qty ${qty}` : ""}</small>` : `${fmt(p.price)}<small>incl. GST${qty > 1 ? ` · qty ${qty}` : ""}</small>`;
+    Object.assign($("#mb-add").dataset, { add: p.id, qty });
+    $("#mb-add").innerHTML = `${ic("cart")} Add${qty > 1 ? " " + qty : ""}`;
   }
   function checkPin(pin) {
     const box = $("#pin-res");
@@ -729,7 +797,7 @@ TX.ready(() => {
     if ((el = t.closest("[data-gal]"))) { $$("[data-gal]").forEach((b) => b.classList.toggle("on", b === el)); $("#gal-main").innerHTML = TX.ph(el.dataset.gal, "", esc(p.title)); }
     if ((el = t.closest("[data-go-tab]"))) { e.preventDefault(); TX.activateTab(el.dataset.goTab); $("#tabs-sec").scrollIntoView({ behavior: "smooth" }); }
     if ((el = t.closest("#state-seg [data-state]"))) { state = el.dataset.state; renderAll(); }
-    if (t.closest("#buy-btn")) { TX.addToCart(p.id, qty); setTimeout(() => (location.href = "store-checkout.html"), 500); }
+    if (t.closest("#buy-btn, #mb-buy")) { TX.addToCart(p.id, qty); setTimeout(() => (location.href = "store-checkout.html"), 500); }
     if (t.closest("#fbt-add")) { const c = TX.cart(); fbtOn.forEach((x) => (c[x] = (c[x] || 0) + 1)); TX.setCart(c); TX.toast(`${fbtOn.size} items added to cart · each ships with its own warranty`); }
   });
   document.addEventListener("change", (e) => {
