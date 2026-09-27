@@ -21,8 +21,8 @@ the codebase and passing tests win, then `TASKS.md`; fix this file to match.
 Run `python3 plan/tools/status.py` and paste the summary here at the end of each session.
 
 ```
-Tradex plan status — 364 tasks
-  NOT_STARTED=107 · IN_PROGRESS=0 · BLOCKED=0 · REQUIRES_DECISION=256 · COMPLETED=1 · NOT_APPLICABLE=0
+Tradex plan status — 367 tasks
+  NOT_STARTED=107 · IN_PROGRESS=0 · BLOCKED=0 · REQUIRES_DECISION=259 · COMPLETED=1 · NOT_APPLICABLE=0
 Current (earliest unfinished) stage: 0
 Per stage:
   0       done   1/69   in-progress 0  blocked 0  needs-decision 47
@@ -57,6 +57,7 @@ Open decisions blocking the most tasks:
 | 2026-09-27 | T-0-M01-01 | D-210 recorded (Phase 0 records location) | — | `status.py --check` 0 issues |
 | 2026-09-27 | (mockup, user request) | Storefront mockup made responsive: phone/tablet header, menu drawer, bottom bar, filter & account panels, sticky buy/checkout bars, per-page layouts, banners & images | — | 13 widths 320–1920 px: 0 overflow; 0 image/banner issues; 0 JS errors on 34 pages; keyboard test of 3 panels passed; desktop 1440 px pixel-identical to before except live timers and the active "Refurbished" category link |
 | 2026-09-28 | (mockup, user request) | ERP workspace + vendor portal: ⓘ contextual help on all 19 P-E/P-V screens (help panel with page guide, glossary A–Z of 203 terms, search), guided workflows ("How it works" strips, tab intros, next-step boxes, plain tab labels) on P-E02/03/04/06/07/08/09/12 | — | see session log 2026-09-28 |
+| 2026-09-28 | (mockup, user request) | ERP workspace + vendor portal responsive for tablets and phones (slide-in menu, compact top bar, stacked panes, scrolling tables, per-page layouts); desktop/laptop unchanged; plan documented (04a §2.5, 04b §2.24, 04c X16, D-226, conditional tasks) | — | see session log 2026-09-28 (responsive) |
 
 ## 6. Decisions log (append-only; details in `DECISIONS.md`)
 | Date | D-ID | Decision | Approved by |
@@ -99,6 +100,7 @@ Open decisions blocking the most tasks:
 | 2026-09-27 | (plan) | `plan/*` (24 files + `tools/status.py`), `CLAUDE.md` |
 | 2026-09-27 | (mockup responsive) | `assets/tradex.css`, `assets/tradex.js`, all 13 `store-*.html`; `plan/DECISIONS.md` (D-223), `plan/STATE.md` |
 | 2026-09-28 | (mockup help & guided workflows) | `assets/tradex.js`, `assets/tradex.css`, new `assets/help/` (glossary.js, shell.js, 19 page files), all 15 `erp-*.html`, all 4 `vendor-*.html`, `index.html`; `plan/DECISIONS.md` (D-224, D-225, D-174 note), `plan/04b-frontend-workspace-1.md` (rule 23, §2.21–2.23, §3.2 #5), `plan/04c-frontend-workspace-2-vendor.md` (X20), `plan/TASKS.md` (T-1A.3-M24-02, T-1A.16-M24-06, T-1B.1-M14-16; T-1A.16-M24-03 description), `plan/12-phases.md`, `plan/18-master-checklist.md`, `plan/STATE.md` |
+| 2026-09-28 | (mockup responsive ERP/vendor) | `assets/tradex.css`, `assets/tradex.js`, all 15 `erp-*.html`, all 4 `vendor-*.html` (page `<style>` media queries; one script value in `erp-reports.html`); `plan/DECISIONS.md` (D-226; D-223 cross-refs), `plan/04a-frontend-storefront.md` (rule 7, §2.5), `plan/04b-frontend-workspace-1.md` (rule 15, §2.24, §3.2 #1), `plan/04c-frontend-workspace-2-vendor.md` (X16), `plan/TASKS.md` (T-1A.9-M09-12, T-1A.16-M24-07, T-1B.1-M14-17), `plan/12-phases.md`, `plan/18-master-checklist.md`, `plan/STATE.md` |
 
 ## 13. Known issues
 | # | Date | Issue | Affects | Status |
@@ -201,4 +203,29 @@ Open decisions blocking the most tasks:
   T-1A.16-M24-06, T-1B.1-M14-16 (+ `12-phases.md` skeleton/counts, `18-master-checklist.md`); T-1A.16-M24-03
   description updated (Help destination now D-224). Tracker 364 tasks; next task still T-0-M01-03;
   `status.py --check`: 0 issues. Known issues #8–#10 added (sample-data inconsistencies, phone overflow, P-E15 36 px).
+
+### 2026-09-28 — ERP & vendor mockup made responsive (user request)
+- User requests: make the Vendor and ERP sections responsive and usable on phones, tablets, laptops and desktops with
+  professional, clean presentation — no new features, no removed functionality, no business-logic changes; **do not
+  change the desktop UI**; and document every UI change in the plan so development has no gaps.
+- Shared layer (`assets/tradex.css` "Workspace responsive", `assets/tradex.js`): ≤ 980 px the sidebar becomes a
+  slide-in menu (☰; reuses `TX.openSheet` — dialog, focus trap, Esc, focus return); compact top bar (phone: search as
+  a full-width row, icon buttons, full-width dropdowns); bare data tables auto-wrapped in a scroll container
+  (`wrapTables`, inert on desktop via `.tw-auto`); table column minimums and scroll shadows; wrapping toolbars/headers;
+  pipelines scroll; `.split`/`.ed-grid`/inbox stack; full-width drawers; bottom-sheet modals; "How it works" 3 per
+  row / swipeable; charts redraw on width change; 16 px form text on phones.
+- Page layer: all 19 pages got rules inside `@media (max-width: 980px | 760px | 420px)` in their own `<style>` (work
+  split across 8 parallel writers — CSS only, no browsers; coordinator ran all checks). Only non-CSS change: bar-chart
+  label width 132 px on phones in `erp-reports.html`.
+- Verification (sequential, one headless Chrome, `nice -n 19`): state crawl of every page, tab, saved view, modal,
+  drawer (+ inner tabs), menu panel, search row and notifications — 464 issues at 390/768 px before → 0 after;
+  360/600 px: 0 after small-phone fixes (961 states in total). Desktop: 339 states (19 pages × all tabs ×
+  1440/1280/1024 px) compared with the previous commit — 329 byte-identical, 10 sub-visible anti-aliasing noise
+  (0 changed pixels above threshold; the same page varies against itself). Storefront: 342 states at 360/390 px clean;
+  0 JS errors on 34 pages; help-engine test 13/13.
+- Plan: D-226 (OPEN — ERP/vendor tablet/phone in Phase 1?); `04b` §2.24 (shared behaviour + per-screen table for
+  P-E01–P-E15, P-V01–P-V04), rule 15; `04c` X16; storefront responsive spec written up in `04a` §2.5 (rule 7) for the
+  27 Sep work (D-223); conditional tasks T-1A.9-M09-12 (D-223), T-1A.16-M24-07 and T-1B.1-M14-17 (D-226) with
+  `12-phases.md` and `18-master-checklist.md` counts. Tracker 367 tasks; `status.py --check` 0 issues. Known issue #9
+  resolved; #10 cause identified (desktop left unchanged).
 

@@ -1292,6 +1292,9 @@ html.s-lock, html.s-lock body { overflow: hidden; }
   .compare-tray .slots { display: none; }
   .compare-tray > div:first-child { margin-right: auto; }
   .sd-quick { gap: 6px; padding: 12px; }
+  /* Steppers: shorter connectors so the current step's label keeps two lines at most */
+  .stepper .step::after { margin: 0 3px; }
+  .stepper .step:not(.current)::after { flex: 0 0 8px; }
 }
 
 /* -------------------------------------------------------------------------- */
