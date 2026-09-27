@@ -61,6 +61,39 @@
     .mini-stat .l { font-size: 12.5px; color: var(--tx-3); }
     .ex-table td, .ex-table th { font-size: 13px; }
     .lockrow { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border: 1px dashed var(--brand-200); border-radius: var(--r); background: var(--brand-50); }
+    .state-panel .row { flex-wrap: wrap; }
+    @media (max-width: 980px) {
+      .flow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .flow > div { border-bottom: 1px solid var(--line-2); }
+      .flow > div:nth-child(2n) { border-right: 0; }
+      .flow > div::after { display: none; }
+      .qo-grid { grid-template-columns: minmax(0, 1fr); }
+      .section-head .seg { max-width: 100%; overflow-x: auto; scrollbar-width: none; }
+      .section-head .seg::-webkit-scrollbar { display: none; }
+      .section-head .seg button { flex: none; }
+    }
+    @media (max-width: 760px) {
+      .d-hero { min-height: 0; }
+      .d-hero .h-copy { padding: 24px 20px; }
+      .hero .row.mt-24 { flex-wrap: wrap; margin-top: 18px; }
+      .hero .btn-lg { height: 44px; padding: 0 16px; font-size: 14px; }
+      .hero-stats { flex-wrap: wrap; gap: 12px 20px; margin-top: 20px; }
+      .hero-stats b { font-size: 16px; }
+      .flow { grid-template-columns: minmax(0, 1fr); }
+      .flow > div { border-right: 0; padding: 16px; }
+      .biz-head { grid-template-columns: minmax(0, 1fr); padding: 18px; }
+      .biz-head .row { flex-wrap: wrap; }
+      .biz-head > .col { align-items: flex-start !important; }
+      .biz-head h1 { font-size: 20px; }
+      .dtabs > .tabs { padding: 0 4px; }
+      .dtabs > .tabs .tab { padding: 12px 10px; }
+      .mini-stat { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .mini-stat > div { padding: 12px 14px; }
+      .qo-foot { grid-template-columns: minmax(0, 1fr); padding: 14px 16px; }
+      .qo-tot { text-align: left; justify-content: start; }
+      .pl-table .t-title { max-width: 180px; }
+      .table-toolbar .input-icon, .card-head .input-icon { flex: 1 1 100%; }
+    }
   </style>
 </head>
 <body data-app="store" data-page="dealer">
@@ -114,7 +147,7 @@
         </div>
       </section>
 
-      <section class="section grid" style="grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 20px" data-anno="1A · R04 Quantity tiers (illustrative, all-units per SKU)">
+      <section class="stack-md section grid" style="grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 20px" data-anno="1A · R04 Quantity tiers (illustrative, all-units per SKU)">
         <div class="card card-pad col gap-12">
           <h2>How quantity tiers work</h2>
           <p class="subtle">Tiers apply per SKU, per order line, to <b>all units</b> on that line. Order 10 of one SKU and every unit gets the 10+ price.</p>
@@ -182,7 +215,7 @@
         </div>
       </section>
 
-      <section class="section grid" style="grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 20px">
+      <section class="stack-md section grid" style="grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 20px">
         <div>
           <div class="section-head"><h2>Frequently asked questions</h2></div>
           <details class="faq" open><summary>Who can apply for dealer pricing?</summary><p>Retailers, resellers, system integrators, service centres and companies/institutions buying for their own use. You need an active GST registration in India. Individuals and unregistered businesses can buy at public prices and still get a GST invoice.</p></details>
@@ -252,7 +285,7 @@
             <div><div class="l">Saved vs retail · FY 26-27</div><div class="n">₹2.14 L</div><div class="small text-ok">Tier savings ₹31,600</div></div>
             <div><div class="l">Quotes waiting on you</div><div class="n">1</div><div class="small text-warn">QT-0142 expires 30 Sep</div></div>
           </div>
-          <div class="grid mt-16" style="grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr)">
+          <div class="stack-md grid mt-16" style="grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr)">
             <div class="card">
               <div class="card-head"><div><h3>Open orders</h3><div class="sub">Order, payment and dispatch tracked separately</div></div><button class="btn btn-sm btn-ghost" data-dtab="reorder">All orders</button></div>
               <div class="list-row"><span class="li-icon brand"><i data-icon="truck"></i></span><div class="grow"><b>TXO-10485 · 20 × Samsung T7 1 TB, 30 × Kingston FURY 16 GB</b><div class="small muted">Paid ₹2,08,900 + GST · <span class="status s-brand">Dispatched today</span> · VRL Logistics LR 55210873 → Mysuru</div></div><a class="btn btn-sm" href="store-order.html?id=TXO-10485">Track</a></div>
@@ -277,7 +310,7 @@
         <div class="tab-panel tabpad" data-panel="pricelist">
           <div class="card" data-anno="1A · R03/R04 Private price list: retail vs your price vs 5+/10+, ex-GST">
             <div class="table-toolbar">
-              <div class="input-icon" style="width:300px"><i data-icon="search"></i><input class="input input-sm" id="pl-q" placeholder="Search SKU, brand or model" aria-label="Search price list"></div>
+              <div class="input-icon" style="width:300px;max-width:100%"><i data-icon="search"></i><input class="input input-sm" id="pl-q" placeholder="Search SKU, brand or model" aria-label="Search price list"></div>
               <select class="select input-sm" id="pl-cat" style="width:auto" aria-label="Category"><option value="">All categories</option></select>
               <select class="select input-sm" id="pl-cond" style="width:auto" aria-label="Condition"><option value="">All conditions</option><option value="new">New</option><option value="openbox">Open box</option><option value="refurb">Refurbished</option><option value="used">Used</option></select>
               <label class="check small"><input type="checkbox" id="pl-stock"> In stock only</label>
@@ -336,7 +369,7 @@ Samsung T7, 5</textarea>
 
         <!-- QUOTES -->
         <div class="tab-panel tabpad" data-panel="quotes">
-          <div class="grid" style="grid-template-columns: minmax(0, 1fr) 380px">
+          <div class="stack-md grid" style="grid-template-columns: minmax(0, 1fr) 380px">
             <div class="card" data-anno="1A · Quote with locked price & validity; accept → order at quoted price">
               <div class="card-head"><div><h3>Your quotes</h3><div class="sub">A quote locks the price until its validity date. Stock is reserved when you accept.</div></div></div>
               <div class="table-wrap"><table class="table">
@@ -393,7 +426,7 @@ Samsung T7, 5</textarea>
 
         <!-- TEAM -->
         <div class="tab-panel tabpad" data-panel="team">
-          <div class="grid" style="grid-template-columns: minmax(0, 1fr) 390px">
+          <div class="stack-md grid" style="grid-template-columns: minmax(0, 1fr) 390px">
             <div class="card" data-anno="1A · §8.3 Business account members & roles (owner invites)">
               <div class="card-head"><div><h3>Members</h3><div class="sub">Everyone signs in with their own phone or email · only the owner can invite or remove</div></div><button class="btn btn-sm btn-primary" data-open="m-invite"><i data-icon="plus"></i> Invite member</button></div>
               <div class="table-wrap"><table class="table">

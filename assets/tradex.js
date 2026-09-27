@@ -342,7 +342,7 @@
     const off = Math.round((1 - p.price / p.mrp) * 100);
     if (TX.view === "dealer") {
       return `<div class="price ${size}">
-        <span class="p-dealer-tag">${ic("briefcase", "ic-sm")} Metro Computers · Dealer Gold</span>
+        <span class="p-dealer-tag">${ic("briefcase", "ic-sm")} <span><span class="p-org">Metro Computers · </span>Dealer Gold</span></span>
         <div class="p-line"><span class="p-now">${TX.fmt(p.dealer)}</span><span class="p-tax">+ GST · per unit</span></div>
         <span class="p-tier">${TX.fmt(p.tiers[0].p)} at 5+ · ${TX.fmt(p.tiers[1].p)} at 10+</span>
       </div>`;
@@ -369,7 +369,7 @@
         <div class="p-specs truncate">${p.specs}</div>
         <div class="p-rating"><span class="rating-pill">${p.rating} <svg class="ic" viewBox="0 0 24 24">${I.star}</svg></span> ${TX.num(p.reviews)} ratings</div>
         <div data-price="${p.id}">${TX.priceHTML(p)}</div>
-        <div class="p-meta">${TX.stockHTML(p)}<span>${ic("truck")} Delivery by ${p.delivery}</span><span>${ic("shield")} ${p.warranty}</span></div>
+        <div class="p-meta">${TX.stockHTML(p)}<span>${ic("truck")} <span><span class="m-hide">Delivery </span>by ${p.delivery}</span></span><span>${ic("shield")} ${p.warranty}</span></div>
         <div class="p-foot">
           <label class="p-compare"><input type="checkbox" data-compare="${p.id}" ${cmp ? "checked" : ""}> Compare</label>
           <button class="btn btn-primary btn-sm" data-add="${p.id}">${ic("cart", "ic-sm")} Add</button>
@@ -478,24 +478,30 @@
     ).join("<hr>");
     const bar = document.createElement("div");
     bar.className = "protobar";
+    // Narrow screens: everything after the brand collapses into a panel opened by "Prototype menu"
     bar.innerHTML = `<div class="pb-inner">
       <span class="pb-tag"><a href="index.html" style="color:#fff;display:inline-flex;gap:8px;align-items:center">${TX.logoMark().replace("logo-mark", "logo-mark").replace('class="logo-mark"', 'class="logo-mark" style="width:22px;height:22px;border-radius:6px"')} Tradex prototype</a><span class="badge">v0.1 · for review</span></span>
+      <button class="pb-btn pb-more" type="button" aria-expanded="false" aria-controls="pb-rest">${ic("sliders", "ic-sm")} Prototype menu</button>
+      <div class="pb-rest" id="pb-rest">
       <span class="pb-sep"></span>
-      <div class="seg">
+      <div class="seg pb-apps">
         <a href="index.html" class="${app === "hub" ? "active" : ""}">Overview</a>
         <a href="store-home.html" class="${app === "store" ? "active" : ""}">Storefront</a>
         <a href="erp-dashboard.html" class="${app === "erp" ? "active" : ""}">ERP workspace</a>
         <a href="vendor-dashboard.html" class="${app === "vendor" ? "active" : ""}">Vendor portal</a>
       </div>
       <div class="dd"><button class="pb-btn" data-dd-toggle>${ic("layers", "ic-sm")} All screens ${ic("chevron-down", "ic-sm")}</button><div class="dd-menu left">${menu}</div></div>
-      ${app === "store" ? `<span class="pb-sep"></span><span style="color:#7d89a3">View as</span>
-      <div class="seg"><button data-view="guest">Guest</button><button data-view="consumer">Consumer</button><button data-view="dealer">Approved dealer</button></div>` : ""}
-      <div class="ml-auto row gap-8">
+      ${app === "store" ? `<span class="pb-sep"></span><div class="pb-view"><span style="color:#7d89a3">View as</span>
+      <div class="seg"><button data-view="guest">Guest</button><button data-view="consumer">Consumer</button><button data-view="dealer">Approved dealer</button></div></div>` : ""}
+      <div class="ml-auto row gap-8 pb-tools">
         <button class="pb-btn" id="pb-annot" title="Show the phase and requirement ID for each feature">${ic("flag", "ic-sm")} Phase notes</button>
-        <button class="pb-btn" id="pb-hide" title="Hide the prototype toolbar">${ic("eye-off", "ic-sm")}</button>
+        <button class="pb-btn" id="pb-hide" title="Hide the prototype toolbar" aria-label="Hide the prototype toolbar">${ic("eye-off", "ic-sm")}</button>
+      </div>
       </div>
     </div>`;
     document.body.prepend(bar);
+    const more = $(".pb-more", bar);
+    more.onclick = () => { const open = !bar.classList.contains("pb-open"); bar.classList.toggle("pb-open", open); more.setAttribute("aria-expanded", open); };
     const mini = document.createElement("button");
     mini.className = "pb-btn protobar-mini"; mini.style.cssText = "background:#0b1220;color:#fff;border:0;box-shadow:var(--sh-3)";
     mini.innerHTML = `${ic("eye", "ic-sm")} Show prototype bar`;
@@ -519,9 +525,23 @@
     const line2 = v === "dealer" ? "Business account" : "Account & lists";
     el.innerHTML = `${ic("user")}<span><small>${line1}</small><b>${line2}</b></span>`;
     el.href = v === "guest" ? "store-login.html" : v === "dealer" ? "store-dealer.html" : "store-account.html";
+    el.setAttribute("aria-label", `${line1} · ${line2}`);
     const d = $("#s-deliver-to");
     if (d) d.innerHTML = v === "dealer" ? "Deliver to Metro Computers<b>Mysuru 570001</b>" : v === "guest" ? "Deliver to<b>Enter PIN code</b>" : "Deliver to Priya<b>Bengaluru 560034</b>";
+    // Mobile: slim delivery row, drawer greeting and bottom-bar account tab
+    const md = $("#s-mdeliver-to");
+    if (md) md.innerHTML = v === "dealer" ? "Deliver to Metro Computers · <b>Mysuru 570001</b>" : v === "guest" ? "Deliver to · <b>Enter PIN code</b>" : "Deliver to Priya · <b>Bengaluru 560034</b>";
+    const du = $("#sd-user");
+    if (du) { du.href = el.href; du.innerHTML = `<span class="sd-av">${ic("user")}</span><span><b>${line1}</b><small>${v === "guest" ? "Sign in or create an account" : line2}</small></span>`; }
+    const ta = $("#s-tab-account");
+    if (ta) { ta.href = el.href; $("span:last-child", ta).textContent = v === "guest" ? "Sign in" : "Account"; }
   }
+  // Sub-category links shared by the desktop mega menu and the mobile menu drawer: [category id, heading, links]
+  const SUBS = [
+    ["laptops", "Laptops", [["store-listing.html?cat=laptops", "Business laptops"], ["store-listing.html?cat=laptops", "Gaming laptops"], ["store-listing.html?cat=laptops", "Creator & OLED"], ["store-listing.html?cat=laptops", "MacBook"], ["store-refurbished.html", "Refurbished laptops"], ["store-listing.html?cat=laptops", "Under ₹40,000"]]],
+    ["components", "PC components", [["store-listing.html?cat=components", "Graphics cards"], ["store-listing.html?cat=components", "Processors"], ["store-listing.html?cat=components", "Motherboards"], ["store-listing.html?cat=storage", "RAM"], ["store-listing.html?cat=storage", "SSD & HDD"], ["store-listing.html?cat=components", "Cooling"]]],
+    ["cameras", "Imaging", [["store-listing.html?cat=cameras", "Mirrorless cameras"], ["store-listing.html?cat=cameras", "DSLR cameras"], ["store-listing.html?cat=lenses", "Lenses"], ["store-listing.html?cat=cameras", "Compact cameras"], ["store-listing.html?cat=cameras", "Used & refurbished"]]],
+  ];
   function buildStoreShell(page) {
     const main = $("main"); main.classList.add("store-main");
     const cats = [
@@ -540,6 +560,7 @@
         <a href="#" data-wa>${ic("whatsapp")} +91 80 4000 1234</a>
       </div></div></div>
     <header class="s-header"><div class="container">
+      <button class="s-burger" type="button" data-sdrawer aria-controls="s-drawer" aria-expanded="false" aria-label="Open menu">${ic("menu", "ic-lg")}</button>
       ${TX.logo()}
       <div class="s-deliver" data-open="m-pin">${ic("pin")}<span id="s-deliver-to">Deliver to Priya<b>Bengaluru 560034</b></span></div>
       <form class="s-search" onsubmit="event.preventDefault();location.href='store-listing.html?q='+encodeURIComponent(this.q.value)" data-anno="1A · R01 Search-first · exact model/SKU + synonyms">
@@ -556,26 +577,23 @@
         </div>
       </form>
       <div class="s-actions">
-        <a class="s-act" id="s-account" href="store-account.html"></a>
-        <a class="s-act only-signed" href="store-account.html#orders">${ic("package")}<span><small>Returns</small><b>& Orders</b></span></a>
-        <a class="s-act" href="store-account.html#wishlist" data-tip="Wishlist">${ic("heart")}</a>
-        <a class="s-act" href="store-cart.html">${ic("cart")}<span class="count" data-cart-count>0</span><span><small>&nbsp;</small><b>Cart</b></span></a>
+        <a class="s-act s-act-account" id="s-account" href="store-account.html"></a>
+        <a class="s-act s-act-orders only-signed" href="store-account.html#orders">${ic("package")}<span><small>Returns</small><b>& Orders</b></span></a>
+        <a class="s-act s-act-wish" href="store-account.html#wishlist" data-tip="Wishlist" aria-label="Wishlist">${ic("heart")}</a>
+        <a class="s-act s-act-cart" href="store-cart.html" aria-label="Cart">${ic("cart")}<span class="count" data-cart-count>0</span><span><small>&nbsp;</small><b>Cart</b></span></a>
       </div>
     </div></header>
-    <nav class="s-catbar"><div class="container">
-      <a href="#" class="all" data-mega>${ic("menu")} All categories</a>
-      ${cats.map(([id, n]) => `<a href="store-listing.html?cat=${id}" class="${(TX.param("cat") || (page === "listing" && !TX.param("q") && !TX.param("brand") && !TX.param("deals") ? "laptops" : "")) === id ? "active" : ""}">${n}</a>`).join("")}
-      <a href="store-refurbished.html" class="refurb">${ic("award")} Refurbished</a>
+    <div class="s-mdeliver"><div class="container"><button type="button" data-open="m-pin">${ic("pin", "ic-sm")}<span id="s-mdeliver-to">Deliver to Priya · <b>Bengaluru 560034</b></span>${ic("chevron-down", "ic-sm")}</button></div></div>
+    <nav class="s-catbar" aria-label="Shop by category"><div class="container">
+      <button type="button" class="all" data-mega aria-expanded="false" aria-controls="s-mega">${ic("menu")} All categories</button>
+      ${cats.map(([id, n], i) => `<a href="store-listing.html?cat=${id}" data-p="${i}" class="${(TX.param("cat") || (page === "listing" && !TX.param("q") && !TX.param("brand") && !TX.param("deals") ? "laptops" : "")) === id ? "active" : ""}">${n}</a>`).join("")}
+      <a href="store-refurbished.html" class="refurb ${page === "refurbished" ? "active" : ""}">${ic("award")} Refurbished</a>
       <a href="store-listing.html?deals=1" class="deal">${ic("flame")} Deals</a>
-      <a href="store-dealer.html" class="ml-auto" style="color:#07695b">${ic("briefcase")} Dealer zone</a>
+      <a href="store-dealer.html" class="dz ml-auto ${page === "dealer" ? "active" : ""}" style="color:#07695b">${ic("briefcase")} Dealer zone</a>
     </div>
-    <div class="s-mega"><div class="container">
+    <div class="s-mega" id="s-mega"><div class="container">
       <div class="m-cats col gap-4">${TX.categories.map((c) => `<a href="store-listing.html?cat=${c.id}">${ic(c.icon, "ic-sm")} ${c.name} ${ic("chevron-right", "ic-sm")}</a>`).join("")}</div>
-      <div class="m-cols">
-        <div><h5>Laptops</h5><a href="store-listing.html?cat=laptops">Business laptops</a><a href="store-listing.html?cat=laptops">Gaming laptops</a><a href="store-listing.html?cat=laptops">Creator & OLED</a><a href="store-listing.html?cat=laptops">MacBook</a><a href="store-refurbished.html">Refurbished laptops</a><a href="store-listing.html?cat=laptops">Under ₹40,000</a></div>
-        <div><h5>PC components</h5><a href="store-listing.html?cat=components">Graphics cards</a><a href="store-listing.html?cat=components">Processors</a><a href="store-listing.html?cat=components">Motherboards</a><a href="store-listing.html?cat=storage">RAM</a><a href="store-listing.html?cat=storage">SSD & HDD</a><a href="store-listing.html?cat=components">Cooling</a></div>
-        <div><h5>Imaging</h5><a href="store-listing.html?cat=cameras">Mirrorless cameras</a><a href="store-listing.html?cat=cameras">DSLR cameras</a><a href="store-listing.html?cat=lenses">Lenses</a><a href="store-listing.html?cat=cameras">Compact cameras</a><a href="store-listing.html?cat=cameras">Used & refurbished</a></div>
-      </div>
+      <div class="m-cols">${SUBS.map(([, title, links]) => `<div><h5>${title}</h5>${links.map(([href, n]) => `<a href="${href}">${n}</a>`).join("")}</div>`).join("")}</div>
       <a class="promo photo" href="store-listing.html?cat=desktops" style="min-height:220px;text-decoration:none"><div class="p-bg">${TX.ph("pc-case", "round-0")}</div><div><span class="badge b-accent">Build your PC</span><h3 class="mt-8" style="color:#fff">Custom builds, tested & warrantied</h3><p>Pick parts or start from a Tradex build.</p></div><span class="btn btn-sm btn-accent" style="align-self:flex-start">Explore builds</span></a>
     </div></div></nav>`;
     document.body.insertBefore(header, main);
@@ -603,11 +621,11 @@
     fab.className = "helpfab";
     fab.innerHTML = `
       <div class="chatbox" data-anno="1A/1B · R11 Guided help · human & WhatsApp handoff (no LLM)">
-        <div class="cb-head"><div class="avatar" style="background:#fff;color:var(--brand)">${ic("headset", "ic-sm")}</div><div class="grow"><b>Tradex Help</b><div class="small" style="opacity:.8">Typically replies in 5 min · 9 AM–9 PM</div></div><button class="btn btn-ghost btn-icon btn-sm" style="color:#fff" data-chat-close>${ic("x")}</button></div>
+        <div class="cb-head"><div class="avatar" style="background:#fff;color:var(--brand)">${ic("headset", "ic-sm")}</div><div class="grow"><b>Tradex Help</b><div class="small" style="opacity:.8">Typically replies in 5 min · 9 AM–9 PM</div></div><button class="btn btn-ghost btn-icon btn-sm" style="color:#fff" data-chat-close aria-label="Close help">${ic("x")}</button></div>
         <div class="cb-body" id="cb-body"></div>
-        <div class="cb-foot"><input class="input input-sm" placeholder="Type your question…" id="cb-input"><button class="btn btn-primary btn-sm btn-icon" id="cb-send">${ic("send", "ic-sm")}</button></div>
+        <div class="cb-foot"><input class="input input-sm" placeholder="Type your question…" id="cb-input" aria-label="Type your question"><button class="btn btn-primary btn-sm btn-icon" id="cb-send" aria-label="Send">${ic("send", "ic-sm")}</button></div>
       </div>
-      <div class="row gap-8"><button class="fab-wa" data-wa data-tip="Chat on WhatsApp">${ic("whatsapp", "ic-lg")}</button><button class="fab" data-chat-open>${ic("chat")} Help</button></div>`;
+      <div class="row gap-8"><button class="fab-wa" data-wa data-tip="Chat on WhatsApp" aria-label="Chat on WhatsApp">${ic("whatsapp", "ic-lg")}</button><button class="fab" data-chat-open aria-label="Help">${ic("chat")} <span>Help</span></button></div>`;
     document.body.appendChild(fab);
     initChat(fab);
 
@@ -625,7 +643,117 @@
       <div class="row"><input class="input" value="560034" style="max-width:200px"><button class="btn btn-primary" data-close data-toast="Delivery location updated · 560034 is serviceable">Apply</button></div>
       <div class="panel small">${ic("pin", "ic-sm")} Saved addresses: <b>Home — Koramangala 560034</b> · Office — Whitefield 560066</div></div></div>`;
     document.body.appendChild(m);
+
+    // Mobile / tablet menu drawer (opened by the header menu button, "All categories" and the bottom bar)
+    const subsOf = Object.fromEntries(SUBS.map(([id, , links]) => [id, links]));
+    const dr = document.createElement("div");
+    dr.className = "s-drawer"; dr.id = "s-drawer"; dr.hidden = true;
+    dr.innerHTML = `<div class="sd-backdrop" data-sdrawer-close></div>
+      <div class="sd-panel" role="dialog" aria-modal="true" aria-labelledby="sd-title">
+        <div class="sd-head">
+          <h2 class="sr-only" id="sd-title">Menu</h2>
+          <a class="sd-user" id="sd-user" href="store-account.html"></a>
+          <button class="sd-close" type="button" data-sdrawer-close aria-label="Close menu">${ic("x", "ic-lg")}</button>
+        </div>
+        <div class="sd-body">
+          <button type="button" class="sd-pin" data-open="m-pin">${ic("pin")}<span id="sd-pin-to">Change delivery location</span>${ic("chevron-right", "ic-sm")}</button>
+          <div class="sd-quick">
+            <a href="store-account.html#orders" class="hide-guest">${ic("package")}<span>Orders</span></a>
+            <a href="store-login.html" class="only-guest">${ic("user")}<span>Sign in</span></a>
+            <a href="store-account.html#wishlist">${ic("heart")}<span>Wishlist</span></a>
+            <a href="store-order.html">${ic("truck")}<span>Track order</span></a>
+            <a href="store-cart.html">${ic("cart")}<span>Cart <b data-cart-count>0</b></span></a>
+          </div>
+          <nav aria-label="Shop by category">
+            <h3 class="sd-sec">Shop by category</h3>
+            ${TX.categories.map((c) => subsOf[c.id]
+              ? `<details class="sd-acc"><summary>${ic(c.icon)}<span>${c.name}</span>${ic("chevron-down", "ic-sm sd-chev")}</summary>
+                  <div class="sd-sub"><a href="store-listing.html?cat=${c.id}"><b>All ${c.name.toLowerCase()}</b></a>${subsOf[c.id].map(([href, n]) => `<a href="${href}">${n}</a>`).join("")}</div></details>`
+              : `<a class="sd-link" href="store-listing.html?cat=${c.id}">${ic(c.icon)}<span>${c.name}</span>${ic("chevron-right", "ic-sm")}</a>`).join("")}
+            <h3 class="sd-sec">Featured</h3>
+            <a class="sd-link" href="store-refurbished.html">${ic("award")}<span>Certified refurbished</span>${ic("chevron-right", "ic-sm")}</a>
+            <a class="sd-link" href="store-listing.html?deals=1">${ic("flame")}<span>Deals</span>${ic("chevron-right", "ic-sm")}</a>
+            <a class="sd-link" href="store-compare.html">${ic("compare")}<span>Compare products</span>${ic("chevron-right", "ic-sm")}</a>
+          </nav>
+          <nav aria-label="Business">
+            <h3 class="sd-sec">For business</h3>
+            <a class="sd-link" href="store-dealer.html">${ic("briefcase")}<span>Dealer zone</span>${ic("chevron-right", "ic-sm")}</a>
+            <a class="sd-link hide-dealer" href="store-login.html#dealer">${ic("building")}<span>Apply for dealer pricing</span>${ic("chevron-right", "ic-sm")}</a>
+            <a class="sd-link" href="store-login.html#vendor">${ic("store")}<span>Sell with Tradex</span>${ic("chevron-right", "ic-sm")}</a>
+          </nav>
+          <nav aria-label="Help and services">
+            <h3 class="sd-sec">Help & services</h3>
+            <a class="sd-link" href="store-returns.html">${ic("undo")}<span>Returns & replacements</span>${ic("chevron-right", "ic-sm")}</a>
+            <a class="sd-link" href="store-help.html#warranty">${ic("shield")}<span>Warranty & RMA</span>${ic("chevron-right", "ic-sm")}</a>
+            <a class="sd-link" href="store-help.html">${ic("help")}<span>Help centre</span>${ic("chevron-right", "ic-sm")}</a>
+            <a class="sd-link" href="store-help.html#stores">${ic("pin")}<span>Visit a store</span>${ic("chevron-right", "ic-sm")}</a>
+            <a class="sd-link" href="#" data-wa>${ic("whatsapp")}<span>WhatsApp +91 80 4000 1234</span>${ic("chevron-right", "ic-sm")}</a>
+          </nav>
+          <a class="sd-link sd-out hide-guest" href="store-home.html?as=guest">${ic("logout")}<span>Sign out</span></a>
+        </div>
+      </div>`;
+    document.body.appendChild(dr);
+    initStoreDrawer(dr);
+
+    // Mobile bottom bar (hidden on checkout — a focused flow — and on product pages, which show a buy bar instead)
+    const tabs = document.createElement("nav");
+    tabs.className = "s-tabbar"; tabs.setAttribute("aria-label", "Quick navigation");
+    const cur = (on) => (on ? 'class="on" aria-current="page"' : "");
+    tabs.innerHTML = `
+      <a href="store-home.html" ${cur(page === "home")}>${ic("home")}<span>Home</span></a>
+      <button type="button" data-sdrawer aria-controls="s-drawer" aria-expanded="false">${ic("grid")}<span>Categories</span></button>
+      <a href="store-listing.html?deals=1" class="hide-dealer ${page === "listing" && TX.param("deals") ? "on" : ""}">${ic("flame")}<span>Deals</span></a>
+      <a href="store-dealer.html" class="only-dealer ${page === "dealer" ? "on" : ""}">${ic("briefcase")}<span>Dealer</span></a>
+      <a href="store-account.html" id="s-tab-account" ${cur(page === "account" || page === "login")}>${ic("user")}<span>Account</span></a>
+      <a href="store-cart.html" class="s-tab-cart" ${cur(page === "cart")}>${ic("cart")}<span class="count" data-cart-count>0</span><span>Cart</span></a>`;
+    document.body.appendChild(tabs);
+
     updateAccountLabel(); updateCartCount(); updateCompareTray();
+  }
+
+  function initStoreDrawer(dr) {
+    const panel = $(".sd-panel", dr);
+    let lastFocus = null, closeTimer = null;
+    const setExpanded = (v) => $$("[data-sdrawer]").forEach((b) => b.setAttribute("aria-expanded", v));
+    const focusables = () => $$('a[href], button:not([disabled]), summary, input, [tabindex]:not([tabindex="-1"])', panel).filter((el) => el.offsetParent !== null);
+    const open = () => {
+      clearTimeout(closeTimer);
+      lastFocus = document.activeElement;
+      const pin = $("#sd-pin-to"), md = $("#s-mdeliver-to");
+      if (pin && md) pin.innerHTML = md.innerHTML;
+      dr.hidden = false;
+      requestAnimationFrame(() => dr.classList.add("open"));
+      document.documentElement.classList.add("s-lock");
+      setExpanded("true");
+      $(".sd-close", dr).focus();
+    };
+    const close = (restore = true) => {
+      if (dr.hidden) return;
+      dr.classList.remove("open");
+      document.documentElement.classList.remove("s-lock");
+      setExpanded("false");
+      closeTimer = setTimeout(() => { dr.hidden = true; }, 220);
+      if (restore && lastFocus && document.contains(lastFocus)) lastFocus.focus();
+    };
+    TX.openMenu = open; TX.closeMenu = close;
+    document.addEventListener("click", (e) => {
+      if (e.target.closest("[data-sdrawer]")) { e.preventDefault(); dr.hidden ? open() : close(); return; }
+      if (!dr.contains(e.target)) return;
+      if (e.target.closest("[data-sdrawer-close]")) close();
+      else if (e.target.closest("[data-open]")) close(false);   // e.g. delivery PIN modal opens on top
+    });
+    dr.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") { e.stopPropagation(); close(); return; }
+      if (e.key !== "Tab") return;
+      const f = focusables(); if (!f.length) return;
+      const first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    });
+    // Rotating a tablet to a desktop-width layout closes the drawer
+    const mq = window.matchMedia("(min-width: 981px)");
+    const onMq = () => { if (mq.matches) close(false); };
+    mq.addEventListener ? mq.addEventListener("change", onMq) : mq.addListener(onMq);
   }
 
   function initChat(fab) {
@@ -712,10 +840,41 @@
     const set = tab.closest("[data-tabset]") || document;
     const bar = tab.closest(".tabs");
     $$(".tab", bar).forEach((t) => t.classList.toggle("active", t === tab));
+    // Swipeable tab rows (narrow screens): bring the active tab into view horizontally
+    if (bar && bar.scrollWidth > bar.clientWidth + 1) bar.scrollLeft = Math.max(0, tab.offsetLeft - bar.offsetLeft - (bar.clientWidth - tab.offsetWidth) / 2);
     $$("[data-panel]", set).filter((p) => (p.closest("[data-tabset]") || document) === set)
       .forEach((p) => p.classList.toggle("active", p.dataset.panel === tab.dataset.tab));
   }
   TX.activateTab = (id) => { const t = $(`.tab[data-tab="${id}"]`); if (t) activateTab(t); };
+
+  // Off-canvas panels on small screens (listing filters, account menu…). [data-sheet-open="<id>"] opens #id,
+  // [data-sheet-close] inside it closes. The page's CSS decides how an open `.sheet-open` panel looks.
+  let sheet = null;
+  TX.openSheet = (id, opener) => {
+    const el = document.getElementById(id); if (!el) return;
+    if (sheet) TX.closeSheet(false);
+    let bd = $(".sheet-backdrop");
+    if (!bd) { bd = document.createElement("div"); bd.className = "sheet-backdrop"; document.body.appendChild(bd); bd.addEventListener("click", () => TX.closeSheet()); }
+    sheet = { el, opener: opener || document.activeElement };
+    el.classList.add("sheet-open"); bd.classList.add("show");
+    el.setAttribute("role", "dialog"); el.setAttribute("aria-modal", "true");
+    document.documentElement.classList.add("s-lock");
+    $$(`[data-sheet-open="${id}"]`).forEach((b) => b.setAttribute("aria-expanded", "true"));
+    // focus once the slide-in has made the panel visible
+    setTimeout(() => { const f = $("[data-sheet-close]", el); if (f) f.focus(); else { el.tabIndex = -1; el.focus(); } }, 60);
+  };
+  TX.closeSheet = (restore = true) => {
+    if (!sheet) return;
+    const { el, opener } = sheet; sheet = null;
+    el.classList.remove("sheet-open"); const bd = $(".sheet-backdrop"); if (bd) bd.classList.remove("show");
+    el.removeAttribute("role"); el.removeAttribute("aria-modal");
+    document.documentElement.classList.remove("s-lock");
+    $$(`[data-sheet-open="${el.id}"]`).forEach((b) => b.setAttribute("aria-expanded", "false"));
+    if (restore && opener && document.contains(opener)) opener.focus();
+  };
+  const sheetMq = window.matchMedia("(min-width: 981px)");
+  const onSheetMq = () => { if (sheetMq.matches) TX.closeSheet(false); };
+  sheetMq.addEventListener ? sheetMq.addEventListener("change", onSheetMq) : sheetMq.addListener(onSheetMq);
   TX.open = (id) => { const m = document.getElementById(id); if (m) m.classList.add("open"); };
   TX.close = (el) => { const m = el.closest(".modal,.drawer"); if (m) m.classList.remove("open"); };
 
@@ -756,8 +915,14 @@
       if ((el = t.closest("[data-chat-open]")) && !el.closest(".helpfab")) { e.preventDefault(); const f = $(".helpfab"); if (f) f.classList.add("open"); }
       if ((el = t.closest("[data-toast]"))) { TX.toast(el.dataset.toast, el.dataset.toastIcon || "check-circle"); }
       if ((el = t.closest("[data-wa]"))) { e.preventDefault(); TX.toast("Opens WhatsApp chat with product/order reference", "whatsapp"); }
-      if ((el = t.closest("[data-mega]"))) { e.preventDefault(); el.closest(".s-catbar").classList.toggle("mega-open"); }
-      else if (!t.closest(".s-mega")) { $$(".s-catbar.mega-open").forEach((c) => c.classList.remove("mega-open")); }
+      if ((el = t.closest("[data-sheet-open]"))) { e.preventDefault(); TX.openSheet(el.dataset.sheetOpen, el); }
+      else if (t.closest("[data-sheet-close]") && sheet) { TX.closeSheet(); }
+      if ((el = t.closest("[data-mega]"))) {
+        e.preventDefault();
+        if (window.matchMedia("(max-width: 980px)").matches && TX.openMenu) TX.openMenu();   // touch layouts use the menu drawer
+        else { const open = el.closest(".s-catbar").classList.toggle("mega-open"); el.setAttribute("aria-expanded", open); }
+      }
+      else if (!t.closest(".s-mega")) closeMega();
       if ((el = t.closest("[data-compare-clear]"))) { store.set("compare", []); $$("[data-compare]").forEach((c) => (c.checked = false)); updateCompareTray(); }
       if ((el = t.closest("tr[data-href]")) && !t.closest("a,button,input,label")) { location.href = el.dataset.href; }
       if ((el = t.closest("tr[data-drawer]")) && !t.closest("a,button,input,label")) { TX.open(el.dataset.drawer); }
@@ -774,7 +939,19 @@
         c = t.checked ? [...new Set([...c, id])] : c.filter((x) => x !== id); store.set("compare", c); updateCompareTray();
       }
     });
-    document.addEventListener("keydown", (e) => { if (e.key === "Escape") { $$(".modal.open,.drawer.open").forEach((m) => m.classList.remove("open")); $$(".dd.open").forEach((d) => d.classList.remove("open")); } });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") { $$(".modal.open,.drawer.open").forEach((m) => m.classList.remove("open")); $$(".dd.open").forEach((d) => d.classList.remove("open")); closeMega(); TX.closeSheet(); }
+      if (e.key === "Tab" && sheet) {   // keep keyboard focus inside an open off-canvas panel
+        const f = $$('a[href], button:not([disabled]), input:not([disabled]), select, textarea, summary, [tabindex]:not([tabindex="-1"])', sheet.el).filter((x) => x.offsetParent !== null);
+        if (!f.length) return;
+        if (!sheet.el.contains(document.activeElement)) { e.preventDefault(); f[0].focus(); return; }
+        if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
+        else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
+      }
+    });
+  }
+  function closeMega() {
+    $$(".s-catbar.mega-open").forEach((c) => { c.classList.remove("mega-open"); const b = $("[data-mega]", c); if (b) b.setAttribute("aria-expanded", "false"); });
   }
   function syncBulk(table) {
     const wrap = table.closest(".card") || document; const bar = $(".bulkbar", wrap); if (!bar) return;
@@ -910,7 +1087,16 @@
     $$("[data-ph]", root).forEach((el) => { el.outerHTML = TX.ph(el.dataset.ph, el.className || "", el.dataset.alt || ""); });
     TX.renderGrids(root);
     TX.renderPrices(root);
+    labelTables(root);
   };
+  // Tables marked .m-stack become labelled cards on phones: each cell gets its column header as data-label
+  function labelTables(root = document) {
+    $$("table.m-stack", root.nodeType === 1 && root.matches("table.m-stack") ? root.parentElement : root).forEach((t) => {
+      const heads = $$("thead th", t).map((th) => th.textContent.replace(/\s+/g, " ").trim());
+      $$("tbody tr, tfoot tr", t).forEach((tr) => { let i = 0; [...tr.cells].forEach((c) => { if (!c.hasAttribute("data-label")) c.setAttribute("data-label", heads[i] || ""); i += c.colSpan || 1; }); });
+    });
+  }
+  TX.labelTables = labelTables;
   const queue = []; let ready = false;
   TX.ready = (fn) => (ready ? fn() : queue.push(fn));
 
@@ -926,6 +1112,10 @@
     bindEvents();
     TX.setView(TX.view);
     ready = true; queue.forEach((f) => f());
+    if (app === "store" && window.MutationObserver) {
+      let pending = false;
+      new MutationObserver(() => { if (pending) return; pending = true; requestAnimationFrame(() => { pending = false; labelTables(document); }); }).observe(document.body, { childList: true, subtree: true });
+    }
     // Deep-link to a tab/modal via #hash — after page scripts have rendered their content
     const applyHash = () => {
       const h = location.hash.slice(1); if (!h) return;

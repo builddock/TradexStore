@@ -75,6 +75,52 @@
     .pin-ok { font-size: 12px; margin-top: 4px; display: flex; gap: 6px; align-items: center; }
     .pin-ok .ic { width: 14px; height: 14px; }
     .emi-t td, .emi-t th { padding: 8px 10px !important; }
+    .rev-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-bottom: 1px solid var(--line-2); }
+    .rev-item .ri-main { flex: 1; min-width: 0; }
+    .rev-item .ri-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; margin-top: 4px; }
+    .rev-item .ri-tot { min-width: 90px; text-align: right; }
+    #emi-body { overflow-x: auto; }
+    @media (max-width: 1100px) { .co-grid { grid-template-columns: minmax(0, 1fr) 340px; } }
+    @media (max-width: 980px) {
+      .co-top { flex-wrap: wrap; align-items: flex-start; }
+      .co-top > .row:last-child { flex-wrap: wrap; max-width: 100%; }
+      .co-top .seg { max-width: 100%; overflow-x: auto; scrollbar-width: none; }
+      .co-top .seg::-webkit-scrollbar { display: none; }
+      .co-grid { grid-template-columns: minmax(0, 1fr); }
+      .sum { position: static; }
+      /* Payment methods: a swipeable row of tabs above the selected method */
+      .pay { grid-template-columns: minmax(0, 1fr); }
+      .pay-tabs { flex-direction: row; overflow-x: auto; scrollbar-width: none; border-right: 0; border-bottom: 1px solid var(--line); }
+      .pay-tabs::-webkit-scrollbar { display: none; }
+      .pay-tabs button { flex: none; border-bottom: 0; border-right: 1px solid var(--line-2); padding: 12px 14px; }
+      .pay-tabs button.on { box-shadow: inset 0 -3px 0 var(--brand); }
+    }
+    @media (max-width: 760px) {
+      .co-top h1 { font-size: 22px; }
+      .timer { font-size: 12px; padding: 6px 12px; }
+      .co-stepper { padding: 12px 14px; }
+      .co-step .cs-head { padding: 14px 16px; gap: 12px; }
+      .co-step label.check { flex-wrap: wrap; row-gap: 2px; }
+      .co-step .cs-head > .grow { min-width: 0; }
+      .co-step .cs-body { padding: 0 16px 18px; }
+      .opts.g2, .opts.g3 { grid-template-columns: minmax(0, 1fr); }
+      [data-pp="nb"] .opts.g3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .opt { padding: 12px; }
+      .pay-panel { padding: 14px; }
+      .qr { width: 120px; height: 120px; }
+      .rev-grid { grid-template-columns: minmax(0, 1fr); }
+      #place { min-width: 0 !important; width: 100%; }
+      .co-step .row:has(> .btn-lg) { flex-wrap: wrap; }
+      .co-step .row > .btn-lg { width: 100%; }
+      .processing .box { width: auto; max-width: calc(100vw - 32px); padding: 24px 20px; }
+      .ship-box .it { max-width: 100%; }
+      /* Review items: photo · name/details, then quantity and line total underneath */
+      .rev-item { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; grid-template-areas: "th main main" "th qty tot"; gap: 6px 12px; align-items: start; }
+      .rev-item > .ph { grid-area: th; }
+      .rev-item .ri-main { grid-area: main; }
+      .rev-item .ri-qty { grid-area: qty; align-self: center; }
+      .rev-item .ri-tot { grid-area: tot; min-width: 0; }
+    }
   </style>
 </head>
 <body data-app="store" data-page="checkout">
@@ -114,7 +160,7 @@
               <div class="row-between"><b>Contact details</b><a class="small" href="store-login.html">Have an account? Sign in</a></div>
               <div class="form-grid"><div class="field"><label for="g-phone" class="req">Mobile number</label><div class="input-group"><span class="addon">+91</span><input class="input" id="g-phone" value="98450 12345"></div><span class="hint">We send an OTP to verify · used for delivery updates</span></div>
               <div class="field"><label for="g-email" class="req">Email</label><input class="input" id="g-email" value="priya.nair@example.com"><span class="hint">Order confirmation & secure order-access link</span></div></div>
-              <div class="row gap-8"><input class="input" style="width:140px" placeholder="Enter OTP" aria-label="OTP" value="4 8 2 1 9 0"><button class="btn btn-sm btn-ok" data-toast="Phone verified">Verify</button><span class="small text-ok row gap-6"><i data-icon="check-circle"></i> OTP sent to +91 98450 •••45</span></div>
+              <div class="row wrap gap-8"><input class="input" style="width:140px" placeholder="Enter OTP" aria-label="OTP" value="4 8 2 1 9 0"><button class="btn btn-sm btn-ok" data-toast="Phone verified">Verify</button><span class="small text-ok row gap-6"><i data-icon="check-circle"></i> OTP sent to +91 98450 •••45</span></div>
             </div></div>
             <div>
               <div class="row-between mb-8"><b>Deliver to</b><button class="link-btn small row gap-6" id="add-addr-btn"><i data-icon="plus"></i> Add a new address</button></div>
@@ -184,7 +230,7 @@
               </div>
               <div>
                 <div class="pay-panel on" data-pp="upi">
-                  <div class="grid" style="grid-template-columns:1fr 150px;gap:20px">
+                  <div class="grid stack-sm" style="grid-template-columns:1fr 150px;gap:20px">
                     <div class="col gap-12">
                       <div class="field"><label for="upi-id">UPI ID</label><div class="row gap-8"><input class="input" id="upi-id" value="priya@okhdfcbank"><button class="btn" id="upi-verify">Verify</button></div><div class="pin-ok text-ok" id="upi-msg"><i data-icon="check-circle"></i> Verified · PRIYA NAIR</div></div>
                       <div class="row wrap gap-8"><span class="app-chip"><span style="background:#4285f4">G</span>Google Pay</span><span class="app-chip"><span style="background:#5f259f">Pe</span>PhonePe</span><span class="app-chip"><span style="background:#00baf2">P</span>Paytm</span><span class="app-chip"><span style="background:#f47920">B</span>BHIM</span></div>
@@ -391,7 +437,7 @@ TX.ready(() => {
     const nm = { upi: "UPI · priya@okhdfcbank", card: "Card · HDFC Visa •••• 4821", nb: "Net banking · HDFC Bank", emi: "EMI · HDFC 6 months (no-cost)", cod: "Cash on delivery" }[pay];
     $("#sum-payment").textContent = nm;
     $("#pay-failed").innerHTML = state === "failed" ? `<div class="callout c-bad" data-anno="§10.3 Failed payment: clear reason, no double charge, retry"><i data-icon="x-circle"></i><div class="grow"><b>Payment failed — UPI request declined by your bank (code U30).</b><div class="small mt-4">No money was taken. If your bank shows a debit, it's reversed automatically within 5–7 working days — no need to pay again for the same attempt. Your items are still reserved (${fmtT(secs)} left).</div>
-      <div class="row gap-8 mt-8"><button class="btn btn-sm btn-primary" data-toast="Retrying payment with a new attempt · same order draft">Retry UPI</button><button class="btn btn-sm" data-pay-go="card">Pay by card instead</button><span class="tiny muted mono">attempt pay_OaK81 · failed 10:46</span></div></div></div>` : "";
+      <div class="row wrap gap-8 mt-8"><button class="btn btn-sm btn-primary" data-toast="Retrying payment with a new attempt · same order draft">Retry UPI</button><button class="btn btn-sm" data-pay-go="card">Pay by card instead</button><span class="tiny muted mono">attempt pay_OaK81 · failed 10:46</span></div></div></div>` : "";
     TX.hydrate($("#pay-failed"));
   }
 
@@ -408,7 +454,7 @@ TX.ready(() => {
       </div>
       <div class="rev-box" style="padding:0">
         <div class="row-between" style="padding:10px 14px;border-bottom:1px solid var(--line-2)"><b style="font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--tx-3)">Items · stock reserved under ${resId}</b><a class="small" href="store-cart.html">Edit cart</a></div>
-        ${T.L.map((l) => `<div class="row gap-12" style="padding:10px 14px;border-bottom:1px solid var(--line-2)">${TX.ph(l.p.img, "thumb")}<div class="grow"><div class="strong small">${esc(l.p.title)}</div><div class="tiny muted row gap-6 mt-4">${TX.condBadge(l.p.cond).replace('class="cond', 'style="height:17px;font-size:10px" class="cond')} ${/refurb|used/.test(l.p.cond) ? `Unit U-000${812 + TX.products.indexOf(l.p)} reserved ·` : ""} ${l.p.warranty} · ${l.p.stock === "supplier" ? "partner warehouse, est. 5 Oct" : "Central Warehouse"}</div></div><span class="small nowrap">${l.q} × ${fmt(l.unit)}</span><b style="min-width:90px;text-align:right">${fmt(l.unit * l.q)}</b></div>`).join("")}
+        ${T.L.map((l) => `<div class="rev-item">${TX.ph(l.p.img, "thumb")}<div class="ri-main"><div class="strong small">${esc(l.p.title)}</div><div class="ri-meta tiny muted">${TX.condBadge(l.p.cond).replace('class="cond', 'style="height:17px;font-size:10px" class="cond')}<span>${/refurb|used/.test(l.p.cond) ? `Unit U-000${812 + TX.products.indexOf(l.p)} reserved · ` : ""}${l.p.warranty} · ${l.p.stock === "supplier" ? "partner warehouse, est. 5 Oct" : "Central Warehouse"}</span></div></div><span class="ri-qty small nowrap">${l.q} × ${fmt(l.unit)}</span><b class="ri-tot">${fmt(l.unit * l.q)}</b></div>`).join("")}
       </div>
       <div class="panel col gap-8" data-anno="Policy versions recorded on the order">
         <label class="check" style="align-items:flex-start"><input type="checkbox" id="ack" style="margin-top:3px"> <span class="small">I agree to the <a href="store-help.html#terms">Terms of sale</a> and <a href="store-help.html#returns">Return policy</a>. I understand refurbished/used items are covered by a <b>Tradex seller warranty</b> (WP-TRX-06M v3.2 / WP-TRX-03M v3.2), not the manufacturer, and have a 10-day return window (RP-REFURB-10D v2.1); other items follow RP-STD-7D v2.1.</span></label>
@@ -450,9 +496,9 @@ TX.ready(() => {
             <div class="r sub"><span>Includes GST ${fmt(T.gst)}</span><span>CGST ${fmt(T.gst / 2)} + SGST ${fmt(T.gst / 2)}</span></div>`}
         </div>
         <div class="panel small col gap-6">
-          <span class="row gap-6">${ic("clock", "ic-sm")} Stock reserved under <b class="mono">${resId}</b> until ${state === "expired" ? "<b class='text-bad'>expired</b>" : "10:57"}</span>
-          <span class="row gap-6">${ic("refresh", "ic-sm")} Prices & stock revalidated at 10:42</span>
-          <span class="row gap-6">${ic("shield", "ic-sm")} Payment verified server-side before confirmation</span>
+          <span class="row gap-6">${ic("clock", "ic-sm")} <span>Stock reserved under <b class="mono">${resId}</b> until ${state === "expired" ? "<b class='text-bad'>expired</b>" : "10:57"}</span></span>
+          <span class="row gap-6">${ic("refresh", "ic-sm")} <span>Prices & stock revalidated at 10:42</span></span>
+          <span class="row gap-6">${ic("shield", "ic-sm")} <span>Payment verified server-side before confirmation</span></span>
         </div>
       </div></div>`;
   }

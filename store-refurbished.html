@@ -65,6 +65,44 @@
     .eco .ph { border-radius: 0; aspect-ratio: auto; height: 100%; }
     .eco > div:last-child { padding: 22px 24px; }
     #shop, #grades, #unit, #process { scroll-margin-top: 90px; }
+    @media (max-width: 1200px) { .steps6 { grid-template-columns: repeat(3, minmax(0, 1fr)); } .st6:nth-child(3n)::after { display: none; } }
+    @media (max-width: 980px) {
+      .hero.photo.rf-hero { grid-template-columns: minmax(0, 1fr); min-height: 0; }
+      .rf-hero .h-copy { padding: 32px; }
+      .rf-hero h1 { font-size: 30px; }
+      .unit { grid-template-columns: minmax(0, 1fr); }
+      .ugal { border-right: 0; border-bottom: 1px solid var(--line-2); }
+      .shop-bar:not(#cond-chips) { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+      .shop-bar:not(#cond-chips)::-webkit-scrollbar { display: none; }
+      .shop-bar .chip { flex: none; }
+    }
+    @media (max-width: 760px) {
+      .rf-hero .h-copy { padding: 24px 20px; }
+      .rf-hero h1 { font-size: 25px; }
+      .rf-hero h1 br { display: none; }
+      .hero .row.mt-24 { flex-wrap: wrap; margin-top: 18px; }
+      .hero .btn-lg { height: 44px; padding: 0 16px; font-size: 14px; }
+      .hero-stats { flex-wrap: wrap; gap: 12px 22px; margin-top: 20px; }
+      .hero-stats b { font-size: 16px; }
+      .steps6 { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+      .st6 { padding: 14px 12px; }
+      .st6::after { display: none; }
+      .ugal { padding: 12px; }
+      .uinfo { padding: 18px 16px; }
+      .uinfo .row { flex-wrap: wrap; }
+      .uinfo .btn-lg { height: 44px; font-size: 14px; }
+      .checks { grid-template-columns: minmax(0, 1fr); }
+      .meterrow { grid-template-columns: 92px minmax(0, 1fr) 48px; }
+      .others .o { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
+      .others .o > .muted { flex-basis: 100%; order: 5; }
+      #cond-chips .ml-auto { margin-left: 0; flex-basis: 100%; }
+      .promise { grid-template-columns: minmax(0, 1fr); border-radius: var(--r-lg); }
+      .promise > div { padding: 20px; border-right: 0; border-bottom: 1px solid rgba(255,255,255,.12); }
+      .promise > div:last-child { border-bottom: 0; }
+      .eco { grid-template-columns: minmax(0, 1fr); }
+      .eco .ph { height: 180px; }
+      .eco > div:last-child { padding: 18px 16px; }
+    }
   </style>
 </head>
 <body data-app="store" data-page="refurbished">
@@ -237,7 +275,7 @@
     </section>
 
     <!-- FAQ + sustainability -->
-    <section class="section grid" style="grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 20px">
+    <section class="stack-md section grid" style="grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 20px">
       <div>
         <div class="section-head"><h2>Refurbished FAQ</h2><a class="strong" href="store-help.html#faq">More answers →</a></div>
         <details class="faq" open><summary>Is refurbished the same as used?</summary><p>No. “Used · Good” units are tested and sold as-is with described wear. Refurbished units (Grade A/B) are cleaned, repaired where needed, fully inspected, wiped and graded to a written standard.</p></details>

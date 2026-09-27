@@ -27,6 +27,40 @@
     .store-card .ph { width: 88px; aspect-ratio: 1; flex: none; }
     .reorder-row { display: grid; grid-template-columns: 56px 1fr auto auto; gap: 14px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line-2); }
     .reorder-row:last-child { border-bottom: 0; }
+    @media (max-width: 980px) {
+      .home-top { grid-template-columns: minmax(0, 1fr); }
+      .hero-side { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .comp-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .home-cam .promo { min-height: 220px !important; }
+      .band.whatsapp > div:first-child { max-width: none !important; }
+      .band.whatsapp .wa-steps { width: 100%; }
+    }
+    @media (max-width: 760px) {
+      .home-top { margin-top: 14px; gap: 12px; }
+      .hero-side { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+      .hero .row.mt-24 { flex-wrap: wrap; margin-top: 18px; }
+      .hero .btn-lg { height: 44px; padding: 0 16px; font-size: 14px; }
+      .hero-stats { flex-wrap: wrap; gap: 12px 20px; margin-top: 20px; padding-bottom: 12px; }
+      .hero-stats b { font-size: 16px; }
+      .comp-tiles { gap: 10px; }
+      .comp-tile { min-height: 132px; padding: 12px; }
+      .comp-tile b { font-size: 14.5px; }
+      .comp-tile span { font-size: 11.5px; }
+      .wa-steps { grid-template-columns: minmax(0, 1fr); }
+      .band.dealer .row.gap-20 { align-items: flex-start; gap: 14px; }
+      .band.dealer .row.gap-20 > .ti { display: none !important; }
+      .band .btn-lg { height: 44px; font-size: 14px; }
+      .reorder-row { grid-template-columns: 48px minmax(0, 1fr) auto; grid-template-areas: "th info info" "th price btn"; gap: 6px 12px; }
+      .reorder-row > :nth-child(1) { grid-area: th; width: 48px; height: 48px; }
+      .reorder-row > :nth-child(2) { grid-area: info; }
+      .reorder-row > :nth-child(3) { grid-area: price; }
+      .reorder-row > :nth-child(4) { grid-area: btn; align-self: end; }
+      .store-card { padding: 12px; }
+      .store-card .ph { width: 72px; }
+    }
+    @media (max-width: 420px) {
+      .trust-strip > div { flex-direction: column; align-items: flex-start; gap: 8px; }
+    }
   </style>
 </head>
 <body data-app="store" data-page="home">
@@ -83,7 +117,7 @@
 
     <!-- Dealer: quick reorder (only visible to approved dealers) -->
     <section class="section only-dealer" data-anno="1A · R03/R04 Dealer repeat orders with tier pricing">
-      <div class="grid" style="grid-template-columns: 1.5fr 1fr">
+      <div class="grid stack-md" style="grid-template-columns: 1.5fr 1fr">
         <div class="card card-pad">
           <div class="row-between mb-12"><div><h3>Reorder your usual items</h3><p class="muted small">Based on your last 90 days · prices shown are your Dealer Gold tier, excl. GST</p></div><a class="btn btn-sm" href="store-dealer.html#bulk">Quick order</a></div>
           <div class="reorder-row"><div data-ph="ssd-blue" class="thumb-lg"></div><div><b>Samsung T7 Portable SSD 1 TB</b><div class="small muted">Last ordered 12 Sep · 20 units</div></div><div data-price="ssd-01"></div><button class="btn btn-primary btn-sm" data-add="ssd-01" data-qty="10">Add 10</button></div>
@@ -117,7 +151,7 @@
     <!-- Refurbished -->
     <section class="section" data-anno="1A · R19 Refurbished trust: grade rubric + unit-level evidence">
       <div class="section-head"><div><h2>Certified refurbished</h2><p>Every unit is inspected, graded and photographed individually</p></div><a href="store-refurbished.html" class="strong">Explore refurbished →</a></div>
-      <div class="grid" style="grid-template-columns: 300px 1fr">
+      <div class="grid stack-md" style="grid-template-columns: 300px 1fr">
         <div class="grade-card">
           <div class="row gap-8"><i data-icon="award" class="ic-lg text-brand"></i><h3>What our grades mean</h3></div>
           <div class="grade-row"><span class="cond openbox">Open box</span><span class="small subtle">Unused. Packaging opened, accessories complete.</span></div>
@@ -156,7 +190,7 @@
     <!-- Cameras -->
     <section class="section">
       <div class="section-head"><div><h2>Cameras & lenses</h2><p>Mirrorless, DSLR and pre-owned glass with shutter-count disclosed</p></div><a href="store-listing.html?cat=cameras" class="strong">Shop imaging →</a></div>
-      <div class="grid" style="grid-template-columns: 1fr 2.2fr">
+      <div class="grid stack-md home-cam" style="grid-template-columns: 1fr 2.2fr">
         <a class="promo photo" href="store-listing.html?cat=cameras" style="min-height:100%"><div class="p-bg"><img src="assets/img/banner-camera.jpg" alt=""></div><div><span class="badge b-accent">Full-frame</span><h3 class="mt-8" style="color:#fff">Sony Alpha a7 III kit</h3><p>With 28-70 mm lens. No-cost EMI from ₹13,583/mo.</p></div><span class="btn btn-sm btn-accent" style="align-self:flex-start">View offer</span></a>
         <div class="pgrid cols-4" data-products="cam-05,cam-01,lens-01,lens-03"></div>
       </div>

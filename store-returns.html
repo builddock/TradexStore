@@ -92,6 +92,49 @@
     .rlabels { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; padding: 0 20px 14px; font-size: 11px; color: var(--tx-4); }
     .rlabels span.hl { color: var(--tx-1); font-weight: 650; }
     .rc-body { padding: 0 20px 16px; }
+    @media (max-width: 1100px) { .wiz { grid-template-columns: minmax(0, 1fr) 300px; } }
+    @media (max-width: 980px) {
+      .rt-head { flex-wrap: wrap; align-items: flex-start; }
+      .rt-head > .row { flex-wrap: wrap; }
+      .wiz { grid-template-columns: minmax(0, 1fr); }
+      .wiz-side { position: static; }
+      .qflow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .photos { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      /* Request timelines scroll sideways instead of squeezing 7 labels */
+      .rbar-wrap { overflow-x: auto; scrollbar-width: none; }
+    }
+    @media (max-width: 760px) {
+      .rt-head h1 { font-size: 22px; }
+      .only-guest .callout .row { flex-wrap: wrap; }
+      .only-guest .callout .input { flex: 1 1 120px; width: auto !important; }
+      .wiz-steps { padding: 12px 14px; }
+      .wiz-steps .stepper .step { font-size: 0; }
+      .wiz-steps .stepper .step.current { font-size: 12px; }
+      .wiz-steps .stepper .step::after { margin: 0 4px; }
+      .card-head > .row .input-icon { flex: 1 1 100%; }
+      .card-head > .row { flex: 1 1 100%; }
+      .ogroup .og-head { flex-wrap: wrap; }
+      .ritem { grid-template-columns: 22px 48px minmax(0, 1fr); gap: 10px; padding: 12px; }
+      .ritem .thumb-lg.ph, .ritem .soft-thumb { width: 48px; height: 48px; }
+      .ritem > :nth-child(n+4) { grid-column: 3; justify-self: start; }
+      .card-head > .row .input { width: 100% !important; }
+      .ri-why { display: block; position: relative; padding-left: 18px; }
+      .ri-why > .ic:first-child { position: absolute; left: 0; top: 2px; }
+      .req-card .rc-head > :nth-child(3) { justify-self: start; }
+      .tcards, .checklist, .mcards { grid-template-columns: minmax(0, 1fr); }
+      .photos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .step-foot { flex-wrap: wrap; padding: 12px 16px; }
+      .step-foot > .row { flex-wrap: wrap; }
+      .qflow { grid-template-columns: minmax(0, 1fr); }
+      .done-hero { flex-direction: column; align-items: flex-start; padding: 18px; }
+      .hsteps { grid-template-columns: repeat(7, minmax(72px, 1fr)); overflow-x: auto; scrollbar-width: none; padding-bottom: 4px; }
+      .hsteps::-webkit-scrollbar { display: none; }
+      .req-card .rc-head { grid-template-columns: 48px minmax(0, 1fr); padding: 14px 16px; }
+      .req-card .rc-head .thumb-lg.ph { width: 48px; height: 48px; }
+      .req-card .rc-head > :nth-child(3) { grid-column: 1 / -1; }
+      .rbar, .rlabels { min-width: 520px; }
+      .rbar, .rlabels, .rc-body { padding-left: 16px; padding-right: 16px; }
+    }
   </style>
 </head>
 <body data-app="store" data-page="returns">
@@ -131,7 +174,7 @@
               <!-- STEP 1 · Items -->
               <div class="card step-panel active" data-step="1">
                 <div class="card-head"><div><h3>Which item is it about?</h3><div class="sub">Items from your last 90 days. Each item shows whether it can be returned, replaced or claimed under warranty.</div></div>
-                  <div class="row gap-8"><div class="input-icon"><i data-icon="search"></i><input class="input input-sm" placeholder="Order no. or store invoice" aria-label="Find order" style="width:220px"></div></div></div>
+                  <div class="row gap-8"><div class="input-icon"><i data-icon="search"></i><input class="input input-sm" placeholder="Order no. or store invoice" aria-label="Find order" style="width:220px;max-width:100%"></div></div></div>
                 <div class="card-body" data-anno="1A · Eligibility checked per item: window, condition, category, existing RMA">
                   <div class="ogroup">
                     <div class="og-head"><span><b>TXO-10471</b> · delivered Mon, 21 Sep · to Home</span><span class="badge b-warn"><i data-icon="clock"></i> Return window closes 28 Sep · 1 day left</span></div>
@@ -338,7 +381,7 @@
             </div>
           </div>
 
-          <div class="grid mt-16" style="grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr)">
+          <div class="grid mt-16 stack-md" style="grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr)">
             <div class="card card-pad">
               <h3>Why we inspect before refunding or replacing</h3>
               <p class="small subtle mt-4">Returned items never go straight back on the shelf. This keeps your data safe and makes sure every unit we sell is what it says.</p>
@@ -506,7 +549,7 @@ TX.ready(() => {
       return `<div class="card req-card">
         <div class="rc-head">${TX.ph(p.img, "thumb-lg")}<div><div class="row gap-8"><b class="mono">${r.id}</b>${r.fresh ? `<span class="badge b-brand">New</span>` : ""}<span class="status ${r.status[1]}">${r.status[0]}</span></div><div class="strong mt-4">${TX.esc(p.title)}</div><div class="small muted">${r.type} · ${r.ord} · ${r.date}</div></div>
         <a class="btn btn-sm btn-ghost" href="store-help.html#returns">Help</a></div>
-        <div class="rbar">${bars}</div><div class="rlabels">${labels}</div>
+        <div class="rbar-wrap"><div class="rbar">${bars}</div><div class="rlabels">${labels}</div></div>
         <div class="rc-body">${r.body}</div></div>`; }).join("") || `<div class="card empty"><i data-icon="inbox"></i><h4>No requests here</h4><p>Nothing matches this filter.</p></div>`;
     TX.hydrate($("#req-list"));
     const u = $("#up2"); if (u) u.addEventListener("change", () => TX.toast("Photo uploaded · RMA-0092 moved to review"));
