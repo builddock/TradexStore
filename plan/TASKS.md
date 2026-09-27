@@ -4117,6 +4117,27 @@ needed to implement it. **This file is the source of truth for task status.** `S
   5. TASKS.md and STATE.md updated per the continuation protocol.
 - **Evidence:** —
 
+#### T-1A.9-M09-12 · Storefront responsive layouts for tablets and phones per 04a §2.5: menu drawer, bottom tab bar, compact header, off-canvas filter and account panels, sticky buy/checkout bars, bottom-sheet modals, per-page layouts (CONDITIONAL; D-223)
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1A.9 / M09
+- **Depends on:** T-1A.3-M09-04, T-1A.9-M09-05, T-1A.9-M09-06, T-1A.9-M09-07, T-1A.9-M09-08
+- **Decisions:** D-223, D-206
+- **References:** 04a rule 7, §2.5; MK assets/tradex.css "Responsive", assets/tradex.js buildStoreShell/initStoreDrawer/TX.openSheet, store-*.html page styles; BP §5.1, §23.1 T29
+- **Description:** Only if D-223 moves storefront mobile web into Phase 1 (otherwise `NOT_APPLICABLE`, D-213): implement the tablet (761–980 px) and phone (≤ 760 px) behaviour of 04a §2.5 on every P-S page and the store shell — menu drawer with category accordions, bottom tab bar with safe-area padding and fixed-UI offsets, compact header rows, swipeable category pills, off-canvas panels for listing filters and the account menu, sticky product buy bar and cart checkout bar, bottom-sheet modals, per-page layouts and tables that scroll inside their card. Desktop layouts stay as specified. Devices and browsers for acceptance come from D-206.
+- **Files/components:** `frontend/storefront/` page modules and shell; responsive variants in `frontend/design-system/` (finer structure per D-003)
+- **Database impact:** None
+- **API impact:** None
+- **Frontend impact:** P-S01…P-S15 and the store shell at tablet/phone widths
+- **Backend impact:** None
+- **Testing requirements:** Responsive checks on the D-206 device matrix: no horizontal page overflow, no squeezed or clipped text, every state (tabs, steps, modals, panels, buyer contexts) usable; keyboard/focus behaviour of the drawer and panels (focus trap, Esc, focus return); T29-equivalent journeys on phones if D-223 includes them
+- **Acceptance criteria:**
+   1. Every P-S page meets 04a §2.5 at tablet and phone widths with no horizontal page overflow.
+   2. Menu drawer and off-canvas panels pass the keyboard and screen-reader checks (dialog, focus trap, Esc, focus return, `aria-expanded`).
+   3. Desktop layouts are unchanged (visual regression against the desktop baseline).
+   4. The D-223 journeys pass on the agreed devices.
+   5. TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
 #### T-1A.9-M10-09 · Stage 1A.9 verification: T04, T06 (order part), T10, T22, T33 (order snapshot), T36 end to end, T01, T02, T03; storefront and order suites; TS-E2E-02, TS-E2E-08, TS-E2E-10
 - **Status:** NOT_STARTED
 - **Stage / Module:** 1A.9 / M10
@@ -5978,6 +5999,27 @@ needed to implement it. **This file is the source of truth for task status.** `S
    5. TASKS.md and STATE.md updated per the continuation protocol.
 - **Evidence:** —
 
+#### T-1A.16-M24-07 · Responsive ERP workspace for tablets and phones per 04b §2.24: slide-in menu, compact top bar with search row, stacked list/detail and side panels, tables scrolling inside cards, bottom-sheet modals, full-width drawers, per-screen layouts of P-E01…P-E16 (CONDITIONAL; D-226)
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1A.16 / M24
+- **Depends on:** T-1A.3-M24-01, T-1A.3-M24-02, T-1A.16-M24-03
+- **Decisions:** D-226, D-206
+- **References:** 04b rule 15, §2.24; MK assets/tradex.css "Workspace responsive", assets/tradex.js buildWorkspaceShell / TX.openSheet / wrapTables, erp-*.html page styles
+- **Description:** Only if D-226 includes tablet and/or phone support (otherwise `NOT_APPLICABLE`, D-213): implement 04b §2.24 for the workspace shell and every custom P-E screen — ≤ 980 px the sidebar becomes a slide-in menu (dialog, focus trap, Esc, focus return) opened from a ☰ button; the top bar keeps search, location scope, New, notifications, help and account (icon-only on phones, search as a full-width row); page layouts per §2.24 (stacked panes, tables in scroll containers with column minimums and scroll shadows, pipelines and step bars scrolling sideways, bottom-sheet modals, full-width drawers, "How it works" strips 3 per row / swipeable). If D-226 chooses tablet only, implement the tablet rows only. Desktop and laptop layouts (≥ 981 px) are unchanged. Devices and browsers for acceptance come from D-206.
+- **Files/components:** `frontend/workspace/shell/`, P-E screen modules; responsive variants in `frontend/design-system/` (finer structure per D-101)
+- **Database impact:** None
+- **API impact:** None
+- **Frontend impact:** Workspace shell and P-E01…P-E16 at tablet/phone widths
+- **Backend impact:** None
+- **Testing requirements:** Responsive checks on the D-206 device matrix for every screen state (tabs, sub-tabs, saved views, modals, drawers, menu panel, search row): no horizontal page overflow, no squeezed/clipped/spilling content; keyboard/focus checks of the menu panel; desktop visual regression (≥ 981 px unchanged); scanning flows (P-E03, P-E08, P-E09) on the tablet/scanner devices of D-110 if tablets are in scope
+- **Acceptance criteria:**
+   1. Every P-E screen and state meets 04b §2.24 at the widths D-226 includes, with no horizontal page overflow.
+   2. The menu panel passes the keyboard and screen-reader checks (dialog, focus trap, Esc, focus return).
+   3. Desktop and laptop layouts are unchanged.
+   4. No feature, column or action is hidden at small widths (tables scroll instead).
+   5. TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
 #### T-1A.16-M26-01 · Alert catalogue: conditions, page vs daily review, named owners; alert routing drills (API-M24-14)
 - **Status:** REQUIRES_DECISION
 - **Stage / Module:** 1A.16 / M26
@@ -6756,6 +6798,27 @@ needed to implement it. **This file is the source of truth for task status.** `S
    2. No help text exposes Tradex-internal or other vendors' information; configured values come from configuration.
    3. The texts are approved per D-225 and the approval is recorded in Evidence.
    4. TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1B.1-M14-17 · Responsive vendor portal for tablets and phones per 04b §2.24 and 04c X16: vendor shell menu panel and compact top bar, P-V01…P-V05 layouts (CONDITIONAL; D-226)
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1B.1 / M14
+- **Depends on:** T-1B.1-M14-02, T-1A.16-M24-07
+- **Decisions:** D-226, D-206
+- **References:** 04c X16, X17; 04b §2.24; MK vendor-*.html page styles
+- **Description:** Only if D-226 includes tablet and/or phone support for vendor users (otherwise `NOT_APPLICABLE`, D-213): apply 04b §2.24 to the vendor shell and P-V01…P-V05 — slide-in menu, compact top bar, stacked panels and forms, tables scrolling inside cards, bottom-sheet modals, full-width drawers, the per-screen layouts listed in 04b §2.24 for vendor pages. Desktop layouts unchanged; vendor data isolation (X17) unaffected.
+- **Files/components:** `frontend/vendor-portal/` shell and page modules (finer structure per D-101)
+- **Database impact:** None
+- **API impact:** None
+- **Frontend impact:** Vendor shell and P-V01…P-V05 at tablet/phone widths
+- **Backend impact:** None
+- **Testing requirements:** As T-1A.16-M24-07 for P-V screens (device matrix D-206, every state, desktop regression)
+- **Acceptance criteria:**
+   1. Every P-V screen and state meets 04b §2.24 at the widths D-226 includes, with no horizontal page overflow.
+   2. The menu panel passes the keyboard and screen-reader checks.
+   3. Desktop layouts are unchanged.
+   4. No feature or information is removed at small widths.
+   5. TASKS.md and STATE.md updated per the continuation protocol.
 - **Evidence:** —
 
 #### T-1B.1-M14-15 · Stage 1B.1 verification: T11, T12, T13 with two vendors; TS-VEN-01/02/05/06/08/09/10; TS-PROOF-06, TS-PROOF-09; TS-E2E-03

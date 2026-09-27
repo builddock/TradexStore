@@ -60,7 +60,12 @@
     .scanbox .input { min-width: 0; }
     /* Narrow screens: the PO form and its approval rail stack; wide match grids scroll inside their card */
     @media (max-width: 1100px) { .po-grid { grid-template-columns: minmax(0, 1fr); } .rail { position: static; } }
-    @media (max-width: 760px) { .match-grid, .dup { overflow-x: auto; } }
+    @media (max-width: 760px) {
+      .match-grid, .dup { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      /* Match and duplicate grids keep readable columns and scroll sideways inside their card (like tables) */
+      .match-grid { grid-template-columns: minmax(170px, 1.4fr) minmax(120px, 1fr) minmax(70px, .7fr) minmax(130px, 1fr) minmax(130px, 1fr) 116px; }
+      .dup { grid-template-columns: 110px minmax(160px, 1fr) minmax(180px, 1fr) 72px; }
+    }
   </style>
 </head>
 <body data-app="erp" data-page="purchasing">

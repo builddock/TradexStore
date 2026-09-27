@@ -803,8 +803,8 @@
     const shell = document.createElement("div");
     shell.className = "ws";
     shell.innerHTML = `
-      <aside class="ws-side">
-        <div class="ws-brand">${TX.logoMark()}<div><span class="logo-word">trade<b>x</b></span><div class="logo-sub">${isV ? "Vendor portal" : "ERP workspace"}</div></div></div>
+      <aside class="ws-side" id="ws-side" aria-label="${isV ? "Vendor portal menu" : "ERP menu"}">
+        <div class="ws-brand">${TX.logoMark()}<div><span class="logo-word">trade<b>x</b></span><div class="logo-sub">${isV ? "Vendor portal" : "ERP workspace"}</div></div><button type="button" class="ws-side-x" data-sheet-close aria-label="Close menu">${ic("x")}</button></div>
         <div class="ws-org" data-help="ws.org">${isV ? `<div class="avatar sm sq" style="background:#0e9f8a">RT</div><div class="grow"><b>RenewTech Refurbishers</b><small>Vendor V-022 · Approved supplier</small></div>` : `<div class="avatar sm sq" style="background:#2e5bff">TX</div><div class="grow"><b>Tradex Electronics Pvt Ltd</b><small>All locations · FY 2026-27</small></div>`}${ic("chevron-down", "ic-sm")}</div>
         <nav class="ws-nav">${navHTML}</nav>
         ${isV ? "" : `<div style="margin:0 12px 12px;padding:12px;border-radius:10px;background:#121b2f;border:1px solid #1f2a44;font-size:12px;color:#aab4c8">
@@ -815,11 +815,13 @@
       </aside>
       <div class="ws-body">
         <div class="ws-top">
-          <div class="ws-search">${ic("search")}<input class="input" placeholder="${isV ? "Search your products, POs, submissions…" : "Search orders, SKUs, serials, customers, POs…"}"><span class="kbd">Ctrl K</span></div>
-          ${isV ? "" : `<div class="dd"><button class="btn btn-sm" data-dd-toggle>${ic("pin", "ic-sm")} All locations ${ic("chevron-down", "ic-sm")}</button>
+          <button type="button" class="top-btn ws-burger" data-sheet-open="ws-side" aria-controls="ws-side" aria-expanded="false" aria-label="Open menu">${ic("menu")}</button>
+          <button type="button" class="top-btn ws-search-btn" data-search-toggle aria-controls="ws-search" aria-expanded="false" aria-label="Search">${ic("search")}</button>
+          <div class="ws-search" id="ws-search">${ic("search")}<input class="input" placeholder="${isV ? "Search your products, POs, submissions…" : "Search orders, SKUs, serials, customers, POs…"}"><span class="kbd">Ctrl K</span></div>
+          ${isV ? "" : `<div class="dd"><button class="btn btn-sm ws-scope" data-dd-toggle aria-label="Location scope: All locations">${ic("pin", "ic-sm")} <span class="lbl">All locations</span> ${ic("chevron-down", "ic-sm")}</button>
             <div class="dd-menu left"><div class="dd-label" data-help="ws.scope">Scope</div><a href="#">${ic("globe", "ic-sm")} All locations</a>${TX.locations.map((l) => `<a href="#">${ic(l.type === "Warehouse" ? "warehouse" : "store", "ic-sm")} ${l.name} <span class="muted small ml-auto">${l.code}</span></a>`).join("")}</div></div>`}
           <div class="ml-auto row gap-8">
-            ${isV ? `<a class="btn btn-sm" href="vendor-products.html#new" style="--b-bg:#0e9f8a;--b-fg:#fff;--b-bd:#0e9f8a">${ic("plus", "ic-sm")} Submit product</a>` : `<div class="dd"><button class="btn btn-primary btn-sm" data-dd-toggle>${ic("plus", "ic-sm")} New ${ic("chevron-down", "ic-sm")}</button>
+            ${isV ? `<a class="btn btn-sm" href="vendor-products.html#new" style="--b-bg:#0e9f8a;--b-fg:#fff;--b-bd:#0e9f8a" aria-label="Submit product">${ic("plus", "ic-sm")} <span class="lbl">Submit product</span></a>` : `<div class="dd"><button class="btn btn-primary btn-sm" data-dd-toggle aria-label="Create new">${ic("plus", "ic-sm")} <span class="lbl">New</span> ${ic("chevron-down", "ic-sm")}</button>
               <div class="dd-menu"><div class="dd-label" data-help="ws.new">Create new</div><a href="erp-orders.html#assisted">${ic("receipt", "ic-sm")} Assisted order</a><a href="erp-purchasing.html#new-po">${ic("clipboard", "ic-sm")} Purchase order</a><a href="erp-purchasing.html#receive">${ic("scan", "ic-sm")} Goods receipt (GRN)</a><a href="erp-inventory.html#transfers">${ic("transfer", "ic-sm")} Stock transfer</a><a href="erp-catalog.html#editor">${ic("tag", "ic-sm")} Product draft</a><a href="erp-catalog.html#import">${ic("upload", "ic-sm")} Bulk import</a></div></div>`}
             <div class="dd"><button class="top-btn" data-dd-toggle aria-label="Notifications">${ic("bell")}<span class="pip"></span></button>
               <div class="dd-menu" style="width:360px"><div class="row-between" style="padding:6px 10px"><b data-help="ws.notifications">Notifications</b><a href="#" class="small">Mark all read</a></div><hr>
@@ -827,7 +829,7 @@
                 : `<a href="erp-finance.html">${ic("alert-octagon", "ic-sm")} Payment captured, order not confirmed · TXO-10477</a><a href="erp-inventory.html#counts">${ic("alert", "ic-sm")} Cycle-count variance −2 units · WH-BLR bin A-14</a><a href="erp-vendors.html">${ic("building", "ic-sm")} 3 vendor submissions waiting review</a><a href="erp-automation.html">${ic("zap", "ic-sm")} Courier sync failed 3× · auto-retry paused</a>`}
               </div></div>
             <button type="button" class="top-btn" data-help-home aria-label="Help for this page" data-tip="Help for this page">${ic("help")}</button>
-            <div class="dd"><div class="ws-user" data-dd-toggle><div class="avatar" style="background:${who.color}">${who.init}</div><div><b>${who.name}</b><small>${who.role}</small></div>${ic("chevron-down", "ic-sm")}</div>
+            <div class="dd ws-user-dd"><div class="ws-user" data-dd-toggle><div class="avatar" style="background:${who.color}">${who.init}</div><div><b>${who.name}</b><small>${who.role}</small></div>${ic("chevron-down", "ic-sm")}</div>
               <div class="dd-menu"><div class="dd-label" data-help="ws.user">Your account</div><a href="#">${ic("user", "ic-sm")} My profile</a><a href="#">${ic("key", "ic-sm")} Security & MFA</a>${isV ? "" : `<a href="erp-admin.html#delegation">${ic("users", "ic-sm")} Delegation while away</a>`}<hr><a href="store-home.html">${ic("logout", "ic-sm")} Sign out</a></div></div>
           </div>
         </div>
@@ -927,6 +929,8 @@
       }
       else if (!t.closest(".s-mega")) closeMega();
       if ((el = t.closest("[data-go-tab]"))) { e.preventDefault(); TX.goTab(el.dataset.goTab); }
+      if ((el = t.closest("[data-search-toggle]"))) { toggleSearch(el.closest(".ws-top")); }
+      else if (!t.closest(".ws-search")) $$(".ws-top.search-open").forEach((b) => toggleSearch(b, false));
       if ((el = t.closest("[data-flow-toggle]"))) {
         const f = el.closest(".flow"), hide = !f.classList.contains("collapsed");
         f.classList.toggle("collapsed", hide); el.setAttribute("aria-expanded", String(!hide)); store.set("flow-" + f.dataset.flow, hide);
@@ -948,6 +952,7 @@
       }
     });
     document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && $(".ws-top.search-open")) { const b = $(".ws-top.search-open"); toggleSearch(b, false); $("[data-search-toggle]", b).focus(); return; }
       if (e.key === "Escape") { $$(".modal.open,.drawer.open").forEach((m) => m.classList.remove("open")); $$(".dd.open").forEach((d) => d.classList.remove("open")); closeMega(); TX.closeSheet(); }
       if (e.key === "Tab" && sheet) {   // keep keyboard focus inside an open off-canvas panel
         const f = $$('a[href], button:not([disabled]), input:not([disabled]), select, textarea, summary, [tabindex]:not([tabindex="-1"])', sheet.el).filter((x) => x.offsetParent !== null);
@@ -957,6 +962,14 @@
         else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
       }
     });
+  }
+  // Phones: the workspace search box opens as a full-width row under the top bar
+  function toggleSearch(bar, open) {
+    if (!bar) return;
+    const on = open === undefined ? !bar.classList.contains("search-open") : open;
+    bar.classList.toggle("search-open", on);
+    const btn = $("[data-search-toggle]", bar); if (btn) btn.setAttribute("aria-expanded", String(on));
+    if (on) setTimeout(() => { const i = $(".ws-search input", bar); if (i) i.focus(); }, 30);
   }
   function closeMega() {
     $$(".s-catbar.mega-open").forEach((c) => { c.classList.remove("mega-open"); const b = $("[data-mega]", c); if (b) b.setAttribute("aria-expanded", "false"); });
@@ -1185,6 +1198,15 @@
   }
   function glHideTip() { if (glTip) glTip.style.display = "none"; }
 
+  // Data tables always sit in a sideways-scrolling wrapper so narrow screens scroll the table, not the page
+  // (tables holding drop-down menus are left alone — a scroll box would clip the menu)
+  function wrapTables(root) {
+    const list = root.matches && root.matches("table.table") ? [root] : $$("table.table", root);
+    list.forEach((t) => {
+      if (!t.parentElement || t.parentElement.closest(".table-wrap") || $(".dd", t)) return;
+      const w = document.createElement("div"); w.className = "table-wrap tw-auto"; t.before(w); w.appendChild(t);
+    });
+  }
   // Scanning: whole page when help content arrives, otherwise only the subtrees that changed
   let helpRoots = new Set(), helpRaf = 0;
   function helpQueue(root) { helpRoots.add(root); if (!helpRaf) helpRaf = requestAnimationFrame(helpFlush); }
@@ -1194,6 +1216,7 @@
     helpRoots = new Set();
     roots.forEach((r) => {
       if (r.nodeType === 1) {
+        wrapTables(r);
         if (r.matches("[data-help]")) hiAttach(r);
         $$("[data-help]", r).forEach(hiAttach);
         const bar = r.closest(".tabs"); if (bar) hiAttachBar(bar);
@@ -1294,9 +1317,19 @@
     const ro = new ResizeObserver(() => { if (host.clientWidth > 0) { ro.disconnect(); render(); } });
     ro.observe(host); return true;
   };
+  // Charts redraw when their host changes width (window resize, tablet rotation); same width → no redraw
+  const followWidth = (host, render) => {
+    host.__cw = host.clientWidth;
+    if (host.__ro || typeof ResizeObserver === "undefined") return;
+    let t = 0;
+    host.__ro = new ResizeObserver(() => { const w = host.clientWidth; if (!w || Math.abs(w - host.__cw) < 8) return; clearTimeout(t); t = setTimeout(() => host.__redraw(), 150); });
+    host.__ro.observe(host);
+    host.__redraw = render;
+  };
   /** Multi-series line chart. cfg: {labels:[], series:[{name,color,values}], format:fn, height} */
   TX.charts.line = (host, cfg) => {
     if (whenVisible(host, () => TX.charts.line(host, cfg))) return;
+    followWidth(host, () => TX.charts.line(host, cfg)); host.__redraw = () => TX.charts.line(host, cfg);
     host.innerHTML = ""; host.classList.add("chart-wrap");
     const fmt = cfg.format || ((v) => TX.num(v));
     const legend = document.createElement("div"); legend.className = "legend mb-12";
@@ -1347,6 +1380,7 @@
   /** Horizontal bars, one series. cfg: {items:[{label,value,sub}], color, format} */
   TX.charts.hbar = (host, cfg) => {
     if (whenVisible(host, () => TX.charts.hbar(host, cfg))) return;
+    followWidth(host, () => TX.charts.hbar(host, cfg)); host.__redraw = () => TX.charts.hbar(host, cfg);
     host.innerHTML = ""; host.classList.add("chart-wrap");
     const fmt = cfg.format || ((v) => TX.num(v));
     const box = document.createElement("div"); box.className = "chart"; host.appendChild(box);

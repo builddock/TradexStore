@@ -46,6 +46,45 @@
     .dec-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 9px; font-size: 13px; }
     .dec-list li { display: flex; gap: 9px; align-items: flex-start; }
     .dec-list li .ic { width: 15px; height: 15px; margin-top: 2px; color: var(--warn-tx); flex: none; }
+
+    /* ---- Responsive (desktop ≥ 981 px unchanged) ------------------------------------------------ */
+    @media (max-width: 980px) {
+      /* Identity card: the Tradex contacts move under the business details */
+      .idcard { grid-template-columns: auto minmax(0, 1fr); }
+      .idcard .contacts-tx { grid-column: 1 / -1; flex-wrap: wrap; gap: 10px 24px; padding-top: 14px; border-top: 1px solid var(--line-2); }
+      /* Card headers: the title block keeps its width; the header button drops underneath when short of room */
+      .ws-main .card-head { flex-wrap: wrap; row-gap: 8px; }
+      .ws-main .card-head > div:first-child { flex: 1 1 240px; min-width: 0; }
+      /* Users tab: role matrix and security settings full width, one under the other */
+      [data-panel="users"] .grid.g-2 { grid-template-columns: minmax(0, 1fr); }
+      /* Marketplace (sample statement | flow + decisions) and bank (current | change request) stack */
+      [data-panel="marketplace"] > .grid, [data-panel="bank"] > .grid { grid-template-columns: minmax(0, 1fr) !important; }
+      /* The "sample" watermark scales with the screen so it stays inside its card */
+      .sample::after { font-size: min(44px, 5vw); }
+      /* Scrolling tables: document / terms names and cells with a second line keep a readable width */
+      body[data-app="vendor"] .ws-main [data-panel="documents"] .table-wrap > .table td:first-child:not(:empty) { min-width: 260px; }
+      body[data-app="vendor"] .ws-main [data-panel="terms"] .table-wrap > .table td:first-child:not(:empty) { min-width: 220px; }
+      body[data-app="vendor"] .ws-main [data-panel="terms"] .table-wrap > .table td:nth-child(4):not(:empty) { min-width: 170px; }
+      body[data-app="vendor"] .ws-main .table-wrap > .table td:not(.check-col):not(.r):not(:empty):has(> .cell-sub) { min-width: 180px; }
+    }
+    @media (max-width: 760px) {
+      .idcard { gap: 12px 14px; align-items: start; padding: 16px; }
+      .idcard .v-logo { width: 44px; height: 44px; border-radius: 12px; font-size: 16px; }
+      /* Decision list: text flows as one paragraph beside its icon (glossary terms would otherwise split it into columns) */
+      .dec-list li { display: block; position: relative; padding-left: 24px; }
+      .dec-list li .ic { position: absolute; left: 0; top: 0; }
+      /* Bank details: 2 × 2 grid, each label directly above its value */
+      .acct { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px 16px; }
+      .acct dd { min-width: 0; overflow-wrap: anywhere; }
+      .acct dt:nth-of-type(1) { grid-area: 1 / 1; }
+      .acct dt:nth-of-type(2) { grid-area: 1 / 2; }
+      .acct dd:nth-of-type(1) { grid-area: 2 / 1; }
+      .acct dd:nth-of-type(2) { grid-area: 2 / 2; }
+      .acct dt:nth-of-type(3) { grid-area: 3 / 1; margin-top: 8px; }
+      .acct dt:nth-of-type(4) { grid-area: 3 / 2; margin-top: 8px; }
+      .acct dd:nth-of-type(3) { grid-area: 4 / 1; }
+      .acct dd:nth-of-type(4) { grid-area: 4 / 2; }
+    }
   </style>
 </head>
 <body data-app="vendor" data-page="account">

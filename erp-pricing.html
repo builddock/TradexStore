@@ -63,6 +63,8 @@
       .flow-groups { display: flex; flex-wrap: wrap; gap: 6px; }
       .prec { grid-template-columns: repeat(4, minmax(0, 1fr)); }
       .prec .fs:nth-child(4n)::after { display: none; }
+      /* Scrolling tables: descriptive text columns (eligibility, basis, reasons…) keep a readable line length */
+      body[data-app="erp"] .table-wrap > .table td.small:not(.nowrap):not(.r):not(:empty) { min-width: 180px; }
     }
     @media (max-width: 760px) {
       .flow-wrap { padding: 14px 16px 16px; }
@@ -74,8 +76,13 @@
       .final > div { padding: 12px 14px; min-width: 0; }
       .final .fv { font-size: 17px; overflow-wrap: anywhere; }
       .tier-cmp { grid-template-columns: minmax(0, 1fr); }
-      .diff { grid-template-columns: minmax(84px, .8fr) minmax(0, 1fr) minmax(0, 1fr); font-size: 12.5px; }
-      .diff > div { padding: 8px; min-width: 0; overflow-wrap: anywhere; }
+      /* Diff: the shared layout applies (field name on its own row, then live → proposed side by side) */
+      .diff > div { padding: 8px 10px; min-width: 0; overflow-wrap: anywhere; }
+      /* Tier editor product strip: title next to the photo, cost and floor figures on the line below */
+      #tier-ctx { flex-wrap: wrap; row-gap: 10px; }
+      #tier-ctx > .grow { flex: 1 1 calc(100% - 64px); }
+      #tier-ctx > .r { text-align: left; }
+      #tier-ctx > .grow + .r { margin-left: 60px; }
       [data-panel="approvals"] .card-head .row, [data-panel="controls"] .row { flex-wrap: wrap; }
       [data-panel="approvals"] .row-between > .seg { max-width: 100%; overflow-x: auto; scrollbar-width: none; }
       [data-panel="approvals"] .row-between > .seg > button { flex: none; }

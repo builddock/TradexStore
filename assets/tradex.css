@@ -1495,3 +1495,144 @@ button.flow-btn:focus-visible { outline: 2px solid var(--brand); outline-offset:
 :is(body[data-app="erp"], body[data-app="vendor"]) .ws-main .row-between:not(td *) > .row:has(> .btn) { flex-wrap: wrap; }
 :is(body[data-app="erp"], body[data-app="vendor"]) .ws-main .row-between:not(td *) > .badge { white-space: normal; height: auto; min-height: 22px; padding-top: 2px; padding-bottom: 2px; }
 :is(body[data-app="erp"], body[data-app="vendor"]) .ws-main .row:has(> .btn):not(td *) { flex-wrap: wrap; }
+
+/* -------------------------------------------------------------------------- */
+/* Workspace responsive — ERP workspace & vendor portal                        */
+/* Desktop and laptop (≥ 981 px) are unchanged; tablet 761–980 · phone ≤ 760.  */
+/* Menu becomes a slide-in panel ≤ 980; tables scroll inside their card;       */
+/* list + detail and side-panel layouts stack; nothing is hidden or removed.   */
+/* -------------------------------------------------------------------------- */
+.ws-top .ws-burger, .ws-top .ws-search-btn, .ws-side .ws-side-x { display: none; }
+.ws-side-x { margin-left: auto; width: 36px; height: 36px; place-items: center; border: 0; border-radius: var(--r-sm); background: #121b2f; color: #dfe5f1; flex: none; }
+.ws-side-x:hover, .ws-side-x:focus-visible { background: #1f2a44; color: #fff; }
+body[data-app="vendor"] .ws-side-x { background: #0b2f29; }
+/* Tables the workspace wrapped automatically behave exactly as before on desktop */
+.table-wrap.tw-auto { overflow: visible; }
+
+@media (max-width: 980px) {
+:is(body[data-app="erp"], body[data-app="vendor"]) .table-wrap.tw-auto { overflow-x: auto; }
+:is(body[data-app="erp"], body[data-app="vendor"]) .table-wrap {
+  -webkit-overflow-scrolling: touch;
+  background:
+    linear-gradient(to right, var(--surface) 30%, rgba(255, 255, 255, 0)) left center / 32px 100% no-repeat local,
+    linear-gradient(to left, var(--surface) 30%, rgba(255, 255, 255, 0)) right center / 32px 100% no-repeat local,
+    radial-gradient(farthest-side at 0 50%, rgba(16, 24, 40, .16), transparent) left center / 10px 100% no-repeat scroll,
+    radial-gradient(farthest-side at 100% 50%, rgba(16, 24, 40, .16), transparent) right center / 10px 100% no-repeat scroll;
+}
+}
+
+
+@media (max-width: 980px) {
+  /* Menu: slide-in panel opened from the top bar (TX.openSheet: dialog, focus trap, Esc, focus return) */
+  :is(body[data-app="erp"], body[data-app="vendor"]) .ws { grid-template-columns: minmax(0, 1fr); }
+  .ws-side { position: fixed; top: 0; bottom: 0; left: 0; z-index: 270; width: min(300px, 86vw); height: 100%; transform: translateX(-104%); visibility: hidden; transition: transform .22s ease, visibility 0s linear .22s; box-shadow: var(--sh-3); overscroll-behavior: contain; }
+  .ws-side.sheet-open { transform: none; visibility: visible; transition: transform .22s ease; }
+  .ws-top .ws-burger, .ws-side .ws-side-x { display: grid; }
+  .ws-top { padding: 0 12px; gap: 8px; }
+  .ws-top .ws-search { max-width: none; min-width: 0; }
+  .ws-top .ws-search .kbd { display: none; }
+  .ws-top .ws-search .input { padding-right: 12px; }
+  .ws-top .ws-user { padding: 2px; }
+  .ws-top .ws-user > div:not(.avatar), .ws-top .ws-user > .ic { display: none; }
+  .ws-top > .ml-auto { gap: 4px !important; flex: none; }
+  .ws-main { padding: 18px 16px 40px; }
+  .page-head { align-items: flex-start; margin-bottom: 16px; }
+  .page-head .actions { gap: 6px; }
+  /* Summary tiles */
+  .kpi { padding: 14px 14px; }
+  .kpi .k-value { font-size: 23px; }
+  /* Status pipelines and stepped bars keep one line and scroll sideways */
+  .ws-main .pipeline { display: flex; overflow-x: auto; scrollbar-width: none; }
+  .ws-main .pipeline::-webkit-scrollbar { display: none; }
+  .ws-main .pipeline .stage { flex: 1 0 116px; }
+  /* Tables: readable columns; the table scrolls inside its card */
+  :is(body[data-app="erp"], body[data-app="vendor"]) .table-wrap > .table { min-width: 100%; }
+  :is(body[data-app="erp"], body[data-app="vendor"]) .table-wrap > .table:has(tr > :nth-child(4)) { min-width: 600px; }
+  :is(body[data-app="erp"], body[data-app="vendor"]) .table-wrap > .table:has(tr > :nth-child(6)) { min-width: 760px; }
+  :is(body[data-app="erp"], body[data-app="vendor"]) .table-wrap > .table:has(tr > :nth-child(8)) { min-width: 920px; }
+  :is(body[data-app="erp"], body[data-app="vendor"]) .table-wrap > .table:has(tr > :nth-child(10)) { min-width: 1060px; }
+  :is(body[data-app="erp"], body[data-app="vendor"]) .table-wrap > .table :is(td, th):not(.check-col):not(:empty) { min-width: 96px; }
+  :is(body[data-app="erp"], body[data-app="vendor"]) .table-wrap > .table td:not(.check-col):not(.r):not(:empty) { min-width: 136px; }
+  /* Toolbars and filters wrap; search boxes take the full row */
+  .ws-main .table-toolbar > .input-icon, .ws-main .filterbar > .input-icon { flex: 1 1 220px; width: auto !important; max-width: 100%; }
+  .ws-main .table-toolbar > .ml-auto, .ws-main .filterbar > .ml-auto { margin-left: 0; }
+  .ws-main :is(.table-toolbar, .filterbar, .card-head) > .row:has(> .btn, > .chip, > .seg, > .select, > .input-icon, > .switch) { flex-wrap: wrap; row-gap: 6px; }
+  .ws-main .card-head > .row > div { min-width: 0; }
+  /* Screen-reader-only text inside scrolling tables stays inside the scroll box */
+  :is(body[data-app="erp"], body[data-app="vendor"]) .table-wrap { position: relative; }
+  /* Support inbox always stacks, whatever the page's own desktop layout */
+  .ws-main .inbox { grid-template-columns: minmax(0, 1fr) !important; height: auto !important; }
+  /* A drop-down that is the first page action opens to the right (the actions row starts at the left edge) */
+  .page-head .actions > .dd:first-child .dd-menu { left: 0; right: auto; }
+  .kpi .k-foot { flex-wrap: wrap; }
+  .bulkbar { flex-wrap: wrap; row-gap: 6px; }
+  .bulkbar .ml-auto { margin-left: 0; flex: 1 1 100%; }
+  /* List + detail and side-panel layouts stack (list first, then the selected record) */
+  .ws-main .split, .ws-main .ed-grid { grid-template-columns: minmax(0, 1fr) !important; }
+  .ws-main .split > .side { border-right: 0; border-bottom: 1px solid var(--line-2); max-height: 420px; overflow-y: auto; }
+  /* Support inbox: conversation list, thread and customer panel stack; nothing is hidden */
+  .inbox { grid-template-columns: minmax(0, 1fr); height: auto; min-height: 0; }
+  .inbox .ib-list { border-right: 0; border-bottom: 1px solid var(--line); max-height: 360px; }
+  .inbox .ib-thread { min-height: 520px; }
+  .inbox .ib-side { display: block; border-left: 0; border-top: 1px solid var(--line); }
+  /* Drawers use the full width on tablets and phones */
+  .drawer-card, .drawer-card.wide { width: 100%; max-width: 760px; }
+  .drawer-head { flex-wrap: wrap; }
+  :is(body[data-app="erp"], body[data-app="vendor"]) .drawer-head > :first-child { flex: 1 1 0; min-width: 0; }
+  :is(body[data-app="erp"], body[data-app="vendor"]) .drawer-head .row { flex-wrap: wrap; row-gap: 6px; }
+  /* Exception rows: actions drop under the text */
+  .exc { grid-template-columns: auto minmax(0, 1fr); }
+  .exc .e-act { grid-column: 2; flex-wrap: wrap; }
+  /* Diff views: field name above the old → new values */
+  :is(.ws-main, .drawer, .modal) .diff { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  :is(.ws-main, .drawer, .modal) .diff > div:nth-child(3n + 1) { grid-column: 1 / -1; background: #fafbfc; font-weight: 650; }
+  /* How it works: three steps per row */
+  section.flow .flow-steps { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  section.flow .flow-step:nth-child(3n)::after { display: none; }
+}
+
+@media (max-width: 760px) {
+  .ws-top { height: 56px; }
+  .ws-top .ws-search-btn { display: grid; }
+  .ws-top .ws-search { display: none; position: absolute; left: 0; right: 0; top: 100%; padding: 8px 12px; background: var(--surface); border-bottom: 1px solid var(--line); box-shadow: var(--sh-2); }
+  .ws-top .ws-search > .ic { left: 24px; }
+  .ws-top.search-open .ws-search { display: block; }
+  .ws-top .btn .lbl { display: none; }
+  .ws-top .btn.btn-sm { padding: 0 9px; }
+  .ws-top .dd { position: static; }
+  .ws-top .dd-menu { left: 8px; right: 8px; top: calc(100% + 4px); width: auto !important; min-width: 0; max-height: calc(100vh - 120px); overflow-y: auto; }
+  .ws-main { padding: 14px 12px 32px; }
+  .page-head h1 { font-size: 21px; }
+  .page-head .sub { font-size: 13px; }
+  .page-head .actions { width: 100%; }
+  .kpi { padding: 12px; gap: 4px; }
+  .kpi .k-value { font-size: 21px; }
+  .kpi .k-foot { flex-wrap: wrap; }
+  .kpi .k-foot .spark { display: none; }
+  .ws-main .card-head { align-items: flex-start; }
+  .ws-main .tabs .tab { padding-left: 11px; padding-right: 11px; }
+  :is(body[data-app="erp"], body[data-app="vendor"]) .table-wrap > .table :is(td, th) { padding-left: 10px; padding-right: 10px; }
+  .pager { justify-content: center; text-align: center; }
+  /* How it works: a swipeable row of step cards */
+  section.flow .flow-steps { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding-bottom: 14px; }
+  section.flow .flow-steps::-webkit-scrollbar { display: none; }
+  section.flow .flow-step { flex: 0 0 78%; scroll-snap-align: start; }
+  section.flow .flow-step::after { display: none; }
+  .tab-intro { font-size: 12.5px; }
+  .exc { padding: 12px 14px; gap: 10px; }
+  .scanbox { flex-wrap: wrap; }
+  .scanbox .input { flex: 1 1 200px; min-width: 0; }
+  .diff { font-size: 12.5px; }
+  .timeline li { padding-left: 28px; }
+  /* Drop-downs in card headers never make the header wider than the screen */
+  .ws-main .card-head > .row { min-width: 0; max-width: 100%; }
+  .ws-main .card-head .select { max-width: 100%; min-width: 0; }
+  /* Exception rows: one column — severity, text, then actions */
+  .exc { grid-template-columns: minmax(0, 1fr); }
+  .exc .e-act { grid-column: 1; }
+  .exc > :first-child { justify-self: start; }
+  /* Segmented filters in header rows scroll instead of widening the page */
+  .ws-main .row-between > .seg { max-width: 100%; overflow-x: auto; scrollbar-width: none; }
+  /* Form text 16 px on phones so iOS does not zoom when a field is focused */
+  :is(body[data-app="erp"], body[data-app="vendor"]) :is(.input, .select, .textarea) { font-size: 16px !important; }
+}

@@ -47,6 +47,56 @@
     .sig .ic { width: 12px; height: 12px; }
     .banner-susp { display: none; }
     .is-suspended .banner-susp { display: flex; }
+
+    /* Tablet and phone (≤ 980 px) — desktop layout above is unchanged */
+    @media (max-width: 980px) {
+      /* The first page action is a drop-down at the left edge: open its menu to the right */
+      .page-head .actions > .dd:first-child .dd-menu { left: 0; right: auto; }
+      /* Tables keep a readable customer / candidate column (the table scrolls sideways) */
+      #c-body td:nth-child(2) { min-width: 240px; }
+      #tabs-main [data-panel="duplicates"] td:first-child { min-width: 220px; }
+      #tabs-main [data-panel="duplicates"] td:nth-child(2) { min-width: 250px; }
+      .sig { white-space: nowrap; }
+      /* Detail headers: name, badges and status wrap instead of pushing the page sideways */
+      :is(#biz-detail, #app-detail) .row:has(> h2) { flex-wrap: wrap; row-gap: 4px; }
+      #biz-detail .row-between > .row.gap-12, #biz-detail .row-between > .row.gap-12 > div { min-width: 0; }
+      #c360-head .grow .row { flex-wrap: wrap; row-gap: 4px; }
+      #biz-detail .kv .status { white-space: normal; }
+      /* Merge review: field name on its own row, then record A · record B · after merge */
+      .merge-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .merge-grid > div { min-width: 0; overflow-wrap: anywhere; }
+      .merge-grid > div:nth-child(4n + 1) { grid-column: 1 / -1; }
+      .merge-grid > .ml { background: #fafbfc; font-weight: 650; color: var(--tx-2); }
+      .merge-grid > div:nth-last-child(4) { border-bottom: 1px solid var(--line-2) !important; }
+      .merge-grid label { flex-wrap: wrap; row-gap: 4px; }
+    }
+
+    /* Phone (≤ 760 px) */
+    @media (max-width: 760px) {
+      :is(#biz-detail, #app-detail) > div { padding: 16px !important; }
+      /* Summary strips: two per row, the fifth figure takes the full row */
+      .mini-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .mini-kpis > div:last-child:nth-child(odd) { grid-column: 1 / -1; }
+      /* Dealer application: application & decision above the verification checklist */
+      #app-detail .grid { grid-template-columns: minmax(0, 1fr) !important; }
+      .chk { grid-template-columns: 28px minmax(0, 1fr); row-gap: 6px; }
+      .chk > .btn { grid-column: 2; justify-self: start; }
+      .chk > span:empty:last-child { display: none; }
+      /* Customer 360 lists: status sits under the text, aligned with it */
+      #c360-body .list-row > .status { margin-left: 48px; }
+      /* Merge review: one column; each value is labelled A / B / After (legend = header rows) */
+      .merge-grid { grid-template-columns: minmax(0, 1fr); font-size: 12.5px; }
+      .merge-grid > .mh { padding-top: 3px; padding-bottom: 3px; }
+      .merge-grid > .mh:not(:nth-child(4)) { border-bottom: 0; }
+      .merge-grid > .mh:first-child { padding-top: 10px; }
+      .merge-grid > .mh:nth-child(4) { padding-bottom: 10px; }
+      .merge-grid > div:not(.mh):nth-last-child(n + 2) { border-bottom: 1px solid var(--line-2) !important; }
+      .merge-grid > div:not(.mh):not(.ml) { position: relative; padding-left: 62px; }
+      .merge-grid > div:not(.mh):not(.ml)::before { position: absolute; left: 12px; top: 10px; line-height: 19px; font-size: 10.5px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--tx-3); }
+      .merge-grid > div:nth-child(4n + 2):not(.mh)::before { content: "A"; }
+      .merge-grid > div:nth-child(4n + 3):not(.mh)::before { content: "B"; }
+      .merge-grid > .mr::before { content: "After"; }
+    }
   </style>
 </head>
 <body data-app="erp" data-page="customers">

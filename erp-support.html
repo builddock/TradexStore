@@ -66,6 +66,49 @@
     .dd-menu .tpl span { color: var(--tx-3); font-size: 11.5px; }
     .dd-menu .tpl[disabled] { opacity: .45; cursor: not-allowed; }
     .composer .dd-menu { top: auto; bottom: calc(100% + 6px); left: 0; right: auto; width: 360px; max-height: 360px; overflow-y: auto; }
+
+    /* Tablet and phone (≤ 980 px) — desktop layout above is unchanged */
+    @media (max-width: 980px) {
+      /* The page's fixed 3-column, 820 px inbox yields to the shared stacked layout: list → thread → customer panel */
+      .inbox { height: auto; grid-template-columns: minmax(0, 1fr); }
+      /* Messages scroll inside the thread so the composer stays close; "Latest messages" keeps working */
+      .inbox .ib-msgs { max-height: 480px; }
+      .win { flex-wrap: wrap; row-gap: 2px; }
+      .msg, .bcard { overflow-wrap: anywhere; }
+      /* Customer panel: sections side by side on tablets */
+      .inbox .ib-side { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 24px; align-content: start; }
+      .inbox .ib-side > .side-sec:nth-child(2) { padding-top: 0; }
+      /* Answer library: list of answers and templates above the selected answer */
+      .lib-grid { grid-template-columns: minmax(0, 1fr); }
+      /* The first page action is a drop-down at the left edge: open its menu to the right */
+      .page-head .actions > .dd:first-child .dd-menu { left: 0; right: auto; }
+    }
+
+    /* Phone (≤ 760 px) */
+    @media (max-width: 760px) {
+      .inbox .ib-side { display: block; }
+      .inbox .ib-side > .side-sec:nth-child(2) { padding-top: 14px; }
+      .inbox .ib-msgs { max-height: 420px; padding: 14px 12px; }
+      .ib-msgs .msg { max-width: 88%; }
+      .handoff span { border-radius: 12px; }
+      /* Thread header: customer on the first line, assign / escalate / close on the second */
+      .th-head { flex-wrap: wrap; row-gap: 8px; padding: 10px 12px; }
+      .th-head > .grow { flex: 1 1 calc(100% - 80px); }
+      .th-head .dd-menu { left: 0; right: auto; }
+      .th-sub { padding: 8px 12px; row-gap: 6px; column-gap: 8px; }
+      .th-sub .switch { max-width: calc(100% - 32px); } /* its ⓘ stays on the same line */
+      /* Composer: Send stays at the right edge, also when it wraps under the tools */
+      .composer { padding: 10px 12px 12px; }
+      .composer .textarea { font-size: 16px; }
+      .composer .row > span.ml-auto:empty { display: none; }
+      .composer #send { margin-left: auto; }
+      .composer .dd-menu { width: min(360px, calc(100vw - 50px)); }
+      /* Answer library */
+      .lib-grid { padding: 12px !important; }
+      [data-panel="library"] .list-row { flex-wrap: nowrap; padding: 12px 16px; }
+      /* Draft basket: the item column keeps room for the product name */
+      #bk-lines td:first-child { min-width: 240px; }
+    }
   </style>
 </head>
 <body data-app="erp" data-page="support">
