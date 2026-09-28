@@ -2140,3 +2140,30 @@ Reserved range for this file: D-160–D-169 (all proposed `OPEN`). None is decid
 | Pages (00-conventions §8) | **P-S15 — Not-found / unavailable and error pages** (unknown or archived URLs → redirect or a useful unavailable page; generic error page with support route) | T32 "Correct redirect or deliberate useful unavailable page"; MK:store-product.html not-found state; BP §6.8 redirect mapping | BP §23.1 T32, §6.8 | DOCUMENTED |
 | Entities | None requested unconditionally. If decisions approve them: pre-order reservation hold (D-161), reference price field (D-166), digital licence record (D-167), business-account order approval (D-066) — see §8 | — | — | CONDITIONAL |
 | Roles | None. Dealer member sub-roles stay inside R-dealer per D-066 | 00-conventions §9 | BP §8.3 | — |
+
+---
+
+## 12. SaaS additions — the storefront is one codebase for every store (2026-09-28, `D-227`)
+
+Architecture: `19-saas-platform.md` §6.3, §7, §8, §11; `12-phases.md` §10.
+
+### 12.1 What every storefront screen must now obey
+
+| Rule | Detail | Task |
+|---|---|---|
+| ST-S1 | Page composition — which blocks exist, in what order, with which badges, facets, listing-card fields and checkout steps — comes from the pack's storefront profile, not from the page code | `T-1A.9-M33-01` |
+| ST-S2 | Layout and visual treatment come from the store's **template** (`TPL-forge`, `TPL-aurora`, …). The same page has more than one correct appearance | `T-1A.3-M33-02` |
+| ST-S3 | Every colour, font, radius, shadow and motion value comes from the compiled theme. A hard-coded visual value fails the build | `T-1A.3-M33-01` |
+| ST-S4 | Every user-visible word that names a concept comes from a terminology token. "Product", "SKU", "serial", "dealer" are not literals | `T-1A.1-M31-06` |
+| ST-S5 | A section belonging to a disabled capability is not rendered and its bundle is not shipped — it leaves no empty space, placeholder or heading | `T-1A.1-M31-02` |
+| ST-S6 | Business-carrying output (price block, availability statement, policy disclosures, checkout validation) is identical across templates; only its presentation varies | `T-1A.3-M33-02` |
+| ST-S7 | No store-facing markup, class name, comment, attribute, URL, cookie or header carries platform vocabulary or identity | `T-1A.3-M31-01` |
+| ST-S8 | Error, not-found, unavailable and suspension pages are store-branded and name nothing beyond the store | `T-1A.2-M30-01` |
+
+### 12.2 How to read the existing sections of this file
+
+Everything specified in §1–§11 remains the specification of the storefront **for a store configured with
+`VP-electronics` and `TPL-forge`** — which is the Tradex store and the approved mockup. Where a section names an
+electronics concept (serial, condition grade, compatibility, refurbished inspection), read it as: *the pack
+supplies this structure; the page renders whatever the profile declares*. The responsive specification of §2.5
+applies to every template; a template that breaks it fails its own acceptance.

@@ -1,0 +1,608 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<meta name="referrer" content="no-referrer">
+<title>Store — Atelier Nine — Configurable Root Admin (internal prototype)</title>
+<link rel="stylesheet" href="assets/ra.css">
+</head>
+<body>
+<div class="ra-internal" data-help="ra.internal">INTERNAL PROTOTYPE — <b>Configurable Root Admin</b> — not part of any client store, not linked from the client-facing demo (D-249)</div>
+<main data-tabs>
+  <div class="crumb"><a href="ra-stores.html">Stores</a> › Atelier Nine</div>
+  <div class="ra-head">
+    <div class="row" style="gap:14px">
+      <span class="swatch" style="width:42px;height:42px;background:#b5446e;display:grid;place-items:center;color:#fff;font-weight:800">A9</span>
+      <div><h1>Atelier Nine</h1>
+        <p class="sub"><span class="mono">atelier</span> · Fashion &amp; Apparel 1.1.0 · Aurora 1.3.0 ·
+          <a href="#" data-demo="Prototype: opens the live storefront in a new tab.">ateliernine.example.com</a></p></div>
+    </div>
+    <div class="act">
+      <span class="tag ok" style="align-self:center"><span class="dot"></span>Live · v23</span>
+      <button class="btn" data-demo="Prototype: opens the current draft for editing.">Edit configuration</button>
+      <button class="btn pri" data-demo="Prototype: validates, compiles, shows the difference, then deploys.">Publish changes</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button data-tab="t-ov" data-help="ra.s.ov">Overview</button>
+    <button data-tab="t-cat" data-help="ra.s.cat">Category &amp; structure</button>
+    <button data-tab="t-tpl" data-help="ra.s.tpl">Template</button>
+    <button data-tab="t-brand" data-help="ra.s.brand">Branding</button>
+    <button data-tab="t-feat" data-help="ra.s.feat">Features</button>
+    <button data-tab="t-chan" data-help="ra.s.chan">Channels &amp; integrations</button>
+    <button data-tab="t-set" data-help="ra.s.set">Settings</button>
+    <button data-tab="t-term" data-help="ra.s.term">Wording</button>
+    <button data-tab="t-dom" data-help="ra.s.dom">Domains &amp; certificates</button>
+    <button data-tab="t-env" data-help="ra.s.env">Environments &amp; hosting</button>
+    <button data-tab="t-ver" data-help="ra.s.ver">Configuration versions</button>
+    <button data-tab="t-dep" data-help="ra.s.dep">Deployments</button>
+    <button data-tab="t-users" data-help="ra.s.users">Store users</button>
+    <button data-tab="t-sup" data-help="ra.s.sup">Support access</button>
+    <button data-tab="t-aud" data-help="ra.s.aud">Audit</button>
+    <button data-tab="t-dan" data-help="ra.s.dan">Danger zone</button>
+  </div>
+
+  <section class="pane" id="t-ov">
+    <div class="grid g4 mb">
+      <div class="kpi ok"><div class="k">State</div><div class="v" style="font-size:20px">Live</div><div class="d">production · shared</div></div>
+      <div class="kpi"><div class="k">Configuration</div><div class="v">v23</div><div class="d">published yesterday by S. Iyer</div></div>
+      <div class="kpi ok"><div class="k">Instances applied</div><div class="v">4/4</div><div class="d">no drift</div></div>
+      <div class="kpi"><div class="k">Features on</div><div class="v">38</div><div class="d">of 86 available · 6 locked</div></div>
+    </div>
+    <div class="grid g2">
+      <div class="card"><div class="card-h"><h3 data-help="ra.s.ov">Identity</h3></div><div class="card-b"><dl class="kv">
+        <dt>Store name</dt><dd>Atelier Nine</dd>
+        <dt>Key</dt><dd class="mono">atelier</dd>
+        <dt>Legal entity</dt><dd>Atelier Nine Retail Pvt Ltd</dd>
+        <dt>Jurisdiction</dt><dd>India · INR · Asia/Kolkata</dd>
+        <dt>Languages</dt><dd>English (India)</dd>
+        <dt>Data isolation</dt><dd>Shared · <span class="dim">changing this needs a scheduled deployment</span></dd>
+        <dt>Storage</dt><dd class="mono">store/atelier/…</dd>
+        <dt>Owner contact</dt><dd>hello@ateliernine.example.com</dd>
+      </dl></div></div>
+      <div class="card"><div class="card-h"><h3 data-help="ra.s.ov">Applied configuration</h3></div><div class="card-b">
+        <div class="pre"><span class="c">// what every runtime instance is serving right now</span>
+{
+  <span class="k">"version"</span>: <span class="n">23</span>,
+  <span class="k">"checksum"</span>: <span class="s">"sha256:9f31c4…a07b"</span>,
+  <span class="k">"pack"</span>: <span class="s">"VP-fashion_apparel@1.1.0"</span>,
+  <span class="k">"template"</span>: <span class="s">"TPL-aurora@1.3.0"</span>,
+  <span class="k">"built"</span>: <span class="s">"2026-09-27T18:04:11Z"</span>,
+  <span class="k">"size"</span>: <span class="s">"412 KB"</span>,
+  <span class="k">"instances"</span>: [<span class="s">"web-1"</span>, <span class="s">"web-2"</span>, <span class="s">"web-3"</span>, <span class="s">"worker-1"</span>]
+}</div>
+        <p class="hint">Read from memory on every request. The store makes no database call and no network call to
+          this platform to read its configuration.</p>
+      </div></div>
+    </div>
+  </section>
+
+  <section class="pane" id="t-cat">
+    <div class="grid g-2-1">
+      <div class="card"><div class="card-h"><h3 data-help="ra.s.cat">Fashion &amp; Apparel 1.1.0</h3><span class="sp"></span>
+        <a class="btn sm" href="ra-packs.html">Open category</a>
+        <button class="btn sm" data-demo="Prototype: shows exactly what would change in this store if it moved to 1.2.0, before anything happens.">Migrate to 1.2.0</button></div>
+        <div class="card-b"><dl class="kv">
+          <dt>Stock identity</dt><dd>Quantity per size and colour — no serial numbers, no batches</dd>
+          <dt>Variant axes</dt><dd>Size, Colour</dd>
+          <dt>Size systems</dt><dd>IN, UK, EU, US</dd>
+          <dt>Units</dt><dd>Each · whole numbers only</dd>
+          <dt>Categories</dt><dd>6 top level, 34 sub-categories</dd>
+          <dt>Attributes</dt><dd>22 (7 required, 9 filterable)</dd>
+          <dt>Return classes</dt><dd>Standard 15 days · Exchange only · Final sale · Made to order</dd>
+          <dt>Starting content applied</dt><dd>6 seed sets · 24 Sep 2026</dd>
+        </dl></div></div>
+      <div class="card"><div class="card-h"><h3 data-help="ra.s.cat">Category version history</h3></div><div class="card-b small stack" style="gap:10px">
+        <div><b>1.1.0</b> <span class="tag ok">in use</span><div class="dim xs">Migrated 24 Sep 2026 · added exchange policy class</div></div>
+        <div><b>1.0.2</b><div class="dim xs">Used 12 Aug – 24 Sep 2026</div></div>
+        <div><b>1.0.0</b><div class="dim xs">Used from store creation</div></div>
+        <hr><p class="dim xs">Publishing a new category version never changes this store. It moves only when
+          someone runs a migration and accepts the preview.</p>
+      </div></div>
+    </div>
+  </section>
+
+  <section class="pane" id="t-tpl">
+    <div class="grid g2">
+      <div class="card"><div class="card-h"><h3>Aurora 1.3.0 <span class="tag ok">in use</span></h3></div><div class="card-b">
+        <div class="prev"><div class="pb" style="background:#b5446e;color:#fff">ATELIER NINE</div>
+          <div class="pc"><div class="ph" style="background:#f8d9e5"></div>
+            <div class="pl" style="width:58%;background:#e3c6d2"></div>
+            <div class="pr"><i style="background:#faf0f4;height:58px"></i><i style="background:#faf0f4;height:58px"></i><i style="background:#faf0f4;height:58px"></i></div></div></div>
+        <dl class="kv mt"><dt>Character</dt><dd>Editorial, image-led</dd>
+          <dt>Compatible with</dt><dd>Fashion, Home, Beauty, Handmade, Luxury</dd>
+          <dt>Accessibility</dt><dd>WCAG 2.2 AA · verified 22 Sep 2026</dd></dl>
+      </div></div>
+      <div class="card"><div class="card-h"><h3 data-help="ra.s.tpl">Switch template</h3></div><div class="card-b">
+        <p class="small muted">A template changes only how the store looks. Prices, stock, policies and checkout
+          behave identically, so switching needs no data migration and can be reversed.</p>
+        <div class="stack mt">
+          <button class="pick" data-demo="Prototype: shows a full preview of this store under Forge before anything is published."><span class="pt">Forge 2.1.0</span><span class="pd">Dense and specification-led. Preview this store under it.</span></button>
+          <button class="pick" data-demo="Prototype: Aurora 1.4.0 is in draft and not selectable yet."><span class="pt">Aurora 1.4.0 <span class="tag">draft</span></span><span class="pd">Not selectable until it is published.</span></button>
+        </div>
+      </div></div>
+    </div>
+  </section>
+
+  <section class="pane" id="t-brand">
+    <div class="grid g-2-1">
+      <div class="card"><div class="card-h"><h3 data-help="ra.s.brand">Branding</h3><span class="sp"></span>
+        <button class="btn sm" data-demo="Prototype: opens the branding editor with logo upload and colour derivation.">Edit</button></div>
+        <div class="card-b">
+          <div class="grid g2">
+            <div><label class="fl">Primary logo</label><div class="note" style="justify-content:center;padding:20px"><b style="letter-spacing:.14em">ATELIER NINE</b></div></div>
+            <div><label class="fl">Dark background</label><div class="note" style="justify-content:center;padding:20px;background:#0a0e14"><b style="letter-spacing:.14em;color:#fff">ATELIER NINE</b></div></div>
+          </div>
+          <label class="fl mt">Brand ramp (derived from #B5446E)</label>
+          <div class="ramp"><span style="background:#fdf2f6"></span><span style="background:#f8d9e5"></span>
+            <span style="background:#eda9c3"></span><span style="background:#d9749d"></span>
+            <span style="background:#b5446e"></span><span style="background:#8e3255"></span>
+            <span style="background:#66223c"></span><span style="background:#3d1424"></span></div>
+          <dl class="kv mt"><dt>Accent</dt><dd><span class="row"><span class="swatch" style="background:#2f855a"></span> #2F855A</span></dd>
+            <dt>Headings</dt><dd>Fraunces</dd><dt>Body</dt><dd>Inter</dd>
+            <dt>Corners</dt><dd>Soft (10 px)</dd><dt>Density</dt><dd>Comfortable</dd>
+            <dt>Motion</dt><dd>Standard · reduced-motion always respected</dd></dl>
+        </div></div>
+      <div class="card"><div class="card-h"><h3 data-help="ra.s.brand">Contrast</h3></div><div class="card-b">
+        <div class="note" style="border-color:rgba(52,211,153,.35);background:var(--ra-ok-bg);color:#bdf0d8">
+          <svg data-i="check"></svg><div><b>34 of 34 pairs pass WCAG 2.2 AA.</b></div></div>
+        <p class="hint mt">A palette that fails cannot be published. The report names each failing pair and the
+          nearest colour that would pass.</p>
+      </div></div>
+    </div>
+  </section>
+
+  <section class="pane" id="t-feat">
+    <div class="card mb"><div class="card-b row">
+      <div><b>3 applications</b> <span class="dim small">· 11 of 16 modules on · 38 features on · 9 delegated to this store</span></div>
+      <span class="sp"></span>
+      <button class="btn sm" data-demo="Prototype: opens the editor with dependency resolution and open-work checks.">Edit</button>
+    </div></div>
+
+    <div class="card mb"><div class="card-h"><h3 data-help="ra.s.feat.apps">Applications this store has</h3></div>
+      <div class="card-b grid g3">
+        <div class="note"><svg data-i="store"></svg><div><b>Customer website</b>
+          <p class="hint">On · ateliernine.example.com</p></div></div>
+        <div class="note"><svg data-i="grid"></svg><div><b>Staff workspace</b>
+          <p class="hint">On · 11 staff accounts</p></div></div>
+        <div class="note"><svg data-i="box"></svg><div><b>Supplier portal</b>
+          <p class="hint">On · 4 suppliers</p></div></div>
+      </div>
+      <div class="card-b" style="border-top:1px solid var(--ra-line)">
+        <p class="hint">An application that is switched off does not exist for the store: no address resolves to
+          it, no sign-in page, no code is built for it, and nobody inside the store sees a trace of it.</p></div>
+    </div>
+
+    <div class="card mb"><div class="card-h"><h3 data-help="ra.s.feat.mods">Modules</h3><span class="sp"></span>
+      <span class="tag">category modules come from Fashion &amp; Apparel</span></div>
+      <div id="mods"></div></div>
+
+    <div class="card mb"><div class="card-h"><h3 data-help="ra.s.feat.deleg">Features this store's administrator may manage</h3><span class="sp"></span>
+      <span class="tag acc">9 delegated</span></div>
+      <div id="deleg"></div>
+      <div class="card-b" style="border-top:1px solid var(--ra-line)">
+        <p class="hint">These appear as plain switches in the store's own settings screen. Everything else is
+          either absent or simply works — the store never sees a greyed-out control, because a greyed control
+          tells them somebody else is in charge.</p></div>
+    </div>
+    <div id="feats"></div>
+    <div class="note mt"><svg data-i="info"></svg><div>
+      A feature that is off does not appear anywhere in the store — not greyed out, not in a menu, not in the
+      interface the store's own staff use. Switching it off hides data, it never deletes it.
+    </div></div>
+  </section>
+
+  <section class="pane" id="t-chan">
+    <div class="note acc mb"><svg data-i="info"></svg><div>
+      Granting a channel is not one switch. A channel needs a provider account, a verified sender and the
+      templates its automations use. Until all three are in place this store cannot be published with the channel
+      on — it would look configured and silently fail to send.
+    </div></div>
+
+    <div class="card mb"><div class="card-h"><h3 data-help="ra.s.chan.list">Messaging channels</h3><span class="sp"></span>
+      <button class="btn sm" data-demo="Prototype: opens the channel editor — provider account, sender identity, verification and templates.">Edit</button></div>
+      <div id="chans"></div>
+      <div class="card-b" style="border-top:1px solid var(--ra-line)">
+        <p class="hint">Consent, how often a customer may be messaged and quiet hours apply across every channel
+          together, so a customer cannot be messaged five times by five different features. That is enforced in
+          one place, not in each channel.</p></div></div>
+
+    <div class="card mb"><div class="card-h"><h3 data-help="ra.s.chan.auto">Automations granted to this store</h3><span class="sp"></span>
+      <span class="tag acc">11 of 22 granted · 4 the store can manage</span></div>
+      <div id="autos"></div>
+      <div class="card-b" style="border-top:1px solid var(--ra-line)">
+        <p class="hint">An automation the store was not granted is never scheduled — it cannot run, appear in a
+          report or send a message. An automation that sends a message cannot be granted without its channel and
+          its approved template.</p></div></div>
+
+    <div class="card mb"><div class="card-h"><h3 data-help="ra.s.chan.integ">Integrations</h3></div><div id="integ"></div></div>
+
+    <div class="card"><div class="card-h"><h3 data-help="ra.s.chan.check">Publish check</h3><span class="sp"></span>
+      <span class="tag warn">2 items to fix</span></div>
+      <div class="card-b stack">
+        <div class="note warn"><svg data-i="warn"></svg><div><b>SMS is on but the sender id is not registered.</b>
+          Messages would be rejected by the operator. Register the sender id or switch SMS off before publishing.</div></div>
+        <div class="note warn"><svg data-i="warn"></svg><div><b>"Delivery updates on WhatsApp" needs a template
+          that is still awaiting provider approval.</b> The automation cannot be enabled until it is approved.</div></div>
+        <div class="note"><svg data-i="check"></svg><div>Email, WhatsApp click-to-chat and in-workspace alerts are
+          fully configured.</div></div>
+      </div></div>
+  </section>
+
+  <section class="pane" id="t-set">
+    <div class="note acc mb"><svg data-i="lock"></svg><div>
+      Settings marked <b>locked</b> cannot be changed by the store. In the store's own admin screen they are
+      <b>absent</b> — not shown as disabled — so nobody there learns that someone else controls them.
+    </div></div>
+    <div id="sets"></div>
+  </section>
+
+  <section class="pane" id="t-term">
+    <div class="card"><div class="card-h"><h3 data-help="ra.s.term">Words this store uses</h3><span class="sp"></span>
+      <a class="btn sm" href="ra-terminology.html">Open wording editor</a></div>
+      <div id="terms"></div></div>
+    <p class="hint mt">Every screen, email, document and export uses these words. Changing one here changes it
+      everywhere in this store, and in no other store.</p>
+  </section>
+
+  <section class="pane" id="t-dom">
+    <div class="card"><div class="card-h"><h3 data-help="ra.s.dom">Addresses</h3><span class="sp"></span>
+      <button class="btn sm" data-demo="Prototype: add a domain, then verify it by DNS record or file.">Add domain</button></div>
+      <div id="doms"></div></div>
+    <div class="card mt"><div class="card-h"><h3 data-help="ra.s.dom">Email sending</h3></div><div id="mail"></div></div>
+    <div class="note mt"><svg data-i="globe"></svg><div>
+      An address that is not verified never serves the store. A request to an address the platform does not know
+      returns a plain page that names nothing.
+    </div></div>
+  </section>
+
+  <section class="pane" id="t-env">
+    <div class="grid g-2-1">
+      <div class="stack">
+        <div class="card"><div class="card-h"><h3 data-help="ra.s.env">Hosting</h3><span class="sp"></span>
+          <button class="btn sm" data-demo="Prototype: changing hosting is a scheduled deployment, not a configuration change.">Change</button></div>
+          <div class="card-b"><dl class="kv">
+            <dt>Placement</dt><dd><b>Separated client on a shared server</b><div class="hint">One server runs several stores; this client's data is not mixed with anyone else's.</div></dd>
+            <dt>Database</dt><dd class="mono">store_atelier <span class="tag ok">its own</span></dd>
+            <dt>Images &amp; documents</dt><dd class="mono">atelier-media <span class="tag ok">its own container</span></dd>
+            <dt>Search index</dt><dd class="mono">atelier-catalogue <span class="tag ok">its own</span></dd>
+            <dt>Cache</dt><dd class="mono">atelier: <span class="tag ok">its own namespace</span></dd>
+            <dt>Encryption key</dt><dd class="mono">key/atelier <span class="tag ok">its own</span></dd>
+            <dt>Region</dt><dd>India (Mumbai)</dd>
+            <dt>Runtime</dt><dd>Shared pool · web-1…4, worker-1…2</dd>
+            <dt>Platform release</dt><dd>1.12.3 · current</dd>
+            <dt>Database schema</dt><dd>1.12.3 · matches the fleet</dd>
+          </dl></div></div>
+        <div class="card"><div class="card-h"><h3 data-help="ra.s.env">Other placements available</h3></div>
+          <div class="card-b stack" style="gap:10px">
+            <div class="note"><svg data-i="box"></svg><div><b>Dedicated runtime</b>
+              <p class="hint">This store gets its own processes and hosts, still managed from here. For performance isolation or a separate release cadence.</p></div></div>
+            <div class="note"><svg data-i="globe"></svg><div><b>Standalone install on the client's own server</b>
+              <p class="hint">The same unchanged system runs on the client's infrastructure, in their region. It serves traffic with no connection to this platform; configuration arrives as a signed file or a signed download, bound to this store and its addresses. Version skew is limited to one release.</p></div></div>
+            <div class="note warn"><svg data-i="warn"></svg><div><b>Shared database</b>
+              <p class="hint">Several stores in one database. Available for internal and demonstration use, or where a client has explicitly agreed to it — never applied silently.</p></div></div>
+          </div></div>
+      </div>
+      <div class="stack">
+        <div class="card"><div class="card-h"><h3 data-help="ra.s.env">Environments</h3></div><div id="envs"></div></div>
+        <div class="card"><div class="card-h"><h3 data-help="ra.s.env">Promote staging → production</h3></div><div class="card-b">
+          <p class="small muted">Copies the values of a published staging configuration into the production
+            draft. It then goes through the usual checks and difference review before anything is published.</p>
+          <div class="note mt"><svg data-i="info"></svg><div><b>Never copied:</b> addresses and certificates,
+            credentials, the store's own settings, the features the store switched itself, users, or any business
+            data.</div></div>
+          <button class="btn pri mt" data-demo="Prototype: staging v6 would be copied into the production draft for review.">Promote staging v6</button>
+        </div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pane" id="t-ver">
+    <div class="card"><div class="card-h"><h3 data-help="ra.s.ver">Configuration versions</h3><span class="sp"></span>
+      <button class="btn sm" data-open="dlg-diff">Compare v22 → v23</button></div>
+      <div id="vers"></div></div>
+    <p class="hint mt">Versions are never edited or deleted. Going back is publishing an earlier version again,
+      which takes the same few seconds as going forward.</p>
+  </section>
+
+  <section class="pane" id="t-dep">
+    <div class="card"><div class="card-h"><h3 data-help="ra.s.dep">Deployments</h3><span class="sp"></span>
+      <a class="btn sm" href="ra-deployments.html">All runs</a></div><div id="deps"></div></div>
+  </section>
+
+  <section class="pane" id="t-users">
+    <div class="note mb"><svg data-i="users"></svg><div>
+      These are the store's own people. They belong to this store only; their sign-in works on no other store and
+      not on this platform. Read-only here — the store manages its own staff.
+    </div></div>
+    <div class="card"><div id="users"></div></div>
+  </section>
+
+  <section class="pane" id="t-sup">
+    <div class="card mb"><div class="card-h"><h3 data-help="ra.s.sup">Support access</h3><span class="sp"></span>
+      <button class="btn sm" data-open="dlg-sup">Request access</button></div>
+      <div class="card-b"><p class="small muted">Nobody on this platform can see this store's data without an
+        approved, time-limited grant. The store owner is told when one starts, and every action appears in the
+        store's own audit trail with the platform user's name.</p></div></div>
+    <div class="card"><div id="sup"></div></div>
+  </section>
+
+  <section class="pane" id="t-aud">
+    <div class="card"><div class="card-h"><h3 data-help="ra.s.aud">Platform actions on this store</h3></div><div id="aud"></div></div>
+  </section>
+
+  <section class="pane" id="t-dan">
+    <div class="stack" style="max-width:820px">
+      <div class="card"><div class="card-b row">
+        <div><b>Suspend the store</b><p class="hint">The storefront shows a short notice in the store's own
+          branding, no orders can be placed and nothing is deleted. Reversible at any time.</p></div>
+        <span class="sp"></span><button class="btn dan" data-demo="Prototype: suspension takes effect within the propagation window and the owner is notified.">Suspend</button></div></div>
+      <div class="card"><div class="card-b row">
+        <div><b>Archive the store</b><p class="hint">Stops serving entirely and keeps the data for the retention
+          period. Reversible during retention.</p></div>
+        <span class="sp"></span><button class="btn dan" data-demo="Prototype: archiving requires a reason and notifies the owner.">Archive</button></div></div>
+      <div class="card"><div class="card-b row">
+        <div><b>Export everything for this client</b><p class="hint">A complete, documented export: business data,
+          the store's own settings and the features it switched, its configuration and its images. Used for
+          portability, end of contract or a legal request.</p></div>
+        <span class="sp"></span><button class="btn" data-demo="Prototype: the export runs as a job and is delivered to the owner through a signed, expiring link.">Export</button></div></div>
+      <div class="card" style="border-color:rgba(248,113,113,.4)"><div class="card-b row">
+        <div><b>Decommission and destroy data</b><p class="hint">Permanent. Requires a second platform owner to
+          approve, offers the owner an export first, waits out the retention period and records destruction
+          evidence.</p></div>
+        <span class="sp"></span><button class="btn dan" data-demo="Prototype: one person cannot complete this. A second platform owner must approve, and the retention period runs first.">Start decommission</button></div></div>
+    </div>
+  </section>
+
+  <div class="modal" id="dlg-diff">
+    <div class="dh"><h3>What changed between v22 and v23</h3><span class="sp"></span><button class="x" data-close>✕</button></div>
+    <div class="db">
+      <div class="note warn"><svg data-i="warn"></svg><div>One change affects how existing data is shown. It needs
+        an explicit acknowledgement before publishing.</div></div>
+      <table class="t mt"><thead><tr><th>Area</th><th>Before</th><th>After</th></tr></thead><tbody>
+        <tr><td>Template</td><td>Forge 2.1.0</td><td>Aurora 1.3.0</td></tr>
+        <tr><td>Feature: Exchanges</td><td>Off</td><td>On</td></tr>
+        <tr><td>Feature: Product comparison</td><td>On</td><td><b>Off</b> — hides the comparison page and its saved comparisons</td></tr>
+        <tr><td>Returns window</td><td>10 days</td><td>15 days</td></tr>
+        <tr><td>Wording: “item”</td><td>item</td><td>piece</td></tr>
+        <tr><td>Brand accent</td><td>#2F855A</td><td>#2F855A (unchanged)</td></tr>
+      </tbody></table>
+    </div>
+    <div class="df"><button class="btn" data-close>Close</button>
+      <button class="btn pri" data-demo="Prototype: acknowledged, then the deployment would start.">Acknowledge and publish</button></div>
+  </div>
+
+  <div class="modal" id="dlg-sup">
+    <div class="dh"><h3>Request access to this store's data</h3><span class="sp"></span><button class="x" data-close>✕</button></div>
+    <div class="db stack">
+      <div><label class="fl">Reason (recorded and shown to the store owner)</label>
+        <textarea rows="3" placeholder="What are you investigating, and why does it need the store's data?"></textarea></div>
+      <div class="grid g2">
+        <div><label class="fl">Scope</label><select><option>Read only</option><option>Act as a store user</option></select></div>
+        <div><label class="fl">Duration</label><select><option>1 hour</option><option>4 hours</option><option>8 hours (maximum)</option></select></div>
+      </div>
+      <div class="note"><svg data-i="shield"></svg><div>Approval by a platform owner is required, and it cannot be
+        you. Everything you do appears in this store's own audit trail under your name.</div></div>
+    </div>
+    <div class="df"><button class="btn" data-close>Cancel</button>
+      <button class="btn pri" data-demo="Prototype: request sent to R. Nair for approval. The store owner is notified when it starts.">Send request</button></div>
+  </div>
+</main>
+<script src="assets/ra.js"></script>
+<script src="assets/ra-help.js"></script>
+<script src="assets/help/glossary.js"></script>
+<script src="assets/help/shell.js"></script>
+<script src="assets/help/ra-store.js"></script>
+<script>
+
+document.getElementById("mods").innerHTML = RA.table(
+  ["Module", "From", "State", "Store may manage it?", "In use"],
+  [
+   ["<b>Catalogue</b><div class='sub'>Products, attributes, media, collections</div>", "Platform", "<span class='tag ok'>On</span>", "<span class='tag'>No — always on</span>", "1,284 pieces"],
+   ["<b>Pricing</b><div class='sub'>Price lists, promotions, discount codes</div>", "Platform", "<span class='tag ok'>On</span>", "<span class='tag acc'>Yes — promotions and codes only</span>", "3 price lists"],
+   ["<b>Inventory</b><div class='sub'>Stock, reservations, counts</div>", "Platform", "<span class='tag ok'>On</span>", "<span class='tag'>No — always on</span>", "2 locations"],
+   ["<b>Purchasing</b><div class='sub'>Orders to suppliers, receiving</div>", "Platform", "<span class='tag ok'>On</span>", "<span class='tag acc'>Yes</span>", "14 open orders"],
+   ["<b>Customers</b><div class='sub'>Accounts, addresses, consent</div>", "Platform", "<span class='tag ok'>On</span>", "<span class='tag'>No — always on</span>", "9,410 customers"],
+   ["<b>Website</b><div class='sub'>Home, browsing, product pages, help</div>", "Platform", "<span class='tag ok'>On</span>", "<span class='tag acc'>Yes — reviews, wishlist, comparison</span>", "—"],
+   ["<b>Orders &amp; checkout</b>", "Platform", "<span class='tag ok'>On</span>", "<span class='tag'>No — always on</span>", "312 this month"],
+   ["<b>Payments</b>", "Platform", "<span class='tag ok'>On</span>", "<span class='tag'>No</span>", "1 provider"],
+   ["<b>Delivery</b><div class='sub'>Picking, packing, dispatch, tracking</div>", "Platform", "<span class='tag ok'>On</span>", "<span class='tag acc'>Yes — shop collection</span>", "2 couriers"],
+   ["<b>Returns &amp; exchanges</b>", "Platform", "<span class='tag ok'>On</span>", "<span class='tag acc'>Yes — exchanges</span>", "18 open"],
+   ["<b>Supplier portal</b>", "Platform", "<span class='tag ok'>On</span>", "<span class='tag acc'>Yes</span>", "4 suppliers"],
+   ["<b>Support</b><div class='sub'>Help centre, messaging</div>", "Platform", "<span class='tag ok'>On</span>", "<span class='tag acc'>Yes</span>", "—"],
+   ["<b>Automation &amp; approvals</b>", "Platform", "<span class='tag ok'>On</span>", "<span class='tag acc'>Yes</span>", "6 rules"],
+   ["<b>Reports</b>", "Platform", "<span class='tag ok'>On</span>", "<span class='tag'>No</span>", "22 reports"],
+   ["<b>Accounts &amp; finance export</b>", "Platform", "<span class='tag ok'>On</span>", "<span class='tag'>No</span>", "monthly"],
+   ["<b>Store administration</b><div class='sub'>People, roles, the store's own settings, audit</div>", "Platform", "<span class='tag ok'>On</span>", "<span class='tag'>Cannot be switched off</span>", "11 people"],
+   ["<b>Seasons &amp; collections</b><div class='sub'>Seasonal ranges and lookbooks</div>", "<span class='tag acc'>Fashion &amp; Apparel</span>", "<span class='tag ok'>On</span>", "<span class='tag acc'>Yes</span>", "4 collections"],
+   ["<b>Trade accounts</b><div class='sub'>Stockists, tiered prices, credit terms</div>", "<span class='tag acc'>Fashion &amp; Apparel</span>", "<span class='tag'>Off</span>", "<span class='tag'>No — not available</span>", "—"],
+   ["<b>Made to order</b>", "<span class='tag acc'>Fashion &amp; Apparel</span>", "<span class='tag'>Off</span>", "<span class='tag'>No — not available</span>", "—"],
+   ["<b>Rentals</b>", "<span class='dim'>not in this category</span>", "<span class='tag'>Off</span>", "<span class='tag'>No — not available</span>", "—"]
+  ]);
+
+document.getElementById("deleg").innerHTML = RA.table(
+  ["Feature", "Inside", "Store's own switch", "Last changed by the store"],
+  [
+   ["Customer reviews", "Website", "<span class='tag ok'>On</span>", "14 Sep · ops@ateliernine"],
+   ["Wishlist", "Website", "<span class='tag ok'>On</span>", "never"],
+   ["Product comparison", "Website", "<span class='tag'>Off</span>", "2 Sep · ops@ateliernine"],
+   ["Discount codes", "Pricing", "<span class='tag ok'>On</span>", "21 Sep · hello@ateliernine"],
+   ["Seasonal promotions", "Pricing", "<span class='tag ok'>On</span>", "never"],
+   ["Collect from shop", "Delivery", "<span class='tag'>Off</span>", "never"],
+   ["Exchanges instead of refunds", "Returns &amp; exchanges", "<span class='tag ok'>On</span>", "yesterday · hello@ateliernine"],
+   ["Supplier portal invitations", "Supplier portal", "<span class='tag ok'>On</span>", "never"],
+   ["Low-stock alerts to staff", "Automation &amp; approvals", "<span class='tag ok'>On</span>", "8 Sep · ops@ateliernine"]
+  ]);
+
+document.getElementById("envs").innerHTML = RA.table(
+  ["Environment", "Configuration", "Address", "State"],
+  [
+   ["<b>Production</b>", "v23", "<span class='mono'>ateliernine.example.com</span>", "<span class='tag ok'><span class='dot'></span>Live</span>"],
+   ["<b>Staging</b>", "v6", "<span class='mono'>atelier.staging.example</span>", "<span class='tag'><span class='dot'></span>Not indexed · test credentials</span>"]
+  ]);
+
+document.getElementById("mail").innerHTML = RA.table(
+  ["Sending address", "Purpose", "Verification", "State"],
+  [
+   ["<span class='mono'>orders@ateliernine.example.com</span>", "Order and delivery messages", "SPF, DKIM, DMARC", "<span class='tag ok'>Verified</span>"],
+   ["<span class='mono'>help@ateliernine.example.com</span>", "Support replies", "SPF, DKIM", "<span class='tag warn'>DMARC not set</span>"]
+  ]);
+document.getElementById("feats").innerHTML = '<div class="grid g3">' + [
+  ["On for this store", "ok", ["Size and colour variants","Size guide","Collections and seasons","Guest checkout",
+    "Wishlist","Customer reviews","Discount codes","Courier delivery","Store pickup","Returns","Exchanges",
+    "Supplier portal","Purchase orders","Stock counts","WhatsApp enquiries","Help centre"]],
+  ["Off for this store", "", ["Serial numbers","Batch and expiry","Unique one-off items","Condition grades",
+    "Compatibility","Weight pricing","Cold chain","Delivery time slots","Freight delivery","Digital delivery",
+    "Appointments","Rentals","Subscriptions","Made to order","Age confirmation","Product comparison"]],
+  ["Locked against store change", "acc", ["Courier delivery (on)","Returns (on)","Quantity price breaks (off)",
+    "Business accounts (off)","Payment provider (fixed)","Data isolation (shared)"]]
+].map(function (g) {
+  return '<div class="card"><div class="card-h"><h4>' + g[0] + '</h4><span class="sp"></span><span class="tag ' +
+    g[1] + '">' + g[2].length + "</span></div><div class='card-b small muted' style='line-height:2'>" +
+    g[2].join("<br>") + "</div></div>";
+}).join("") + "</div>";
+
+
+document.getElementById("chans").innerHTML = RA.table(
+  ["Channel", "Granted?", "Store may manage it?", "Provider account", "Sender", "Templates", "Health"],
+  [
+   ["<b>Email</b><div class='sub'>Order, delivery, account and support messages</div>",
+    "<span class='tag ok'>On</span>", "<span class='tag'>No — always on</span>", "Atelier Nine's own account",
+    "<span class='mono'>orders@ateliernine.example.com</span><div class='sub'>SPF ✓ DKIM ✓ DMARC ✓</div>",
+    "14 live", "<span class='tag ok'>99.4% delivered</span>"],
+   ["<b>WhatsApp</b><div class='sub'>Click-to-chat, order updates, assisted orders</div>",
+    "<span class='tag ok'>On</span>", "<span class='tag acc'>Yes</span>", "Atelier Nine's own number",
+    "<span class='mono'>+91 ·· ···· 4021</span><div class='sub'>verified 12 Aug</div>",
+    "6 approved · <span class='tag warn'>1 pending</span>", "<span class='tag ok'>98.1% delivered</span>"],
+   ["<b>SMS</b><div class='sub'>Delivery updates and one-time codes</div>",
+    "<span class='tag ok'>On</span>", "<span class='tag'>No</span>", "Atelier Nine's own account",
+    "<span class='tag bad'>Sender id not registered</span>", "3 drafts", "<span class='tag bad'>blocked</span>"],
+   ["<b>Web chat</b><div class='sub'>Live chat on the website</div>",
+    "<span class='tag'>Not granted</span>", "<span class='tag'>—</span>", "—", "—", "—", "—"],
+   ["<b>Browser notifications</b>", "<span class='tag'>Not granted</span>", "<span class='tag'>—</span>", "—", "—", "—", "—"],
+   ["<b>In-workspace alerts</b><div class='sub'>Messages to the client's own staff</div>",
+    "<span class='tag ok'>On</span>", "<span class='tag acc'>Yes</span>", "—", "—", "9 live", "<span class='tag ok'>fine</span>"]
+  ]);
+
+document.getElementById("autos").innerHTML = RA.table(
+  ["Automation", "Needs", "Granted?", "Store may manage it?", "State"],
+  [
+   ["<b>Order acknowledgement</b>", "Email", "<span class='tag ok'>Yes</span>", "<span class='tag'>No</span>", "<span class='tag ok'>Running</span>"],
+   ["<b>Dispatch updates</b>", "Email, WhatsApp", "<span class='tag ok'>Yes</span>", "<span class='tag acc'>Yes</span>", "<span class='tag ok'>Running</span>"],
+   ["<b>Delivery updates on WhatsApp</b>", "WhatsApp template", "<span class='tag ok'>Yes</span>", "<span class='tag acc'>Yes</span>", "<span class='tag warn'>Blocked — template awaiting approval</span>"],
+   ["<b>Return acknowledgement</b>", "Email", "<span class='tag ok'>Yes</span>", "<span class='tag'>No</span>", "<span class='tag ok'>Running</span>"],
+   ["<b>Low-stock alert to staff</b>", "In-workspace", "<span class='tag ok'>Yes</span>", "<span class='tag acc'>Yes</span>", "<span class='tag ok'>Running</span>"],
+   ["<b>Reorder suggestions</b>", "—", "<span class='tag ok'>Yes</span>", "<span class='tag acc'>Yes</span>", "<span class='tag ok'>Running</span>"],
+   ["<b>Reservation expiry</b>", "—", "<span class='tag ok'>Yes</span>", "<span class='tag'>No</span>", "<span class='tag ok'>Running</span>"],
+   ["<b>Payment reconciliation</b>", "—", "<span class='tag ok'>Yes</span>", "<span class='tag'>No</span>", "<span class='tag ok'>Running</span>"],
+   ["<b>Exception escalation</b>", "In-workspace", "<span class='tag ok'>Yes</span>", "<span class='tag'>No</span>", "<span class='tag ok'>Running</span>"],
+   ["<b>Owner daily summary</b>", "Email", "<span class='tag ok'>Yes</span>", "<span class='tag acc'>Yes</span>", "<span class='tag'>Paused by the owner</span>"],
+   ["<b>Scheduled reports</b>", "Email", "<span class='tag ok'>Yes</span>", "<span class='tag'>No</span>", "<span class='tag ok'>Running</span>"],
+   ["<b>Abandoned basket reminders</b>", "Email or WhatsApp", "<span class='tag'>Not granted</span>", "<span class='tag'>—</span>", "<span class='dim'>not available yet</span>"],
+   ["<b>Back-in-stock alerts</b>", "Email", "<span class='tag'>Not granted</span>", "<span class='tag'>—</span>", "<span class='dim'>not available yet</span>"],
+   ["<b>Review requests after delivery</b>", "Email", "<span class='tag'>Not granted</span>", "<span class='tag'>—</span>", "<span class='dim'>not available yet</span>"],
+   ["<b>Supplier freshness check</b>", "—", "<span class='tag'>Not granted</span>", "<span class='tag'>—</span>", "<span class='dim'>—</span>"]
+  ]);
+
+document.getElementById("integ").innerHTML = RA.table(
+  ["Integration", "Granted?", "Store may manage it?", "Account", "State"],
+  [
+   ["<b>Payments</b>", "<span class='tag ok'>On</span>", "<span class='tag'>No</span>", "Atelier Nine's own merchant account", "<span class='tag ok'>Connected</span>"],
+   ["<b>Delivery / courier</b>", "<span class='tag ok'>On</span>", "<span class='tag acc'>Yes</span>", "Atelier Nine's own account", "<span class='tag ok'>Connected</span>"],
+   ["<b>Accounting export</b>", "<span class='tag ok'>On</span>", "<span class='tag acc'>Yes</span>", "Monthly file", "<span class='tag ok'>Fine</span>"],
+   ["<b>Accounting live connection</b>", "<span class='tag'>Not granted</span>", "<span class='tag'>—</span>", "—", "—"],
+   ["<b>Till / point of sale</b>", "<span class='tag'>Not granted</span>", "<span class='tag'>—</span>", "—", "—"],
+   ["<b>Analytics &amp; marketing tags</b>", "<span class='tag'>Not granted</span>", "<span class='tag'>—</span>", "—", "<span class='dim'>needs a privacy decision first</span>"],
+   ["<b>The client's own API access</b>", "<span class='tag'>Not granted</span>", "<span class='tag'>—</span>", "—", "<span class='dim'>not available yet</span>"],
+   ["<b>Webhooks to the client's systems</b>", "<span class='tag'>Not granted</span>", "<span class='tag'>—</span>", "—", "<span class='dim'>not available yet</span>"]
+  ]);
+document.getElementById("sets").innerHTML = RA.table(
+  ["Setting", "Value", "Who can change it", "Effect of a change"],
+  [
+   ["Store contact details<div class='sub'>Address, phone, support email shown to customers</div>", "Set by the store", "<span class='tag ok'>Store</span>", "Immediate"],
+   ["Business hours<div class='sub'>Shown on the storefront and used by support</div>", "Set by the store", "<span class='tag ok'>Store</span>", "Immediate"],
+   ["Returns window<div class='sub'>Days a customer has to start a return</div>", "15 days", "<span class='tag acc'>Platform · locked</span>", "Immediate"],
+   ["Free delivery threshold", "Set by the store", "<span class='tag ok'>Store</span>", "Immediate"],
+   ["Price display includes tax", "Yes", "<span class='tag acc'>Platform · locked</span>", "Immediate"],
+   ["Payment provider", "Configured", "<span class='tag acc'>Platform only</span>", "Immediate"],
+   ["Currency and jurisdiction", "INR · India", "<span class='tag acc'>Platform only</span>", "Needs a scheduled deployment"],
+   ["Data isolation", "Shared", "<span class='tag acc'>Platform only</span>", "Needs a scheduled deployment"],
+   ["Order number format", "Set by the store", "<span class='tag ok'>Store</span>", "Applies to new orders"],
+   ["Notification wording", "Set by the store", "<span class='tag ok'>Store</span>", "Next message sent"]
+  ]);
+
+document.getElementById("terms").innerHTML = RA.table(
+  ["Concept", "This store says", "An electronics store says", "A seafood store says"],
+  [
+   ["Item sold", "<b>piece</b>", "product", "catch"],
+   ["Item variation", "<b>size / colour</b>", "model", "grade"],
+   ["Stock unit identity", "<b>—</b> (quantity only)", "serial number", "batch"],
+   ["Grouping", "<b>collection</b>", "category", "day's landing"],
+   ["Trade buyer", "<b>stockist</b>", "dealer", "wholesaler"],
+   ["Supplier", "<b>maker</b>", "vendor", "supplier"],
+   ["Return", "<b>return or exchange</b>", "return", "quality claim"]
+  ]);
+
+document.getElementById("doms").innerHTML = RA.table(
+  ["Address", "Kind", "State", "Certificate", "Renews"],
+  [
+   ["<span class='mono'>ateliernine.example.com</span>", "Custom · primary", "<span class='tag ok'><span class='dot'></span>Verified</span>", "Valid", "in 47 days · automatic"],
+   ["<span class='mono'>www.ateliernine.example.com</span>", "Custom · redirects to primary", "<span class='tag ok'><span class='dot'></span>Verified</span>", "Valid", "in 47 days · automatic"],
+   ["<span class='mono'>atelier.stores.example</span>", "Platform address", "<span class='tag ok'><span class='dot'></span>Active</span>", "Valid", "in 62 days · automatic"],
+   ["<span class='mono'>atelier.staging.example</span>", "Staging", "<span class='tag'><span class='dot'></span>Not indexed</span>", "Valid", "in 62 days · automatic"]
+  ]);
+
+document.getElementById("vers").innerHTML = RA.table(
+  ["Version", "Published", "By", "Summary", "Checksum", ""],
+  [
+   ["<b>v23</b> <span class='tag ok'>live</span>", "yesterday 18:04", "S. Iyer", "Template changed to Aurora; exchanges enabled; returns window 15 days", "<span class='mono'>9f31c4…a07b</span>", ""],
+   ["v22", "yesterday 17:31", "S. Iyer", "Rolled back automatically — the smoke test failed on the product page", "<span class='mono'>44ba09…31de</span>", "<button class='btn sm' data-demo='Prototype: republishes v22.'>Restore</button>"],
+   ["v21", "24 Sep 18:20", "R. Nair", "Category migrated to Fashion &amp; Apparel 1.1.0", "<span class='mono'>c10fe7…88a2</span>", "<button class='btn sm' data-demo='Prototype: republishes v21.'>Restore</button>"],
+   ["v20", "19 Sep 11:02", "A. Menon", "Returns window 10 days; store contact details", "<span class='mono'>7de220…4f01</span>", "<button class='btn sm' data-demo='Prototype: republishes v20.'>Restore</button>"]
+  ]);
+
+document.getElementById("deps").innerHTML = RA.table(
+  ["When", "Kind", "Version", "Result", "Duration", "By"],
+  [
+   ["yesterday 18:03", "Template change", "v23", "<span class='tag ok'><span class='dot'></span>Succeeded</span>", "51 s", "S. Iyer"],
+   ["yesterday 17:30", "Configuration change", "v22", "<span class='tag bad'><span class='dot'></span>Rolled back</span>", "1 m 06 s", "S. Iyer"],
+   ["24 Sep 18:19", "Category migration", "v21", "<span class='tag ok'><span class='dot'></span>Succeeded</span>", "2 m 44 s", "R. Nair"],
+   ["12 Aug 09:40", "First deployment", "v1", "<span class='tag ok'><span class='dot'></span>Succeeded</span>", "6 m 12 s", "R. Nair"]
+  ]);
+
+document.getElementById("users").innerHTML = RA.table(
+  ["Person", "Role in this store", "Two-step sign-in", "Last active"],
+  [
+   ["hello@ateliernine.example.com<div class='sub'>Store owner</div>", "Owner", "On", "today"],
+   ["ops@ateliernine.example.com", "Operations admin", "On", "today"],
+   ["studio@ateliernine.example.com", "Catalogue", "On", "2 days ago"],
+   ["warehouse@ateliernine.example.com", "Warehouse", "Off", "today"],
+   ["<span class='dim'>+ 6 more</span>", "", "", ""]
+  ]);
+
+document.getElementById("sup").innerHTML = RA.table(
+  ["Requested", "Who", "Reason", "Scope", "Approved by", "State"],
+  [
+   ["5 h ago", "S. Iyer", "Investigating a reported checkout error", "Read only", "R. Nair", "<span class='tag warn'><span class='dot'></span>Active · 3 h 12 m left</span>"],
+   ["12 Sep", "S. Iyer", "Owner asked for help importing the autumn collection", "Act as store user", "R. Nair", "<span class='tag'><span class='dot'></span>Expired</span>"],
+   ["28 Aug", "T. Fernandes", "Checking a delivery-charge complaint", "Read only", "<span class='dim'>refused</span>", "<span class='tag bad'><span class='dot'></span>Refused — no owner request on file</span>"]
+  ]);
+
+document.getElementById("aud").innerHTML = RA.table(
+  ["When", "Actor", "Action", "Detail"],
+  [
+   ["yesterday 18:04", "S. Iyer", "Published configuration", "v22 → v23"],
+   ["yesterday 18:03", "S. Iyer", "Changed template", "Forge 2.1.0 → Aurora 1.3.0"],
+   ["yesterday 17:33", "system", "Automatic rollback", "Smoke test failed: product page returned 500"],
+   ["yesterday 17:30", "S. Iyer", "Published configuration", "v21 → v22"],
+   ["5 h ago", "R. Nair", "Approved support access", "Requested by S. Iyer · read only · 8 hours"],
+   ["24 Sep 18:19", "R. Nair", "Migrated category version", "1.0.2 → 1.1.0 · preview accepted"],
+   ["19 Sep 11:02", "A. Menon", "Locked setting", "Returns window · reason: approved policy"]
+  ]);
+RA.boot({support:"Atelier Nine"});
+</script>
+</body>
+</html>

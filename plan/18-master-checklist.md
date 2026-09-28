@@ -1042,3 +1042,114 @@ for s, (n, ok, t) in per.items():
 | Test coverage | T01–T36, all 22 `TS-` areas (214 suites), UAT sets, G1–G13 |
 | Decision IDs | all exist in `DECISIONS.md`; D-216–D-219 cited only as the unused reserved range |
 | Status view script (§12) | ran against a synthetic `TASKS.md`; lists ready items and the per-section summary |
+
+---
+
+## SaaS platform checklist (2026-09-28, `D-227`)
+
+Architecture: `19-saas-platform.md`, `20-root-admin.md`. Each item is evidenced by the task named beside it.
+
+### A. Separation (SAAS §3 S04, S23)
+- [ ] `root-admin/` builds, tests and deploys independently of `frontend/`/`backend/` — `T-1R.1-M34-01`
+- [ ] A cross-import in either direction fails CI — `T-1A.1-M01-11`
+- [ ] The store runtime opens no root-admin database connection and makes no platform call on the request path — `T-1R.1-M34-10`
+- [ ] No shared session, cookie domain or token issuer between the realms — `T-1R.1-M34-03`
+- [ ] No compiled artefact is ever committed to the repository — `T-1A.1-M01-11`
+
+### B. Configuration (SAAS §3 S12–S15)
+- [ ] Every configuration key is declared in the schema; an undeclared key cannot be stored, compiled or read — `T-1A.1-M31-01`
+- [ ] Layer resolution L0–L5 is deterministic — `T-1A.1-M31-01`
+- [ ] The compiler produces byte-identical artefacts for identical input — `T-1R.1-M34-07`
+- [ ] A tampered, truncated or mismatched artefact is refused and the previous version keeps serving — `T-1A.1-M31-03`
+- [ ] A published change reaches every instance within the `D-248` budget, by event and by pointer fallback — `T-1A.1-M31-04`
+- [ ] Rollback is republication of an earlier version and works from the portal — `T-1R.1-M34-08`
+- [ ] No secret value appears in any artefact — `T-1A.1-M30-03`
+- [ ] A store can edit only its editable, unlocked keys — `T-1A.1-M31-05`
+
+### C. Performance (SAAS §3 S13 / `D-248`)
+- [ ] Zero configuration database queries, file reads and JSON parses per request — `T-1A.1-M31-07`
+- [ ] Accessor cost, boot load, memory, propagation and added latency all within budget, with recorded numbers — `T-1A.1-M31-07`
+- [ ] `theme.css` served static, hashed and immutably cached — `T-1A.1-M31-07`
+- [ ] The budget still holds with two stores live — `T-1R.3-M34-03`
+
+### D. Capabilities and packs (SAAS §3 S02, S06, S10, S16–S18, S22)
+- [ ] Every capability is enforced at all six points — `T-1A.1-M31-02`
+- [ ] A disabled capability answers 404, ships no bundle and schedules no job — `T-1A.1-M31-02`
+- [ ] Disabling never deletes data — `T-1A.1-M31-02`
+- [ ] No code branches on a pack id — `T-1A.1-M32-01`
+- [ ] `VP-electronics` reproduces the approved Tradex behaviour — `T-1A.4-M32-03`
+- [ ] A second category (`VP-fashion_apparel`) works with **no commit under `frontend/` or `backend/`** — `T-1R.2-M32-01`
+- [ ] A pack can be added, versioned, migrated with preview, deprecated and retired — `T-1R.2-M34-01`, `T-1R.2-M34-02`
+
+### E. Templates and branding (SAAS §3 S07–S09, S19–S21)
+- [ ] Two templates exist and produce visibly different websites — `T-1A.3-M33-03`, `T-1R.2-M33-01`
+- [ ] The same store under two templates produces byte-identical business output — `T-1R.2-M34-04`
+- [ ] No component hard-codes a colour, font, radius, shadow or copy string — `T-1A.3-M33-01`
+- [ ] Brand colours derive a full ramp, and a palette failing WCAG 2.2 AA blocks publication — `T-1R.2-M34-05`
+- [ ] Logo upload validates, generates variants and reaches the rendered store — `T-1R.2-M34-05`
+- [ ] A template can be added, updated, assigned and retired without a store-specific codebase — `T-1R.2-M34-03`
+
+### F. Invisibility (SAAS §3 S03)
+- [ ] The forbidden-vocabulary crawl reports zero findings across every store-facing page, email, PDF and export — `T-1A.3-M31-01`, `T-1A.17-M26-08`
+- [ ] Locked and root-only settings are **absent** from the store admin, not greyed out — `T-1A.16-M24-08`
+- [ ] Disabled capabilities answer 404, never 403 — `T-1A.1-M31-02`
+- [ ] No response header, cookie name, bundle name or generator tag carries a platform identity — `T-1A.3-M31-01`
+- [ ] No link, sitemap entry, redirect or DNS record points from a store to the root admin — `T-1A.3-M31-01`
+- [ ] Platform staff cannot see store data without an approved, expiring, dual-audited grant — `T-1R.3-M34-01`
+
+### G. Isolation (SAAS §3 S01, S03)
+- [ ] Every store-scoped table has `store_id`, in every unique constraint — `T-1A.1-M30-02`
+- [ ] An unscoped query is refused — `T-1A.1-M30-02`
+- [ ] Cross-store read, write, list, search, report, export, media and credential access all fail — `T-1A.1-M30-04`
+- [ ] Removing a tenant filter breaks at least one test (mutation check) — `T-1A.1-M30-04`
+- [ ] A single store can be restored from backup without affecting another — `T-1A.17-M26-08`
+
+### H. Deployment (SAAS §3 S11)
+- [ ] The nine-step pipeline is idempotent and resumable at every step — `T-1R.3-M35-01`
+- [ ] A failed smoke test rolls back automatically and the store keeps serving — `T-1R.3-M35-05`
+- [ ] A runtime host boots from its on-disk artefact with the network and platform unreachable — `T-1R.3-M35-04`
+- [ ] Custom domains verify, issue and renew certificates — `T-1R.3-M35-03`
+- [ ] Drift is detected when an instance serves an unexpected version or checksum — `T-1R.3-M35-06`
+- [ ] Decommission is two-person with retention and destruction evidence — `T-1R.3-M35-07`
+
+### I. The end-to-end proof (SAAS §1 Example, Final Objective)
+- [ ] Fashion & Apparel selected, template selected, colours configured, logo uploaded, store deployed — entirely from the portal — `T-1R.2-M34-10`
+- [ ] Two stores of different categories created from an empty platform, each behaving and looking like its own business, neither aware of the other — `T-1R.3-M34-03`
+- [ ] The complete `TS-SAAS-*` suite green — `T-1R.3-M34-03`
+
+---
+
+## Feature catalogue, channels and automation checklist (2026-09-28, `D-273`, `D-274`)
+
+### J. Granting and withholding
+- [ ] Every feature a client might buy is a capability in the catalogue — channels, each automation, integrations, store API — `T-1A.1-M31-09`
+- [ ] A `CANDIDATE` capability whose decision is open cannot be granted, and the refusal names the decision — `T-1A.1-M31-09`
+- [ ] Every capability has a plain-language name and description an operator can read — `T-1A.1-M31-09`
+- [ ] Each capability can be granted, withheld or delegated per store from one screen — `T-1R.2-M34-13`
+
+### K. Channels
+- [ ] A channel on without a verified binding, verified sender and required templates blocks publish, with a precise report — `T-1A.13-M20-06`
+- [ ] No secret value appears in any table, log or configuration artefact — `T-1A.13-M20-06`
+- [ ] Email sender verification records SPF, DKIM and DMARC separately — `T-1A.13-M20-06`
+- [ ] Repeated delivery failure suspends the channel and opens an exception case — `T-1A.13-M20-06`
+- [ ] A credential from one store cannot send as another store — `T-1A.13-M20-06`
+- [ ] Switching a channel off stops sends immediately, keeps the history and removes it from every preference screen and template editor — `T-1A.16-M24-11`
+
+### L. Messaging rules, enforced once
+- [ ] A send without a consent basis is refused from **every** caller, including services and jobs — `T-1A.13-M20-07`
+- [ ] Frequency caps and quiet hours apply across all channels together — `T-1A.13-M20-07`
+- [ ] One business event produces one message however many times the job retries — `T-1A.13-M20-07`
+- [ ] Logs hold no message body after the retention window and no personal data beyond a subject reference — `T-1A.13-M20-07`
+- [ ] Adding a new channel adapter requires no change to any of these rules — `T-1A.13-M20-07`
+
+### M. Automations
+- [ ] Every automation is independently grantable per store — `T-1A.13-M17-01`
+- [ ] A disabled automation is never registered with the scheduler, and queued work for it is dead-lettered with a reason — `T-1A.13-M17-01`
+- [ ] Enabling a messaging automation without its channel or template is blocked, naming both — `T-1A.13-M17-01`
+- [ ] Every run is logged with input, decision, outcome and duration; failure opens an exception case with an owner — `T-1A.13-M17-01`
+- [ ] The owner can pause a rule without a deployment, and the pause is audited — `T-1A.13-M17-01`
+
+### N. What the store's own administrator sees
+- [ ] Only delegated features, channels and automations appear; the rest are absent from the page **and** from its data — `T-1A.16-M24-09`, `T-1A.16-M24-11`
+- [ ] A delegated switch takes effect within the propagation budget with no deployment — `T-1A.16-M24-09`
+- [ ] Enabling a delegated channel shows the same verification report an operator would see — `T-1A.16-M24-11`

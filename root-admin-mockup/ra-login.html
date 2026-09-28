@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<meta name="referrer" content="no-referrer">
+<title>Sign in — Configurable Root Admin (internal prototype)</title>
+<link rel="stylesheet" href="assets/ra.css">
+</head>
+<body>
+<div class="ra-internal" data-help="ra.internal">INTERNAL PROTOTYPE — <b>Configurable Root Admin</b> — not part of any client store, not linked from the client-facing demo (D-249)</div>
+<main class="auth">
+  <div class="box">
+    <div style="text-align:center;margin-bottom:22px">
+      <span class="ra-logo" style="width:44px;height:44px;border-radius:12px;font-size:16px;display:inline-grid">RA</span>
+      <h1 style="margin-top:14px;font-size:20px">Configurable Root Admin</h1>
+      <p class="dim small mt-s">Commerce platform control plane</p>
+    </div>
+
+    <div class="card" id="step1">
+      <div class="card-b">
+        <div style="margin-bottom:14px">
+          <label class="fl" for="em">Work email</label>
+          <input id="em" type="email" value="a.menon@platform.example" autocomplete="username">
+        </div>
+        <div style="margin-bottom:16px">
+          <label class="fl" for="pw">Password</label>
+          <input id="pw" type="password" value="............" autocomplete="current-password">
+        </div>
+        <button class="btn pri" style="width:100%;justify-content:center" id="go">Continue</button>
+        <p class="hint" style="text-align:center;margin-top:14px">
+          <a href="#" data-demo="Prototype: a reset link would be sent to the registered work address.">Forgot password</a>
+          &nbsp;·&nbsp;
+          <a href="#" data-demo="Prototype: recovery requires a second platform owner to approve.">Lost your device</a>
+        </p>
+      </div>
+    </div>
+
+    <div class="card" id="step2" style="display:none">
+      <div class="card-b">
+        <p class="small muted mb">Multi-factor verification is required for every platform user. There is no
+          bypass and no grace period.</p>
+        <label class="fl" for="ot">Six-digit code from your authenticator</label>
+        <input id="ot" inputmode="numeric" maxlength="6" placeholder="······"
+               style="letter-spacing:.5em;text-align:center;font-size:19px;font-family:var(--ra-mono)">
+        <label class="row small mt" style="gap:8px;color:var(--ra-tx-2)">
+          <span class="sw"><input type="checkbox"><i></i></span> Trust this device for 12 hours
+        </label>
+        <a class="btn pri mt" style="width:100%;justify-content:center" href="ra-dashboard.html">Verify and sign in</a>
+        <p class="hint" style="text-align:center;margin-top:12px">
+          <a href="#" id="back">Use a different account</a></p>
+      </div>
+    </div>
+
+    <div class="note mt"><svg data-i="shield"></svg><div>
+      This portal is reachable only from approved networks and has no connection to any store's sign-in. A store
+      credential does not work here, and a platform credential does not work on any store.
+    </div></div>
+    <p class="dim xs" style="text-align:center;margin-top:16px">
+      Internal prototype · <a href="index.html">screen overview</a>
+    </p>
+  </div>
+</main>
+<script src="assets/ra.js"></script>
+<script src="assets/ra-help.js"></script>
+<script src="assets/help/glossary.js"></script>
+<script src="assets/help/shell.js"></script>
+<script src="assets/help/ra-login.js"></script>
+<script>
+  document.querySelectorAll("svg[data-i]").forEach(function(s){s.outerHTML=RA.icon(s.dataset.i)});
+  RA.wireDemo();
+  document.getElementById("go").addEventListener("click", function () {
+    document.getElementById("step1").style.display = "none";
+    document.getElementById("step2").style.display = "";
+    document.getElementById("ot").focus();
+  });
+  document.getElementById("back").addEventListener("click", function (e) {
+    e.preventDefault();
+    document.getElementById("step2").style.display = "none";
+    document.getElementById("step1").style.display = "";
+  });
+  if (RA.help) RA.help.mount();
+</script>
+</body>
+</html>

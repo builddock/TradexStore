@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<meta name="referrer" content="no-referrer">
+<title>Platform users & audit — Configurable Root Admin (internal prototype)</title>
+<link rel="stylesheet" href="assets/ra.css">
+</head>
+<body>
+<div class="ra-internal" data-help="ra.internal">INTERNAL PROTOTYPE — <b>Configurable Root Admin</b> — not part of any client store, not linked from the client-facing demo (D-249)</div>
+<main data-tabs>
+  <div class="ra-head">
+    <div><h1>Platform people and records</h1>
+      <p class="sub">Who can operate this platform, what they did, and every occasion on which someone here looked
+        at a store's data.</p></div>
+    <div class="act"><button class="btn pri" data-open="dlg-inv">Invite a person</button></div>
+  </div>
+
+  <div class="tabs">
+    <button data-tab="a-users" data-help="ra.a.users">People</button>
+    <button data-tab="a-roles" data-help="ra.a.roles">What each role can do</button>
+    <button data-tab="a-sup" data-help="ra.a.sup">Access to store data</button>
+    <button data-tab="audit" data-help="ra.a.audit">Record of actions</button>
+  </div>
+
+  <section class="pane" id="a-users">
+    <div class="note mb"><svg data-i="shield"></svg><div>
+      Two-step sign-in is required for everyone here, with no exception and no grace period. None of these accounts
+      can sign in to any store, and no store account can sign in here.
+    </div></div>
+    <div class="card"><div id="users"></div></div>
+  </section>
+
+  <section class="pane" id="a-roles">
+    <div class="card"><div id="roles"></div></div>
+    <div class="note mt"><svg data-i="info"></svg><div>
+      No role here gives access to a store's own data. That always needs a separate, approved, time-limited grant.
+    </div></div>
+  </section>
+
+  <section class="pane" id="a-sup">
+    <div class="grid g4 mb">
+      <div class="kpi warn"><div class="k">Active now</div><div class="v">1</div><div class="d">Atelier Nine · 3 h 12 m left</div></div>
+      <div class="kpi"><div class="k">This month</div><div class="v">6</div><div class="d">all expired on time</div></div>
+      <div class="kpi"><div class="k">Refused</div><div class="v">2</div><div class="d">no request from the store on file</div></div>
+      <div class="kpi ok"><div class="k">Owners told</div><div class="v">6 of 6</div><div class="d">automatically, when access began</div></div>
+    </div>
+    <div class="card"><div id="sup"></div></div>
+    <div class="note mt"><svg data-i="eye"></svg><div>
+      Everything done under a grant is written into the store's own record of actions as well, under the name of
+      the person here who did it. The store owner can always see who looked at their data and why.
+    </div></div>
+  </section>
+
+  <section class="pane" id="audit">
+    <div class="card mb"><div class="card-b row">
+      <div style="min-width:200px;flex:1"><label class="fl">Search</label><input placeholder="Person, store or action"></div>
+      <div style="min-width:170px"><label class="fl">Store</label><select><option>All stores</option><option>Atelier Nine</option><option>Tradex Computers</option></select></div>
+      <div style="min-width:170px"><label class="fl">Kind of action</label><select><option>All actions</option>
+        <option>Configuration published</option><option>Deployment</option><option>Category or template</option>
+        <option>Access to store data</option><option>People and roles</option></select></div>
+      <div style="min-width:150px"><label class="fl">When</label><select><option>Last 7 days</option><option>Last 30 days</option><option>This year</option></select></div>
+      <div style="align-self:flex-end"><button class="btn" data-demo="Prototype: exports the filtered record. No secret value is ever written to it.">Export</button></div>
+    </div></div>
+    <div class="card"><div id="aud"></div></div>
+    <p class="hint mt">Records are written in the same step as the change, so an action cannot happen without
+      being recorded. They cannot be edited or deleted by anyone.</p>
+  </section>
+
+  <div class="modal" id="dlg-inv">
+    <div class="dh"><h3>Invite someone to the platform</h3><span class="sp"></span><button class="x" data-close>✕</button></div>
+    <div class="db stack">
+      <div><label class="fl">Work email</label><input placeholder="name@platform.example"></div>
+      <div><label class="fl">Role</label><select>
+        <option>Operator — create, configure and deploy stores</option>
+        <option>Author — write categories, templates and wording; no store access</option>
+        <option>Support — read-only, may request access to one store at a time</option>
+        <option>Read only — health and records</option>
+        <option>Owner — everything, including people and permanent deletions</option></select></div>
+      <div class="note"><svg data-i="lock"></svg><div>They must set up two-step sign-in before they can do
+        anything at all. There is no temporary password.</div></div>
+    </div>
+    <div class="df"><button class="btn" data-close>Cancel</button>
+      <button class="btn pri" data-demo="Prototype: invitation sent. It expires in 48 hours.">Send invitation</button></div>
+  </div>
+</main>
+<script src="assets/ra.js"></script>
+<script src="assets/ra-help.js"></script>
+<script src="assets/help/glossary.js"></script>
+<script src="assets/help/shell.js"></script>
+<script src="assets/help/ra-admin.js"></script>
+<script>
+document.getElementById("users").innerHTML = RA.table(
+  ["Person", "Role", "Two-step sign-in (MFA)", "Active sessions", "Last active", "Created", ""],
+  [
+   ["<b>R. Nair</b><div class='sub'>r.nair@platform.example</div>", "Owner", "<span class='tag ok'>On · authenticator</span>", "1 · this device", "today 09:12", "12 Mar 2026", '<button class="btn sm" data-demo="Prototype: opens this person\'s record and history.">Open</button>'],
+   ["<b>A. Menon</b><div class='sub'>a.menon@platform.example</div>", "Operator", "<span class='tag ok'>On · security key</span>", "2 · <a href='#' data-demo='Prototype: signs this person out of every device.'>sign out all</a>", "now", "02 Apr 2026", '<button class="btn sm" data-demo="Prototype: opens this person\'s record and history.">Open</button>'],
+   ["<b>S. Iyer</b><div class='sub'>s.iyer@platform.example</div>", "Operator", "<span class='tag ok'>On · authenticator</span>", "1", "yesterday 18:05", "18 Jun 2026", '<button class="btn sm" data-demo="Prototype: opens this person\'s record and history.">Open</button>'],
+   ["<b>P. Raghavan</b><div class='sub'>p.raghavan@platform.example</div>", "Author", "<span class='tag ok'>On · authenticator</span>", "0", "2 days ago", "18 Jun 2026", '<button class="btn sm" data-demo="Prototype: opens this person\'s record and history.">Open</button>'],
+   ["<b>T. Fernandes</b><div class='sub'>t.fernandes@platform.example</div>", "Support", "<span class='tag ok'>On · authenticator</span>", "0", "5 days ago", "01 Aug 2026", '<button class="btn sm" data-demo="Prototype: opens this person\'s record and history.">Open</button>'],
+   ["<b>K. Desai</b><div class='sub'>k.desai@platform.example</div>", "Read only", "<span class='tag warn'>Must be set up before first use</span>", "0", "never", "invited 2 days ago", '<button class="btn sm" data-demo="Prototype: resends the invitation.">Resend</button>']
+  ]);
+
+document.getElementById("roles").innerHTML = RA.table(
+  ["Can…", "Owner", "Operator", "Author", "Support", "Read only"],
+  [
+   ["Create and configure a store", "✓", "✓", "—", "—", "—"],
+   ["Publish a configuration and deploy", "✓", "✓", "—", "—", "—"],
+   ["Change a store's category or template", "✓", "✓", "—", "—", "—"],
+   ["Write categories, templates and wording", "✓", "—", "✓", "—", "—"],
+   ["Manage addresses and certificates", "✓", "✓", "—", "—", "—"],
+   ["Suspend a store", "✓", "✓", "—", "—", "—"],
+   ["Delete a store permanently", "✓ <span class='dim'>(with a second owner)</span>", "—", "—", "—", "—"],
+   ["Retire a category or template", "✓ <span class='dim'>(with a second owner)</span>", "—", "—", "—", "—"],
+   ["Invite and remove platform people", "✓", "—", "—", "—", "—"],
+   ["Request access to a store's data", "✓", "✓", "—", "✓", "—"],
+   ["Approve access to a store's data", "✓", "—", "—", "—", "—"],
+   ["See health and the record of actions", "✓", "✓", "✓", "✓", "✓"]
+  ]);
+
+document.getElementById("sup").innerHTML = RA.table(
+  ["When", "Who asked", "Store", "Why", "What they could do", "Approved by", "State"],
+  [
+   ["5 h ago", "S. Iyer", "Atelier Nine", "Investigating a reported checkout error", "Read only", "R. Nair", "<span class='tag warn'><span class='dot'></span>Active · 3 h 12 m left</span>"],
+   ["3 days ago", "T. Fernandes", "Verde Leaf", "Owner asked for help with a delivery charge", "Read only", "R. Nair", "<span class='tag'><span class='dot'></span>Expired after 1 h 04 m</span>"],
+   ["12 Sep", "S. Iyer", "Atelier Nine", "Owner asked for help importing the autumn collection", "Acting as a store user", "R. Nair", "<span class='tag'><span class='dot'></span>Expired</span>"],
+   ["28 Aug", "T. Fernandes", "Atelier Nine", "Checking a delivery-charge complaint", "Read only", "<span class='dim'>—</span>", "<span class='tag bad'><span class='dot'></span>Refused — no request from the store</span>"],
+   ["14 Aug", "A. Menon", "Tradex Computers", "Helping with the first stock import", "Acting as a store user", "R. Nair", "<span class='tag'><span class='dot'></span>Ended early by the operator</span>"]
+  ]);
+
+document.getElementById("aud").innerHTML = RA.table(
+  ["When", "Who", "Action", "Store", "Detail"],
+  [
+   ["today 11:42", "A. Menon", "Started a deployment", "Oakrow Furniture", "First deployment · v4"],
+   ["today 08:15", "A. Menon", "Published a configuration", "Harbour Fresh", "v8 → v9 · delivery slots and cut-off changed"],
+   ["5 h ago", "R. Nair", "Approved access to store data", "Atelier Nine", "Requested by S. Iyer · read only · 8 hours · reason recorded"],
+   ["5 h ago", "S. Iyer", "Asked for access to store data", "Atelier Nine", "Investigating a reported checkout error"],
+   ["yesterday 18:04", "S. Iyer", "Published a configuration", "Atelier Nine", "v22 → v23"],
+   ["yesterday 18:03", "S. Iyer", "Changed the template", "Atelier Nine", "Forge 2.1.0 → Aurora 1.3.0 · no data change"],
+   ["yesterday 17:33", "system", "Rolled a store back", "Atelier Nine", "Check failed: product page returned an error"],
+   ["4 days ago", "P. Raghavan", "Published a category version", "—", "Fashion &amp; Apparel 1.1.0 · 1 store affected, none migrated"],
+   ["5 days ago", "R. Nair", "Locked a setting", "Tradex Computers", "Returns window · reason: approved policy"],
+   ["18 Sep", "R. Nair", "Suspended a store", "Paw Post", "Reason recorded · owner notified · no data deleted"]
+  ]);
+RA.boot();
+</script>
+</body>
+</html>

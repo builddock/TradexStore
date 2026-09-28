@@ -2037,3 +2037,35 @@ No page or role registry additions are requested (role labels are covered by D-2
 | 8 | MK shell Help icon links staff to Settings (`erp-admin.html`) | MK `assets/tradex.js` | D-174 |
 | 9 | Order audit shows "viewed order · read access logged" — read logging of operational records is not documented; D-114 only covers audit-log mechanism | MK:erp-orders.html `od-time` | §5.4.4 → D-114 scope |
 | 10 | Mockup nav/page labels differ from registry names (e.g. "Products" / "Products & catalog" for P-E06 Catalog & imports; "Settings & access" for P-E15) | MK vs 00-conventions §8 | Registry names used |
+
+---
+
+## 19. SaaS additions — the workspace is configuration-driven (2026-09-28, `D-227`)
+
+Architecture: `19-saas-platform.md` §6.4, §9, §11; administration split: `11-admin.md` (SaaS additions).
+
+| Rule | Detail | Task |
+|---|---|---|
+| WS-S1 | The sidebar, section grouping, screen set, tabs, columns, saved views and KPI tiles come from the pack's **workspace profile** and the store's capability set — not from the shell code | `T-1A.3-M32-01` |
+| WS-S2 | Every label, heading, column name, status name, help text and empty-state sentence comes from a terminology token. A grocery store's Inventory screen says "batch" where an electronics store says "serial", from the same code | `T-1A.1-M31-06` |
+| WS-S3 | A screen, tab, column, action or queue belonging to a disabled capability does not exist: not in the navigation, not in the route table, not in the bundle | `T-1A.1-M31-02` |
+| WS-S4 | P-E15 shows only the store-editable, unlocked configuration keys, rendered from the schema with plain-language labels. Locked and platform-owned keys are **absent**, never greyed out | `T-1A.16-M24-08` |
+| WS-S5 | No workspace screen shows another store, a category list, a template list, a capability or configuration identifier, or any platform vocabulary | `T-1A.3-M31-01` |
+| WS-S6 | The audit viewer additionally shows platform support-access actions taken in this store, attributed to the named platform user | `T-1R.3-M34-01` |
+| WS-S7 | The contextual help of §2.21–§2.23 and the responsive behaviour of §2.24 apply to whatever screen set the configuration produces; help content for a pack-specific screen is pack content | `T-1A.16-M24-06` |
+
+Read §1–§18 as the specification of the workspace **for a store configured with `VP-electronics`** — which is
+the Tradex store and the approved mockup. The screens, flows, states and rules are unchanged; where they come
+from changes.
+
+---
+
+## 20. Feature, channel and automation screens (2026-09-28, `D-258`, `D-273`, `D-274`)
+
+| Rule | Detail | Task |
+|---|---|---|
+| WS-S8 | P-E15 gains a **Features** section listing only the modules and features delegated to this store, in business language, with dependencies resolved and an open-work warning before switching one off. Locked and absent features do not appear on the page or in the data it loads | `T-1A.16-M24-09` |
+| WS-S9 | P-E15 gains a **Channels** section for delegated channels only: on/off, sender identity and verification state, templates with their approval state, delivery health and any suspension. A credential is entered once and never displayed again | `T-1A.16-M24-11` |
+| WS-S10 | P-E14 lists only the automations this store was granted. Each shows a preview, an enable/pause control, its owner and its run log. An automation whose capability is off does not appear, and its queued work is dead-lettered rather than run | `T-1A.13-M17-01` |
+| WS-S11 | Enabling a delegated channel still runs the verification check, and the store sees the same precise "what is missing" report an operator would — never a switch that appears to work and then silently fails to send | `T-1A.13-M20-06` |
+| WS-S12 | Every workspace screen that shows a message, notification or automation outcome reads it from the one messaging service; no screen talks to a provider | `19` §26.2 |

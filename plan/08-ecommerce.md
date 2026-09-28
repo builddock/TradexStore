@@ -1682,3 +1682,41 @@ No unconditional registry additions. Conditional on decisions:
 |---|---|---|---|---|
 | A supplier-confirmation record for supplier-sourced order lines (or an extension of E-supplier_fulfilment_task beyond the pilot) | M10 / M14 | Entity gap 1 (§10) | BP §9.7, §29.3; MK:store-order.html | Only if D-073 allows selling supplier-held stock and D-181 is decided |
 | A delivery/shipping-charge rule record (if not held in E-configuration_version) | M12 / M05 | Entity gap 2 (§10) | BP §8.1 step 5, §6.5 | Only after D-182 |
+
+---
+
+## 13. SaaS additions (2026-09-28, `D-227`)
+
+Architecture: `19-saas-platform.md` §6.3, §16.
+
+The e-commerce behaviour specified above is unchanged; it becomes per-store and capability-gated:
+
+- Guest checkout, wishlist, comparison, reviews, product Q&A, coupons, stock alerts, store pickup, COD, EMI,
+  backorders, delivery slots and minimum order value are all **capabilities** (`19` §5.3), defaulted by the pack
+  and set per store.
+- Checkout step composition comes from the pack's storefront profile (delivery slot, appointment, licence
+  acceptance); the order state machine, reservation model, idempotency and money rules of BP §8.1, §10.1–10.3
+  are unchanged.
+- Prices, policies, tax convention and thresholds are **store configuration values**, not global constants.
+- Every user-visible word comes from a terminology token, so "product", "dealer" and "order" can differ per
+  store without a code change.
+- Nothing a customer sees may reveal the platform (`19` §9).
+
+---
+
+## 14. Engagement, marketing and messaging capabilities (2026-09-28, `D-273`, `D-275`)
+
+The storefront behaviour specified above is unchanged. What the SaaS catalogue adds is that each engagement
+feature is separately grantable per store (`19` §5.3 F, L, M):
+
+- **Transactional messaging** (order, payment, dispatch, delivery, return) is in scope and on by default, on
+  whichever channels the store has been granted — email, SMS, WhatsApp (`19` §5.6).
+- **Marketing and engagement** — newsletters, campaigns, abandoned-cart recovery, back-in-stock and price-drop
+  alerts, review requests, loyalty, referrals, gift cards — are listed as `CANDIDATE` capabilities and are **not
+  built** until `D-275` approves a scope. They can be shown to a client as available; they cannot be granted
+  while the decision is open (`BR-M31-17`).
+- **Web chat** is `CANDIDATE` under `D-276`; WhatsApp click-to-chat and contact forms cover the launch need.
+- **Analytics and marketing tags** are `CANDIDATE` under `D-277`; if approved they are consent-gated, declared
+  per store, and loaded after first paint so they cannot break the performance budget (`19` §25.2).
+- Consent, preferences, frequency caps and quiet hours apply **across all channels together** and are enforced in
+  the messaging service, so no feature can message a customer outside their agreement (`19` §26.2).
