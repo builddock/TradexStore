@@ -20,10 +20,14 @@ Architecture: `19-saas-platform.md` §1–§2 (read first), `20-root-admin.md`. 
 | Separation | **Each client has its own database, image container, search index, cache namespace and encryption key (D-272)**; `store_id` scoping mandatory on every row regardless, in every topology |
 | Topologies | One codebase, four placements (D-269): separated client on a shared server (**default**) · dedicated runtime · standalone install on the client's own server · shared database (agreed exception only) |
 | Control model | Three levels (D-257): surfaces → modules (platform- and category-defined) → capabilities; three control states per item — not available / available and locked / **delegated to the store's own administrator** (D-258) |
+| Feature catalogue | ~230 grantable features across 18 areas (D-273), including **every channel** (email, SMS, WhatsApp levels, web chat, push, in-app) and **every automation** as its own switch. Each entry carries a build status; a `CANDIDATE` entry with an open decision cannot be granted (BR-M31-17) |
+| Feature map | **`21-feature-map.md`** maps every screen section, tab, endpoint and entity to the capability that governs it, with a reverse index (D-273). Read it before building any screen; `T-1A.3-M31-02` makes the build fail when a section has no declared capability |
+| Mockup baseline | The client-facing mockup is **the reference store: every Phase-1 feature enabled**, deliberately not gated (D-279). It shows the system, not one client's configuration |
+| Channels | Granting a channel requires five layers (D-274): capability → provider binding → verified sender → approved templates → consent and caps. Publication is blocked until all five exist, so a channel can never look configured and silently fail |
 | Current phase | **0 — Discovery & proof** |
 | Current stage | 0 |
 | Current task | — (none in progress). Next eligible: **T-0-M01-03** Discovery questionnaire & next-meeting pack |
-| Last session | 2026-09-28 — SaaS architecture change (D-227, 71 tasks) **plus a production-readiness and control-model second pass** (D-257–D-272, 28 tasks): surfaces/modules/delegation, category modules, bundles + completeness gate, schema evolution, per-store recovery, money across stores, quotas, environments, observability, performance architecture, deployment topologies, per-client separation. Root admin mockup extended to 13 screens |
+| Last session | 2026-09-28 — SaaS architecture change (D-227, 71 tasks), production-readiness and control-model pass (D-257–D-272, 28 tasks), feature-catalogue and channel pass (D-273–D-278, 6 tasks), **and the feature map** (D-279, `21-feature-map.md`, 1 task): every screen section mapped to the capability that governs it, with the mockup recorded as the all-features-enabled reference store |
 | Application code present | No (`frontend/`, `backend/`, `root-admin/`, `infra/`, `tests/` not yet created) |
 | UI prototype | Mockup v0.1 (32 screens) at repo root — **awaiting client sign-off (D-049)**. Storefront pages responsive (desktop · tablet · phone) since 2026-09-27; Phase 1 mobile scope is D-223. ERP workspace and vendor portal have contextual help (ⓘ, help panel, glossary) and 8 operational ERP pages have guided workflows since 2026-09-28 (D-224). ERP and vendor pages responsive (tablet · phone, desktop unchanged) since 2026-09-28; Phase 1 scope is D-226 |
 | UI prototype (root admin) | `root-admin-mockup/` — **13 screens P-R01–P-R13**, own assets, `noindex`, **not linked from any client-facing page** (D-249). Verified 2026-09-28 after the second pass: 0 console errors on 14 pages, `scrollWidth == clientWidth` at 390/768/1280/1600 px, all internal links resolve, no inbound or outbound link between the two mockups |
@@ -33,14 +37,14 @@ Architecture: `19-saas-platform.md` §1–§2 (read first), `20-root-admin.md`. 
 Run `python3 plan/tools/status.py` and paste the summary here at the end of each session.
 
 ```
-Tradex plan status — 457 tasks
-  NOT_STARTED=155 · IN_PROGRESS=0 · BLOCKED=0 · REQUIRES_DECISION=300 · COMPLETED=1 · NOT_APPLICABLE=1
+Tradex plan status — 464 tasks
+  NOT_STARTED=158 · IN_PROGRESS=0 · BLOCKED=0 · REQUIRES_DECISION=304 · COMPLETED=1 · NOT_APPLICABLE=1
 Current (earliest unfinished) stage: 0
 Per stage:
   0       done   1/77   in-progress 0  blocked 0  needs-decision 47
-  1A.1    done   0/33   in-progress 0  blocked 0  needs-decision 19
+  1A.1    done   0/34   in-progress 0  blocked 0  needs-decision 19
   1A.2    done   0/20   in-progress 0  blocked 0  needs-decision 12
-  1A.3    done   0/18   in-progress 0  blocked 0  needs-decision 14
+  1A.3    done   0/19   in-progress 0  blocked 0  needs-decision 14
   1A.4    done   0/18   in-progress 0  blocked 0  needs-decision 13
   1A.5    done   0/10   in-progress 0  blocked 0  needs-decision 6
   1A.6    done   0/16   in-progress 0  blocked 0  needs-decision 11
@@ -50,13 +54,13 @@ Per stage:
   1A.10   done   0/12   in-progress 0  blocked 0  needs-decision 7
   1A.11   done   0/15   in-progress 0  blocked 0  needs-decision 9
   1A.12   done   0/13   in-progress 0  blocked 0  needs-decision 8
-  1A.13   done   0/12   in-progress 0  blocked 0  needs-decision 9
+  1A.13   done   0/15   in-progress 0  blocked 0  needs-decision 12
   1A.14   done   0/13   in-progress 0  blocked 0  needs-decision 10
   1A.15   done   0/13   in-progress 0  blocked 0  needs-decision 10
-  1A.16   done   0/12   in-progress 0  blocked 0  needs-decision 9
+  1A.16   done   0/13   in-progress 0  blocked 0  needs-decision 9
   1A.17   done   0/21   in-progress 0  blocked 0  needs-decision 17
   1R.1    done   0/10   in-progress 0  blocked 0  needs-decision 4
-  1R.2    done   0/14   in-progress 0  blocked 0  needs-decision 4
+  1R.2    done   0/15   in-progress 0  blocked 0  needs-decision 5
   1R.3    done   0/14   in-progress 0  blocked 0  needs-decision 9
   1B.1    done   0/18   in-progress 0  blocked 0  needs-decision 13
   1B.2    done   0/11   in-progress 0  blocked 0  needs-decision 7
@@ -71,13 +75,13 @@ Open decisions blocking the most tasks:
   D-004 blocks 41 — Staff ERP UI: native ERP screens or custom UI (per mockup) — per P-E screen
   D-034 blocks 10 — Service levels & performance targets (availability, RPO, RTO, LCP/INP/CLS, API p95, stock 
   D-053 blocks 10 — Testing tools/frameworks (unit, integration, E2E, load, accessibility, security)
+  D-107 blocks 9 — Secrets management and TLS certificate tooling: secrets store, rotation cadence, who may r
   D-035 blocks 8 — Support & maintenance model (hours, severities, response targets, coverage)
   D-001 blocks 8 — Which operational core owns stock, reservations, orders, permissions and integrations?
   D-101 blocks 8 — Which frontend framework builds the custom ERP staff workspace screens (`frontend/workspac
-  D-107 blocks 8 — Secrets management and TLS certificate tooling: secrets store, rotation cadence, who may r
   D-033 blocks 8 — Object storage & CDN provider
 ```
-`status.py --check`: 0 issues in 457 tasks.
+`status.py --check`: 0 issues in 464 tasks.
 
 ## 3. In-progress tasks
 | Task ID | Started | Done so far | Remaining |
@@ -151,6 +155,13 @@ Open decisions blocking the most tasks:
 | 2026-09-28 | D-270 | Artefacts are signed as well as checksummed, and bound to one store and its permitted hosts | Plan design (topology review) |
 | 2026-09-28 | D-271 | Client-hosted installs serve with no platform connectivity; releases pulled or pushed; version skew bounded to one minor release; a silent install is "unknown", not "healthy" | Plan design (topology review) |
 | 2026-09-28 | D-272 | **Each client's data, database, images, search index and cache are separated**; a shared database is an explicitly agreed exception only; `store_id` scoping kept as a second layer | User |
+| 2026-09-28 | D-273 | The **full capability catalogue** (~230 entries, 18 areas): every feature a client might buy is a switch — channels, each automation, integrations, the store's own API, sign-in methods, content, reporting. Each carries a build status; a `CANDIDATE` entry with an open decision cannot be granted | User |
+| 2026-09-28 | D-274 | Granting a channel requires five layers — capability, provider binding, verified sender, approved templates, consent and caps — and publication is blocked until all five exist. Consent, caps, quiet hours, idempotency, templates, rate limits, delivery tracking and redaction are enforced centrally in the messaging service, never in an adapter | Plan design (feature-catalogue review) |
+| 2026-09-28 | D-275 | Marketing and engagement features (newsletters, campaigns, abandoned cart, loyalty, referrals, gift cards, review requests) — **OPEN**, listed as CANDIDATE, not built until a scope is approved | Owner |
+| 2026-09-28 | D-276 | Web chat scope and depth — **OPEN**, listed as CANDIDATE | Owner |
+| 2026-09-28 | D-277 | Third-party analytics and marketing tags — **OPEN**, listed as CANDIDATE | Owner |
+| 2026-09-28 | D-278 | The store's own API access and outbound webhooks — **OPEN**, listed as CANDIDATE | Owner |
+| 2026-09-28 | D-279 | The client-facing mockup is **the reference store**: a store with every Phase-1 feature enabled, deliberately not feature-gated. `21-feature-map.md` is the authority for which capability governs which element | User |
 | 2026-09-28 | D-045 | **Superseded by D-227** — multiple businesses on one configurable platform are Phase 1 architecture, not a Phase 3 assessment | User |
 
 ## 7. Database migrations
@@ -191,6 +202,9 @@ Open decisions blocking the most tasks:
 | 2026-09-28 | (mockup help & guided workflows) | `assets/tradex.js`, `assets/tradex.css`, new `assets/help/` (glossary.js, shell.js, 19 page files), all 15 `erp-*.html`, all 4 `vendor-*.html`, `index.html`; `plan/DECISIONS.md` (D-224, D-225, D-174 note), `plan/04b-frontend-workspace-1.md` (rule 23, §2.21–2.23, §3.2 #5), `plan/04c-frontend-workspace-2-vendor.md` (X20), `plan/TASKS.md` (T-1A.3-M24-02, T-1A.16-M24-06, T-1B.1-M14-16; T-1A.16-M24-03 description), `plan/12-phases.md`, `plan/18-master-checklist.md`, `plan/STATE.md` |
 | 2026-09-28 | (SaaS architecture change, D-227) | **New:** `docs/SAAS_ARCHITECTURE_CHANGE.md`, `plan/19-saas-platform.md`, `plan/20-root-admin.md`, `.gitignore`. **Updated:** `CLAUDE.md`; `plan/00-conventions.md` (§1.2–1.3 sources, §2 labels, §4 stages, §5 IDs, §6 M30–M35, §7.3 entities, §8 P-R, §9.1 platform roles, §11 layout, §12 conflicts 11–14), `plan/DECISIONS.md` (D-227–D-256; D-045 superseded), `plan/12-phases.md` (§2, §3, §5 P12–P13, §10), `plan/TASKS.md` (71 new blocks; 11 existing tasks' dependencies; T-3-M03-01 → NOT_APPLICABLE), `plan/14-continuation-protocol.md`, `plan/README.md`, `plan/tools/status.py` (phase 1R; NOT_APPLICABLE check), and end-of-file SaaS sections in `01`, `02`, `03` (§20), `04a` (§12), `04b` (§19), `04c` (§21), `05` (§9), `06` (§9), `07`, `08` (§13), `09` (§14), `10`, `11`, `16` (§20), `17`, `18` |
 | 2026-09-28 | (SaaS second pass, D-257–D-272) | `plan/19-saas-platform.md` (§5.4 surfaces/modules/control, §5.5 bundles, §6.9 completeness gate, §10.1 per-client separation, §10.3 topologies, §10.4 standalone, §17 schema evolution, §18 per-store recovery, §19 money/time, §20 quotas, §21 environments, §22 observability, §23 edge cases, §24 definition of done, §25 performance architecture, new BR-M30-06…10, BR-M31-09…16, BR-M32-05/06, BR-M34-03/04, BR-M35-04/05), `plan/20-root-admin.md` (P-R13, P-R05 tabs, topology note, API groups), `plan/DECISIONS.md` (D-257–D-272; D-233 amended), `plan/00-conventions.md` (MOD-*, BND-*, surfaces, P-R13, bundle and feature-state entities, separation and topology rules), `plan/16-testing.md` (TS-SAAS-REL, TS-SAAS-EDGE), `plan/12-phases.md` (§3 counts, §10.7), `plan/TASKS.md` (28 new blocks; 10 existing tasks gained dependencies), `plan/README.md`, `plan/STATE.md` |
+| 2026-09-28 | (feature map, D-279) | **New:** `plan/21-feature-map.md` (screen-by-screen capability map for P-S01–P-S15, P-E01–P-E16, P-V01–P-V05; reverse index; mockup baseline; FM-1…FM-5). **Updated:** `CLAUDE.md`, `plan/00-conventions.md` §1.1, `plan/14-continuation-protocol.md`, `plan/19-saas-platform.md` (§5.3 pointer, §26.5 step 1, `CAP-CATALOG_REVIEW`/`CAP-CATALOG_VERSIONS` added), `plan/DECISIONS.md` (D-279), `plan/README.md`, `plan/12-phases.md` (§3, §10.8 addendum), `plan/TASKS.md` (`T-1A.3-M31-02` + gate dependency), `plan/STATE.md`. **No client-facing file changed** — the mockup stays ungated by design |
+| 2026-09-28 | (feature catalogue and channels, D-273–D-278) | `plan/19-saas-platform.md` (§5.3 the full catalogue, §5.6 channels and providers, §26 implementation contracts, BR-M20-01…05, BR-M31-17/18, TS-SAAS-CHAN/AUTO), `plan/03-database.md` (§12 feature/channel/automation data model, indexes, DB-G13), `plan/DECISIONS.md` (D-273–D-278), `plan/00-conventions.md` (channels, automation capability ids, new entities, DB-G13), `plan/01-tech-stack.md` (§35), `plan/02-architecture.md` (§30), `plan/05-backend.md` (§10), `plan/06-api.md` (§10), `plan/07-auth-roles-permissions.md`, `plan/08-ecommerce.md` (§14), `plan/09-vendor-marketplace.md` (§15), `plan/10-erp.md`, `plan/11-admin.md`, `plan/04b` (§20), `plan/16-testing.md`, `plan/17-dependencies.md`, `plan/18-master-checklist.md`, `plan/12-phases.md` (§3, §10.8), `plan/20-root-admin.md`, `plan/TASKS.md` (6 new blocks, 4 gate dependencies, 1 ID collision corrected), `plan/README.md`, `plan/STATE.md` |
+| 2026-09-28 | (root admin mockup, channels) | `root-admin-mockup/ra-store.html` new **Channels &amp; integrations** tab (channels with provider, sender and template state; automations granted per store; integrations; a live publish check), `ra-capabilities.html` catalogue by area plus a channels-and-automations view, `ra-store-new.html` wizard steps 4 and 5 grant channels and automations, `assets/ra.js` scroll fix, `assets/ra.css` base icon size. **No client-facing file changed** |
 | 2026-09-28 | (root admin mockup, second pass) | `root-admin-mockup/`: new `ra-bundles.html` (P-R13); `ra-store.html` gains Environments & hosting, surfaces, modules, delegated features, email sender verification and client export; `ra-store-new.html` gains hosting/separation and the three control levels; `ra-settings.html` gains per-client separation, secret scopes and signing keys, configuration retention, DNS/certificate provider, release and schema state; `ra-admin.html` gains MFA method and sessions; `ra-stores.html` gains a hosting column; `assets/ra.css` + `assets/ra.js` top-bar fix and narrow-width layout. **No client-facing file changed** |
 | 2026-09-28 | (root admin mockup, D-249) | **New:** `root-admin-mockup/` — `index.html`, `ra-login.html`, `ra-dashboard.html`, `ra-stores.html`, `ra-store-new.html`, `ra-store.html`, `ra-packs.html`, `ra-templates.html`, `ra-capabilities.html`, `ra-terminology.html`, `ra-deployments.html`, `ra-admin.html`, `ra-settings.html`, `README.md`, `assets/ra.css`, `assets/ra.js`. **No client-facing file was changed** (`index.html`, `credits.html`, `store-*`, `erp-*`, `vendor-*`, `assets/tradex.*` are untouched) |
 | 2026-09-28 | (mockup responsive ERP/vendor) | `assets/tradex.css`, `assets/tradex.js`, all 15 `erp-*.html`, all 4 `vendor-*.html` (page `<style>` media queries; one script value in `erp-reports.html`); `plan/DECISIONS.md` (D-226; D-223 cross-refs), `plan/04a-frontend-storefront.md` (rule 7, §2.5), `plan/04b-frontend-workspace-1.md` (rule 15, §2.24, §3.2 #1), `plan/04c-frontend-workspace-2-vendor.md` (X16), `plan/TASKS.md` (T-1A.9-M09-12, T-1A.16-M24-07, T-1B.1-M14-17), `plan/12-phases.md`, `plan/18-master-checklist.md`, `plan/STATE.md` |
@@ -442,5 +456,77 @@ Open decisions blocking the most tasks:
 - **Stated plainly and not glossed over:** no plan can guarantee defect-free code. `19` §24 is the honest version
   of that requirement — 15 gates a task must pass to be called complete, the CI list that enforces them, and what
   is measured rather than an invented coverage number.
+- **Next:** unchanged. "Continue implementation" starts at `T-0-M01-03`.
+
+### 2026-09-28 — third pass: the feature catalogue, channels and automations (user request)
+- **User instruction:** features like WhatsApp, email, web chat and automation must be grantable or withheld per
+  store — "if customer want that features only those can be granted else not" — with the option visible in the
+  mockup and in the plan, the database and supporting changes included, and the documentation complete enough
+  that an implementer does not have to infer anything.
+- **The catalogue** (`19` §5.3) replaced the earlier 86-entry registry with ~230 grantable features across 18
+  areas. Everything a client might buy is now a switch: each communication channel and each level within it, each
+  automation, each integration, the store's own API and webhooks, sign-in methods, content and marketing
+  features, reporting and presentation. Anything not in the catalogue cannot be granted, withheld or priced —
+  which is the point of having one.
+- **Source fidelity kept.** Every entry carries a build status (`1A`, `1B`, `LATER`, `CANDIDATE`). A `CANDIDATE`
+  entry whose gating decision is open **cannot be granted to a store** — the compiler refuses and names the
+  decision (`BR-M31-17`). So the catalogue can be complete while the plan still builds only what the sources
+  support. Four new open decisions mark what is deliberately not built yet: marketing and engagement (`D-275`),
+  web chat (`D-276`), analytics tags (`D-277`), store API and webhooks (`D-278`).
+- **Channels are five layers, not one switch** (`19` §5.6). Capability → provider binding → verified sender
+  (SPF/DKIM/DMARC for email, the number for WhatsApp and SMS) → approved templates → consent and caps.
+  Publication is blocked until all five exist, with a report naming exactly what is missing. This closes the
+  failure mode where a store is "given WhatsApp", looks configured, and silently sends nothing.
+- **Messaging rules live in one place.** Consent per channel *and* purpose, preferences, frequency caps and quiet
+  hours across all channels together, idempotency on a unique message key, template resolution, per-store rate
+  limits, delivery tracking with suspension, and log redaction are all in the messaging service. A channel
+  adapter does nothing but hand bytes to a provider, so adding a channel cannot get any of them wrong.
+- **Each automation is its own capability**, with a guard, a preview, an idempotent execute, a run log, an owner
+  and a pause that needs no deployment. An automation that sends a message cannot be enabled without its channel
+  and its approved template — the compiler blocks that configuration and names both.
+- **Database work documented rather than implied** (`03` §12): what lives where and why the catalogue and the
+  per-store state must not share a table; the store-side entities with their keys and constraints; the
+  root-admin control entities; the five indexes that matter and the two tables that grow without limit;
+  migration group `DB-G13` and where it splits across stages; and the six rules the schema itself enforces.
+- **Implementation contracts** (`19` §26) so an implementer has a checklist rather than a principle: the nine
+  artefacts every capability needs and the order to write them in; the six anti-patterns the lint rules reject
+  (403 instead of 404, a greyed control, a UI-only check, deleting on disable, a pack-id branch, a per-request
+  capability read); the channel adapter interface and the rules an adapter may **not** implement itself; the
+  automation rule interface; and the build order for any new area of behaviour.
+- **Every plan file swept** for consistency with the change: `00`, `01` §35, `02` §30, `03` §12, `04b` §20, `05`
+  §10, `06` §10, `07`, `08` §14, `09` §15, `10`, `11`, `12` §3 and §10.8, `16`, `17`, `18`, `19`, `20`, README
+  and this file.
+- **Tracker:** 457 → **463 tasks**, 0 issues. One ID collision was caught before it landed (`T-1A.13-M20-05`
+  already existed) and the new task renumbered.
+- **Mockup:** a Channels & integrations tab on the store page showing each channel with its provider, sender and
+  template state, the automations granted to that store, the integrations, and a live publish check; the
+  capability screen now shows the catalogue by area plus a channels-and-automations view; the create-store wizard
+  grants channels and automations as steps 4 and 5. Two further defects found and fixed while verifying: a
+  deep-linked tab left the page scrolled into empty space, and the support-access banner's icon had no size rule.
+- **Next:** unchanged. "Continue implementation" starts at `T-0-M01-03`.
+
+### 2026-09-28 — the feature map, and the mockup baseline (user request)
+- **User instruction:** express things in the plan as features with an enable/disable option so an implementing
+  AI understands them properly, and leave the front-end mockup with every feature enabled for now.
+- **The gap this closed.** The catalogue (`19` §5.3) said *what* can be granted; nothing said *where* each switch
+  is enforced. An implementer building P-S03 had no way to know that the inspection report is governed by
+  `CAP-QC_INSPECTION` and the compatibility block by `CAP-COMPATIBILITY` — so gating would have been applied by
+  guesswork, which is exactly how a store ends up seeing a feature it was never granted.
+- **`21-feature-map.md`** now maps every section of every screen — P-S01–P-S15, P-E01–P-E16, P-V01–P-V05 — to the
+  one capability that owns it and states what the store sees when it is off (in almost every case: nothing at
+  all, not a greyed control). Grounded in the mockup's real tabs and sections rather than invented ones. Plus a
+  reverse index from capability to screens, endpoint groups, entities and the tasks that build it, and the rules
+  FM-1…FM-5 for keeping it correct.
+- **`T-1A.3-M31-02`** makes it executable: the build fails when a store-facing route, section or component has no
+  declared capability, and a reconciliation check fails when the code and the map disagree — so the two cannot
+  drift apart silently. The map is the human-readable half of `TS-SAAS-CAP-02`; where they disagree, the test is
+  right.
+- **The mockup stays ungated, on purpose (`D-279`).** It is the *reference store*: every Phase-1 feature enabled,
+  a picture of the system rather than of one client's configuration. Gating it would make client review harder
+  and would put SaaS concepts in front of a client, which the invisibility rule forbids anyway. No client-facing
+  file was changed. What changed is that the plan now says so explicitly, so nobody mistakes the mockup's
+  completeness for "these sections are always present", and an implementer copying a mockup screen knows the
+  mockup will not tell them what to gate — the map will.
+- **Tracker:** 463 → **464 tasks**, 0 issues.
 - **Next:** unchanged. "Continue implementation" starts at `T-0-M01-03`.
 

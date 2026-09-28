@@ -1494,3 +1494,31 @@ the store's own audit viewer (P-E15). Grants expire automatically and can be rev
 `R-integration` credentials are per store and encrypted per store (`19` §10.1). A credential leaked from one
 store grants nothing in another. The store-runtime callback credential used for `config.applied` is a platform
 credential with exactly one permission and no read access to anything.
+
+---
+
+## Feature, channel and store-API access (2026-09-28, `D-258`, `D-273`, `D-278`)
+
+### F. Who may change a delegated feature
+
+Managing delegated features and channels is a **permission inside the store** (`features.manage`,
+`channels.manage`, `automations.manage`), on top of the capability check. The order is unchanged: capability
+first — if the item is not delegated it does not exist and the answer is 404 — then the permission, which decides
+whether *this* staff member may flip a switch the store owns. A store owner may delegate that permission to an
+operations admin; they cannot delegate what the platform did not delegate to them.
+
+### G. Channel credentials
+
+Reading a channel credential is not a permission anybody has. Credentials are write-only through the binding
+service and resolve only inside the messaging service from the store's own secret scope. No role — including
+`R-owner` and every platform role — can retrieve a stored secret through any surface (`CH-3`, `BR-M31-08`).
+
+### H. Store API keys and scopes (`CAP-STORE_API`, `D-278`, if approved)
+
+| Rule | Detail |
+|---|---|
+| A store API key belongs to one store and carries **capability-aware scopes** — a scope for a capability the store does not have cannot be granted, and a key cannot outlive the capability |
+| Keys are hashed at rest, shown once at creation, revocable, and every use is attributed in the audit trail |
+| Rate limits apply per key **and** per store (`19` §20) |
+| The same 404-not-403 rule applies: a key calling an endpoint for a capability the store does not have gets 404 |
+| Outbound webhooks are signed with a per-subscription secret, retried with backoff and auto-suspended after repeated failure |

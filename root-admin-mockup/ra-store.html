@@ -32,6 +32,7 @@
     <button data-tab="t-tpl">Template</button>
     <button data-tab="t-brand">Branding</button>
     <button data-tab="t-feat">Features</button>
+    <button data-tab="t-chan">Channels &amp; integrations</button>
     <button data-tab="t-set">Settings</button>
     <button data-tab="t-term">Wording</button>
     <button data-tab="t-dom">Domains &amp; certificates</button>
@@ -192,6 +193,43 @@
       A feature that is off does not appear anywhere in the store — not greyed out, not in a menu, not in the
       interface the store's own staff use. Switching it off hides data, it never deletes it.
     </div></div>
+  </section>
+
+  <section class="pane" id="t-chan">
+    <div class="note acc mb"><svg data-i="info"></svg><div>
+      Granting a channel is not one switch. A channel needs a provider account, a verified sender and the
+      templates its automations use. Until all three are in place this store cannot be published with the channel
+      on — it would look configured and silently fail to send.
+    </div></div>
+
+    <div class="card mb"><div class="card-h"><h3>Messaging channels</h3><span class="sp"></span>
+      <button class="btn sm" data-demo="Prototype: opens the channel editor — provider account, sender identity, verification and templates.">Edit</button></div>
+      <div id="chans"></div>
+      <div class="card-b" style="border-top:1px solid var(--ra-line)">
+        <p class="hint">Consent, how often a customer may be messaged and quiet hours apply across every channel
+          together, so a customer cannot be messaged five times by five different features. That is enforced in
+          one place, not in each channel.</p></div></div>
+
+    <div class="card mb"><div class="card-h"><h3>Automations granted to this store</h3><span class="sp"></span>
+      <span class="tag acc">11 of 22 granted · 4 the store can manage</span></div>
+      <div id="autos"></div>
+      <div class="card-b" style="border-top:1px solid var(--ra-line)">
+        <p class="hint">An automation the store was not granted is never scheduled — it cannot run, appear in a
+          report or send a message. An automation that sends a message cannot be granted without its channel and
+          its approved template.</p></div></div>
+
+    <div class="card mb"><div class="card-h"><h3>Integrations</h3></div><div id="integ"></div></div>
+
+    <div class="card"><div class="card-h"><h3>Publish check</h3><span class="sp"></span>
+      <span class="tag warn">2 items to fix</span></div>
+      <div class="card-b stack">
+        <div class="note warn"><svg data-i="warn"></svg><div><b>SMS is on but the sender id is not registered.</b>
+          Messages would be rejected by the operator. Register the sender id or switch SMS off before publishing.</div></div>
+        <div class="note warn"><svg data-i="warn"></svg><div><b>"Delivery updates on WhatsApp" needs a template
+          that is still awaiting provider approval.</b> The automation cannot be enabled until it is approved.</div></div>
+        <div class="note"><svg data-i="check"></svg><div>Email, WhatsApp click-to-chat and in-workspace alerts are
+          fully configured.</div></div>
+      </div></div>
   </section>
 
   <section class="pane" id="t-set">
@@ -423,6 +461,60 @@ document.getElementById("feats").innerHTML = '<div class="grid g3">' + [
     g[2].join("<br>") + "</div></div>";
 }).join("") + "</div>";
 
+
+document.getElementById("chans").innerHTML = RA.table(
+  ["Channel", "Granted?", "Store may manage it?", "Provider account", "Sender", "Templates", "Health"],
+  [
+   ["<b>Email</b><div class='sub'>Order, delivery, account and support messages</div>",
+    "<span class='tag ok'>On</span>", "<span class='tag'>No — always on</span>", "Atelier Nine's own account",
+    "<span class='mono'>orders@ateliernine.example.com</span><div class='sub'>SPF ✓ DKIM ✓ DMARC ✓</div>",
+    "14 live", "<span class='tag ok'>99.4% delivered</span>"],
+   ["<b>WhatsApp</b><div class='sub'>Click-to-chat, order updates, assisted orders</div>",
+    "<span class='tag ok'>On</span>", "<span class='tag acc'>Yes</span>", "Atelier Nine's own number",
+    "<span class='mono'>+91 ·· ···· 4021</span><div class='sub'>verified 12 Aug</div>",
+    "6 approved · <span class='tag warn'>1 pending</span>", "<span class='tag ok'>98.1% delivered</span>"],
+   ["<b>SMS</b><div class='sub'>Delivery updates and one-time codes</div>",
+    "<span class='tag ok'>On</span>", "<span class='tag'>No</span>", "Atelier Nine's own account",
+    "<span class='tag bad'>Sender id not registered</span>", "3 drafts", "<span class='tag bad'>blocked</span>"],
+   ["<b>Web chat</b><div class='sub'>Live chat on the website</div>",
+    "<span class='tag'>Not granted</span>", "<span class='tag'>—</span>", "—", "—", "—", "—"],
+   ["<b>Browser notifications</b>", "<span class='tag'>Not granted</span>", "<span class='tag'>—</span>", "—", "—", "—", "—"],
+   ["<b>In-workspace alerts</b><div class='sub'>Messages to the client's own staff</div>",
+    "<span class='tag ok'>On</span>", "<span class='tag acc'>Yes</span>", "—", "—", "9 live", "<span class='tag ok'>fine</span>"]
+  ]);
+
+document.getElementById("autos").innerHTML = RA.table(
+  ["Automation", "Needs", "Granted?", "Store may manage it?", "State"],
+  [
+   ["<b>Order acknowledgement</b>", "Email", "<span class='tag ok'>Yes</span>", "<span class='tag'>No</span>", "<span class='tag ok'>Running</span>"],
+   ["<b>Dispatch updates</b>", "Email, WhatsApp", "<span class='tag ok'>Yes</span>", "<span class='tag acc'>Yes</span>", "<span class='tag ok'>Running</span>"],
+   ["<b>Delivery updates on WhatsApp</b>", "WhatsApp template", "<span class='tag ok'>Yes</span>", "<span class='tag acc'>Yes</span>", "<span class='tag warn'>Blocked — template awaiting approval</span>"],
+   ["<b>Return acknowledgement</b>", "Email", "<span class='tag ok'>Yes</span>", "<span class='tag'>No</span>", "<span class='tag ok'>Running</span>"],
+   ["<b>Low-stock alert to staff</b>", "In-workspace", "<span class='tag ok'>Yes</span>", "<span class='tag acc'>Yes</span>", "<span class='tag ok'>Running</span>"],
+   ["<b>Reorder suggestions</b>", "—", "<span class='tag ok'>Yes</span>", "<span class='tag acc'>Yes</span>", "<span class='tag ok'>Running</span>"],
+   ["<b>Reservation expiry</b>", "—", "<span class='tag ok'>Yes</span>", "<span class='tag'>No</span>", "<span class='tag ok'>Running</span>"],
+   ["<b>Payment reconciliation</b>", "—", "<span class='tag ok'>Yes</span>", "<span class='tag'>No</span>", "<span class='tag ok'>Running</span>"],
+   ["<b>Exception escalation</b>", "In-workspace", "<span class='tag ok'>Yes</span>", "<span class='tag'>No</span>", "<span class='tag ok'>Running</span>"],
+   ["<b>Owner daily summary</b>", "Email", "<span class='tag ok'>Yes</span>", "<span class='tag acc'>Yes</span>", "<span class='tag'>Paused by the owner</span>"],
+   ["<b>Scheduled reports</b>", "Email", "<span class='tag ok'>Yes</span>", "<span class='tag'>No</span>", "<span class='tag ok'>Running</span>"],
+   ["<b>Abandoned basket reminders</b>", "Email or WhatsApp", "<span class='tag'>Not granted</span>", "<span class='tag'>—</span>", "<span class='dim'>not available yet</span>"],
+   ["<b>Back-in-stock alerts</b>", "Email", "<span class='tag'>Not granted</span>", "<span class='tag'>—</span>", "<span class='dim'>not available yet</span>"],
+   ["<b>Review requests after delivery</b>", "Email", "<span class='tag'>Not granted</span>", "<span class='tag'>—</span>", "<span class='dim'>not available yet</span>"],
+   ["<b>Supplier freshness check</b>", "—", "<span class='tag'>Not granted</span>", "<span class='tag'>—</span>", "<span class='dim'>—</span>"]
+  ]);
+
+document.getElementById("integ").innerHTML = RA.table(
+  ["Integration", "Granted?", "Store may manage it?", "Account", "State"],
+  [
+   ["<b>Payments</b>", "<span class='tag ok'>On</span>", "<span class='tag'>No</span>", "Atelier Nine's own merchant account", "<span class='tag ok'>Connected</span>"],
+   ["<b>Delivery / courier</b>", "<span class='tag ok'>On</span>", "<span class='tag acc'>Yes</span>", "Atelier Nine's own account", "<span class='tag ok'>Connected</span>"],
+   ["<b>Accounting export</b>", "<span class='tag ok'>On</span>", "<span class='tag acc'>Yes</span>", "Monthly file", "<span class='tag ok'>Fine</span>"],
+   ["<b>Accounting live connection</b>", "<span class='tag'>Not granted</span>", "<span class='tag'>—</span>", "—", "—"],
+   ["<b>Till / point of sale</b>", "<span class='tag'>Not granted</span>", "<span class='tag'>—</span>", "—", "—"],
+   ["<b>Analytics &amp; marketing tags</b>", "<span class='tag'>Not granted</span>", "<span class='tag'>—</span>", "—", "<span class='dim'>needs a privacy decision first</span>"],
+   ["<b>The client's own API access</b>", "<span class='tag'>Not granted</span>", "<span class='tag'>—</span>", "—", "<span class='dim'>not available yet</span>"],
+   ["<b>Webhooks to the client's systems</b>", "<span class='tag'>Not granted</span>", "<span class='tag'>—</span>", "—", "<span class='dim'>not available yet</span>"]
+  ]);
 document.getElementById("sets").innerHTML = RA.table(
   ["Setting", "Value", "Who can change it", "Effect of a change"],
   [

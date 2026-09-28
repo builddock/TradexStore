@@ -13,8 +13,14 @@
 - **Tradex is store #1**: vertical pack `VP-electronics`, template `TPL-forge`. Everything in `docs/meeting.txt`,
   the blueprint and the proposals is the specification of *that store*, and still fully authoritative for it.
 
-Architecture: `plan/19-saas-platform.md` (tenancy, configuration, capabilities, packs, templates) and
-`plan/20-root-admin.md` (the control plane). Read `19` §1–§2 before touching anything.
+- **Every feature is a switch.** ~230 features are grantable or withheld per store — including each
+  communication channel (WhatsApp, email, SMS, web chat, push) and each automation. The store's own admin manages
+  only what the root admin **delegated** to them.
+
+Architecture: `plan/19-saas-platform.md` (tenancy, configuration, capabilities, channels, packs, templates),
+`plan/20-root-admin.md` (the control plane) and **`plan/21-feature-map.md`** (which capability governs which
+screen, tab, section, endpoint and entity). Read `19` §1–§2 before touching anything, and `21` before building
+any screen.
 
 ## Repository map
 | Path | What | Rule |
@@ -50,6 +56,8 @@ Follow **`plan/14-continuation-protocol.md`** exactly. In short:
   route and component, disabled = **404** not 403 · terminology tokens instead of hard-coded concept words, theme
   tokens instead of hard-coded visual values · nothing store-facing may reveal the platform · no import across the
   `root-admin/` boundary · two stores in every integration and E2E run.
+- **The client-facing mockup is the reference store** (`D-279`): it shows a store with **every feature enabled**
+  and is deliberately not gated. It will not tell you what to gate — `plan/21-feature-map.md` will.
 - The user commits to git themselves unless they ask you to commit.
 
 ## Plan index

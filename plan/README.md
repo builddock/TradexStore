@@ -37,12 +37,13 @@ decisions, never filled by assumption.
 | 16 | `16-testing.md` | Testing strategy and suites (§16) |
 | 17 | `17-dependencies.md` | Dependency-aware development order, parallel work (§17) |
 | 18 | `18-master-checklist.md` | Final master checklist (§18) |
-| **19** | **`19-saas-platform.md`** | **SaaS platform architecture: tenancy and per-client separation, deployment topologies, configuration model and artefact, surfaces/modules/capabilities and delegation, bundles, vertical packs, templates & theming, terminology, invisibility rules, schema evolution, backup/restore, money and time, quotas, environments, observability, edge cases, definition of done, performance architecture, modules M30–M35 (`D-227`, `D-257`–`D-272`)** |
-| **20** | **`20-root-admin.md`** | **Configurable Root Admin platform: separate portal and codebase, platform roles, the store configurator (category · template · colours · logo · surfaces/modules/features and what the store may manage · deploy), the deployment pipeline, screens P-R01–P-R13, platform API (`D-228`)** |
+| **19** | **`19-saas-platform.md`** | **SaaS platform architecture: tenancy and per-client separation, deployment topologies, configuration model and artefact, surfaces/modules/capabilities and delegation, bundles, vertical packs, templates & theming, terminology, invisibility rules, schema evolution, backup/restore, money and time, quotas, environments, observability, edge cases, definition of done, performance architecture, the full capability catalogue (channels, automations, integrations, store API), the channel and messaging model, implementation contracts, modules M30–M35 (`D-227`, `D-257`–`D-278`)** |
+| **20** | **`20-root-admin.md`** | **Configurable Root Admin platform: separate portal and codebase, platform roles, the store configurator (category · template · colours · logo · surfaces/modules/features and what the store may manage · deploy), the deployment pipeline, surfaces/modules/features and channels granted per store · deploy), screens P-R01–P-R13, platform API (`D-228`)** |
+| **21** | **`21-feature-map.md`** | **Which capability governs which screen, tab, section, endpoint and entity — the map an implementer reads before building any screen. Includes the reverse index and the mockup baseline (`D-273`, `D-279`)** |
 | — | `tools/status.py` | Computes status, next eligible task, blocking decisions, tracker consistency |
 
 Reading order for a new session: `/CLAUDE.md` → `STATE.md` → `14-continuation-protocol.md` → `status.py` →
-**`19-saas-platform.md` §1–§2 (five minutes; it changes how every other file must be read)** → the `TASKS.md`
+**`19-saas-platform.md` §1–§2 (five minutes; it changes how every other file must be read)** → **`21-feature-map.md` §1–§2 when the task builds a screen** → the `TASKS.md`
 stage in progress → the plan files referenced by the task.
 
 Where the SaaS change is recorded: source `docs/SAAS_ARCHITECTURE_CHANGE.md` · decisions `D-227`–`D-256` in

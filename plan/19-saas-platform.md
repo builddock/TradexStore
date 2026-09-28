@@ -221,35 +221,221 @@ do something; capabilities decide *whether the store has the thing at all*.
 Disabling a capability **never deletes data** (`BR-M31-03`). Re-enabling restores visibility. Disabling a
 `data_retaining` capability requires an explicit acknowledgement in the root admin.
 
-### 5.3 Capability registry — initial set
+### 5.3 Capability catalogue — everything that can be granted or withheld per store (`D-273`)
 
-Grouped by owning module. Each entry is `CAP-…` · default for `VP-electronics` (the Tradex store) in brackets.
+This is the full list of switchable behaviour. **Every feature a client might buy, or might not, is here** —
+including the communication channels (WhatsApp, email, SMS, web chat, push), the automations, the integrations
+and the store's own API access. If a behaviour is not in this catalogue it cannot be switched, which is the point:
+a feature that is not a capability is a feature nobody can grant, withhold or price.
 
-| Area | Capabilities |
+**The `Build` column is not the same as the switch.** Listing a capability says the platform's *control model*
+knows about it; it does not mean it is built, and it never overrides source fidelity (`00-conventions.md` §2):
+
+| Build value | Meaning |
 |---|---|
-| Catalog (M04) | `CAP-VARIANTS` [on] · `CAP-VARIANT_MATRIX` [off] · `CAP-ATTRIBUTE_SCHEMAS` [on] · `CAP-BRANDS` [on] · `CAP-BUNDLES` [D-072] · `CAP-COMPATIBILITY` [on] · `CAP-CONDITION_GRADES` [on] · `CAP-SERIAL_TRACKING` [on] · `CAP-BATCH_LOT` [off] · `CAP-EXPIRY_DATES` [off] · `CAP-UNIQUE_ITEMS` [off] · `CAP-DIGITAL_PRODUCTS` [off] · `CAP-SERVICE_ITEMS` [off] · `CAP-MADE_TO_ORDER` [off] · `CAP-RENTAL_ITEMS` [off] · `CAP-SUBSCRIPTION_PLANS` [off] · `CAP-WEIGHT_PRICED_ITEMS` [off] · `CAP-SIZE_GUIDE` [off] · `CAP-PRODUCT_MEDIA_360` [off] · `CAP-CATALOG_IMPORT` [1B] |
-| Pricing (M05) | `CAP-PRICE_LISTS` [on] · `CAP-QUANTITY_TIERS` [on] · `CAP-PROMOTIONS` [D-043] · `CAP-COUPONS` [D-043] · `CAP-LOCATION_PRICING` [D-044] · `CAP-QUOTES` [on] · `CAP-MARGIN_FLOORS` [on] · `CAP-UNIT_PRICE_DISPLAY` [off] |
-| Inventory (M06) | `CAP-MULTI_LOCATION` [on] · `CAP-BINS` [on] · `CAP-RESERVATIONS` [on] · `CAP-TRANSFERS` [on] · `CAP-CYCLE_COUNTS` [on] · `CAP-SUPPLIER_AVAILABILITY` [on] · `CAP-COLD_CHAIN` [off] · `CAP-SHELF_LIFE_RULES` [off] |
-| Purchasing (M07) | `CAP-PURCHASE_ORDERS` [on] · `CAP-GOODS_RECEIPT` [on] · `CAP-QC_INSPECTION` [on] · `CAP-SUPPLIER_BILLS` [on] · `CAP-LANDED_COST` [D-056] · `CAP-REORDER_RULES` [on] |
-| Customers / B2B (M08) | `CAP-GUEST_CHECKOUT` [D-021] · `CAP-BUSINESS_ACCOUNTS` [on] · `CAP-DEALER_APPLICATIONS` [on] · `CAP-CREDIT_TERMS` [D-019] · `CAP-CUSTOMER_SEGMENTS` [on] |
-| Storefront (M09) | `CAP-COMPARE` [D-042] · `CAP-WISHLIST` [D-042] · `CAP-REVIEWS` [D-041] · `CAP-PRODUCT_QA` [D-065] · `CAP-CURATED_COLLECTIONS` [on] · `CAP-STOCK_ALERTS` [D-141] · `CAP-STORE_LOCATOR` [on] · `CAP-AGE_GATE` [off] |
-| Orders / checkout (M10) | `CAP-CART_SERVER_SIDE` [D-129] · `CAP-PARTIAL_DISPATCH` [D-029] · `CAP-ASSISTED_ORDERS` [on] · `CAP-BACKORDERS` [D-073] · `CAP-PREORDERS` [off] · `CAP-SCHEDULED_DELIVERY_SLOTS` [off] · `CAP-MIN_ORDER_VALUE` [off] |
-| Payments (M11) | `CAP-ONLINE_PAYMENTS` [on] · `CAP-COD` [D-020] · `CAP-EMI` [D-062] · `CAP-PART_PAYMENT` [off] · `CAP-WALLET_CREDIT` [off] · `CAP-DEPOSITS` [off] |
-| Fulfilment (M12) | `CAP-COURIER_SHIPPING` [on] · `CAP-STORE_PICKUP` [D-061] · `CAP-LOCAL_DELIVERY` [off] · `CAP-FREIGHT_BULKY` [off] · `CAP-DIGITAL_DELIVERY` [off] · `CAP-SERVICE_APPOINTMENTS` [off] · `CAP-RENTAL_LOGISTICS` [off] · `CAP-PICK_WAVES` [D-132] |
-| Returns (M13) | `CAP-RETURNS` [on] · `CAP-WARRANTY_CASES` [on] · `CAP-SUPPLIER_RMA` [on] · `CAP-EXCHANGES` [off] · `CAP-NON_RETURNABLE_CLASSES` [off] |
-| Vendor (M14) | `CAP-VENDOR_PORTAL` [1B] · `CAP-VENDOR_SUBMISSIONS` [1B] · `CAP-VENDOR_AVAILABILITY_FEED` [1B] · `CAP-SUPPLIER_FULFILMENT` [D-073] · `CAP-MARKETPLACE` [LATER, M15] |
-| Support (M16) | `CAP-WHATSAPP_L1` [on] · `CAP-WHATSAPP_L2` [1B] · `CAP-SHARED_INBOX` [1B] · `CAP-HELP_CENTRE` [on] |
-| Rental, services, subscriptions | `CAP-AVAILABILITY_CALENDAR` [off] · `CAP-CAPACITY_SLOTS` [off] · `CAP-SERVICE_AREAS` [off] · `CAP-BILLING_CYCLES` [off] · `CAP-PAUSE_RESUME` [off] · `CAP-RETURN_CONDITION_CHECK` [off] |
-| Made to order, handmade | `CAP-PERSONALISATION` [off] · `CAP-PRODUCTION_LEAD_TIME` [off] · `CAP-PRODUCT_CONFIGURATOR` [off] |
-| Digital | `CAP-LICENCE_KEYS` [off] · `CAP-DOWNLOAD_LIMITS` [off] |
-| Trade | `CAP-CONTRACT_PRICING` [off] · `CAP-REORDER_LISTS` [off] |
-| High value, provenance | `CAP-PROVENANCE` [off] · `CAP-AUTHENTICATION_RECORD` [off] · `CAP-HIGH_VALUE_CONTROLS` [off] |
-| Regulated | `CAP-COMPLIANCE_ATTRIBUTES` [off] · `CAP-RESTRICTED_DELIVERY` [off] · `CAP-DOCUMENT_CAPTURE` [off] · `CAP-PRESCRIPTION_GATE` [off] |
-| Platform (M30–M33) | `CAP-MULTI_LOCALE` [off] · `CAP-MULTI_CURRENCY` [off] · `CAP-CUSTOM_DOMAIN` [on] · `CAP-STORE_EDITABLE_THEME` [off] · `CAP-CONTEXTUAL_HELP` [on, `D-224`] |
+| `1A`, `1B` | In scope for that stage; the task tracker has the work |
+| `LATER` | Phase 2/3 (`D-085`, `D-046`); listed so the switch exists when it arrives |
+| `CANDIDATE (D-###)` | The platform can express it, but **it is not built until that decision approves it**. A store cannot be granted a capability whose build status is `CANDIDATE` while the decision is open — the compiler refuses it (`BR-M31-17`) |
 
-The registry is data; adding a capability is a schema change in the store codebase plus a root admin migration —
-it is **not** a new codebase (S01). `TS-SAAS-CAP-01` asserts that every capability has all six enforcement points
-wired, and `TS-SAAS-CAP-02` that no store-facing route or component exists without a declared capability.
+Defaults shown in brackets are for `VP-electronics` (the Tradex store). Every capability additionally carries a
+**control state** per store — not available / available and locked / delegated to the store's administrator
+(`§5.4.3`).
+
+#### A. Catalogue and products (M04, M21, M22)
+
+| Capability | What the store gets | Build |
+|---|---|---|
+| `CAP-ATTRIBUTE_SCHEMAS` [on] · `CAP-BRANDS` [on] · `CAP-VARIANTS` [on] · `CAP-VARIANT_MATRIX` [off] | Typed product attributes, brands, variants and two-axis variant grids | 1A |
+| `CAP-SERIAL_TRACKING` [on] · `CAP-BATCH_LOT` [off] · `CAP-EXPIRY_DATES` [off] · `CAP-UNIQUE_ITEMS` [off] | The four item-identity models | 1A |
+| `CAP-CONDITION_GRADES` [on] · `CAP-COMPATIBILITY` [on] · `CAP-BUNDLES` [`D-072`] | Condition grading, "fits your device", bundle products | 1A / CANDIDATE |
+| `CAP-DIGITAL_PRODUCTS` · `CAP-SERVICE_ITEMS` · `CAP-MADE_TO_ORDER` · `CAP-RENTAL_ITEMS` · `CAP-SUBSCRIPTION_PLANS` · `CAP-WEIGHT_PRICED_ITEMS` [all off] | The non-physical and non-standard product kinds | 1A contracts, per-pack build |
+| `CAP-SIZE_GUIDE` · `CAP-PRODUCT_MEDIA_360` · `CAP-PRODUCT_VIDEO` · `CAP-PRODUCT_DOCUMENTS` [off] | Size guides, 360° spins, video, datasheets and manuals | 1A / CANDIDATE (`D-113`) |
+| `CAP-CATALOG_IMPORT` [1B] · `CAP-MEDIA_IMPORT` [1B] · `CAP-SUPPLIER_FEEDS` [1B] | Validated bulk import and supplier catalogue feeds | 1B |
+| `CAP-CATALOG_REVIEW` [on] · `CAP-CATALOG_VERSIONS` [on] | A review step before a product or a sensitive edit goes live, and the version history behind it | 1A |
+| `CAP-PERSONALISATION` · `CAP-PRODUCT_CONFIGURATOR` · `CAP-PRODUCTION_LEAD_TIME` [off] | Made-to-order configuration and lead times | per-pack |
+| `CAP-LICENCE_KEYS` · `CAP-DOWNLOAD_LIMITS` [off] | Digital fulfilment artefacts | per-pack |
+| `CAP-PROVENANCE` · `CAP-AUTHENTICATION_RECORD` · `CAP-HIGH_VALUE_CONTROLS` [off] | Provenance and authentication for high-value goods | per-pack |
+| `CAP-COMPLIANCE_ATTRIBUTES` · `CAP-RESTRICTED_DELIVERY` · `CAP-DOCUMENT_CAPTURE` · `CAP-PRESCRIPTION_GATE` [off] | Regulated-goods handling | per-pack |
+
+#### B. Pricing and promotions (M05)
+
+| Capability | What the store gets | Build |
+|---|---|---|
+| `CAP-PRICE_LISTS` [on] · `CAP-QUANTITY_TIERS` [on] · `CAP-MARGIN_FLOORS` [on] · `CAP-QUOTES` [on] | Core pricing, quantity breaks, margin protection, quotations | 1A |
+| `CAP-PROMOTIONS` · `CAP-COUPONS` [`D-043`] | Campaign pricing and discount codes | CANDIDATE (`D-043`) |
+| `CAP-LOCATION_PRICING` [`D-044`] · `CAP-CONTRACT_PRICING` [off] · `CAP-UNIT_PRICE_DISPLAY` [off] | Price by location, negotiated contract prices, price-per-unit display | CANDIDATE / per-pack |
+| `CAP-COST_SIGNALS` [on] · `CAP-PRICE_CHANGE_APPROVAL` [on] | Supplier cost-change signals and the approval gate before a live price moves | 1A |
+
+#### C. Inventory and stock (M06)
+
+`CAP-MULTI_LOCATION` [on] · `CAP-BINS` [on] · `CAP-RESERVATIONS` [on] · `CAP-TRANSFERS` [on] ·
+`CAP-CYCLE_COUNTS` [on] · `CAP-STOCK_ADJUSTMENTS` [on] · `CAP-SUPPLIER_AVAILABILITY` [on] ·
+`CAP-SAFETY_BUFFER` [on] · `CAP-COLD_CHAIN` [off] · `CAP-SHELF_LIFE_RULES` [off] ·
+`CAP-AVAILABILITY_CALENDAR` [off] · `CAP-CAPACITY_SLOTS` [off] — all 1A except the per-pack ones.
+
+#### D. Purchasing and suppliers (M07)
+
+`CAP-PURCHASE_ORDERS` [on] · `CAP-GOODS_RECEIPT` [on] · `CAP-QC_INSPECTION` [on] · `CAP-SUPPLIER_BILLS` [on] ·
+`CAP-REORDER_RULES` [on] · `CAP-LANDED_COST` [`D-056`] · `CAP-SUPPLIER_PRICE_LISTS` [on] — 1A.
+
+#### E. Customers, accounts and trade (M08)
+
+`CAP-CUSTOMER_ACCOUNTS` [on] · `CAP-GUEST_CHECKOUT` [`D-021`] · `CAP-CUSTOMER_SEGMENTS` [on] ·
+`CAP-BUSINESS_ACCOUNTS` [on] · `CAP-DEALER_APPLICATIONS` [on] · `CAP-ACCOUNT_MEMBERS` [on] ·
+`CAP-CREDIT_TERMS` [`D-019`] · `CAP-REORDER_LISTS` [off] · `CAP-CUSTOMER_TAGS` [`D-145`] ·
+`CAP-CUSTOMER_MERGE` [`D-133`] · `CAP-PRIVACY_REQUESTS` [on, `D-060`] — 1A, some CANDIDATE.
+
+#### F. Storefront, browsing and content (M09, M27)
+
+| Capability | What the store gets | Build |
+|---|---|---|
+| `CAP-CURATED_COLLECTIONS` [on] · `CAP-STORE_LOCATOR` [on] · `CAP-HELP_CENTRE` [on] | Merchandised collections, branch finder, help and policy pages | 1A |
+| `CAP-COMPARE` · `CAP-WISHLIST` [`D-042`] · `CAP-REVIEWS` [`D-041`] · `CAP-PRODUCT_QA` [`D-065`] · `CAP-STOCK_ALERTS` [`D-141`] | The engagement features a client may or may not want | CANDIDATE |
+| `CAP-RECENTLY_VIEWED` · `CAP-RECOMMENDATIONS` [off] | Browsing history rails and "related items" | CANDIDATE (`D-142`) |
+| `CAP-AGE_GATE` [off] · `CAP-B2B_ONLY_STOREFRONT` [off] | Age confirmation; a storefront only signed-in trade buyers can see | CANDIDATE |
+| `CAP-CMS_PAGES` · `CAP-BLOG` · `CAP-BANNERS` · `CAP-ANNOUNCEMENT_BAR` [off] | Editable content pages, articles, promotional banners and a site-wide notice | CANDIDATE (`D-274`) |
+| `CAP-SEO_TOOLS` [on] · `CAP-STRUCTURED_DATA` [on] · `CAP-SITEMAP` [on] · `CAP-REDIRECT_MANAGER` [on] | SEO control, rich results, sitemaps, redirect map | 1A |
+| `CAP-MULTI_LOCALE` [off] · `CAP-MULTI_CURRENCY` [off] · `CAP-RTL_LAYOUT` [off] | Several languages, several currencies, right-to-left layouts | CANDIDATE (`D-050`) |
+
+#### G. Cart, checkout and orders (M10)
+
+`CAP-CART_SERVER_SIDE` [`D-129`] · `CAP-SAVE_FOR_LATER` [on] · `CAP-ASSISTED_ORDERS` [on] ·
+`CAP-PARTIAL_DISPATCH` [`D-029`] · `CAP-BACKORDERS` [`D-073`] · `CAP-PREORDERS` [off] ·
+`CAP-SCHEDULED_DELIVERY_SLOTS` [off] · `CAP-MIN_ORDER_VALUE` [off] · `CAP-ORDER_NOTES` [`D-134`] ·
+`CAP-GIFT_MESSAGE` [off] · `CAP-ORDER_EDITING` [off] — 1A and CANDIDATE.
+
+#### H. Payments and refunds (M11)
+
+`CAP-ONLINE_PAYMENTS` [on] · `CAP-COD` [`D-020`] · `CAP-EMI` [`D-062`] · `CAP-BANK_TRANSFER` [on] ·
+`CAP-PART_PAYMENT` [off] · `CAP-DEPOSITS` [off] · `CAP-WALLET_CREDIT` [off] · `CAP-GIFT_CARDS` [off] ·
+`CAP-STORE_CREDIT_REFUNDS` [off] · `CAP-SETTLEMENT_IMPORT` [on, `D-064`] · `CAP-REFUND_APPROVALS` [on] — 1A
+and CANDIDATE.
+
+#### I. Delivery and fulfilment (M12)
+
+`CAP-COURIER_SHIPPING` [on] · `CAP-STORE_PICKUP` [`D-061`] · `CAP-LOCAL_DELIVERY` [off] ·
+`CAP-FREIGHT_BULKY` [off] · `CAP-DIGITAL_DELIVERY` [off] · `CAP-SERVICE_APPOINTMENTS` [off] ·
+`CAP-RENTAL_LOGISTICS` [off] · `CAP-PICK_WAVES` [`D-132`] · `CAP-PACKING_SLIPS` [on] ·
+`CAP-SHIPPING_LABELS` [on] · `CAP-TRACKING_PAGE` [on] · `CAP-DELIVERY_PROOF` [off] ·
+`CAP-SHIPPING_RULES` [`D-162`] · `CAP-SERVICE_AREAS` [off] — 1A and per-pack.
+
+#### J. Returns, exchanges and warranty (M13)
+
+`CAP-RETURNS` [on] · `CAP-EXCHANGES` [off] · `CAP-WARRANTY_CASES` [on] · `CAP-SUPPLIER_RMA` [on] ·
+`CAP-NON_RETURNABLE_CLASSES` [off] · `CAP-REVERSE_PICKUP` [on] · `CAP-RETURN_CONDITION_CHECK` [off] — 1A.
+
+#### K. Vendor and supplier portal (M14)
+
+`CAP-VENDOR_PORTAL` [1B] · `CAP-VENDOR_SUBMISSIONS` [1B] · `CAP-VENDOR_AVAILABILITY_FEED` [1B] ·
+`CAP-VENDOR_STATEMENTS` [1B] · `CAP-VENDOR_PERFORMANCE` [1B] · `CAP-VENDOR_MESSAGING` [1B] ·
+`CAP-SUPPLIER_FULFILMENT` [`D-073`] · `CAP-VENDOR_API_KEYS` [1B] · `CAP-MARKETPLACE` [LATER, M15].
+
+#### L. Communications and messaging (M16, M20) — **the channels a client is granted or not**
+
+This is the area the platform is most often asked to price per client, so every channel and every level within a
+channel is its own capability. Turning a channel on additionally requires a **verified provider binding**
+(`§5.6`) — a store cannot be "given WhatsApp" and then silently fail to send.
+
+| Capability | What the store gets | Build |
+|---|---|---|
+| `CAP-EMAIL_TRANSACTIONAL` [on] | Order, delivery, account, return and support emails | 1A |
+| `CAP-EMAIL_CUSTOM_SENDER` [on] | Sending from the client's own domain, with SPF, DKIM and DMARC verification | 1A |
+| `CAP-EMAIL_MARKETING` [off] | Newsletters and campaigns, with consent, preference centre and unsubscribe | CANDIDATE (`D-275`) |
+| `CAP-SMS_TRANSACTIONAL` [`D-015`] | Order and delivery updates by SMS | 1A |
+| `CAP-SMS_OTP` [`D-040`] | One-time codes by SMS for sign-in and verification | 1A |
+| `CAP-SMS_MARKETING` [off] | Promotional SMS, consent-gated | CANDIDATE (`D-275`) |
+| `CAP-WHATSAPP_CLICK_TO_CHAT` [on] | A "message us on WhatsApp" entry point on the storefront and in emails | 1A |
+| `CAP-WHATSAPP_NOTIFICATIONS` [on] | Order and delivery updates on WhatsApp using approved templates | 1A |
+| `CAP-WHATSAPP_ASSISTED_ORDERS` [on] | Staff turn a WhatsApp conversation into a basket and a payment link | 1A |
+| `CAP-WHATSAPP_GUIDED_ORDERING` [1B] | The guided ordering conversation (Level 2) | 1B |
+| `CAP-WHATSAPP_SHARED_INBOX` [1B] | A staff shared inbox with assignment, notes and SLA timers | 1B |
+| `CAP-WEB_CHAT` [off] | A live chat widget on the storefront, with staff replies in the workspace | CANDIDATE (`D-276`) |
+| `CAP-WEB_CHAT_AUTO_ANSWERS` [off] | Approved answers and guided help before a person joins | CANDIDATE (`D-276`) |
+| `CAP-WEB_CHAT_HANDOFF` [off] | Hand a web chat to a person, or continue it on WhatsApp | CANDIDATE (`D-276`) |
+| `CAP-PUSH_WEB` [off] | Browser push notifications, consent-gated | CANDIDATE (`D-275`) |
+| `CAP-PUSH_MOBILE` [LATER] | Mobile app push | LATER (Phase 2) |
+| `CAP-IN_APP_MESSAGES` [off] | Messages in the customer's account area | CANDIDATE (`D-275`) |
+| `CAP-CONTACT_FORMS` [on] · `CAP-CALLBACK_REQUESTS` [on] | Enquiry forms and call-back requests into the support queue | 1A |
+| `CAP-SUPPORT_TICKETS` [on] · `CAP-SUPPORT_SLA_TIMERS` [1B] | Ticketing, ownership, escalation and response targets | 1A / 1B |
+| `CAP-MESSAGE_TEMPLATES` [on] | Versioned, approved message templates per channel and language | 1A |
+| `CAP-NOTIFICATION_PREFERENCES` [on] | Customers choose which channels they hear from | 1A |
+| `CAP-CONSENT_CAPTURE` [on] | Consent recorded per channel and purpose, with proof and withdrawal | 1A |
+| `CAP-FREQUENCY_CAPS` [on] · `CAP-QUIET_HOURS` [off] | Limits on how often and when a customer may be messaged | 1A / CANDIDATE |
+| `CAP-STAFF_NOTIFICATIONS` [on] · `CAP-OWNER_DIGEST` [on, `D-063`] | In-workspace alerts and the scheduled owner summary | 1A |
+
+#### M. Marketing and engagement (M09, M05, M20)
+
+| Capability | What the store gets | Build |
+|---|---|---|
+| `CAP-ABANDONED_CART_RECOVERY` [off] | Reminders for baskets left behind, on the channels the store has | CANDIDATE (`D-275`) |
+| `CAP-BACK_IN_STOCK_ALERTS` [`D-141`] · `CAP-PRICE_DROP_ALERTS` [`D-141`] | "Tell me when it is back" and "tell me if it gets cheaper" | CANDIDATE |
+| `CAP-REVIEW_REQUESTS` [off] | Ask for a review after delivery | CANDIDATE (`D-041`) |
+| `CAP-LOYALTY_POINTS` · `CAP-REFERRALS` · `CAP-GIFT_CARDS` [off] | Loyalty, referral and gift-card programmes | CANDIDATE (`D-275`) |
+| `CAP-CAMPAIGN_SEGMENTS` [off] | Build an audience from customer data for a campaign | CANDIDATE (`D-275`) |
+| `CAP-ANALYTICS_TAGS` [off] | Marketing and analytics tags, consent-gated and named in the privacy notice | CANDIDATE (`D-277`) |
+| `CAP-SOCIAL_LINKS` [on] | Social profile links in the storefront | 1A |
+
+#### N. Automation, approvals and exceptions (M17) — **each automation is its own switch**
+
+The rule engine is one capability; **every individual automation is another**, so a client can be given exactly
+the automations they are paying for. The catalogue mirrors BP §12.2 A01–A38 (`D-078` selects the launch set).
+
+| Capability | What the store gets |
+|---|---|
+| `CAP-AUTOMATION_RULES` [on] | The per-module rule engine, its run log and its manual override |
+| `CAP-AUTO_STOCK_SYNC` · `CAP-AUTO_REORDER_SUGGESTIONS` · `CAP-AUTO_LOW_STOCK_ALERT` · `CAP-AUTO_SUPPLIER_FRESHNESS` | Inventory and purchasing automations |
+| `CAP-AUTO_PAYMENT_RECONCILIATION` · `CAP-AUTO_SETTLEMENT_IMPORT` · `CAP-AUTO_REFUND_STATUS` | Money automations |
+| `CAP-AUTO_ORDER_ACKNOWLEDGEMENT` · `CAP-AUTO_DISPATCH_UPDATES` · `CAP-AUTO_DELIVERY_UPDATES` · `CAP-AUTO_RETURN_ACKNOWLEDGEMENT` | Customer status messages, on whichever channels the store has |
+| `CAP-AUTO_RESERVATION_EXPIRY` · `CAP-AUTO_PRICE_CHANGE_REVIEW` · `CAP-AUTO_CATALOG_PUBLISH_CHECKS` | Operational guards |
+| `CAP-AUTO_EXCEPTION_ESCALATION` · `CAP-AUTO_OWNER_DIGEST` · `CAP-AUTO_SCHEDULED_REPORTS` · `CAP-AUTO_ACCOUNTING_EXPORT` | Oversight and finance automations |
+| `CAP-APPROVAL_WORKFLOWS` [on] · `CAP-APPROVAL_THRESHOLDS` [on] · `CAP-DELEGATION` [on] · `CAP-EXCEPTION_QUEUES` [on] | Approvals, limits, cover during absence, exception work queues |
+| `CAP-AUTOMATION_VALUE_TRACKING` [on, `D-193`] | Hours and money saved per rule, from the job log |
+
+An automation whose capability is off is **never registered with the scheduler**, so it cannot run, cannot appear
+in a report and cannot send a message (`§5.2` point 5).
+
+#### O. Reporting, analytics and finance (M18, M19)
+
+`CAP-STANDARD_REPORTS` [on] · `CAP-SAVED_VIEWS` [on] · `CAP-SCHEDULED_REPORTS` [on] · `CAP-DATA_EXPORTS` [on] ·
+`CAP-OWNER_DASHBOARD` [on] · `CAP-CUSTOM_REPORT_REQUESTS` [on] · `CAP-ACCOUNTING_EXPORT` [on, `D-011`] ·
+`CAP-ACCOUNTING_API` [`D-011`] · `CAP-DAY_CLOSE` [on] · `CAP-TAX_INVOICES` [on, `D-037`] ·
+`CAP-EINVOICING` [`D-037`] · `CAP-EWAY_BILL` [`D-037`] — 1A and CANDIDATE.
+
+#### P. Integrations and extensibility (M23)
+
+| Capability | What the store gets | Build |
+|---|---|---|
+| `CAP-STORE_API` [off] | The client's own API keys and scopes, so their systems can read and write their store | CANDIDATE (`D-278`) |
+| `CAP-WEBHOOKS` [off] | Outbound webhooks to the client's systems, signed and retried | CANDIDATE (`D-278`) |
+| `CAP-PAYMENT_PROVIDER` [on, `D-012`] · `CAP-SHIPPING_PROVIDER` [on, `D-013`] | The provider adapters the store actually uses |
+| `CAP-POS_INTEGRATION` [`D-009`] · `CAP-LEGACY_ERP_BRIDGE` [`D-009`] | Bridges to systems the client keeps |
+| `CAP-GSTIN_VERIFICATION` [`D-067`] · `CAP-ADDRESS_LOOKUP` [off] | Registration checks and PIN/address lookup |
+| `CAP-IMPORT_MAPPING_PROFILES` [1B] | Reusable import templates shaped by the store's own catalogue schema |
+
+#### Q. Access, security and privacy (M02, M26)
+
+`CAP-PASSWORD_SIGN_IN` [`D-040`] · `CAP-OTP_SIGN_IN` [`D-040`] · `CAP-SSO_GOOGLE` [off] · `CAP-SSO_APPLE` [off] ·
+`CAP-MFA_STAFF` [on] · `CAP-MFA_CUSTOMERS` [off] · `CAP-ACCESS_REVIEWS` [on] · `CAP-AUDIT_VIEWER` [on] ·
+`CAP-DATA_RETENTION_RULES` [on, `D-036`] · `CAP-PRIVACY_REQUESTS` [on, `D-060`] · `CAP-IP_ALLOWLIST_STAFF` [off] —
+1A and CANDIDATE.
+
+#### R. Platform and presentation (M30–M33)
+
+`CAP-CUSTOM_DOMAIN` [on] · `CAP-STORE_EDITABLE_THEME` [off] · `CAP-CONTEXTUAL_HELP` [on, `D-224`] ·
+`CAP-GUIDED_WORKFLOWS` [on, `D-224`] · `CAP-STAGING_ENVIRONMENT` [off] · `CAP-SELF_SERVICE_FEATURES` [on,
+`D-258`] — the last one is the switch that decides whether a store sees a Features screen at all.
+
+---
+
+**Where each capability is enforced** — the screen, tab, section, endpoint and entity it governs — is in
+**`21-feature-map.md`**. That file is what an implementer reads before building a screen; this catalogue is what
+an operator reads before granting one.
+
+The catalogue is **data**. Adding a capability is a declaration in the store codebase plus a root admin
+migration — never a new codebase (S01). `TS-SAAS-CAP-01` asserts every capability has all six enforcement points
+wired; `TS-SAAS-CAP-02` that no store-facing route or component exists without a declared capability; and
+`TS-SAAS-CAP-12` that no capability whose build status is `CANDIDATE` with an open decision can be granted to a
+store.
 
 ### 5.4 Surfaces, modules and the two-level control model (`D-257`, `D-258`)
 
@@ -459,6 +645,37 @@ Composition rules, enforced by the compiler so that assembly is predictable rath
 Bundles are also how the platform grows safely: a new capability added to the codebase is wired into a bundle
 once, and every category that uses that bundle gains it at its next version — rather than fourteen categories
 each being edited by hand and drifting apart.
+
+### 5.6 Channels, providers and credentials — what "give this client WhatsApp" actually means (`D-274`)
+
+A communication capability is necessary but not sufficient. Switching on `CAP-WHATSAPP_NOTIFICATIONS` without a
+verified sender, approved templates and a consent basis produces a store that looks configured and silently fails
+— the worst possible outcome. The model therefore has five layers, and publication is blocked unless all five are
+satisfied:
+
+```
+1  Capability        Is this store allowed the channel at all?              (root admin, §5.3)
+2  Channel binding   Which provider account does this store use?            (per store; never shared by default)
+3  Sender identity   Which number / domain / sender id, and is it verified? (SPF·DKIM·DMARC, or WhatsApp number)
+4  Templates         Approved, versioned message templates per language     (provider approval where required)
+5  Consent & limits  Consent per channel and purpose, preferences, caps     (per customer, provable, withdrawable)
+```
+
+| Rule | Detail |
+|---|---|
+| CH-1 | A channel capability that is on **without** a verified binding, a verified sender and the templates its enabled automations need is a **publish error**, listing exactly what is missing (`BR-M31-18`) |
+| CH-2 | Provider accounts are **per store** by default (`D-272`). A shared platform account is a documented option with its own risks — shared sender reputation, shared rate limits, shared suspension — and requires the client's explicit agreement |
+| CH-3 | Credentials live in the store's own secret scope, encrypted with its own key, and never appear in a configuration artefact (`BR-M31-08`) |
+| CH-4 | Consent is enforced **in the messaging service**, not in each caller. A send without a consent basis is refused and recorded, whoever asked for it (`BR-M20-01`) |
+| CH-5 | Frequency caps and quiet hours apply across every channel together, so a customer cannot be messaged five times by five features |
+| CH-6 | Delivery status is recorded per message; repeated failure opens an exception case and can suspend the channel rather than silently burning the sender's reputation |
+| CH-7 | Turning a channel off stops sends immediately, leaves the history intact, and removes the channel from customer preference screens and from every template editor |
+| CH-8 | A template is versioned and, where the provider requires approval, carries its approval state. An automation cannot be enabled if the template it needs is missing or unapproved |
+| CH-9 | Every channel has its own per-store rate limit and cost meter (`§20`), so one store's campaign cannot exhaust another's throughput or budget |
+
+Channels recognised by the model: `email`, `sms`, `whatsapp`, `web_chat`, `push_web`, `push_mobile`, `in_app`,
+`voice_callback`. Adding a channel is a platform change (one adapter, one set of contracts), after which every
+store can be granted it — not a per-client build.
 
 ## 6. Vertical packs — the e-commerce categories (SAAS §3 S02, S06, S16–S18, S22 · `D-237`, `D-241`)
 
@@ -904,6 +1121,13 @@ entity in `00-conventions.md` §7/§7.1/§7.2 except the root-admin set above.
 | BR-M30-10 | `store_id` scoping is mandatory in every topology, including a single-store standalone install; there is no unscoped code path |
 | BR-M31-15 | Every artefact is signed as well as checksummed; an install refuses an artefact whose signature does not verify against the pinned platform key |
 | BR-M31-16 | An artefact's manifest binds it to one store and its permitted hosts; it cannot configure any other install |
+| BR-M31-17 | A capability whose build status is `CANDIDATE` with an open gating decision cannot be granted to a store; the compiler refuses the configuration and names the decision |
+| BR-M31-18 | A communication channel switched on without a verified binding, a verified sender identity and the templates its enabled automations need is a publish error listing exactly what is missing |
+| BR-M20-01 | A message is never sent without a consent basis for that channel and purpose; the check is in the messaging service, not in the caller |
+| BR-M20-02 | Frequency caps and quiet hours apply across all channels together, so a customer cannot be messaged separately by each feature |
+| BR-M20-03 | One business event produces one message however many times the job is retried, enforced by a unique message key |
+| BR-M20-04 | Repeated delivery failure suspends the channel and opens an exception case rather than continuing to send |
+| BR-M20-05 | Message logs and run logs carry no personal data beyond a subject reference, and no message body after the retention window |
 | BR-M31-09 | Effective state = surface AND module control AND module store value AND capability control AND capability store value; module state is resolved before capability state |
 | BR-M31-10 | A store may change only items whose control state is `delegated`; a write to any other item behaves exactly as a write to an unknown item |
 | BR-M31-11 | A capability may be `delegated` only if its module is `on_locked` or `delegated` and every capability it depends on is at least as available; other combinations are rejected by the compiler |
@@ -944,6 +1168,8 @@ entity in `00-conventions.md` §7/§7.1/§7.2 except the root-admin set above.
 | `TS-SAAS-DEPLOY` | Provisioning/deployment idempotency, resume, rollback, smoke test, decommission, canary batching, draft concurrency, environment promotion, single-store restore |
 | `TS-SAAS-REL` | Schema-change classes, migrate-and-rebuild release procedure, two-schema acceptance window, rollback eligibility (`§17`) |
 | `TS-SAAS-EDGE` | Every row of `§23` as an executable case |
+| `TS-SAAS-CHAN` | Channel model: publish blocked without a verified binding/sender/template; consent, caps and quiet hours enforced centrally; idempotent send; delivery tracking and suspension; switching a channel off stops sends and hides it everywhere |
+| `TS-SAAS-AUTO` | Each automation is independently grantable; a disabled automation is never scheduled; idempotent execution; failure opens an exception case; pause without deployment |
 | `TS-SAAS-EXP` | Store experience contract `§8` |
 | `TS-PROOF-11`, `TS-PROOF-12` | Stage 0 proof: isolation and configuration cost on each candidate core (`D-252`) |
 
@@ -1333,7 +1559,128 @@ collected per store and reviewed against the budgets; a regression fails the bui
 month later by a customer. The load test uses the agreed growth scenario (`D-207`) with at least two stores and
 the realistic traffic mix, not a synthetic benchmark.
 
-## 26. Decision index for this file
+## 26. Implementation contracts — how to build a capability, a channel and an automation
+
+`§5` says what the control model *is*. This section says what a developer, or an AI session, actually writes. It
+exists because "enforce the capability at six points" is not an instruction anyone can follow without knowing
+what the six pieces look like. Each contract is a checklist that the corresponding test asserts.
+
+### 26.1 Adding a capability — the nine artefacts
+
+Every capability needs all nine. `TS-SAAS-CAP-01` fails if any is missing, so a half-wired capability cannot
+reach a store.
+
+| # | Artefact | Where | What it contains |
+|---|---|---|---|
+| 1 | **Declaration** | `backend/platform/capabilities/registry/<area>.*` | id, area, owning module, plain-language name and description, `depends_on`, `conflicts_with`, `data_retaining`, default per pack, lockable, the `CFG-*` keys it governs, build status |
+| 2 | **Route registration** | The module's route table | Routes registered only when the capability resolves on; otherwise the path does not exist |
+| 3 | **API guard** | The endpoint definition | Declares its capability; the framework answers **404** when off, before authentication, and the endpoint is absent from the store's generated API surface |
+| 4 | **Service guard** | The service entry point | `requireCapability(CAP_X)` — defence in depth for internal callers, jobs and imports; throws `CapabilityDisabled` |
+| 5 | **UI gating** | The screen or component | Component not rendered *and* not in the shipped bundle: the capability is a code-splitting boundary, not a runtime `if` |
+| 6 | **Job registration** | The scheduler wiring | Jobs registered only when on; queued messages for a disabled capability are dead-lettered with a reason |
+| 7 | **Data-out filters** | Export, search index, report and notification builders | Rows and fields excluded when off — never merely hidden in the UI |
+| 8 | **Terminology** | The token registry | Every user-visible word the capability introduces, for every locale the packs using it support |
+| 9 | **Tests** | Beside the code | On-path, off-path (404 and absent bundle), dependency resolution, conflict rejection, and disable→re-enable leaves data unchanged |
+
+**The order matters.** Write the declaration first, then the tests, then the rest: a capability whose declaration
+is written last always ends up with one of the six enforcement points missing.
+
+Anti-patterns that the lint rules reject:
+
+| Anti-pattern | Why it is wrong |
+|---|---|
+| `if (store.pack === "VP-fashion_apparel")` | Behaviour must come from capabilities and schema, never a pack id (`BR-M32-02`) |
+| `if (!cap.can(X)) return 403` | Discloses that the feature exists. It is 404 (`§9` INV-3) |
+| `if (!cap.can(X)) { /* render disabled button */ }` | A greyed control tells the store somebody else is in charge (`§9` INV-4) |
+| Capability checked only in the UI | The API, jobs and exports are the paths that actually leak |
+| Deleting rows when a capability is switched off | Disabling hides; it never deletes (`BR-M31-03`) |
+| Reading the capability from the database per request | Zero request-path I/O for configuration (`BR-M31-01`) |
+
+### 26.2 Adding a communication channel — the adapter contract
+
+A channel is one adapter plus its bindings; adding one makes it available to **every** store, not one.
+
+```
+interface ChannelAdapter {
+  id                 // "whatsapp" | "email" | "sms" | "web_chat" | "push_web" | ...
+  capabilities       // the CAP-* ids this adapter serves
+  verifySender()     // proves the store owns the number/domain; returns a verification state + evidence
+  templateContract() // fields, variables, length and approval rules the provider imposes
+  send(message)      // idempotent on the message key; never called without a consent basis
+  parseDeliveryStatus(payload)   // provider callback -> delivered | failed | read, with a reason code
+  parseInbound(payload)          // inbound message -> conversation + message (for two-way channels)
+  limits()           // provider throughput, message size, window rules
+}
+```
+
+Rules the adapter may **not** implement itself, because they must be identical on every channel and are therefore
+enforced once, in the messaging service (`BR-M20-01`…`BR-M20-05`):
+
+| Rule | Enforced centrally |
+|---|---|
+| Consent basis per channel **and** purpose, with proof and withdrawal | `ConsentService` |
+| Customer notification preferences | `PreferenceService` |
+| Frequency caps and quiet hours, **across all channels together** | `MessagingPolicy` |
+| Idempotency — one business event produces one message, however many times it is retried | `Outbox` + message key |
+| Template resolution, versioning and approval state | `TemplateService` |
+| Per-store rate limit and cost metering | `QuotaService` (`§20`) |
+| Delivery-status recording, retry with backoff, and channel suspension on repeated failure | `DeliveryTracker` |
+| Personal data redaction in logs | `MessagingLogger` |
+
+So `send()` is genuinely just "hand these bytes to this provider". Everything that can harm a customer or a
+sender reputation lives above it, in one place, tested once.
+
+### 26.3 Adding an automation — the rule contract
+
+```
+interface AutomationRule {
+  id                 // CAP-AUTO_*
+  trigger            // event | schedule | threshold
+  scope              // always store-scoped; the store context comes from the job payload (BR-M30-04)
+  guard(ctx)         // capability + configuration + data preconditions; false means "not applicable", not an error
+  preview(ctx)       // what it would do, for the owner to review before it is enabled
+  execute(ctx)       // idempotent; every effect is a recorded action, never a silent write
+  onFailure(ctx,err) // opens an exception case with owner, severity and the data needed to fix it
+  valueEstimate()    // minutes saved per case, for D-193 value tracking
+}
+```
+
+| Rule | Detail |
+|---|---|
+| AUT-1 | Every automation is its own capability, so it can be granted per store (`§5.3` N) |
+| AUT-2 | An automation that sends a message requires its channel **and** its template; the compiler blocks a configuration where it is enabled and they are not (`CH-1`) |
+| AUT-3 | `execute()` is idempotent on the triggering event; a retried job produces one outcome, not two (BP §12.3) |
+| AUT-4 | Every run is logged with input, decision, outcome and duration — an automation nobody can audit is an automation nobody can trust |
+| AUT-5 | Every automation can be paused by the owner without a deployment, and the pause is audited |
+| AUT-6 | Failure opens an exception case with a named owner; it never retries silently forever |
+
+### 26.4 Adding a configuration key
+
+Declare it in the schema (`§3.2`) with all eleven fields — including `editable_by`, `lockable` and the
+plain-language `doc` string that both admin screens display. Then: a default at L0, validation used by both the
+compiler and the write path, a test for a valid and an invalid value, and terminology for any word it introduces.
+A key that is not in the schema cannot be stored, compiled or read, so there is no shortcut.
+
+### 26.5 Adding a screen or a field
+
+| Step | Requirement |
+|---|---|
+| 1 | Which capability owns it? Look it up in `21-feature-map.md`. If there is no row, either it belongs to an existing capability — add the row — or it needs a new declaration. Nothing store-facing exists without a capability (`TS-SAAS-CAP-02`) |
+| 2 | Which pack profile decides whether it appears, and in what order? (`§6.3`–`§6.5`) |
+| 3 | Every label, heading, column name, status and empty-state sentence is a terminology token (`§11`) |
+| 4 | Every colour, font, radius and spacing comes from the theme contract (`§7.4`) |
+| 5 | Declared maximum query count, and keyset pagination if it lists a growing table (`§25.3`) |
+| 6 | Loading, empty, error and permission-denied states, and an accessibility pass (`§24.1` gate 6 and 8) |
+| 7 | Help content for the workspace, because the completeness gate requires it (`§6.9` dimension 23) |
+
+### 26.6 The order to build things in
+
+For any new area of behaviour: **declaration → schema keys → terminology tokens → data model with `store_id` →
+service with its guard → API with its capability and contract test → jobs → UI → exports and reports → help
+content → pack profile entries → seed content**. Every step after the first is cheap; doing them out of order is
+what produces a feature that works for one store and leaks for another.
+
+## 27. Decision index for this file
 
 Decided (all recorded in `DECISIONS.md`, 2026-09-28): `D-227` direction · `D-228` two platforms · `D-229`
 invisibility · `D-230` DB-driven config · `D-231` artefact · `D-232` invalidation · `D-233` isolation · `D-234`

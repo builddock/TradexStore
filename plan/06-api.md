@@ -1977,3 +1977,35 @@ runtime, and authenticates only platform users (`D-245`) or the store-runtime ca
 Each endpoint is contracted in full when its owning task is picked (protocol step 13), in the same format as the
 store endpoints above. Mutating platform endpoints are audited (`BR-M34-01`); publish and deployment endpoints
 are idempotent (`D-079`); two-person actions cannot be completed through a single authenticated call.
+
+---
+
+## 10. Feature-control, channel and automation API additions (2026-09-28, `D-273`, `D-274`, `D-278`)
+
+### 10.1 Store API — new endpoint groups
+
+| Group | Endpoints | Consumed by | Notes |
+|---|---|---|---|
+| Store features | list delegated items with their current value; set a delegated item; read the open-work impact before switching one off | P-E15 Features (`T-1A.16-M24-09`) | Returns **only** delegated items. A non-delegated item behaves exactly as an unknown one (404) |
+| Store channels | list the store's channels; create/update a binding; start and read sender verification; list template requirements and their state | P-E15 Channels (`T-1A.16-M24-11`) | Credentials are write-only; a read never returns a secret |
+| Store templates | list, read, create version, submit for approval, read approval state | P-E15 Templates | Versioned; provider approval state reported honestly |
+| Store automations | list granted automations; preview; enable/pause; read the run log | P-E14 | Only automations whose capability resolves on appear |
+| Delivery status intake | provider webhooks per channel | Providers | Signed, replay-safe, store-scoped by the binding, idempotent on the provider message id |
+| Store public API (`CAP-STORE_API`, `D-278`) | the client's own read/write access under capability-aware scopes | The client's systems | Per-store keys, per-store rate limits, full audit, same 404-not-403 rule |
+| Outbound webhooks (`CAP-WEBHOOKS`, `D-278`) | subscription CRUD; delivery log; replay | The client's systems | Signed, retried with backoff, auto-suspended on repeated failure |
+
+### 10.2 Rules that apply to all of them
+
+| # | Rule |
+|---|---|
+| 1 | Every endpoint declares its capability. When the capability is off the route is not registered and the answer is **404** — including the delivery-status intake, so a provider cannot be used to probe which channels a store has |
+| 2 | No endpoint returns a secret, a credential, another store's data, or the catalogue of what is possible — only the store's **effective** set (`19` §9 INV-2) |
+| 3 | Send-related endpoints are idempotent on the message key; webhook intake is idempotent on the provider message id (`D-079`) |
+| 4 | Rate limits apply per store as well as per client, and per channel (`19` §20) |
+| 5 | Error messages are rendered from terminology tokens and name no platform concept |
+
+### 10.3 Platform API — new group
+
+`API-M34-74…80`: channel bindings per store, sender verification, template requirements, integration bindings,
+automation grants, and the publish-check report that lists what a granted channel is still missing
+(`20-root-admin.md` §8).

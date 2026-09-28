@@ -1412,3 +1412,16 @@ Architecture: `19-saas-platform.md` §6.5, §16; screens: `04c` §21.
   document, statement or credential is reachable from another store (`19` §10.1).
 - The marketplace extension (M15) remains `LATER` (`D-046`) and is unaffected by this change; if it is ever
   activated it becomes a capability like any other.
+
+---
+
+## 15. Vendor channels and grants (2026-09-28, `D-273`, `D-274`)
+
+- `CAP-VENDOR_MESSAGING` makes two-way messages with suppliers a grantable feature; a store without it has no
+  vendor message threads anywhere.
+- Vendor notifications use the same messaging service, the same consent and frequency rules and the same
+  templates as customer messaging — there is no second notification path for suppliers (`19` §26.2).
+- `CAP-VENDOR_API_KEYS` (the availability-feed API a supplier uses) is a capability; keys are per store and per
+  vendor, scoped, and revocable.
+- Each vendor-portal area — submissions, availability feed, statements, performance — is separately grantable, so
+  a store can run a supplier portal that only collects availability without exposing statements.

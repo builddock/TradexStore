@@ -820,3 +820,28 @@ Concretely, for P-E15:
   named platform user (`D-246`), so the owner can always see who looked at their data.
 - Feature flags (§9.9) remain the store's operational flags. They are **not** capabilities: a capability is
   platform-owned and invisible here.
+
+---
+
+## Store-side feature, channel and automation administration (2026-09-28, `D-258`, `D-273`, `D-274`)
+
+P-E15 gains two sections beyond the schema-driven settings of the previous addition, and P-E14 gains a grant-aware
+automation list. All three follow the same rule: **only what the platform delegated appears** (`19` §5.4.3 CTL-7,
+§9 INV-4).
+
+| Section | What the store's administrator can do | What they never see |
+|---|---|---|
+| **Features** (`T-1A.16-M24-09`) | Switch the modules and features delegated to them, in business language, with dependencies resolved and an open-work warning before switching something off | Locked features, features the store does not have, module or capability identifiers, configuration keys |
+| **Channels** (`T-1A.16-M24-11`) | For delegated channels: switch on and off, manage the sender identity and its verification, edit and submit templates, see delivery health and any suspension | Channels the store was not granted; other stores' provider accounts; any credential value, ever |
+| **Automations** (P-E14, `T-1A.13-M17-01`) | Enable, preview, pause and read the run log for granted automations | Automations the store was not granted; the platform's catalogue of what exists |
+
+Two behaviours matter more than the screens:
+
+1. **A delegated switch is not a request.** It takes effect within the propagation budget with no deployment and
+   no platform involvement, because delegated values live in the store's own database (layer L4).
+2. **Enabling a delegated channel is still verified.** The store gets the same clear "what is missing" report an
+   operator would — a verified sender, approved templates — rather than a switch that appears to work and then
+   silently fails to send.
+
+Feature flags (§9.9) remain the store's own operational flags and are still **not** capabilities: a capability is
+platform-owned, and the store only ever sees the delegated subset.

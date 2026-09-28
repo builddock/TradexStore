@@ -20,17 +20,28 @@
   </div>
 
   <div class="tabs">
-    <button data-tab="c-reg">Registry</button>
+    <button data-tab="c-reg">Catalogue</button>
+    <button data-tab="c-chan">Channels &amp; automations</button>
     <button data-tab="c-mat">Store matrix</button>
     <button data-tab="c-rules">How enforcement works</button>
   </div>
 
   <section class="pane" id="c-reg">
-    <div class="card"><div class="card-h"><h2>86 capabilities</h2><span class="sp"></span>
+    <div class="card"><div class="card-h"><h2>About 230 features across 18 areas</h2><span class="sp"></span>
       <select style="width:auto"><option>All areas</option><option>Catalog</option><option>Pricing</option>
         <option>Inventory</option><option>Orders</option><option>Fulfilment</option><option>Returns</option>
         <option>Customers</option><option>Vendor</option><option>Storefront</option></select></div>
       <div id="reg"></div></div>
+  </section>
+
+  <section class="pane" id="c-chan">
+    <div class="note acc mb"><svg data-i="info"></svg><div>
+      Communication channels and automations are the features clients most often buy separately, so each one is
+      its own switch. Granting a channel also requires a provider account, a verified sender and approved
+      templates — the store configuration cannot be published until those exist.
+    </div></div>
+    <div class="card mb"><div class="card-h"><h3>Communication channels</h3></div><div id="chlist"></div></div>
+    <div class="card"><div class="card-h"><h3>Automations — one switch each</h3></div><div id="autolist"></div></div>
   </section>
 
   <section class="pane" id="c-mat">
@@ -65,6 +76,57 @@
 </main>
 <script src="assets/ra.js"></script>
 <script>
+
+document.getElementById("chlist").innerHTML = RA.table(
+  ["Feature", "What the store gets", "Stores with it"],
+  [
+   ["Email — order and account messages", "Order, delivery, account, return and support emails", "7"],
+   ["Email — from the client's own domain", "Sending as the client, with SPF, DKIM and DMARC verified", "6"],
+   ["Email — newsletters and campaigns", "Marketing email with consent, preferences and unsubscribe", "<span class='dim'>needs a scope decision</span>"],
+   ["SMS — order updates", "Delivery and order status by text message", "4"],
+   ["SMS — one-time codes", "Sign-in and verification codes", "5"],
+   ["SMS — promotional", "Marketing texts, consent-gated", "<span class='dim'>needs a scope decision</span>"],
+   ["WhatsApp — message us", "A \u201cchat with us\u201d entry point on the site and in emails", "5"],
+   ["WhatsApp — order updates", "Status messages using approved templates", "3"],
+   ["WhatsApp — assisted orders", "Staff turn a conversation into a basket and a payment link", "2"],
+   ["WhatsApp — guided ordering", "The customer orders inside the conversation", "1"],
+   ["WhatsApp — shared inbox", "Staff inbox with assignment, notes and response targets", "1"],
+   ["Web chat on the website", "Live chat widget, answered in the workspace", "<span class='dim'>needs a scope decision</span>"],
+   ["Web chat — automatic answers", "Approved answers before a person joins", "<span class='dim'>needs a scope decision</span>"],
+   ["Browser notifications", "Push notifications in the customer's browser", "<span class='dim'>needs a scope decision</span>"],
+   ["Messages in the account area", "Notices inside the customer's own account", "<span class='dim'>needs a scope decision</span>"],
+   ["Contact forms and call-back requests", "Enquiries and call-backs into the support queue", "7"],
+   ["Customer message preferences", "Customers choose which channels they hear from", "7"],
+   ["Consent records", "Consent per channel and purpose, with proof and withdrawal", "7"],
+   ["How often and when we may message", "Frequency caps and quiet hours, across all channels together", "7"],
+   ["In-workspace alerts and the owner summary", "Staff notifications and the scheduled owner digest", "7"]
+  ]);
+
+document.getElementById("autolist").innerHTML = RA.table(
+  ["Automation", "What it does", "Needs a channel?", "Stores with it"],
+  [
+   ["Order acknowledgement", "Confirms an order to the customer", "yes", "7"],
+   ["Dispatch updates", "Tells the customer their order is on its way", "yes", "7"],
+   ["Delivery updates", "Tells the customer it has arrived", "yes", "6"],
+   ["Return acknowledgement", "Confirms a return has been received", "yes", "6"],
+   ["Unpaid order reminder", "Reminds a customer who has not paid", "yes", "2"],
+   ["Stock sync", "Keeps channel stock in step with the warehouse", "no", "7"],
+   ["Reorder suggestions", "Proposes purchase orders from thresholds and lead times", "no", "5"],
+   ["Low-stock alert", "Warns staff before something runs out", "yes (staff)", "7"],
+   ["Supplier freshness check", "Flags a supplier feed that has gone stale", "no", "3"],
+   ["Reservation expiry", "Releases stock held for an unpaid order", "no", "7"],
+   ["Payment reconciliation", "Matches payments to orders", "no", "7"],
+   ["Settlement import", "Loads the provider's settlement file", "no", "5"],
+   ["Price change review", "Holds a price change for approval before it goes live", "no", "6"],
+   ["Catalogue publication checks", "Blocks publishing a product with missing required information", "no", "7"],
+   ["Exception escalation", "Escalates an unresolved exception to its owner", "yes (staff)", "7"],
+   ["Owner daily summary", "The scheduled digest of what needs attention", "yes", "7"],
+   ["Scheduled reports", "Sends agreed reports on a schedule", "yes", "5"],
+   ["Accounting export", "Produces the accounting file on a schedule", "no", "6"],
+   ["Abandoned basket reminders", "Reminds a customer about a basket they left", "yes", "<span class='dim'>needs a scope decision</span>"],
+   ["Back-in-stock alerts", "Tells customers when something returns", "yes", "<span class='dim'>needs a scope decision</span>"],
+   ["Review requests", "Asks for a review after delivery", "yes", "<span class='dim'>needs a scope decision</span>"]
+  ]);
 document.getElementById("reg").innerHTML = RA.table(
   ["Capability", "Area", "What it does", "Categories that need it", "Stores with it on"],
   RA.caps.map(function (c) {

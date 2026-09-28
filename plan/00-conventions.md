@@ -28,6 +28,10 @@ To read the PDFs as text: `pdftotext -layout docs/<file>.pdf -`.
   names. Each such value is a **REQUIRES_DECISION** item (see `DECISIONS.md`).
 - The mockup's **prototype toolbar** (View-as switcher, Phase notes, All screens), `index.html` (prototype
   overview) and `credits.html` are review aids, **not product features**.
+- **The mockup is the reference store** (`D-279`): it shows a store with **every Phase-1 feature enabled**, and is
+  deliberately not feature-gated. It is a picture of the system, not of one client's configuration. Which
+  capability governs which section is in **`21-feature-map.md`**; a mockup element with no row there is a gap in
+  that file, closed before the screen is built.
 - `assets/tradex.js` sample catalogue/reference data and chart helpers are prototype code. The design tokens and
   component styles in `assets/tradex.css` are the approved-for-review visual direction, pending sign-off (D-049).
 - Where the mockup shows something the blueprint marks **Conditional (C)** or **Later (L)**, the plan keeps it but
@@ -122,7 +126,7 @@ artefact format, so Phase 1A is never blocked on the portal (`D-235`).
 | Test | `TS-<area>-##` (suite), `TS-<area>-##.<n>` (case) and BP acceptance tests `T01…T36` | TS-INV-04, TS-PERM-02.4, T04 | `16-testing.md`, BP §23.1 |
 | Task | `T-<stage>-<M##>-##` (permanent; stage prefix = original stage, D-213) | T-1A.6-M06-02 | skeleton `12-phases.md` §9; tracker & status `TASKS.md` |
 | Stage | `0`, `1A.1`…`1A.17`, `1B.1`…`1B.5`, `2`, `3` | 1A.6 | `12-phases.md` §6 |
-| DB migration group | `DB-G0`…`DB-G12` | DB-G4 | `03-database.md` §4 (DB-G12 SaaS platform: §11.4) |
+| DB migration group | `DB-G0`…`DB-G13` | DB-G4 | `03-database.md` §4 (DB-G12 SaaS platform §11.4; DB-G13 feature control, channels and automation §12.5) |
 | Seed set | `S-01`… | S-03 | `03-database.md` §6 |
 | Automation | `A01…A38` (from BP §12.2) | A05 | BP §12.2 / `10-erp.md` |
 | Requirement | `R01…R20` (from BP §2.1) | R08 | BP §2.1 |
@@ -131,6 +135,8 @@ artefact format, so Phase 1A is never blocked on the portal (`D-235`).
 | Module | `MOD-<slug>` | MOD-inventory, MOD-rental | `19-saas-platform.md` §5.4.2 (platform and category modules) |
 | Bundle | `BND-<slug>` | BND-perishables | `19-saas-platform.md` §5.5 |
 | Surface | `storefront` · `workspace` · `vendor` | workspace | `19-saas-platform.md` §5.4.1 |
+| Channel | `email` · `sms` · `whatsapp` · `web_chat` · `push_web` · `push_mobile` · `in_app` · `voice_callback` | whatsapp | `19-saas-platform.md` §5.6 |
+| Automation capability | `CAP-AUTO_<name>` (one per BP §12.2 automation) | CAP-AUTO_DISPATCH_UPDATES | `19-saas-platform.md` §5.3 N |
 | Vertical pack | `VP-<slug>` | VP-fashion_apparel | catalogue in `19-saas-platform.md` §6.2 |
 | Site template | `TPL-<slug>` | TPL-aurora | `19-saas-platform.md` §7.3 |
 | Configuration key | `CFG-<section>.<name>` | CFG-checkout.guest_allowed | schema in `19-saas-platform.md` §3.2 |
@@ -278,6 +284,7 @@ the single exception record type for all exception queues (BP §12.5).
 | Branding & wording | E-brand_asset, E-terminology_token, E-terminology_set, E-terminology_override |
 | Deployment | E-deployment, E-deployment_step, E-platform_notification |
 | Bundles (`D-266`) | E-bundle, E-bundle_version, E-pack_bundle_application |
+| Feature control (`D-273`) | E-module_definition, E-channel_requirement (+ `build_status`, `gating_decision` on E-capability_definition; `item_kind`, `control_state` on E-store_capability_override) |
 
 **Store database** (module M30/M31/M35):
 
@@ -286,6 +293,11 @@ the single exception record type for all exception queues (BP §12.5).
 | E-store | The store's own identity record: id, key, display name, jurisdiction, currency, locales, state |
 | E-store_setting | Layer L4 — the store-editable subset only (`D-243`) |
 | E-store_feature_state | Layer L4 — the on/off value of every **delegated** module and capability, set by the store's own administrator (`D-258`) |
+| E-store_feature_change | Append-only history of delegated-feature changes, including control-state changes the platform made (`D-258` CTL-6) |
+| E-channel_binding, E-sender_identity, E-channel_suspension | Which provider account a store uses per channel, its verified sender, and suspension after repeated failure (`D-274`) |
+| E-message_dispatch | One row per outbound message; unique `(store_id, message_key)` is what makes "one event, one message" true under retry (`D-274`) |
+| E-automation_run | The run log that makes an automation auditable (`19` §26.3 AUT-4) |
+| E-integration_binding, E-webhook_subscription | Non-messaging integrations, and outbound webhooks when `CAP-WEBHOOKS` is granted (`D-278`) |
 | E-store_setting_version | Monotonic version used to invalidate the L4 overlay without polling |
 | E-config_state | Applied config version, checksum, applied_at, per-instance report, drift flag |
 | E-store_bootstrap_run | Idempotent record of seed sets applied during provisioning (`D-250`) |

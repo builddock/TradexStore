@@ -129,7 +129,9 @@ blocked by any other `OPEN` decision still stops and asks.
 3. **No configuration I/O on the request path.** Read from the immutable snapshot; never add a "just one query"
    fallback (`BR-M31-01`, `D-248`).
 4. **Declare a capability for every store-facing route and component**, and enforce it at all six points.
-   Disabled means **404**, not 403 (`BR-M31-02`, `D-229` INV-3).
+   Disabled means **404**, not 403 (`BR-M31-02`, `D-229` INV-3). Before building any screen, read that screen's
+   row in **`21-feature-map.md`** — it names the capability that governs each section, and the mockup you are
+   copying shows a store with *everything* enabled (`D-279`), so it will not tell you what to gate.
 5. **No hard-coded concept word and no hard-coded visual value.** Terminology tokens and theme tokens
    (`BR-M33-02`, `D-239`).
 6. **Nothing store-facing may reveal the platform** — no other store, no category list, no template list, no

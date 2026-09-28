@@ -1542,3 +1542,22 @@ store-scoped and capability-gated:
 
 No ERP business rule (BR-*) is weakened, re-scoped or made optional by the SaaS change. A rule that applied to
 Tradex now applies to every store whose capability set includes it.
+
+---
+
+## Automation catalogue and channels (2026-09-28, `D-273`, `D-274`)
+
+The automation content of §15 is unchanged. What changes is granularity and ownership:
+
+- **Every automation is its own capability** (`19` §5.3 N), so a client can be given exactly the automations they
+  are paying for. `D-078` still selects the launch set for a given store; the catalogue is what makes that
+  selection expressible per store rather than global.
+- An automation is **never scheduled** when its capability is off, so it cannot run, cannot appear in a report and
+  cannot send a message.
+- An automation that sends a message **cannot be enabled without its channel and its approved template** — the
+  compiler blocks that configuration and names both (`19` §26.3 AUT-2). This removes the most common silent
+  failure in an ERP: a rule that fires correctly and then sends nothing.
+- Every run is logged with input, decision, outcome and duration (`E-automation_run`), every failure opens an
+  exception case with a named owner, and the owner can pause a rule without a deployment.
+- Exception queues, approvals, thresholds and delegation are capabilities too, so a store that does not use
+  approvals does not carry an empty approvals screen.

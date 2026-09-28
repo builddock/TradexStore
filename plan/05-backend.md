@@ -1398,3 +1398,46 @@ cannot be overridden).
 work: every service takes its store from the context rather than from configuration constants; every feature the
 capability registry names is guarded; every user-visible string is a terminology token; every job payload carries
 `store_id`; and no module reads the root admin database.
+
+---
+
+## 10. Feature catalogue, channels and automations — backend shape (2026-09-28, `D-273`, `D-274`)
+
+Contracts to follow when implementing: `19-saas-platform.md` §26 (nine artefacts per capability, the channel
+adapter contract, the automation rule contract). Data model: `03` §12.
+
+### 10.1 What changes in M16 and M20
+
+M20 becomes **one messaging service with many adapters**, rather than a notification module that knows about
+email and SMS:
+
+| Component | Responsibility |
+|---|---|
+| `MessagingPolicy` | Consent basis per channel **and** purpose, customer preferences, frequency caps and quiet hours across all channels together, per-store rate limit and cost meter |
+| `TemplateService` | Versioned templates per channel and locale, provider approval state, variable validation |
+| `Dispatcher` | Idempotent send on a unique message key, outbox-backed, retry with backoff |
+| `DeliveryTracker` | Provider status intake, failure classification, channel suspension on repeated failure |
+| `ChannelAdapter` (one per channel) | `verifySender`, `templateContract`, `send`, `parseDeliveryStatus`, `parseInbound`, `limits` — and nothing else |
+
+M16 keeps support and conversations, and gains `channel` on conversations so WhatsApp and web chat are the same
+records rather than two parallel implementations.
+
+### 10.2 What changes in M17
+
+The rule engine stays per-module (`D-221` — still no general-purpose workflow builder). Each automation becomes a
+registered handler behind its own capability, implementing `guard / preview / execute / onFailure / valueEstimate`
+(`19` §26.3). Registration happens only when the capability resolves on, so a disabled automation is not in the
+scheduler at all.
+
+### 10.3 Business rules added
+
+`BR-M20-01`…`BR-M20-05` (consent in the service not the caller; caps across channels; one event one message;
+suspend on repeated failure; no personal data in logs after retention) and `BR-M31-17`, `BR-M31-18`
+(`CANDIDATE` capabilities cannot be granted; a channel without a verified binding, sender and templates blocks
+publish). All defined in `19` §14.
+
+### 10.4 Completion criteria for this area
+
+Two stores with different channel grants, different automations and different templates run side by side; a send
+without consent is refused from every caller; a retried job produces one message; a disabled automation is absent
+from the scheduler; and adding a third channel adapter requires no change to any module that sends messages.

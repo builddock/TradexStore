@@ -1307,3 +1307,46 @@ against a read replica, never in the store codebase.
 The module boundaries (M01–M27), the order state machine, the stock authority model, the idempotency and outbox
 patterns, the trust boundaries of BP §17.4, the money model of BP §8.1 and the integration adapter framework are
 all unchanged. The SaaS layer sits **around** them, not inside them.
+
+---
+
+## 30. Feature control, channels and automation in the architecture (2026-09-28, `D-273`, `D-274`)
+
+Full detail: `19-saas-platform.md` §5.3–§5.6 and §26. What changes here:
+
+### 30.1 The control plane inside a request
+
+```
+host → store → immutable snapshot
+   ├─ surface enabled?        no → the application does not exist for this store
+   ├─ module control + value  off → every capability inside it is off
+   ├─ capability control+value off → route not registered, API 404, no bundle, no job, no export
+   └─ on → authentication → permission → record scope → business rule
+```
+
+All of it resolves from one bitset held in memory. Feature state contributes two layers: the published control
+state (from the artefact) and the store's own delegated values (layer L4, refreshed on change, never read per
+request).
+
+### 30.2 Messaging is one service, many adapters
+
+Every module that needs to tell somebody something calls **one** messaging service. That service owns consent,
+preferences, frequency caps, quiet hours, template resolution, idempotency, rate limiting, delivery tracking and
+log redaction. Channel adapters (`email`, `sms`, `whatsapp`, `web_chat`, `push_web`, `in_app`, …) only hand bytes
+to a provider (`19` §26.2).
+
+The consequence worth stating: **adding a channel is one adapter**, after which every store can be granted it.
+No module changes, because no module talks to a provider.
+
+### 30.3 Automations are registered handlers, not a workflow engine
+
+Each automation is a capability with a handler registered only when that capability resolves on. There is still
+no general-purpose workflow builder (BP §5.3, §15.6, `D-221`); there is a catalogue of named automations, each
+one switchable per store, each with a guard, a preview, an idempotent execute, a run log and an owner.
+
+### 30.4 Provider accounts and credentials
+
+Per store by default (`D-272`): a store's channel binding names its own provider account, and its credentials
+live in its own secret scope encrypted with its own key. A shared platform account is possible but is a
+documented option with shared reputation, shared limits and shared suspension risk, and needs the client's
+agreement (`CH-2`).

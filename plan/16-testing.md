@@ -963,6 +963,9 @@ true silently. They run in CI on every change, not before a release.
 | `TS-SAAS-EXP-01` | every store-facing output traces to the five inputs of `19` §8 | `19` §8 |
 | `TS-SAAS-REL-01…05` | Schema-change classification, migrate-and-rebuild release procedure, no-op rebuild byte-identical, two-schema acceptance window, rollback eligibility | `19` §17 |
 | `TS-SAAS-EDGE` | Every row of `19` §23 as an executable case: run-out rule, delegation invariants, lifecycle and webhook edges, currency and locale changes, search during migration | `19` §23 |
+| `TS-SAAS-CHAN-01…08` | Channel model: publish blocked without a verified binding, sender and templates; no secret in any table, log or artefact; verification states; suspension after repeated failure; no send without a consent basis from any caller; caps and quiet hours across channels together; one event one message under retry; delivery tracking with backoff | `19` §5.6, §26.2 |
+| `TS-SAAS-AUTO-01…05` | Each automation independently grantable; a disabled automation is never scheduled and its queued messages are dead-lettered; idempotent execution; enabling a messaging automation without its channel or template is blocked; pause without a deployment, audited | `19` §5.3 N, §26.3 |
+| `TS-SAAS-CAP-12, -13` | A `CANDIDATE` capability with an open gating decision cannot be granted; every capability has a plain-language description and an owning module | `19` §5.3 |
 | `TS-PROOF-11`, `TS-PROOF-12` | Stage 0: isolation and configuration cost per candidate core | `D-252` |
 
 ### 18.2 The two-store rule

@@ -1116,3 +1116,40 @@ Architecture: `19-saas-platform.md`, `20-root-admin.md`. Each item is evidenced 
 - [ ] Fashion & Apparel selected, template selected, colours configured, logo uploaded, store deployed — entirely from the portal — `T-1R.2-M34-10`
 - [ ] Two stores of different categories created from an empty platform, each behaving and looking like its own business, neither aware of the other — `T-1R.3-M34-03`
 - [ ] The complete `TS-SAAS-*` suite green — `T-1R.3-M34-03`
+
+---
+
+## Feature catalogue, channels and automation checklist (2026-09-28, `D-273`, `D-274`)
+
+### J. Granting and withholding
+- [ ] Every feature a client might buy is a capability in the catalogue — channels, each automation, integrations, store API — `T-1A.1-M31-09`
+- [ ] A `CANDIDATE` capability whose decision is open cannot be granted, and the refusal names the decision — `T-1A.1-M31-09`
+- [ ] Every capability has a plain-language name and description an operator can read — `T-1A.1-M31-09`
+- [ ] Each capability can be granted, withheld or delegated per store from one screen — `T-1R.2-M34-13`
+
+### K. Channels
+- [ ] A channel on without a verified binding, verified sender and required templates blocks publish, with a precise report — `T-1A.13-M20-06`
+- [ ] No secret value appears in any table, log or configuration artefact — `T-1A.13-M20-06`
+- [ ] Email sender verification records SPF, DKIM and DMARC separately — `T-1A.13-M20-06`
+- [ ] Repeated delivery failure suspends the channel and opens an exception case — `T-1A.13-M20-06`
+- [ ] A credential from one store cannot send as another store — `T-1A.13-M20-06`
+- [ ] Switching a channel off stops sends immediately, keeps the history and removes it from every preference screen and template editor — `T-1A.16-M24-11`
+
+### L. Messaging rules, enforced once
+- [ ] A send without a consent basis is refused from **every** caller, including services and jobs — `T-1A.13-M20-07`
+- [ ] Frequency caps and quiet hours apply across all channels together — `T-1A.13-M20-07`
+- [ ] One business event produces one message however many times the job retries — `T-1A.13-M20-07`
+- [ ] Logs hold no message body after the retention window and no personal data beyond a subject reference — `T-1A.13-M20-07`
+- [ ] Adding a new channel adapter requires no change to any of these rules — `T-1A.13-M20-07`
+
+### M. Automations
+- [ ] Every automation is independently grantable per store — `T-1A.13-M17-01`
+- [ ] A disabled automation is never registered with the scheduler, and queued work for it is dead-lettered with a reason — `T-1A.13-M17-01`
+- [ ] Enabling a messaging automation without its channel or template is blocked, naming both — `T-1A.13-M17-01`
+- [ ] Every run is logged with input, decision, outcome and duration; failure opens an exception case with an owner — `T-1A.13-M17-01`
+- [ ] The owner can pause a rule without a deployment, and the pause is audited — `T-1A.13-M17-01`
+
+### N. What the store's own administrator sees
+- [ ] Only delegated features, channels and automations appear; the rest are absent from the page **and** from its data — `T-1A.16-M24-09`, `T-1A.16-M24-11`
+- [ ] A delegated switch takes effect within the propagation budget with no deployment — `T-1A.16-M24-09`
+- [ ] Enabling a delegated channel shows the same verification report an operator would see — `T-1A.16-M24-11`

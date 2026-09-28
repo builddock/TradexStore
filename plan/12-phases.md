@@ -119,9 +119,9 @@ after Phase 0" (D-220).
 | Stage | Name | Task modules | Work packages | Tasks | of which decision tasks | Initially REQUIRES_DECISION |
 |---|---|---|---|---:|---:|---:|
 | 0 | Discovery & proof | M01, M02, M03, M04, M05, M06, M08, M09, M11, M13, M14, M17, M19, M25, M26 | WP01, WP02, WP03 (prototype sign-off), WP04; estimation BP §25; sign-off worksheet BP §31.2. | 77 | 48 | 47 |
-| 1A.1 | Foundation | M01, M17, M26 | WP05. | 33 | 0 | 19 |
+| 1A.1 | Foundation | M01, M17, M26 | WP05. | 34 | 0 | 19 |
 | 1A.2 | Identity, access, audit & organisation | M02, M03, M17, M23, M24 | WP05 (secrets, integration settings); WP06 (organisation master data). | 20 | 0 | 12 |
-| 1A.3 | Design system & app shells | M01, M02, M03, M09, M24 | WP03 (design system), WP09 (storefront shell). | 18 | 0 | 14 |
+| 1A.3 | Design system & app shells | M01, M02, M03, M09, M24 | WP03 (design system), WP09 (storefront shell). | 19 | 0 | 14 |
 | 1A.4 | Catalog, media, search & SEO base | M04, M21, M22, M25, M27 | WP06; WP09 (search). | 18 | 0 | 13 |
 | 1A.5 | Pricing | M04, M05 | WP07. | 10 | 0 | 6 |
 | 1A.6 | Inventory & serials | M03, M04, M06, M23, M25 | WP08. | 16 | 0 | 11 |
@@ -131,13 +131,13 @@ after Phase 0" (D-220).
 | 1A.10 | Payments & reconciliation | M09, M11, M23 | WP10. | 12 | 0 | 7 |
 | 1A.11 | Fulfilment & shipping | M09, M12, M19, M23 | WP11. | 15 | 0 | 9 |
 | 1A.12 | Returns, RMA & warranty | M04, M08, M09, M10, M13 | WP11. | 13 | 0 | 8 |
-| 1A.13 | Support L1 & notifications | M09, M10, M16, M20 | WP14 (Level 1), WP12 (A14). | 12 | 0 | 9 |
+| 1A.13 | Support L1 & notifications | M09, M10, M16, M20 | WP14 (Level 1), WP12 (A14). | 15 | 0 | 12 |
 | 1A.14 | Automation, exceptions, approvals & owner control centre | M17, M18 | WP12. | 13 | 0 | 10 |
 | 1A.15 | Reporting & finance export | M09, M10, M11, M18, M19 | WP15. | 13 | 0 | 10 |
-| 1A.16 | Administration completion | M24, M26 | WP05 (operations part), WP17 (monitoring preparation). | 12 | 0 | 9 |
+| 1A.16 | Administration completion | M24, M26 | WP05 (operations part), WP17 (monitoring preparation). | 13 | 0 | 9 |
 | 1A.17 | Migration, UAT & launch readiness | M01, M02, M09, M25, M26, M27 | WP16, WP17. | 21 | 0 | 17 |
 | 1R.1 | Root admin foundation & store registry | M34 | WP18. | 10 | 0 | 4 |
-| 1R.2 | Store configurator, packs, templates & terminology | M32, M33, M34 | WP18. | 14 | 0 | 4 |
+| 1R.2 | Store configurator, packs, templates & terminology | M32, M33, M34 | WP18. | 15 | 0 | 5 |
 | 1R.3 | Provisioning, deployment, platform operations & 1R release | M34, M35 | WP18. | 14 | 0 | 9 |
 | 1B.1 | Vendor portal & vendor management | M14 | WP13. | 18 | 0 | 13 |
 | 1B.2 | Validated bulk import & supplier feeds | M04, M05, M06, M14, M22, M23 | WP06 (import), WP13 (feeds). | 11 | 0 | 7 |
@@ -146,10 +146,11 @@ after Phase 0" (D-220).
 | 1B.5 | 1B UAT & release | M14, M17, M25, M26 | WP16 (1B UAT), WP17 (1B release). | 4 | 0 | 2 |
 | 2 | Mobile experience & separately approved growth — scope and approve only | M01, M15, M28 | — | 4 | 0 | 4 |
 | 3 | AI & further expansion — scope and approve only | M03, M17, M29 | — | 3 | 0 | 2 |
-| **Total** | | | | **457** | **48** | **300** |
+| **Total** | | | | **464** | **48** | **304** |
 
 > Counts recomputed 2026-09-28 after the SaaS architecture change (`D-227`, 71 tasks) and the
-> production-readiness and control-model second pass (`D-257`–`D-272`, 28 tasks); `tools/status.py`
+> production-readiness and control-model second pass (`D-257`–`D-272`, 28 tasks) and the feature-
+> catalogue and channel pass (`D-273`–`D-278`, 6 tasks); `tools/status.py`
 > is authoritative. The 48 decision tasks are unchanged: `D-227`–`D-253` were recorded as `DECIDED` with the
 > change itself, so they need no "Decide D-xxx" task.
 
@@ -1965,3 +1966,37 @@ Existing tasks that gained dependencies in this pass: `T-0-M01-29`, `T-0-M01-30`
 canary batching (`BR-M35-04`). No task ID was renamed, removed or re-staged.
 
 No task ID was renamed, removed or re-staged. No acceptance criterion of an existing task was weakened.
+
+### 10.8 Third pass — the feature catalogue, channels and automations (2026-09-28, `D-273`–`D-278`)
+
+From the user instruction: *"features like WhatsApp, email, web chat, automation … all can be allowed or can be
+disabled per store, so if customer want that features only those can be granted else not"*, together with a
+request that the database and coding guidance be complete enough for an implementer to follow without guessing.
+
+| Area | Decisions | New tasks |
+|---|---|---|
+| The full capability catalogue (~230 entries, 18 areas) and its build-status gate | D-273 | `T-1A.1-M31-09` |
+| Channel model: bindings, sender verification, per-store credentials, publish check | D-274 | `T-1A.13-M20-06` |
+| Messaging service: consent, preferences, caps, quiet hours, idempotent send, delivery tracking | D-274 | `T-1A.13-M20-07` |
+| Automation catalogue: each automation independently grantable, with guard, preview, run log and pause | D-273 | `T-1A.13-M17-01` |
+| Store-side channel and automation administration (delegated items only) | D-258, D-274 | `T-1A.16-M24-11` |
+| Root admin channel, integration and automation grants | D-273, D-274 | `T-1R.2-M34-13` |
+| Marketing, web chat, analytics tags, store API — listed as `CANDIDATE`, **not built** | D-275, D-276, D-277, D-278 | none; gated until decided |
+
+Documentation added so an implementer does not have to infer anything: `19` §5.3 (the catalogue with a build
+status per entry), §5.6 (the five layers a channel needs before it can be published), §26 (implementation
+contracts — the nine artefacts per capability, the channel adapter contract, the automation rule contract, and
+the anti-patterns the lint rules reject), and `03` §12 (the data model, the indexes that matter, `DB-G13`, and
+the six rules the schema itself enforces).
+
+Existing tasks that gained dependencies: `T-1A.1-M01-10`, `T-1A.13-M16-05`, `T-1A.16-M24-05`, `T-1R.2-M34-10`.
+One ID collision was caught before it reached the tracker: the new channel task was renumbered
+`T-1A.13-M20-06` because `T-1A.13-M20-05` already existed (engagement extras).
+
+**Addendum — the feature map (`D-279`).** A catalogue of switches is only usable if an implementer can tell which
+switch governs the screen in front of them, so `21-feature-map.md` maps every storefront, workspace and vendor
+screen section to the capability that owns it, plus a reverse index from capability to screens, endpoints,
+entities and tasks. `T-1A.3-M31-02` makes it executable: the build fails when a store-facing section has no
+declared capability, and a reconciliation check fails when the code and the map disagree. The same decision
+records that the **client-facing mockup is the reference store** — every feature enabled, deliberately not
+gated — so nobody mistakes the mockup's completeness for "these sections are always present".

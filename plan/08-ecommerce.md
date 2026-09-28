@@ -1701,3 +1701,22 @@ The e-commerce behaviour specified above is unchanged; it becomes per-store and 
 - Every user-visible word comes from a terminology token, so "product", "dealer" and "order" can differ per
   store without a code change.
 - Nothing a customer sees may reveal the platform (`19` §9).
+
+---
+
+## 14. Engagement, marketing and messaging capabilities (2026-09-28, `D-273`, `D-275`)
+
+The storefront behaviour specified above is unchanged. What the SaaS catalogue adds is that each engagement
+feature is separately grantable per store (`19` §5.3 F, L, M):
+
+- **Transactional messaging** (order, payment, dispatch, delivery, return) is in scope and on by default, on
+  whichever channels the store has been granted — email, SMS, WhatsApp (`19` §5.6).
+- **Marketing and engagement** — newsletters, campaigns, abandoned-cart recovery, back-in-stock and price-drop
+  alerts, review requests, loyalty, referrals, gift cards — are listed as `CANDIDATE` capabilities and are **not
+  built** until `D-275` approves a scope. They can be shown to a client as available; they cannot be granted
+  while the decision is open (`BR-M31-17`).
+- **Web chat** is `CANDIDATE` under `D-276`; WhatsApp click-to-chat and contact forms cover the launch need.
+- **Analytics and marketing tags** are `CANDIDATE` under `D-277`; if approved they are consent-gated, declared
+  per store, and loaded after first paint so they cannot break the performance budget (`19` §25.2).
+- Consent, preferences, frequency caps and quiet hours apply **across all channels together** and are enforced in
+  the messaging service, so no feature can message a customer outside their agreement (`19` §26.2).

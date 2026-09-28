@@ -602,3 +602,26 @@ existing decisions (`D-001`, `D-002`, `D-003`, `D-005`, `D-033`, `D-052`, `D-053
 
 **Not added:** no new database engine, no new broker, no service mesh, no per-store container image, no
 general-purpose rules engine (BP §5.3/§15.6 still applies), and no second frontend framework.
+
+---
+
+## 35. Channel, automation and extensibility technology (2026-09-28, `D-273`, `D-274`)
+
+Catalogue: `19-saas-platform.md` §5.3. Channel model: §5.6. Contracts: §26.2, §26.3. Data model: `03` §12.
+
+| Need | Requirement on the stack | Decision |
+|---|---|---|
+| Email sending | A provider supporting a **per-store sending domain** with SPF, DKIM and DMARC, delivery webhooks, suppression lists and per-store reputation isolation | `D-015` |
+| WhatsApp | A Business Solution Provider or the Cloud API, with template management and approval state readable through the API, inbound webhooks and a per-store number | `D-014` |
+| SMS / OTP | A provider with per-store sender ids where the jurisdiction requires registration, and delivery receipts | `D-015` |
+| Web chat | Only if `D-276` approves: a websocket or long-poll transport the chosen stack supports without a second runtime, plus staff presence | `D-276` |
+| Web push | Only if `D-275` approves: standard Web Push with per-store VAPID keys | `D-275` |
+| Template storage and rendering | Versioned templates with variables, per channel and locale, rendered server-side; no template engine that can execute arbitrary code from stored content | `D-058` |
+| Idempotent dispatch | A unique message key per business event, enforced in the database, not in application memory | — |
+| Delivery status intake | Signed provider webhooks, replay-safe, per store | `D-014`, `D-015` |
+| Automation scheduling | The existing durable job runtime (`M17`); one automation is one registered handler, registered only when its capability is on | — |
+| Store API and webhooks | Only if `D-278` approves: per-store API keys with capability-aware scopes, per-store rate limits, signed outbound webhooks with retry and auto-suspension | `D-278` |
+| Analytics tags | Only if `D-277` approves: consent-gated, loaded after first paint so they cannot break the `19` §25.2 budgets, never injected as free-text script by a store user | `D-277` |
+
+**Not added:** no second runtime for chat, no separate marketing-automation platform, no per-store message broker,
+and no provider SDK that requires a shared, platform-wide account — that would defeat `D-272` separation.

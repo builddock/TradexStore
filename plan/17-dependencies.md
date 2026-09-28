@@ -2718,3 +2718,42 @@ Deferring any of these creates a migration across live data or a security retrof
 doing them in order: `store_id` on every table; the capability declaration on every endpoint; terminology tokens
 instead of literal concept words; the store context in every job payload; and per-store uniqueness on every
 unique constraint. They are cheap while the table or endpoint is being written and expensive afterwards.
+
+---
+
+## Feature-catalogue, channel and automation dependencies (2026-09-28, `D-273`, `D-274`)
+
+### E. Where these sit on the critical path
+
+```
+1A.1  M31-02 capabilities ──► M31-08 surfaces/modules/control ──► M31-09 full catalogue + build-status gate
+                                     │                                        │
+                                     ▼                                        ▼
+1A.13 M20-01 notification core ──► M20-06 channel model ──► M20-07 messaging service ──► M17-01 automation catalogue
+                                                                                              │
+1A.16 M24-09 store Features screen ──► M24-11 store Channels & Automations screen ◄───────────┘
+                                                                                              │
+1R.2  M34-11 surface/module/delegation editor ──► M34-13 channel, integration & automation grants
+```
+
+### F. The ordering rule that matters most
+
+**The messaging service comes before any automation that sends a message, and the channel model comes before the
+messaging service.** Building automations first produces rules that each talk to a provider, each implement their
+own consent check, and each get it slightly differently — which is the failure this architecture is designed to
+prevent and which is expensive to undo once eight automations exist.
+
+### G. Work that can run in parallel
+
+- `T-1A.1-M31-09` (catalogue declarations) is mostly independent writing and can run alongside the rest of 1A.1
+  once `M31-08` defines the control model.
+- Channel adapters are independent of each other: email, SMS and WhatsApp can be built by different people once
+  `T-1A.13-M20-07` fixes the contract.
+- `T-1R.2-M34-13` (grants in the root admin) needs only the contracts, not the adapters, so it can start as soon
+  as `T-1A.13-M20-06` lands.
+
+### H. What must not be deferred
+
+`store_id` on `E-message_dispatch` and `E-automation_run`; the unique message key; the consent check inside the
+messaging service; the capability declaration on every automation. Each is trivial while the table or handler is
+being written, and each requires a data migration plus a security review afterwards.

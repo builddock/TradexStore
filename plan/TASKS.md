@@ -1479,7 +1479,7 @@ proof, estimate and exit-gate work; they do not replace any of it. See `19-saas-
 #### T-1A.1-M01-10 · Stage 1A.1 verification and foundation runbooks: deploy, rollback, migration-plan and release-notes templates in infra/; WP05 deploy/restore proof evidence
 - **Status:** NOT_STARTED
 - **Stage / Module:** 1A.1 / M01
-- **Depends on:** T-1A.1-M01-05, T-1A.1-M01-07, T-1A.1-M01-08, T-1A.1-M01-09, T-1A.1-M17-01, T-1A.1-M26-01, T-1A.1-M26-02, T-1A.1-M01-11, T-1A.1-M30-01, T-1A.1-M30-02, T-1A.1-M30-03, T-1A.1-M31-01, T-1A.1-M31-02, T-1A.1-M31-03, T-1A.1-M31-04, T-1A.1-M31-05, T-1A.1-M31-06, T-1A.1-M31-07, T-1A.1-M32-01, T-1A.1-M35-01, T-1A.1-M30-04, T-1A.1-M31-08, T-1A.1-M30-05, T-1A.1-M30-06, T-1A.1-M30-07, T-1A.1-M30-08, T-1A.1-M32-02
+- **Depends on:** T-1A.1-M01-05, T-1A.1-M01-07, T-1A.1-M01-08, T-1A.1-M01-09, T-1A.1-M17-01, T-1A.1-M26-01, T-1A.1-M26-02, T-1A.1-M01-11, T-1A.1-M30-01, T-1A.1-M30-02, T-1A.1-M30-03, T-1A.1-M31-01, T-1A.1-M31-02, T-1A.1-M31-03, T-1A.1-M31-04, T-1A.1-M31-05, T-1A.1-M31-06, T-1A.1-M31-07, T-1A.1-M32-01, T-1A.1-M35-01, T-1A.1-M30-04, T-1A.1-M31-08, T-1A.1-M30-05, T-1A.1-M30-06, T-1A.1-M30-07, T-1A.1-M30-08, T-1A.1-M32-02, T-1A.1-M31-09
 - **Decisions:** —
 - **References:** 16 §4 (S), TS-API-01 (stage endpoints), TS-DB-01, TS-SVC-02, TS-BKP-01, TS-SEC-05; BP §20.5, §24.2; WP05
 - **Description:** Verify stage 1A.1 and write the foundation runbooks: deploy, rollback (a software rollback does not roll back business transactions — BP §20.5; 02 §24.4), database migration plan and release notes templates in `infra/` (BP §20.5, §24.2). Run the stage-exit verification of 12-phases §6.2 — a clean deploy to staging from `infra/`; kill the worker after an external send and before save and confirm reconciliation without duplicate effect; restore the latest backup to staging and compare — plus the 16 §4 cadence S suites for M01, M17 and M26 and TS-REG-01. Record the WP05 deploy/restore proof and confirm 01 §31 is filled for everything installed in 1A.1.
@@ -1826,6 +1826,25 @@ retrofitted (`12-phases.md` §10.2). References: `19-saas-platform.md` §3–§6
 - **Backend impact:** FleetMigrationRunner, DriftDetector
 - **Testing requirements:** TS-SAAS-DEPLOY-16 (resume after interruption at any point, no repeated work), TS-SAAS-DEPLOY-17 (canary failure stops the fleet), TS-DB (forward and rollback per store), TS-SAAS-DEPLOY-18 (drift detected and alarmed)
 - **Acceptance criteria:** (1) The runner applies a migration to every store database with per-store status and timing. (2) Starting with any database at an unexpected version is refused with that store named. (3) A canary failure stops the run before the batches and leaves the fleet in a known state. (4) Interrupting the run at any point and resuming completes only the outstanding stores. (5) Drift between databases is detected and alarmed outside a release window. (6) A per-store rollback is tested, and the stop decision for a partially applied fleet migration is documented in the runbook. (7) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+
+### Stage 1A.1 addition — the full capability catalogue and its build-status gate (D-273)
+
+#### T-1A.1-M31-09 · Capability catalogue seeding and the build-status gate: declare every capability of 19 §5.3 with its gating decision, and refuse to grant a CANDIDATE capability whose decision is open
+- **Status:** NOT_STARTED
+- **Stage / Module:** 1A.1 / M31
+- **Depends on:** T-1A.1-M31-02, T-1A.1-M31-08
+- **Decisions:** —
+- **References:** 19 §5.3 (all 18 areas), §14 BR-M31-17, §26.1; DEC D-273, D-236; 00 §2 (source fidelity)
+- **Description:** Declare the full catalogue so the control model knows about every feature a client might be granted, and make listing safe. Each declaration carries id, area, owning module, plain-language name and description, dependencies, conflicts, data-retaining flag, per-pack default, lockability, the configuration keys it governs, the channel where it is a messaging capability, and its **build status** (`1A`, `1B`, `LATER`, `CANDIDATE`) with the decision that gates it. Implement the gate: a capability whose build status is `CANDIDATE` and whose gating decision is not `DECIDED` cannot be granted to a store — the compiler refuses the configuration and names the decision, so the catalogue can be complete without the plan building anything the sources do not support.
+- **Files/components:** `backend/platform/capabilities/registry/` (one file per area), gate in the validator shared with the root admin compiler
+- **Database impact:** `build_status` and `gating_decision` on the capability definition (03 §12.3)
+- **API impact:** Registry published with the release and imported by the root admin (API-M34-36)
+- **Frontend impact:** None directly; the root admin and the store Features screen consume it
+- **Backend impact:** Catalogue declarations, build-status gate
+- **Testing requirements:** TS-SAAS-CAP-12 (a CANDIDATE capability with an open decision cannot be granted, and the error names the decision), TS-SAAS-CAP-01 (every declared capability that is built has all six enforcement points), TS-SAAS-CAP-13 (every capability has a plain-language description and an owning module)
+- **Acceptance criteria:** (1) Every capability in 19 §5.3 is declared with all of its fields. (2) Granting a `CANDIDATE` capability whose decision is open is refused with the decision named, demonstrated in the evidence. (3) When a gating decision becomes `DECIDED`, the capability becomes grantable with no code change. (4) A capability marked `1A`/`1B` but missing any of the six enforcement points fails TS-SAAS-CAP-01. (5) Every declaration has a description a non-technical operator can read. (6) TASKS.md and STATE.md updated per the continuation protocol.
 - **Evidence:** —
 
 ## Stage 1A.2 — Identity, access, audit & organisation
@@ -2415,7 +2434,7 @@ retrofitted (`12-phases.md` §10.2). References: `19-saas-platform.md` §3–§6
 #### T-1A.3-M09-06 · Stage 1A.3 verification: component, shell and access-flow suites; keyboard sign-in flows; workspace context
 - **Status:** NOT_STARTED
 - **Stage / Module:** 1A.3 / M09
-- **Depends on:** T-1A.3-M09-05, T-1A.3-M02-01, T-1A.3-M02-02, T-1A.3-M03-01, T-1A.3-M09-02, T-1A.3-M33-01, T-1A.3-M33-02, T-1A.3-M33-03, T-1A.3-M32-01, T-1A.3-M31-01, T-1A.3-M09-07
+- **Depends on:** T-1A.3-M09-05, T-1A.3-M02-01, T-1A.3-M02-02, T-1A.3-M03-01, T-1A.3-M09-02, T-1A.3-M33-01, T-1A.3-M33-02, T-1A.3-M33-03, T-1A.3-M32-01, T-1A.3-M31-01, T-1A.3-M09-07, T-1A.3-M31-02
 - **Decisions:** —
 - **References:** 16 §4 (S), TS-API-01 (stage endpoints), TS-FE-01, TS-FE-03, TS-FE-06, TS-A11Y-02, TS-AUTH-01, TS-AUTH-02, TS-ADM-15, TS-API-01 (stage endpoints); T30 (sign-in flows)
 - **Description:** Stage 1A.3 exit gate (16 §4 cadence S): run the suites of the stage on CI and staging — TS-FE-01, TS-FE-03, TS-FE-06, TS-A11Y-02 (components, store shell, workspace shell), TS-AUTH-01 and TS-AUTH-02 through the UI, TS-ADM-01, TS-ADM-02, TS-ADM-05, TS-ADM-06, TS-ADM-09, TS-ADM-15, TS-API-01 for the endpoints implemented in the stage (API-M03-10, API-M03-11), keyboard-only sign-in flows (TS-A11Y-01, T30 sign-in part) and the regression pack TS-REG-01 — and confirm the completion criteria of 12 §6.4: tokens, components, content rules and key states approved (BP §6.7 step 7), loading/empty/error/keyboard/focus states per component (BP §22.5), permission-filtered navigation in both shells (07 §12.2), sign-in flows operable by keyboard. Results are recorded in STATE.md §11. No new features are built; a failing case reopens its owning task (14 step 6).
@@ -2535,6 +2554,25 @@ retrofitted (`12-phases.md` §10.2). References: `19-saas-platform.md` §3–§6
 - **Backend impact:** Streaming render support; per-route query-count instrumentation
 - **Testing requirements:** TS-PERF-01 (storefront LCP, INP, CLS), TS-PERF-06 (payload budgets), TS-SAAS-PERF-08 (one build per template, not per store), TS-A11Y (no regression from splitting), TS-FE (hydrated islands behave with JavaScript disabled where the source requires it)
 - **Acceptance criteria:** (1) A storefront product page renders its content without booting a full client application, verified by payload and by rendering with scripting disabled. (2) A store without a capability does not download that capability's code, verified by bundle analysis. (3) Every budget in 19 §25.2 is measured by the CI harness on two stores at realistic volumes, with the first values recorded as the baseline. (4) A deliberate regression — an oversized image, an extra 100 KB of JavaScript — fails the build, demonstrated in the evidence. (5) The template count drives the build count: adding a store adds no build. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+
+### Stage 1A.3 addition — feature-map enforcement (D-273, D-279)
+
+#### T-1A.3-M31-02 · Feature-map enforcement: every store-facing section declares the capability that governs it, and the map and the build check stay in step
+- **Status:** NOT_STARTED
+- **Stage / Module:** 1A.3 / M31
+- **Depends on:** T-1A.3-M32-01, T-1A.3-M31-01, T-1A.1-M31-09
+- **Decisions:** —
+- **References:** 21-feature-map.md (all sections, FM-1…FM-5); 19 §5.2, §26.1, §26.5; DEC D-273, D-279, D-229
+- **Description:** Make the feature map executable rather than a document somebody remembers to update. Extend the build check so every store-facing route, screen section and component declares the capability that governs it, and fail the build when one does not — the map in `21-feature-map.md` is the human-readable half of the same rule. Add the reconciliation check that compares the declared gating in the code against the map and reports rows in one but not the other, so the two cannot drift apart silently. Seed the map's rows for the screens this stage builds, and make the reconciliation part of the definition of done for every later screen task (`19` §24.1 gate 12). Record explicitly that the client-facing mockup is the reference store with every feature enabled (`D-279`), so an implementer copying a mockup screen knows the mockup will not tell them what to gate.
+- **Files/components:** `infra/ci/feature-map/` (declaration check and reconciliation), `plan/21-feature-map.md` (rows for the stage's screens), gating declarations in the three UI packages
+- **Database impact:** None
+- **API impact:** Every store-facing endpoint already declares its capability (T-1A.1-M31-02); this task adds the same for screen sections
+- **Frontend impact:** All three shells and every screen built from this stage onwards
+- **Backend impact:** Reconciliation check shared with the capability registry
+- **Testing requirements:** TS-SAAS-CAP-02 (no store-facing route or component without a declared capability), TS-SAAS-CAP-14 (code and `21-feature-map.md` reconcile; a row in one and not the other fails), TS-SAAS-ISO-01 (a gated section leaves no heading, empty state or bundle behind)
+- **Acceptance criteria:** (1) Every store-facing route, section and component declares its governing capability, or is explicitly marked as core with its owning module. (2) Adding an undeclared section fails the build, demonstrated in the evidence. (3) The reconciliation check reports any difference between the code and `21-feature-map.md` and fails on it. (4) The map has a row for every section of every screen this stage builds. (5) A gated section leaves no heading, no empty state, no placeholder and no shipped code behind. (6) The reconciliation is part of the definition of done for later screen tasks. (7) TASKS.md and STATE.md updated per the continuation protocol.
 - **Evidence:** —
 
 ## Stage 1A.4 — Catalog, media, search & SEO base
@@ -5997,7 +6035,7 @@ retrofitted (`12-phases.md` §10.2). References: `19-saas-platform.md` §3–§6
 #### T-1A.13-M16-05 · Stage 1A.13 verification: T23 (web chat), T25, T05 (branch/counter vs online), TS-SVC-05, TS-ECOM-11/12/15, TS-INT-04, TS-PERM-06, TS-E2E-04
 - **Status:** NOT_STARTED
 - **Stage / Module:** 1A.13 / M16
-- **Depends on:** T-1A.13-M20-02, T-1A.13-M20-03, T-1A.13-M16-03, T-1A.13-M16-04, T-1A.13-M10-01, T-1A.13-M09-01
+- **Depends on:** T-1A.13-M20-02, T-1A.13-M20-03, T-1A.13-M16-03, T-1A.13-M16-04, T-1A.13-M10-01, T-1A.13-M09-01, T-1A.13-M20-06, T-1A.13-M20-07, T-1A.13-M17-01
 - **Decisions:** —
 - **References:** 16 §4 (S), TS-API-01 (stage endpoints), TS-SVC-05, TS-ECOM-11, TS-ECOM-12, TS-ECOM-15, TS-INT-04, TS-PERM-06, TS-ERP-18, TS-E2E-04; T05, T23, T25; WP14 (Level 1 part)
 - **Description:** Stage 1A.13 exit gate (16 §4 cadence S; 12 §6.14): run every suite of the stage's modules and the acceptance tests that became runnable, record results, and confirm the stage completion criteria — M20 A14 notifications for the D-058 event list with visible delivery status (05 §5.20) and Level 1 support with no disclosure without verification (05 §5.16; T23 web). Covers T05 on the counter path (branch/counter sale vs online order, TS-E2E-04 steps 1–3; step 4 follows D-030), T23 (web chat), T25 (A14 and, if enabled, A28 part), WP14 Level 1 demonstration (click-to-chat with references and one assisted order paid through a secure link, 08 §4.24 completion 1A). No new functionality; defects found go back to the owning task. Conditional tasks T-1A.13-M20-04 and T-1A.13-M20-05 are included only if their decisions enabled them.
@@ -6017,6 +6055,57 @@ retrofitted (`12-phases.md` §10.2). References: `19-saas-platform.md` §3–§6
   7. TASKS.md and STATE.md updated per the continuation protocol.
 - **Evidence:** —
 
+
+
+### Stage 1A.13 additions — channels, the messaging service and the automation catalogue (D-274, D-273)
+
+#### T-1A.13-M20-06 · Channel model: bindings, sender identity and verification, per-store credentials, and the publish check that blocks a channel without them
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1A.13 / M20
+- **Depends on:** T-1A.13-M20-01, T-1A.1-M31-09, T-1A.1-M30-03
+- **Decisions:** D-014, D-015, D-058, D-107
+- **References:** 19 §5.6 (CH-1…CH-9), §26.2, §14 BR-M31-18, BR-M20-01…05; 03 §12.2, §12.5 DB-G13; DEC D-274, D-272
+- **Description:** Make a communication channel a real, verifiable thing rather than a switch. Build the channel binding (which provider account a store uses, per store by default), the sender identity with its verification state — SPF, DKIM and DMARC for email, the number for WhatsApp and SMS — and the per-store credential reference into that store's own secret scope, with no secret value ever stored in a table or written into a configuration artefact. Implement the publish check: a channel capability that is on without a verified binding, a verified primary sender and the templates its enabled automations need blocks publication with a report naming exactly what is missing. Implement per-channel suspension after repeated delivery failure so a store cannot burn its sender reputation unnoticed.
+- **Files/components:** `backend/<notification module>/channels/`, `backend/platform/tenancy/secrets/` integration, publish check in the compiler contract
+- **Database impact:** DB-G13 part 2: E-channel_binding, E-sender_identity, E-channel_suspension; extensions to E-message_template
+- **API impact:** Channel binding and verification endpoints for the workspace and the root admin
+- **Frontend impact:** P-E15 channel settings for store-owned channels; P-R05 channel view for platform-owned ones
+- **Backend impact:** ChannelRegistry, SenderVerification, BindingService
+- **Testing requirements:** TS-SAAS-CHAN-01 (publish blocked without binding, sender or templates, with a precise report), TS-SAAS-CHAN-02 (no secret in any table or artefact), TS-SAAS-CHAN-03 (verification states and evidence), TS-SAAS-CHAN-04 (suspension after repeated failure), TS-SAAS-ISO-26 (one store's channel credential cannot send as another store)
+- **Acceptance criteria:** (1) A channel can be bound to a provider account, given a sender identity and verified, per store. (2) Publishing with a channel on but unverified is blocked and the report names the missing piece. (3) No secret value appears in any table, log or artefact; credentials resolve only through the store's secret scope. (4) Email sender verification records SPF, DKIM and DMARC state separately. (5) Repeated delivery failure suspends the channel and opens an exception case. (6) A credential from one store cannot send as another store. (7) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1A.13-M20-07 · Messaging service: central consent, preferences, frequency caps, quiet hours, idempotent send, template resolution, delivery tracking and log redaction
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1A.13 / M20
+- **Depends on:** T-1A.13-M20-06, T-1A.13-M20-02
+- **Decisions:** D-058, D-036
+- **References:** 19 §5.6, §26.2 (the central-rules table), §14 BR-M20-01…05; 03 §12.2, §12.4; DEC D-274, D-058; BP §13.3, §12.2 A14, §19.3
+- **Description:** Put every rule that can harm a customer or a sender reputation in one place, above the adapters, so a new channel cannot get them wrong. The messaging service resolves the template for the channel and locale, checks the consent basis for that channel **and purpose**, applies the customer's preferences, applies frequency caps and quiet hours **across all channels together**, enforces idempotency so one business event produces one message however many times the job retries, meters cost and rate per store, records delivery status with retry and backoff, and redacts personal data from logs. An adapter's `send()` does nothing but hand bytes to a provider. A send without a consent basis is refused and recorded, whoever asked for it.
+- **Files/components:** `backend/<notification module>/messaging/` (policy, consent, preferences, caps, dispatch, delivery tracking), adapter interface per 19 §26.2
+- **Database impact:** DB-G13: E-message_dispatch with unique `(store_id, message_key)`, E-channel_suspension; extensions to E-consent_record and E-notification_preference
+- **API impact:** Internal send API used by every module; delivery-status intake endpoints per provider
+- **Frontend impact:** Customer preference centre; staff view of what was sent to a customer
+- **Backend impact:** MessagingPolicy, ConsentService, PreferenceService, TemplateService, DeliveryTracker
+- **Testing requirements:** TS-SAAS-CHAN-05 (no send without a consent basis, from any caller), TS-SAAS-CHAN-06 (caps and quiet hours across channels together), TS-SAAS-CHAN-07 (one event, one message under retry), TS-SAAS-CHAN-08 (delivery status, retry, backoff), TS-SEC (no personal data or secret in logs), TS-SAAS-ISO-27 (a customer of one store is never reachable from another)
+- **Acceptance criteria:** (1) A send without a consent basis is refused and recorded, including when called directly by a service or a job. (2) Frequency caps and quiet hours are applied once, across all channels, not per feature. (3) Retrying a job produces exactly one message, proven by the unique message key. (4) Delivery status is recorded per message with retry and backoff; repeated failure suspends the channel. (5) Logs contain no message body after the retention window and no personal data beyond a subject reference. (6) Adding a second channel adapter requires no change to any of these rules. (7) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1A.13-M17-01 · Automation catalogue: every automation an independently grantable capability, with guard, preview, idempotent execute, run log, pause and value estimate
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1A.13 / M17
+- **Depends on:** T-1A.13-M20-07, T-1A.1-M31-09
+- **Decisions:** D-078, D-193, D-194
+- **References:** 19 §5.3 N, §26.3 (AUT-1…AUT-6); 03 §12.2; DEC D-275, D-078, D-193; BP §12.2 A01–A38, §12.3
+- **Description:** Make each automation its own switch so a client can be given exactly the automations they are paying for. Implement the rule contract of 19 §26.3 — trigger, store-scoped context from the job payload, a guard that returns "not applicable" rather than an error, a preview the owner can review before enabling, an idempotent execute where every effect is a recorded action, a failure path that opens an exception case with a named owner, and a value estimate for the hours-saved tracking. Wire the dependency that matters: an automation that sends a message cannot be enabled unless its channel and its template exist and are approved. Give the owner a pause that takes effect without a deployment and is audited.
+- **Files/components:** `backend/<automation module>/rules/` (one file per automation), scheduler wiring, preview and run-log services
+- **Database impact:** DB-G13: E-automation_run; extensions to E-automation_rule (enabled, paused_by, config, owner_role, value_estimate)
+- **API impact:** Automation list, preview, enable/pause and run-log endpoints for P-E14
+- **Frontend impact:** P-E14 automation list, previews, run log and pause control
+- **Backend impact:** AutomationRegistry, RuleRunner, ExceptionCase integration
+- **Testing requirements:** TS-SAAS-AUTO-01 (each automation independently grantable), TS-SAAS-AUTO-02 (a disabled automation is never scheduled and its queued messages are dead-lettered), TS-SAAS-AUTO-03 (idempotent execute under retry), TS-SAAS-AUTO-04 (enabling a messaging automation without its channel or template is blocked), TS-SAAS-AUTO-05 (pause without deployment, audited), TS-SVC-02
+- **Acceptance criteria:** (1) Every automation in 19 §5.3 N is a separate capability and can be granted or withheld per store. (2) A disabled automation is never registered with the scheduler, and a message queued for one is dead-lettered with a reason. (3) Executing twice for the same trigger produces one outcome. (4) Enabling an automation whose channel or template is missing is blocked with both named. (5) Every run is logged with input, decision, outcome and duration, and a failure opens an exception case with an owner. (6) The owner can pause a rule and it stops within the propagation budget, audited. (7) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
 
 ## Stage 1A.14 — Automation, exceptions, approvals & owner control centre
 
@@ -6780,7 +6869,7 @@ retrofitted (`12-phases.md` §10.2). References: `19-saas-platform.md` §3–§6
 #### T-1A.16-M24-05 · Stage 1A.16 verification: TS-ADM-01…12 complete, AccessPolicy coverage on every admin endpoint, TS-PERM-10/11/12, TS-SEC-05
 - **Status:** NOT_STARTED
 - **Stage / Module:** 1A.16 / M24
-- **Depends on:** T-1A.16-M24-01, T-1A.16-M24-02, T-1A.16-M24-03, T-1A.16-M26-01, T-1A.16-M26-02, T-1A.16-M24-08, T-1A.16-M24-09, T-1A.16-M24-10
+- **Depends on:** T-1A.16-M24-01, T-1A.16-M24-02, T-1A.16-M24-03, T-1A.16-M26-01, T-1A.16-M26-02, T-1A.16-M24-08, T-1A.16-M24-09, T-1A.16-M24-10, T-1A.16-M24-11
 - **Decisions:** —
 - **References:** 16 §4 (S), TS-API-01 (stage endpoints), TS-ADM-01…12, TS-SVC-04, TS-PERM-10, TS-PERM-11, TS-PERM-12, TS-SEC-05; 11 §15
 - **Description:** Stage 1A.16 exit gate (16 §4 cadence S; 12 §6.17; 11 §15): run the administration suites and confirm the completion criteria — 11 §15 rows for configuration, integrations, audit and system controls; AccessPolicy coverage on every admin endpoint (no admin endpoint reachable without its permission key, privileged role and MFA); all decision-driven values stored as versioned configuration (no code defaults for decision values). Covers TS-ADM-01…12 complete across 1A (users, roles, thresholds, delegation, audit reconstruction, locations, integrations, system, access review, owner control centre, automation admin, configuration) plus the stage's TS-ADM-13 and TS-ADM-15, TS-SVC-04, TS-PERM-10/11/12, TS-SEC-05 and TS-DB-06. No new functionality; defects return to their owning tasks. T-1A.16-M24-04 is included only for items its decisions approved.
@@ -6855,6 +6944,25 @@ retrofitted (`12-phases.md` §10.2). References: `19-saas-platform.md` §3–§6
 - **Backend impact:** Query-count instrumentation, keyset pagination helpers
 - **Testing requirements:** TS-PERF-02 (list query p95 and action round trip), TS-SAAS-PERF-10 (query count per screen), TS-DB (every query path has a supporting index), TS-FE (virtualised list keyboard and screen-reader behaviour)
 - **Acceptance criteria:** (1) Every listed screen meets the 19 §25.2 workspace budgets at realistic volumes with two stores. (2) Each screen declares and asserts a maximum query count; an introduced N+1 fails the test. (3) Every growing list uses keyset pagination and stays fast at page 500, verified. (4) Every workspace query path has a supporting `store_id`-leading index, confirmed against the query plans. (5) No bulk action, export or report runs inside a request. (6) Virtualised lists remain keyboard and screen-reader navigable (WCAG 2.2 AA). (7) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+
+### Stage 1A.16 addition — store-side channel and automation administration (D-258, D-274)
+
+#### T-1A.16-M24-11 · Store-side channel and automation administration: the channels the store owns, its templates, its automations — delegated items only
+- **Status:** NOT_STARTED
+- **Stage / Module:** 1A.16 / M24
+- **Depends on:** T-1A.16-M24-09, T-1A.13-M20-06, T-1A.13-M17-01
+- **Decisions:** —
+- **References:** 19 §5.4.3, §5.6, §9 INV-4; 11 (SaaS additions); DEC D-258, D-274, D-273
+- **Description:** Give the store's administrator the channel and automation controls the platform delegated to them, and nothing else. Where a channel is delegated, they can switch it on and off, manage their own sender identity and verification, edit and submit their templates, and see delivery health. Where an automation is delegated, they can enable, preview, pause and read its run log. Channels and automations the store does not have, or that are locked, are absent — no switch, no greyed row, no mention. Enabling a delegated channel still requires its verification to pass, so the store gets the same clear report rather than a silent failure.
+- **Files/components:** `frontend/workspace/screens/settings/channels/`, `.../automations/`
+- **Database impact:** Writes through the delegated-feature and channel services only
+- **API impact:** Store-scoped channel, template and automation endpoints, delegated subset only
+- **Frontend impact:** P-E15 channels and templates; P-E14 automation enable/pause for delegated rules
+- **Backend impact:** None new
+- **Testing requirements:** TS-SAAS-CAP-09 (delegation invariants through the UI), TS-SAAS-ISO-04 (non-delegated channels and automations absent from the page and its data), TS-SAAS-CHAN-01 (verification report shown to the store), TS-A11Y, TS-AUDIT
+- **Acceptance criteria:** (1) Only delegated channels and automations appear; the rest are absent from the page and from the data it loads. (2) A store enabling a delegated channel sees the same verification requirements and the same clear report as an operator would. (3) Template edits are versioned, and where the provider requires approval the state is shown honestly. (4) Automation enable, preview, pause and run log work for delegated rules only. (5) Every change is audited in the store's own trail. (6) The page contains no platform vocabulary and no identifiers. (7) TASKS.md and STATE.md updated per the continuation protocol.
 - **Evidence:** —
 
 ## Stage 1A.17 — Migration, UAT & launch readiness
@@ -7629,7 +7737,7 @@ The configurator that the SAAS brief describes: category, template, colours, log
 #### T-1R.2-M34-10 · Stage 1R.2 verification: create and configure a complete fashion store from the portal with zero code changes
 - **Status:** REQUIRES_DECISION
 - **Stage / Module:** 1R.2 / M34
-- **Depends on:** T-1R.2-M34-09, T-1R.2-M32-01, T-1R.2-M33-01, T-1R.2-M34-11, T-1R.2-M34-12
+- **Depends on:** T-1R.2-M34-09, T-1R.2-M32-01, T-1R.2-M33-01, T-1R.2-M34-11, T-1R.2-M34-12, T-1R.2-M34-13
 - **Decisions:** D-053
 - **References:** SAAS §1 Example; 19 §6, §7, §15; 20 §4; DEC D-241, D-242, D-247
 - **Description:** Run the brief's own worked example as the stage gate. Using only the portal, select Fashion & Apparel, select a suitable template, configure the colours and other settings, upload a logo, configure the features, and produce a deployable configuration — then verify that the resulting store behaves as a fashion store and that no code changed to make it so. Run the pack, template and terminology suites in full.
@@ -7675,6 +7783,25 @@ The configurator that the SAAS brief describes: category, template, colours, log
 - **Backend impact:** BundleComposer with conflict detection and origin tracking; CompletenessValidator
 - **Testing requirements:** TS-SAAS-PACK-21 (composition order and override origin), TS-SAAS-PACK-22 (conflicting bundles are an error, never resolved silently), TS-SAAS-PACK-23 (removing a bundle withdraws exactly its contribution), TS-SAAS-PACK-24 (all 25 completeness dimensions enforced), TS-SAAS-PACK-25 (published bundle versions immutable and pinned), TS-SAAS-PACK-19 (bundle naming a missing capability rejected)
 - **Acceptance criteria:** (1) A bundle can be authored, validated, published, deprecated and retired, and is immutable once published. (2) A category assembled from base plus bundles plus overrides produces the same result every time, and the authoring screen shows each value's origin. (3) Two bundles demanding incompatible values produce an error naming both origins, and the author must choose explicitly. (4) Removing a bundle during authoring withdraws exactly what it contributed and leaves overrides and other bundles intact. (5) Publication is blocked while any of the 25 completeness dimensions is unanswered, with a precise report; the same report is visible live while authoring. (6) A bundle or module naming a capability the release does not have is rejected with it named. (7) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+
+### Stage 1R.2 addition — channel, integration and automation grants (D-273, D-274)
+
+#### T-1R.2-M34-13 · Root admin channels, integrations and automation grants: bind providers per store, verify senders, and grant or withhold each channel, automation and integration
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1R.2 / M34
+- **Depends on:** T-1R.2-M34-11, T-1A.13-M20-06, T-1A.13-M17-01
+- **Decisions:** D-012, D-013, D-014, D-015, D-011
+- **References:** 19 §5.3 L, N, P, §5.6; 20 §4 step 6, §6 (P-R05); DEC D-273, D-274; MK-R:ra-store.html
+- **Description:** Give the operator the screen that turns "this client bought WhatsApp and the dispatch automations" into a configured store. For each store: grant or withhold every channel, every automation and every integration, and set the control state so the client's own administrator can manage the ones agreed with them. Bind each granted channel to a provider account, record the sender identity, run and show verification, and list the templates the enabled automations require with their approval state. Show the publish check inline, so an operator sees what is missing before they try to publish rather than after. Provider credentials are entered once, stored in the store's own secret scope, and never displayed again.
+- **Files/components:** `root-admin/app/screens/store/channels/`, `root-admin/domain/channels/`, `root-admin/api/channels/`
+- **Database impact:** E-channel_requirement; store-side bindings written through the platform API
+- **API impact:** API-M34-74…80 (channel bindings, verification, template requirements, integration bindings, automation grants)
+- **Frontend impact:** P-R05 Channels &amp; integrations tab, P-R04 step 5, P-R08 area view
+- **Backend impact:** Channel requirement resolution shared with the compiler
+- **Testing requirements:** TS-SAAS-CHAN-01 (publish check surfaced before publishing), TS-SAAS-AUTO-04 (automation blocked without its channel and template), TS-SEC-05 (credentials write-only), TS-AUDIT, TS-FE
+- **Acceptance criteria:** (1) Every channel, automation and integration can be granted, withheld or delegated per store from one screen. (2) Binding a provider, recording a sender and running verification works per channel and shows an honest state. (3) The publish check is visible inline and lists exactly what is missing. (4) Credentials are entered once, never displayed again, and are stored in the store's own secret scope. (5) An automation requiring a channel or template that is missing cannot be granted, and both are named. (6) Every grant and binding change is audited. (7) TASKS.md and STATE.md updated per the continuation protocol.
 - **Evidence:** —
 
 ## Stage 1R.3 — Provisioning, deployment, platform operations & 1R release

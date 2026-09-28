@@ -210,6 +210,18 @@
 
     <h3 class="mb">3 · Individual features</h3>
     <div id="feat"></div>
+
+    <div class="card mt"><div class="card-h"><h3>4 · Channels this client is buying</h3><span class="sp"></span>
+      <span class="tag acc">each one is granted separately</span></div>
+      <div id="wchan"></div>
+      <div class="card-b" style="border-top:1px solid var(--ra-line)">
+        <p class="hint">A channel also needs a provider account, a verified sender and approved templates before
+          the store can go live with it. The review step lists anything still missing, so nothing is switched on
+          that would silently fail to send.</p></div></div>
+
+    <div class="card mt"><div class="card-h"><h3>5 · Automations this client is buying</h3><span class="sp"></span>
+      <span class="tag acc">11 of 22 selected</span></div>
+      <div id="wauto"></div></div>
     <div class="note mt"><svg data-i="info"></svg><div>
       Switching something off hides it completely — it is not greyed out anywhere, and the client's own staff will
       never see that it exists. Nothing is deleted: switching it back on restores everything. Anything marked
@@ -249,6 +261,7 @@
         <div class="row"><svg data-i="check" style="width:15px;color:var(--ra-ok)"></svg> 3 applications · 19 modules · 38 features on · 9 delegated to the client</div>
         <div class="row"><svg data-i="check" style="width:15px;color:var(--ra-ok)"></svg> Its own database, image store, search index and cache</div>
         <div class="row"><svg data-i="check" style="width:15px;color:var(--ra-ok)"></svg> All 25 configuration areas answered — nothing left unset</div>
+        <div class="row"><svg data-i="warn" style="width:15px;color:var(--ra-warn)"></svg> 3 channels and 11 automations granted — <b>2 items still to verify before go-live</b></div>
         <hr><p class="xs dim">No sample products, customers, prices or placeholder amounts are created. The store
           starts empty and real.</p>
       </div></div>
@@ -347,6 +360,37 @@ RA.picks(".tplpick");
 document.querySelector(".tplpick").classList.add("on");
 
 /* features */
+
+document.getElementById("wchan").innerHTML = RA.table(
+  ["Channel", "Grant it?", "Client's admin may manage it?", "What is still needed"],
+  [
+   ["<b>Email</b>", "<span class='tag ok'>Yes</span>", "<span class='tag'>No — always on</span>", "Verify the sending domain"],
+   ["<b>WhatsApp</b>", "<span class='tag ok'>Yes</span>", "<span class='tag acc'>Yes</span>", "Business number and template approval"],
+   ["<b>SMS</b>", "<span class='tag'>No</span>", "<span class='tag'>—</span>", "—"],
+   ["<b>Web chat</b>", "<span class='tag'>Not available yet</span>", "<span class='tag'>—</span>", "Needs a scope decision"],
+   ["<b>Browser notifications</b>", "<span class='tag'>Not available yet</span>", "<span class='tag'>—</span>", "Needs a scope decision"],
+   ["<b>In-workspace alerts</b>", "<span class='tag ok'>Yes</span>", "<span class='tag acc'>Yes</span>", "nothing"]
+  ]);
+
+document.getElementById("wauto").innerHTML = RA.table(
+  ["Automation", "Grant it?", "Client's admin may manage it?"],
+  [
+   ["Order acknowledgement", "<span class='tag ok'>Yes</span>", "<span class='tag'>No</span>"],
+   ["Dispatch updates", "<span class='tag ok'>Yes</span>", "<span class='tag acc'>Yes</span>"],
+   ["Delivery updates", "<span class='tag ok'>Yes</span>", "<span class='tag acc'>Yes</span>"],
+   ["Return acknowledgement", "<span class='tag ok'>Yes</span>", "<span class='tag'>No</span>"],
+   ["Low-stock alert to staff", "<span class='tag ok'>Yes</span>", "<span class='tag acc'>Yes</span>"],
+   ["Reorder suggestions", "<span class='tag ok'>Yes</span>", "<span class='tag acc'>Yes</span>"],
+   ["Reservation expiry", "<span class='tag ok'>Yes</span>", "<span class='tag'>No</span>"],
+   ["Payment reconciliation", "<span class='tag ok'>Yes</span>", "<span class='tag'>No</span>"],
+   ["Exception escalation", "<span class='tag ok'>Yes</span>", "<span class='tag'>No</span>"],
+   ["Owner daily summary", "<span class='tag ok'>Yes</span>", "<span class='tag acc'>Yes</span>"],
+   ["Scheduled reports", "<span class='tag ok'>Yes</span>", "<span class='tag'>No</span>"],
+   ["Unpaid order reminder", "<span class='tag'>No</span>", "<span class='tag'>—</span>"],
+   ["Abandoned basket reminders", "<span class='tag'>Not available yet</span>", "<span class='tag'>—</span>"],
+   ["Back-in-stock alerts", "<span class='tag'>Not available yet</span>", "<span class='tag'>—</span>"],
+   ["Review requests", "<span class='tag'>Not available yet</span>", "<span class='tag'>—</span>"]
+  ]);
 document.getElementById("wmods").innerHTML = RA.table(
   ["Module", "From", "On?", "Client's admin may manage it?"],
   [

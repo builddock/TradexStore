@@ -2057,3 +2057,15 @@ Architecture: `19-saas-platform.md` §6.4, §9, §11; administration split: `11-
 Read §1–§18 as the specification of the workspace **for a store configured with `VP-electronics`** — which is
 the Tradex store and the approved mockup. The screens, flows, states and rules are unchanged; where they come
 from changes.
+
+---
+
+## 20. Feature, channel and automation screens (2026-09-28, `D-258`, `D-273`, `D-274`)
+
+| Rule | Detail | Task |
+|---|---|---|
+| WS-S8 | P-E15 gains a **Features** section listing only the modules and features delegated to this store, in business language, with dependencies resolved and an open-work warning before switching one off. Locked and absent features do not appear on the page or in the data it loads | `T-1A.16-M24-09` |
+| WS-S9 | P-E15 gains a **Channels** section for delegated channels only: on/off, sender identity and verification state, templates with their approval state, delivery health and any suspension. A credential is entered once and never displayed again | `T-1A.16-M24-11` |
+| WS-S10 | P-E14 lists only the automations this store was granted. Each shows a preview, an enable/pause control, its owner and its run log. An automation whose capability is off does not appear, and its queued work is dead-lettered rather than run | `T-1A.13-M17-01` |
+| WS-S11 | Enabling a delegated channel still runs the verification check, and the store sees the same precise "what is missing" report an operator would — never a switch that appears to work and then silently fails to send | `T-1A.13-M20-06` |
+| WS-S12 | Every workspace screen that shows a message, notification or automation outcome reads it from the one messaging service; no screen talks to a provider | `19` §26.2 |
