@@ -83,7 +83,7 @@ Companion file: `02-architecture.md` (how these technologies fit together). Repo
 | Authorization | Core's role/permission system + server-side record/field checks | REQUIRES_DECISION (D-001) | D-001, D-024, D-025 | 10 |
 | Files & media | Public/private object storage + CDN; optimised variants; scanning | REQUIRES_DECISION | D-033, D-113, D-112, D-057 | 14 |
 | Search | Native/database search first | PROPOSED (D-032) | D-032 | 15 |
-| Caching | CDN for public images; public content cache; private isolation | REQUIRES_DECISION | D-033, D-105 | 16 |
+| Caching | Five layers (`19` §25.4); public HTML at the CDN edge, **guest class only**, surrogate-key purge | DECIDED (D-105) · provider REQUIRES_DECISION (D-033) | D-105, D-033 | 16 |
 | Jobs, queue, outbox | ERP's workers/queue (Frappe workers + Redis if ERPNext); durable outbox table | REQUIRES_DECISION | D-001, D-002, D-078 | 17 |
 | Notifications | Email/SMS/OTP provider; WhatsApp BSP or Cloud API | REQUIRES_DECISION | D-015, D-014, D-058 | 18 |
 | Payments | One provider, hosted collection, signed webhooks, reconciliation | REQUIRES_DECISION | D-012, D-020, D-062, D-064 | 19 |
@@ -304,7 +304,7 @@ modules otherwise (D-001). Staff screens are native or custom per D-004.
 | Technology / mechanism | Status | Evidence | Used in | Why (source) | Alternatives in sources | Constraints (source) |
 |---|---|---|---|---|---|---|
 | CDN cache for public images | REQUIRES_DECISION (D-033) | PROPOSED | M22; P-S* | BP §15.4, §16.2 | — | — |
-| **Public page/content cache and invalidation** | REQUIRES_DECISION (D-105) | DOCUMENTED (need) | M09, M21, M04 publish, A04; P-S01–P-S05 | "Cache public product content and images aggressively where appropriate … Invalidate affected public projections after approved changes. Carry a version/update timestamp" (BP §16.5); Next.js cache considerations (S13); PR2 §3 | — | Stock browse propagation proposal ≤60 s (BP §20.1, D-034) |
+| **Public page/content cache and invalidation** | DECIDED (D-105) — CDN edge, guest class only, surrogate-key purge, safety TTL | DOCUMENTED | M09, M21, M04 publish, A04; P-S01–P-S05 | "Cache public product content and images aggressively where appropriate … Invalidate affected public projections after approved changes. Carry a version/update timestamp" (BP §16.5); Next.js cache considerations (S13); PR2 §3 | — | Stock browse propagation proposal ≤60 s (BP §20.1, D-034) |
 | **Private response isolation** | PROPOSED | DOCUMENTED | P-S02, P-S03 (dealer price), P-S06–P-S11 | "Never cache a personalised response under a shared public URL without correct isolation" (BP §16.5); "private price response must be isolated" (BP §8.4) | — | T22; dealer sign-out removes access (BP §8.4) |
 | **Redis** | REQUIRES_DECISION (D-001 = ERPNext) | PROPOSED | M17 queue (and platform use) | "Frappe-supported workers and Redis-based queue infrastructure" (BP §15.4) | — | Part of the core's supported layout (BP §16.6); no additional broker (BP §15.6) |
 | Application cache (custom path) | REQUIRES_DECISION (D-002) | PROPOSED | Custom backend | "a modest cache only where needed" (BP §15.5) | — | Scale after measuring (BP §15.6) |

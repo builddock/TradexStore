@@ -194,7 +194,7 @@ Phase 1; the mockup at the root is not modified during implementation.
 
 ### 4.2 Storefront
 
-**Rendering and caching matrix** (BP §6.3, §6.8, §8.4, §16.5; PR2 §3). Mechanism: D-105.
+**Rendering and caching matrix** (BP §6.3, §6.8, §8.4, §16.5; PR2 §3). Mechanism: **D-105 (DECIDED)** — CDN edge cache for public HTML, **only the `guest` class is edge-cacheable** (a session cookie forces bypass); surrogate-key purge on publish, catalog publish and price publish; private islands for buyer-specific content. Layer model: `19` §25.4.
 
 | Page | Public, shareable/cacheable content | Private content — never cached under a shared URL | Indexable | Access |
 |---|---|---|---|---|

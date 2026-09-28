@@ -108,6 +108,7 @@ Open decisions blocking the most tasks:
 ## 6. Decisions log (append-only; details in `DECISIONS.md`)
 | Date | D-ID | Decision | Approved by |
 |---|---|---|---|
+| 2026-09-28 | D-105 | Public storefront HTML cached at the CDN edge (`19` §25.4 layer 3) with surrogate-key purge; **only the `guest` class is edge-cacheable** — a session cookie forces bypass, so no signed-in response reaches a shared cache; availability stays a layer-4 projection so stock freshness never purges HTML. Brief: `plan/phase0/decision-briefs/D-105-storefront-caching.md` | User (technical lead) |
 | 2026-09-27 | D-054 | One repository for the whole project; canonical folder layout in `00-conventions.md` §11 (names delegated to the plan) | User |
 | 2026-09-27 | D-210 | Phase 0 records in `plan/phase0/` (publication stays under D-115) | Plan design (folder layout delegated by user) |
 | 2026-09-27 | D-213 | Task IDs permanent; moved tasks change Stage only; `NOT_APPLICABLE` status for tasks a decision removes | Plan design (tracking system) |
@@ -198,6 +199,7 @@ Open decisions blocking the most tasks:
 ## 12. Files changed (append-only, per session)
 | Date | Task ID | Files |
 |---|---|---|
+| 2026-09-28 | (D-105 brief & decision) | **New:** `plan/phase0/decision-briefs/D-105-storefront-caching.md`. **Updated:** `plan/DECISIONS.md` (D-105 DECIDED, D-033 gains the surrogate-key constraint), `plan/TASKS.md` (T-1A.9-M09-04, T-1A.9-M09-13 → NOT_STARTED), `plan/01-tech-stack.md` (§2, §16), `plan/02-architecture.md` (§4.2), `plan/04a-frontend-storefront.md` (§1.3), `plan/STATE.md` |
 | 2026-09-27 | (plan) | `plan/*` (24 files + `tools/status.py`), `CLAUDE.md` |
 | 2026-09-27 | (mockup responsive) | `assets/tradex.css`, `assets/tradex.js`, all 13 `store-*.html`; `plan/DECISIONS.md` (D-223), `plan/STATE.md` |
 | 2026-09-28 | (mockup help & guided workflows) | `assets/tradex.js`, `assets/tradex.css`, new `assets/help/` (glossary.js, shell.js, 19 page files), all 15 `erp-*.html`, all 4 `vendor-*.html`, `index.html`; `plan/DECISIONS.md` (D-224, D-225, D-174 note), `plan/04b-frontend-workspace-1.md` (rule 23, §2.21–2.23, §3.2 #5), `plan/04c-frontend-workspace-2-vendor.md` (X20), `plan/TASKS.md` (T-1A.3-M24-02, T-1A.16-M24-06, T-1B.1-M14-16; T-1A.16-M24-03 description), `plan/12-phases.md`, `plan/18-master-checklist.md`, `plan/STATE.md` |
@@ -564,3 +566,26 @@ Open decisions blocking the most tasks:
 - **Tracker:** 464 → **466 tasks**, 0 issues.
 - **Next:** unchanged. "Continue implementation" starts at `T-0-M01-03`.
 
+### 2026-09-28 — D-105 decision brief and decision (storefront caching)
+- Answered a stack question from the user (which languages, and whether minimising them costs page speed): the
+  storefront is Next.js + TypeScript in every `D-001` outcome, so page speed is governed by `D-003`, `D-105`,
+  `D-113`, `D-103`, `D-033` and the `D-268` CI budgets, not by the backend language. Language count belongs in the
+  BP §15.3 maintainability weight (15 %) and cannot outrank the hard gates (`TS-PROOF-11/12/13`).
+- **Found:** the `DECISIONS.md` D-105 row predates `D-268` by one day. `D-268` already decided the five-layer cache
+  model, key composition and invalidation triggers (`19` §25.4), so D-105's real scope was only the layer-3
+  mechanism. Recorded that narrowing in the row.
+- **New:** `plan/phase0/decision-briefs/D-105-storefront-caching.md` — what is already binding and buildable today
+  (five layers, ten isolation rules, rendering class per page, budgets), the four genuinely open sub-questions,
+  three options with trade-offs, and the recommendation. Created `plan/phase0/decision-briefs/` only; the rest of
+  the `plan/phase0/` layout stays with `T-0-M01-01`.
+- **D-105 DECIDED by the user (technical lead): Option C — CDN edge cache for public HTML, guest class only.** A
+  session cookie forces cache bypass before any key lookup, so no signed-in response can enter a shared cache and
+  `T22` becomes structural rather than a configuration question. Surrogate-key purge on publish/catalog/price
+  publish plus a safety TTL; availability stays a layer-4 projection so ≤ 60 s stock freshness never purges HTML.
+- Knock-on: `D-033` now requires a CDN with surrogate-key/tag purge and per-store segmentation.
+- `T-1A.9-M09-04` and `T-1A.9-M09-13` moved `REQUIRES_DECISION` → `NOT_STARTED` (both had D-105 as their only OPEN
+  blocker; `D-034` is PROPOSED-DEFAULT). Neither is yet startable — stage 1A.9 sits behind the Phase 0 exit gate.
+- `status.py --check`: 0 issues in 466 tasks. No application code written this session.
+- Next: unchanged — `T-0-M01-03` (discovery questionnaire & next-meeting pack). `D-001`, `D-003`, `D-004`, `D-005`,
+  `D-049` still gate Phase 1A. `D-113`, `D-103`, `D-106` are the remaining page-speed decisions and are all
+  independent of `D-001`.

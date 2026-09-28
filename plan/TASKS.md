@@ -4618,7 +4618,7 @@ retrofitted (`12-phases.md` §10.2). References: `19-saas-platform.md` §3–§6
 - **Evidence:** —
 
 #### T-1A.9-M09-04 · Storefront caching and private-data isolation: public vs private rendering, invalidation on approved changes, private no-store, purge on sign-out and membership loss
-- **Status:** REQUIRES_DECISION
+- **Status:** NOT_STARTED
 - **Stage / Module:** 1A.9 / M09
 - **Depends on:** T-1A.3-M09-03, T-1A.5-M04-01
 - **Decisions:** D-105
@@ -4899,7 +4899,7 @@ retrofitted (`12-phases.md` §10.2). References: `19-saas-platform.md` §3–§6
 ### Stage 1A.9 addition — storefront read models and caching (D-268)
 
 #### T-1A.9-M09-13 · Storefront read models, the five cache layers and per-route query budgets
-- **Status:** REQUIRES_DECISION
+- **Status:** NOT_STARTED
 - **Stage / Module:** 1A.9 / M09
 - **Depends on:** T-1A.9-M09-04, T-1A.9-M09-06, T-1A.3-M09-07, T-1A.4-M32-01
 - **Decisions:** D-105, D-034
