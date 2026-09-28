@@ -1114,7 +1114,7 @@ needed to implement it. **This file is the source of truth for task status.** `S
 #### T-0-M01-28 · Estimation worksheet and costed backlog: O/M/P person-days per work package from this task skeleton, cost categories, recurring costs, year-one and three-year TCO; no date from summed optimistic durations
 - **Status:** NOT_STARTED
 - **Stage / Module:** 0 / M01
-- **Depends on:** T-0-M01-06, T-0-M01-07, T-0-M01-08, T-0-M01-09, T-0-M01-26, T-0-M09-04, T-0-M25-05
+- **Depends on:** T-0-M01-06, T-0-M01-07, T-0-M01-08, T-0-M01-09, T-0-M01-26, T-0-M09-04, T-0-M25-05, T-0-M01-30
 - **Decisions:** —
 - **References:** BP §22.3, §22.4, §25.1–25.4, §30.2 (Discovery epic); PR1 §5 (Commercial Estimate); PR2 §11 (effort model)
 - **Description:** Convert the approved backlog — this task skeleton (12-phases §9) as scoped by D-048, D-220 and D-001 — into the estimation worksheet: optimistic, most-likely and pessimistic person-days per work package WP01–WP17 (BP §22.2) and per BP §25.2 row, with responsible role (BP §22.4), dependencies, client turnaround, external fees and key uncertainty; (O + 4M + P) / 6 may be shown only as a technique (BP §25.2). Cost the backlog by the BP §25.3 categories (one-time, recurring fixed, recurring usage; business operating costs shown separately) and compute year-one and three-year TCO for the chosen option (BP §25.4). Any schedule is built from effort, actual team availability, dependencies and client/provider turnaround — never by summing optimistic durations (BP §22.3) — and the meeting figures '5–6' and '10' are not used (BP §2.2). Commercial milestones follow the BP §25.5 suggestion (discovery accepted, design/architecture accepted, integrated staging demonstration, UAT/migration accepted, controlled launch/handover).
@@ -1130,7 +1130,7 @@ needed to implement it. **This file is the source of truth for task status.** `S
 #### T-0-M01-29 · Phase 0 exit gate: Phase 0 deliverable pack (requirements, current-state assessment, future-state workflows, module/release specification, role & permission matrix, UI direction, architecture, migration plan, roadmap, estimate, risk/decision register) and BP §31.2 sign-off items 1–9
 - **Status:** NOT_STARTED
 - **Stage / Module:** 0 / M01
-- **Depends on:** T-0-M01-28, T-0-M01-04, T-0-M17-02, T-0-M25-01, T-0-M08-01, T-0-M14-02, T-0-M19-01, T-0-M17-04, T-0-M17-05, T-0-M17-06, T-0-M17-07, T-0-M17-08, T-0-M02-01, T-0-M05-02, T-0-M05-03, T-0-M05-04, T-0-M13-02, T-0-M04-01, T-0-M19-02, T-0-M19-03, T-0-M25-05, T-0-M25-06, T-0-M26-01, T-0-M26-02, T-0-M03-01, T-0-M01-10, T-0-M01-11, T-0-M01-12, T-0-M01-13, T-0-M09-05, T-0-M01-27, T-0-M01-02, T-0-M01-14, T-0-M01-15, T-0-M01-16, T-0-M01-17, T-0-M01-18, T-0-M01-19, T-0-M01-20, T-0-M01-21, T-0-M01-22, T-0-M01-23, T-0-M01-24, T-0-M01-25, T-0-M26-03, T-0-M26-04
+- **Depends on:** T-0-M01-28, T-0-M01-04, T-0-M17-02, T-0-M25-01, T-0-M08-01, T-0-M14-02, T-0-M19-01, T-0-M17-04, T-0-M17-05, T-0-M17-06, T-0-M17-07, T-0-M17-08, T-0-M02-01, T-0-M05-02, T-0-M05-03, T-0-M05-04, T-0-M13-02, T-0-M04-01, T-0-M19-02, T-0-M19-03, T-0-M25-05, T-0-M25-06, T-0-M26-01, T-0-M26-02, T-0-M03-01, T-0-M01-10, T-0-M01-11, T-0-M01-12, T-0-M01-13, T-0-M09-05, T-0-M01-27, T-0-M01-02, T-0-M01-14, T-0-M01-15, T-0-M01-16, T-0-M01-17, T-0-M01-18, T-0-M01-19, T-0-M01-20, T-0-M01-21, T-0-M01-22, T-0-M01-23, T-0-M01-24, T-0-M01-25, T-0-M26-03, T-0-M26-04, T-0-M01-30, T-0-M31-02, T-0-M33-01, T-0-M34-01, T-0-M09-06
 - **Decisions:** —
 - **References:** BP §5.1 (Phase 0 exit gate), §27.1 (risk register), §31.2, §31.3; PR1 §5, §16 step 9; PR2 §11; 16 §12
 - **Description:** Assemble the Phase 0 deliverable pack (PR1 §5; PR2 §11): business requirements, current-state assessment, future-state workflows, module and release specification (this plan), role and permission matrix (07 with D-222), UI direction (D-049), technical architecture and integration plan (01/02 updated after D-001), data migration plan (D-038, D-009), roadmap (12-phases), estimate (T-0-M01-28) and the risk, dependency and decision register (BP §27.1 risks with mitigation evidence; DECISIONS.md). Complete the BP §31.2 sign-off worksheet items 1–9 — business and vendor model; launch scope and exclusions; UI prototype; platform proof and architecture; pricing/approval/returns policies; finance/accounting boundary; migration and historical access; service levels and support; costed work packages and schedule — each with accepted version, approver and date (item 10 'UAT and launch' is signed at T-1A.17-M01-01). The gate passes when owner and operations approve the business model and scope (BP §5.1), PR1 §16 step 9 'Approve Phase 1 scope and commence implementation' is recorded, and — per 12-phases §6.1 — every stage-0 task is complete, including the technical decision tasks that are not in this task's Depends on (T-0-M01-02, T-0-M01-14…T-0-M01-25, T-0-M26-03, T-0-M26-04).
@@ -1143,6 +1143,144 @@ needed to implement it. **This file is the source of truth for task status.** `S
 - **Acceptance criteria:** (1) The eleven deliverables of PR1 §5 / PR2 §11 exist and are linked from the pack index. (2) Sign-off items 1–9 each have accepted version, approver and date, and each lists its decisions: 1 D-006, D-007, D-008, D-222; 2 D-048, D-220, D-192, D-221, D-078; 3 D-049, D-003, D-004, D-101; 4 D-001, D-002, D-005, D-109, D-102, D-077, D-107, D-115, D-053, D-080, D-079, D-104, D-122, D-123, D-124, D-136, D-052, D-108; 5 D-016, D-017, D-018, D-022, D-023, D-024, D-025; 6 D-011, D-037, D-059; 7 D-009, D-038, D-010; 8 D-034, D-035; 9 the T-0-M01-28 estimate. (3) Every BP §27.1 risk has an owner and mitigation evidence in risk-register.md. (4) WP01–WP04 acceptance evidence is recorded (approved requirements and open decisions; retain/replace recommendation; web client approval and task-test notes; critical scenarios pass). (5) `status.py --stage 0` shows all stage-0 tasks COMPLETED or NOT_APPLICABLE. (6) STATE.md §1 snapshot moves the current stage to 1A.1. (7) TASKS.md and STATE.md updated per the continuation protocol.
 - **Evidence:** —
 
+
+
+### Stage 0 additions — SaaS architecture change (2026-09-28, D-227)
+
+These tasks were added to Stage 0 by the SaaS architecture change. They extend the existing discovery,
+proof, estimate and exit-gate work; they do not replace any of it. See `19-saas-platform.md`,
+`20-root-admin.md` and `12-phases.md` §10.
+
+#### T-0-M30-01 · Proof scenario TS-PROOF-11 on each candidate core: two stores on one runtime — data isolation, unscoped-query rejection, per-store storage and secrets
+- **Status:** NOT_STARTED
+- **Stage / Module:** 0 / M30
+- **Depends on:** T-0-M01-05
+- **Decisions:** —
+- **References:** SAAS §3 S01, S03; 19 §10, §15; DEC D-233, D-252; BP §15.3 (proof method), §17.2, §19.1; 16 §5.22 TS-PROOF; 12 §8.2
+- **Description:** Run the new multi-store proof scenario on every candidate operational core from the BP §1.2 list, alongside the ten BP §15.3 scenarios. Create two stores in one installation, load a small catalogue, users, orders and files into each, then attempt every cross-store access the platform must refuse: read another store's product/order/customer by id, list without a store filter, search across stores, run a report, export data, open a media file, use another store's integration credential, and run a background job whose payload names the other store. Record for each candidate whether store scoping can be made mandatory at the data-access layer (not merely conventional), whether the database supports row-level security, how unique constraints and sequences behave per store, and what the isolation costs in query plans and index size. Evidence is redacted per D-210 and BP §26.10. The scenario decides nothing on its own — it feeds the fit scorecard (T-0-M01-06) and D-001.
+- **Files/components:** `plan/phase0/proof/ts-proof-11/` (scenario script, per-candidate results, evidence); `tests/acceptance/` scripts moved there after D-001
+- **Database impact:** None (throwaway proof environments)
+- **API impact:** None
+- **Frontend impact:** None
+- **Backend impact:** None
+- **Testing requirements:** TS-PROOF-11 executed on every candidate; `python3 plan/tools/status.py --check` passes
+- **Acceptance criteria:** (1) A written scenario script exists with the exact cross-store access attempts listed above and a pass/fail definition per attempt. (2) Every candidate core has a completed result sheet with evidence. (3) For each candidate the report states whether mandatory store scoping is enforceable at the data-access layer, whether row-level security is available, and how unique keys/sequences behave per store. (4) The measured cost of scoping (query plan, index size, latency) is recorded. (5) Failures are described factually, without recommending a core (that is T-0-M01-06). (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-0-M31-01 · Proof scenario TS-PROOF-12 on each candidate core: configuration artefact load, zero configuration database queries per request, reload propagation and added latency
+- **Status:** NOT_STARTED
+- **Stage / Module:** 0 / M31
+- **Depends on:** T-0-M01-05
+- **Decisions:** —
+- **References:** SAAS §3 S13–S15; 19 §4, §15; DEC D-231, D-232, D-248, D-252; BP §15.3, §20.1, §20.2; 16 §5.22
+- **Description:** Prove on every candidate core that the configuration mechanism of 19 §4 is achievable there. For each candidate: build a representative artefact (about 1 MB, two stores), load it at process boot into an immutable in-process object, serve a storefront category page and a workspace list page, and measure with a query recorder that the request path performs zero configuration database queries, zero configuration file reads and zero configuration JSON parses. Measure artefact boot load time, per-request added latency against the same page without the configuration layer, memory per store per process, and the time for a published change to reach every running instance using both the event and the pointer-poll paths. Record how the candidate handles process-level caches, worker processes and horizontal scaling (does each worker load its own copy, is there a shared cache, can a reload be atomic).
+- **Files/components:** `plan/phase0/proof/ts-proof-12/` (scenario script, harness, per-candidate measurements)
+- **Database impact:** None (throwaway proof environments)
+- **API impact:** None
+- **Frontend impact:** None
+- **Backend impact:** None
+- **Testing requirements:** TS-PROOF-12 executed on every candidate; measurements repeatable (three runs, median reported); `status.py --check` passes
+- **Acceptance criteria:** (1) The scenario script and harness exist and are re-runnable. (2) Every candidate has measurements for: configuration DB queries per request (must be 0), boot load time, added p95 latency, memory per store per process, reload propagation time by event and by poll. (3) The report states for each candidate whether the D-248 budget is achievable and what it would cost. (4) Behaviour under multiple worker processes and horizontal scaling is described. (5) No recommendation is made (that is T-0-M01-06). (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-0-M32-01 · Vertical-pack inventory for the 31 SAAS categories: distinctive drivers per category → capability, catalog-schema, item-identity, pricing, fulfilment and terminology requirements; first draft of the CAP-* registry
+- **Status:** NOT_STARTED
+- **Stage / Module:** 0 / M32
+- **Depends on:** T-0-M01-03
+- **Decisions:** —
+- **References:** SAAS §1 (category list), §3 S02, S16–S18, S22; 19 §5.3, §6.1, §6.2; DEC D-236, D-237, D-241, D-255
+- **Description:** For each of the 31 categories listed in SAAS §1, write one page recording what makes that category different in a commerce system: item identity model (none / serial / batch+lot / batch+lot+expiry / unique item), variant model, units and whether decimal quantities apply, pricing model (fixed, per weight, tiered, rental period, subscription term, quote-only), fulfilment model (parcel, cold chain, freight, digital, appointment, rental out/in), returns behaviour, regulated or compliance-sensitive attributes, and the vocabulary its users expect. Then derive the union of switchable behaviours and turn it into the first draft of the CAP-* registry (19 §5.3), marking for each capability which of the 31 categories need it. Nothing here is built; the deliverable is the requirement map that D-241 (packs built in Phase 1), the capability registry task T-1A.1-M31-02 and the pack tasks consume. Where a category needs a behaviour no BP module covers, list it as a gap with a proposed decision row rather than assuming it.
+- **Files/components:** `plan/phase0/discovery/vertical-packs/` (one file per category), `plan/phase0/discovery/vertical-packs/capability-matrix.md` (categories × capabilities)
+- **Database impact:** None
+- **API impact:** None
+- **Frontend impact:** None
+- **Backend impact:** None
+- **Testing requirements:** No automated suite (document task). Verification: all 31 categories covered; every capability in the matrix traces to at least one category; `status.py --check` passes
+- **Acceptance criteria:** (1) All 31 SAAS §1 categories have a completed page with the nine attributes above. (2) A categories × capabilities matrix exists and every CAP-* in the 19 §5.3 registry appears in it. (3) Behaviours no BP module covers are listed as gaps with proposed decision rows (not assumed). (4) The draft registry records dependencies and conflicts between capabilities. (5) Sample values (prices, brand names) are excluded — the pages describe structure, not content. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-0-M31-02 · CFG-* configuration inventory and the store-editable / root-only split applied key by key (D-243)
+- **Status:** NOT_STARTED
+- **Stage / Module:** 0 / M31
+- **Depends on:** T-0-M32-01, T-0-M01-04
+- **Decisions:** —
+- **References:** SAAS §3 S10, S12; 19 §3.2; DEC D-243, D-230; BP §18.1 (who may change what), §30.1; 11 §1; MK:erp-admin.html
+- **Description:** Build the first complete list of configuration keys the platform needs, by walking three sources: the settings visible in the mockup's P-E15 and the other P-E screens, the per-module configurable values named in BP (thresholds, windows, policies, formats, providers), and the pack-driven values found in T-0-M32-01. For each key record section, name, type, default, scope (platform/pack/template/store), `editable_by` per D-243, whether it is lockable, its validation rule, its restart impact and its one-line plain-language description. Flag every key whose value is a client policy that already has a D-### row, so the two stay linked instead of being decided twice. The deliverable is the input to the schema registry task T-1A.1-M31-01 and to the store settings screen T-1A.16-M24-08.
+- **Files/components:** `plan/phase0/discovery/config-inventory.md` (one row per key), `plan/phase0/discovery/config-inventory-gaps.md`
+- **Database impact:** None
+- **API impact:** None
+- **Frontend impact:** None
+- **Backend impact:** None
+- **Testing requirements:** No automated suite (document task). Verification: every setting visible in the mockup P-E screens appears as a key or is explicitly out of scope; `status.py --check` passes
+- **Acceptance criteria:** (1) Every key has section, name, type, default, scope, editable_by, lockable, validation, restart impact and description. (2) Every setting shown in the mockup workspace screens is either a key in the inventory or listed with a reason for exclusion. (3) Keys whose value is an open client decision cite the D-### row. (4) The store-editable subset is consistent with D-243 and contains nothing that affects money handling, isolation, packs, templates or capabilities. (5) Gaps needing new decisions are listed, not assumed. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-0-M33-01 · Template direction study: the theme token contract, TPL-forge (from the mockup) and the TPL-aurora brief
+- **Status:** NOT_STARTED
+- **Stage / Module:** 0 / M33
+- **Depends on:** T-0-M09-01
+- **Decisions:** —
+- **References:** SAAS §3 S07–S09, S19, S21; 19 §7; DEC D-238, D-240, D-242, D-049, D-051; BP §6.7; 04a §3; MK all store pages
+- **Description:** Define the contract that lets two visually different storefronts share one codebase. Extract from `assets/tradex.css` the design tokens the mockup actually uses (colour ramps, typography scale, spacing, radius, shadow, motion) and turn them into the candidate token contract of 19 §7.4: which tokens exist, which are derived by the compiler from brand inputs, and which a template may not override. Describe TPL-forge as the mockup's direction expressed against that contract, and write the brief for TPL-aurora (editorial, image-led) as a deliberately different arrangement of the same components and data. Record which storefront blocks are template-variable and which are fixed because they carry business meaning (price block, stock/availability statement, policy disclosures, checkout steps). Include the contrast-derivation rule and how a brand colour that cannot meet WCAG 2.2 AA is handled.
+- **Files/components:** `plan/phase0/ui/token-contract.md`, `plan/phase0/ui/tpl-forge.md`, `plan/phase0/ui/tpl-aurora-brief.md`
+- **Database impact:** None
+- **API impact:** None
+- **Frontend impact:** None
+- **Backend impact:** None
+- **Testing requirements:** No automated suite (document task). Verification: every token used by the mockup is either in the contract or listed as template-local; `status.py --check` passes
+- **Acceptance criteria:** (1) The token contract lists every token with type, source (brand input, derived, template-local) and whether a template may override it. (2) Blocks that carry business meaning are listed as not template-variable, with the reason. (3) TPL-forge is described entirely in terms of the contract. (4) The TPL-aurora brief is different enough that a reviewer can tell the two apart from a wireframe, using the same components and data. (5) The colour-derivation and WCAG 2.2 AA contrast rule is written, including the failure behaviour (publish blocked). (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-0-M34-01 · Root admin operating model: who operates the platform, environments, approval rules, support-access policy, fleet-health expectations and work package WP18
+- **Status:** NOT_STARTED
+- **Stage / Module:** 0 / M34
+- **Depends on:** T-0-M01-03
+- **Decisions:** —
+- **References:** SAAS §1 Configurable Root Admin, §3 S04–S11; 20 §1, §3, §5, §7; DEC D-228, D-245, D-246, D-235; BP §18.1, §18.2, §20.1, §22.2, §24.1
+- **Description:** Write the operating model for the Configurable Root Admin before it is built: who holds each platform role (00 §9.1), how many platform environments exist and how a store's staging and production configurations relate, which actions need a second approver (store decommission, pack retirement, payout-affecting configuration), the support-access policy in detail (who may request, who approves, maximum duration, what the store owner is told, what is logged where), what the platform on-call expectation is, and what fleet health must show. Define work package WP18 'Configurable Root Admin platform' in the BP §22.2 style with its acceptance evidence, so the estimate (T-0-M01-28) can price it. Record any answer the user must give as a decision proposal rather than an assumption.
+- **Files/components:** `plan/phase0/discovery/root-admin-operating-model.md`, `plan/phase0/estimate/wp18.md`
+- **Database impact:** None
+- **API impact:** None
+- **Frontend impact:** None
+- **Backend impact:** None
+- **Testing requirements:** No automated suite (document task). Verification: every platform role has a named holder or an owner to name it; `status.py --check` passes
+- **Acceptance criteria:** (1) Each of the five platform roles has a described purpose and either a named holder or a recorded owner and date for naming one. (2) The environment model for the platform and for store staging/production is written. (3) Two-person actions are listed. (4) The support-access policy covers requester, approver, duration, notification, logging in both audit trails and automatic expiry. (5) WP18 exists in BP §22.2 form with acceptance evidence and is referenced by the estimate task. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-0-M01-30 · SaaS impact on the Phase 0 scorecard, estimate and exit gate: TS-PROOF-11/12 weights, WP18, the two-platform architecture recommendation
+- **Status:** NOT_STARTED
+- **Stage / Module:** 0 / M01
+- **Depends on:** T-0-M30-01, T-0-M31-01, T-0-M32-01, T-0-M31-02, T-0-M33-01, T-0-M34-01, T-0-M01-06, T-0-M09-06
+- **Decisions:** —
+- **References:** SAAS all; 19; 20; DEC D-227, D-252; BP §15.3, §22.2, §25.1–25.4, §31.2; 12 §8.1, §8.2
+- **Description:** Fold the SaaS scope into the Phase 0 outputs. Add TS-PROOF-11 and TS-PROOF-12 to the fit scorecard with agreed weights and re-score every candidate (a candidate that cannot carry mandatory store scoping or the configuration budget scores accordingly). Extend the architecture recommendation of T-0-M01-06 to cover both platforms: the store platform with its tenancy and configuration layer, and the separate root admin, including the artefact boundary and why the dependency runs one way. Add WP18 and the M30–M35 work to the estimate and the three-year cost comparison. Add the SaaS items to the Phase 0 exit-gate sheet: architecture covers two platforms, the pack and template mechanisms are understood, the invisibility rule is accepted, and the configuration performance budget is agreed.
+- **Files/components:** `plan/phase0/estimate/scorecard.md` (updated), `plan/phase0/estimate/estimation-worksheet.md` (updated), `plan/phase0/signoff/exit-gate.md` (updated), `plan/phase0/audit/architecture-recommendation.md`
+- **Database impact:** None
+- **API impact:** None
+- **Frontend impact:** None
+- **Backend impact:** None
+- **Testing requirements:** No automated suite (document task). Verification: the scorecard totals recompute correctly with the new scenarios; `status.py --check` passes
+- **Acceptance criteria:** (1) TS-PROOF-11 and TS-PROOF-12 appear in the scorecard with weights and per-candidate scores. (2) The architecture recommendation describes both platforms and the one-way artefact boundary. (3) WP18 and the M30–M35 task groups are in the estimate with O/M/P person-days and in the three-year cost comparison. (4) The exit-gate sheet contains the four SaaS items above. (5) No candidate is recommended on grounds not supported by recorded evidence. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+
+### Stage 0 addition — application performance proof (D-268)
+
+#### T-0-M09-06 · Proof scenario TS-PROOF-13 on each candidate core: a realistic workspace list screen and a storefront product page at agreed volumes, with two stores, measured against the §25.2 budgets
+- **Status:** NOT_STARTED
+- **Stage / Module:** 0 / M09
+- **Depends on:** T-0-M01-05, T-0-M30-01
+- **Decisions:** —
+- **References:** 19 §25.2, §25.7; DEC D-268, D-248, D-034, D-010; BP §15.3, §20.1, §20.2; 16 §5.22
+- **Description:** Prove that each candidate operational core can actually serve the three applications quickly, not only that it can hold the data. Seed each candidate with realistic volumes from the Phase 0 data inventory (products, SKUs, stock movements, orders, customers) for two stores, then measure two representative screens: a workspace order list with filters and 50 rows, and a storefront product page. Record for each candidate: time to first byte, time to interactive, database query count per render, the query plans of the three slowest queries, payload size, and the effect of adding the store scope. Where a candidate needs a different access pattern to meet the budget — a projection, a different pagination strategy, a denormalised read model — record that as the cost of choosing it, because it is real work that must appear in the estimate.
+- **Files/components:** `plan/phase0/proof/ts-proof-13/` (seed script, measurement harness, per-candidate results and query plans)
+- **Database impact:** None (throwaway proof environments)
+- **API impact:** None
+- **Frontend impact:** None
+- **Backend impact:** None
+- **Testing requirements:** TS-PROOF-13 executed on every candidate; three runs, median reported; measurements repeatable from the recorded harness
+- **Acceptance criteria:** (1) Both screens are measured on every candidate at the agreed volumes with two stores. (2) Query count per render is recorded, not estimated, and any N+1 pattern is named. (3) The `19` §25.2 budgets are stated as met or missed per candidate, with the gap quantified. (4) The work a candidate would need to meet the budget is described and costed at option level. (5) No recommendation is made here; the result feeds the scorecard (T-0-M01-06) and the SaaS scorecard update (T-0-M01-30). (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
 
 ## Stage 1A.1 — Foundation
 
@@ -1341,7 +1479,7 @@ needed to implement it. **This file is the source of truth for task status.** `S
 #### T-1A.1-M01-10 · Stage 1A.1 verification and foundation runbooks: deploy, rollback, migration-plan and release-notes templates in infra/; WP05 deploy/restore proof evidence
 - **Status:** NOT_STARTED
 - **Stage / Module:** 1A.1 / M01
-- **Depends on:** T-1A.1-M01-05, T-1A.1-M01-07, T-1A.1-M01-08, T-1A.1-M01-09, T-1A.1-M17-01, T-1A.1-M26-01, T-1A.1-M26-02
+- **Depends on:** T-1A.1-M01-05, T-1A.1-M01-07, T-1A.1-M01-08, T-1A.1-M01-09, T-1A.1-M17-01, T-1A.1-M26-01, T-1A.1-M26-02, T-1A.1-M01-11, T-1A.1-M30-01, T-1A.1-M30-02, T-1A.1-M30-03, T-1A.1-M31-01, T-1A.1-M31-02, T-1A.1-M31-03, T-1A.1-M31-04, T-1A.1-M31-05, T-1A.1-M31-06, T-1A.1-M31-07, T-1A.1-M32-01, T-1A.1-M35-01, T-1A.1-M30-04, T-1A.1-M31-08, T-1A.1-M30-05, T-1A.1-M30-06, T-1A.1-M30-07, T-1A.1-M30-08, T-1A.1-M32-02, T-1A.1-M31-09
 - **Decisions:** —
 - **References:** 16 §4 (S), TS-API-01 (stage endpoints), TS-DB-01, TS-SVC-02, TS-BKP-01, TS-SEC-05; BP §20.5, §24.2; WP05
 - **Description:** Verify stage 1A.1 and write the foundation runbooks: deploy, rollback (a software rollback does not roll back business transactions — BP §20.5; 02 §24.4), database migration plan and release notes templates in `infra/` (BP §20.5, §24.2). Run the stage-exit verification of 12-phases §6.2 — a clean deploy to staging from `infra/`; kill the worker after an external send and before save and confirm reconciliation without duplicate effect; restore the latest backup to staging and compare — plus the 16 §4 cadence S suites for M01, M17 and M26 and TS-REG-01. Record the WP05 deploy/restore proof and confirm 01 §31 is filled for everything installed in 1A.1.
@@ -1354,6 +1492,360 @@ needed to implement it. **This file is the source of truth for task status.** `S
 - **Acceptance criteria:** (1) Staging is rebuilt and deployed from `infra/` without manual steps. (2) The kill-worker test reconciles with no duplicate effect. (3) The latest backup is restored to staging and compared successfully. (4) The four runbook templates exist in `infra/`. (5) CI is green on main and no secret is in the repository or on the published site. (6) The 05 §5.1 M01 completion criteria hold (staging and production reproducible from `infra/`, CI green, deploy and restore proof documented) and 01 §31 is filled for installed components. (7) All 1A.1 tasks are COMPLETED in TASKS.md. (8) TASKS.md and STATE.md updated per the continuation protocol.
 - **Evidence:** —
 
+
+
+### Stage 1A.1 additions — multi-store foundation (SaaS architecture change, D-227)
+
+The store platform is tenant-aware and configuration-driven from the foundation stage; it is never
+retrofitted (`12-phases.md` §10.2). References: `19-saas-platform.md` §3–§6, §10, §14.
+
+#### T-1A.1-M01-11 · Two-codebase boundary: reserve and scaffold `root-admin/`, enforce the import boundary in lint and CI, and keep generated configuration out of the repository
+- **Status:** NOT_STARTED
+- **Stage / Module:** 1A.1 / M01
+- **Depends on:** T-1A.1-M01-01, T-1A.1-M01-07
+- **Decisions:** —
+- **References:** SAAS §3 S04, S23; 19 §2 SEP-1…SEP-6, §15 TS-SAAS-SEP; 20 §2; 00 §11; DEC D-228, D-231; BP §15.6
+- **Description:** Create the `root-admin/` folder with its own dependency manifest, build entry point, test entry point and README stating the boundary rules, so the separation exists from the first commit rather than being introduced later. Add the lint rule and the CI check that fail the build if anything under `frontend/` or `backend/` imports from `root-admin/` or vice versa, and if any store code reads a root-admin database connection string. Add `config/generated/` to the ignore rules with a check that fails if a compiled artefact is ever committed. The root admin application itself is not built here (stage 1R.1) — only the boundary and the guards.
+- **Files/components:** `root-admin/` (manifest, README, empty app/api/domain/compiler/deploy/tests skeleton per 20 §2), `.gitignore`, `infra/ci/` boundary check, lint configuration in the repository root
+- **Database impact:** None
+- **API impact:** None
+- **Frontend impact:** None
+- **Backend impact:** Import-boundary lint rule shared by both codebases
+- **Testing requirements:** TS-SAAS-SEP-01 (import boundary), TS-SAAS-SEP-02 (no committed artefact); both run in CI on every change
+- **Acceptance criteria:** (1) `root-admin/` exists with its own manifest, build and test entry points and a README stating SEP-1…SEP-6. (2) A deliberate cross-import in either direction fails CI, demonstrated in the evidence. (3) A deliberately committed file under `config/generated/` fails CI. (4) No store code can resolve a root-admin database configuration. (5) Both checks run on every pipeline execution, not only nightly. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1A.1-M30-01 · Store registry, store context and host resolution: E-store, the host → store map, immutable per-request and per-job store context
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1A.1 / M30
+- **Depends on:** T-1A.1-M01-02, T-1A.1-M01-03
+- **Decisions:** D-001, D-234
+- **References:** SAAS §3 S01, S03; 19 §10.2, §10.3, §14 BR-M30-01…05; 00 §7.3; DEC D-233, D-234, D-102; BP §17.4
+- **Description:** Build the runtime side of multi-store operation. Add the store identity record (E-store: id, key, display name, jurisdiction, currency, locales, timezone, state) and the process-wide store registry loaded at boot. Resolve the incoming `Host` header to a store through a preloaded map with no I/O on the request path, and reject an unknown host with a neutral response that names nothing. Make the store context an explicit, immutable value attached to the request (and to every job payload and outbound call), never inferred from ambient or thread-local state that can be forgotten. Provide the single supported way to set, read and propagate it, and fail loudly rather than defaulting to a store when it is missing.
+- **Files/components:** `backend/platform/tenancy/` (store registry, host resolver, store context, propagation helpers), migration for E-store
+- **Database impact:** E-store (new); migration group DB-G0 extension; `store_id` column added to the DB-G0 tables in T-1A.1-M30-02
+- **API impact:** Store context middleware ahead of every API route (06 §1); no public endpoint
+- **Frontend impact:** None (the shells consume the context from stage 1A.3)
+- **Backend impact:** StoreRegistry, HostResolver, StoreContext; propagation into the job runtime of T-1A.1-M17-01
+- **Testing requirements:** TS-SAAS-ISO-09 (unknown host → neutral response), TS-SAAS-PERF-01 (host resolution does no I/O), TS-UNIT (context immutability and missing-context failure), TS-SVC-02 (context propagation through jobs)
+- **Acceptance criteria:** (1) A request resolves to exactly one store with no database query and no file read. (2) An unknown host returns a neutral response that names no store, no platform and no technology. (3) Store context cannot be changed after it is set for a request or job; attempting to do so raises. (4) Code that needs a store but has no context fails with a clear error instead of picking a default. (5) Every job enqueued from a request carries the store id. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1A.1-M30-02 · Tenant-safe data access: `store_id` on every store-scoped table, rejection of unscoped queries, unique-key prefixing, row-level security where the core supports it, migration lint
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1A.1 / M30
+- **Depends on:** T-1A.1-M30-01, T-1A.1-M01-04
+- **Decisions:** D-001
+- **References:** SAAS §3 S03; 19 §10.1, §14 BR-M30-01/02; 00 §7.3 global rule; 03 §11; DEC D-233; BP §17.2, §17.4, §19.1
+- **Description:** Make store scoping structural rather than a habit. Add a non-null `store_id` to every store-scoped table (every entity in 00 §7/§7.1/§7.2), include it in the primary key or a mandatory leading index position, and prefix every unique constraint with it. Extend the repository/data-access layer so a query against a store-scoped table without a tenant filter is refused — at development and test time as an error, in production as a failure rather than a silent full-table read. Apply row-level security policies where the selected core supports them, as defence in depth. Add a migration lint that fails when a new store-scoped table or unique constraint omits `store_id`, so the rule cannot decay.
+- **Files/components:** `backend/platform/tenancy/data-access/`, migration updating DB-G0 tables, `infra/ci/` migration lint
+- **Database impact:** `store_id` on every store-scoped table; unique constraints re-created with the `store_id` prefix; RLS policies where supported; documented in 03 §11
+- **API impact:** None directly; every list endpoint is implicitly scoped
+- **Frontend impact:** None
+- **Backend impact:** Tenant-aware repository base; query guard; migration lint
+- **Testing requirements:** TS-SAAS-ISO-10 (unscoped query refused), TS-SAAS-ISO-11 (cross-store read/write/list/search/export refused), TS-DB (constraint shape), TS-PROOF-11 regression
+- **Acceptance criteria:** (1) Every store-scoped table has a non-null `store_id` and every unique constraint includes it. (2) An unscoped query against a store-scoped table fails in tests and is prevented in production. (3) A test that seeds two stores cannot read, write, list, search or export the other store's rows through any repository. (4) Row-level security is enabled where the core supports it, with evidence; where it does not, the compensating control is documented. (5) A migration adding a store-scoped table without `store_id` fails CI. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1A.1-M30-03 · Per-store object storage prefixes, per-store secret scopes and per-store encryption of integration credentials
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1A.1 / M30
+- **Depends on:** T-1A.1-M30-01, T-1A.1-M01-08
+- **Decisions:** D-033, D-107
+- **References:** SAAS §3 S03; 19 §10.1 items 5–6, §14 BR-M31-08; DEC D-233, D-033, D-107; BP §15.4, §19.1
+- **Description:** Give every store its own storage and secret boundary. Object storage keys are prefixed `store/<store_id>/…` and signed URLs are issued per store so a URL for one store cannot address another's object. Integration credentials and other secrets are held in a per-store scope in the secret store and encrypted with a per-store key; nothing secret is ever written into a configuration artefact (the artefact holds references only). Provide the single API the rest of the backend uses to read a store's secret, so no module builds its own path.
+- **Files/components:** `backend/platform/tenancy/storage/`, `backend/platform/tenancy/secrets/`, `infra/` storage and secret-scope definitions
+- **Database impact:** None (references only; credentials stay in the secret store)
+- **API impact:** Signed-URL issuance used by M22 endpoints
+- **Frontend impact:** None
+- **Backend impact:** StoreStorage, StoreSecrets; used by M22, M23 and the artefact loader
+- **Testing requirements:** TS-SAAS-ISO-12 (a signed URL for store A cannot address store B), TS-SEC-05 (no secret in the repository, logs or artefact), TS-SAAS-CFG-06 (artefact contains references, never values)
+- **Acceptance criteria:** (1) Every object written by the platform is under its store's prefix. (2) A signed URL issued for one store cannot fetch another store's object, demonstrated by test. (3) Secrets are readable only through the per-store API and only with the matching store context. (4) A scan of a built artefact finds no secret value. (5) Per-store encryption keys exist and rotation is documented in the runbook. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1A.1-M31-01 · `CFG-*` configuration schema registry: typed keys with scope, editability, lockability, validation, restart impact and plain-language documentation
+- **Status:** NOT_STARTED
+- **Stage / Module:** 1A.1 / M31
+- **Depends on:** T-1A.1-M01-02
+- **Decisions:** —
+- **References:** SAAS §3 S12; 19 §3.2, §3.1 layers; DEC D-230, D-243; input from T-0-M31-02; BP §15.4 (fail-fast configuration)
+- **Description:** Declare every configuration key once, in code, in a typed registry, and make unknown keys impossible: a value that is not in the schema cannot be stored, compiled or read. Each key carries the fields of 19 §3.2 — key, type, default, scope, editable_by, lockable, requires_capability, validation, restart_impact, pii and a one-line plain-language description reused by both admin surfaces. Implement the layer resolution of 19 §3.1 as a pure function over L0–L5 with deterministic output, and the validation that runs identically in the compiler and in any write path. Seed the registry from the Phase 0 inventory (T-0-M31-02), starting with the sections listed in 19 §3.2.
+- **Files/components:** `backend/platform/config/schema/` (registry, key definitions per section, resolution function, validators)
+- **Database impact:** None (the schema is code; values live in the root admin database and, for L4, in E-store_setting)
+- **API impact:** Schema introspection used by the root admin (via the published schema hash) and by the store settings screen
+- **Frontend impact:** None (consumed from stage 1A.3 onwards)
+- **Backend impact:** ConfigSchema, layer resolver, validators
+- **Testing requirements:** TS-SAAS-CFG-01 (schema completeness and field validity), TS-SAAS-CFG-02 (unknown key rejected at every entry point), TS-SAAS-CFG-03 (layer resolution order, determinism, idempotency)
+- **Acceptance criteria:** (1) Every key declares all eleven fields of 19 §3.2. (2) Reading, writing or compiling an undeclared key fails with a clear error. (3) Layer resolution follows L5 ?? L4 ?? L3 ?? L2 ?? L1 ?? L0 and produces identical output for identical input. (4) Validation rules run identically in the compiler and in the write path (one implementation, two callers). (5) The registry covers every key in the Phase 0 inventory or records why a key was dropped. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1A.1-M31-02 · Capability registry `CAP-*` and the six enforcement points (routing, API 404, service guard, UI, jobs, exports)
+- **Status:** NOT_STARTED
+- **Stage / Module:** 1A.1 / M31
+- **Depends on:** T-1A.1-M31-01, T-1A.1-M01-05
+- **Decisions:** —
+- **References:** SAAS §3 S10, S03; 19 §5, §9 INV-3, §14 BR-M31-02/03; DEC D-236, D-229; input from T-0-M32-01
+- **Description:** Declare every switchable unit of behaviour as a capability with its area, description, dependencies, conflicts, per-pack default, lockability, data-retaining flag and governed configuration keys, and build the enforcement so a disabled capability is invisible rather than forbidden. All six points of 19 §5.2 are mandatory: the route is not registered, the API answers 404, the service guard refuses internal callers, the UI component is neither rendered nor shipped in the bundle, the job is not scheduled, and the data is excluded from exports, search and reports. Add the registry completeness test that fails when a capability lacks any of the six, and the build check that fails when a store-facing route or component exists without a declared capability. Disabling never deletes data.
+- **Files/components:** `backend/platform/capabilities/` (registry, resolver, guards, route/job registration hooks), API middleware, export/search filters
+- **Database impact:** None (capabilities are compiled configuration; no per-request table)
+- **API impact:** Capability declaration on every store-facing endpoint; 404 behaviour for disabled capabilities (06 §1 error envelope unchanged)
+- **Frontend impact:** Capability-aware rendering and code splitting contract used by the shells in stage 1A.3
+- **Backend impact:** CapabilityRegistry, bitset resolution, guards, scheduler filter
+- **Testing requirements:** TS-SAAS-CAP-01 (all six points wired for every capability), TS-SAAS-CAP-02 (no undeclared store-facing route or component), TS-SAAS-CAP-03 (dependencies and conflicts), TS-SAAS-ISO-03 (404 not 403), TS-SAAS-CAP-04 (disable then re-enable restores data unchanged)
+- **Acceptance criteria:** (1) Every capability in the registry has all six enforcement points, verified automatically. (2) A request to a disabled capability's endpoint returns 404 with no message naming the feature. (3) A disabled capability's UI is absent from the rendered page and from the shipped bundle. (4) A job or automation belonging to a disabled capability is never scheduled, and a queued message for one is dead-lettered with a reason. (5) Disabling a capability and re-enabling it leaves the underlying data unchanged. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1A.1-M31-03 · Configuration artefact loader and immutable snapshot: checksum and schema-hash validation, boot load, O(1) accessors, memory budget
+- **Status:** NOT_STARTED
+- **Stage / Module:** 1A.1 / M31
+- **Depends on:** T-1A.1-M31-01, T-1A.1-M30-01
+- **Decisions:** —
+- **References:** SAAS §3 S13, S14; 19 §4.2, §4.3, §14 BR-M31-01/04/07; DEC D-231, D-248
+- **Description:** Load the compiled artefact set described in 19 §4.2 from the local disk copy (falling back to object storage), verify its checksum, schema hash and target platform release, parse it once and build a frozen in-process object per store: configuration map, capability bitset, pre-resolved navigation trees, catalog schema and terminology maps. Expose `cfg.get`, `cfg.can` and `cfg.t` as O(1) lookups with no lazy database fallback — a missing key is a programming error, not a runtime query. Refuse an artefact that fails any check and keep serving the previous one. Respect the memory budget and provide the LRU behaviour for runtimes hosting many stores, with no eviction of a store while a request for it is in flight.
+- **Files/components:** `backend/platform/config/loader/`, `backend/platform/config/snapshot/`, `config/generated/` layout (read only)
+- **Database impact:** E-config_state (applied version, checksum, applied_at, instance report, drift flag)
+- **API impact:** None (internal); health endpoint reports the applied config version
+- **Frontend impact:** None
+- **Backend impact:** ArtefactLoader, StoreConfig snapshot, accessor API, LRU registry
+- **Testing requirements:** TS-SAAS-CFG-04 (checksum/schema-hash/release validation, fail closed), TS-SAAS-PERF-01 (zero I/O per request), TS-SAAS-PERF-02 (accessor cost), TS-SAAS-PERF-03 (boot load time and memory)
+- **Acceptance criteria:** (1) A valid artefact loads at boot and the health endpoint reports its version and checksum. (2) A tampered, truncated, schema-mismatched or wrong-release artefact is refused, the previous version keeps serving and an exception case is opened. (3) Serving a page performs zero configuration database queries, file reads and JSON parses, measured by the harness. (4) `cfg.get`/`cfg.can`/`cfg.t` are O(1) and within the D-248 budget. (5) Memory per store per process is within budget and no store is evicted while a request for it is in flight. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1A.1-M31-04 · Configuration reload and invalidation: `config.published` subscription, pointer fallback, atomic swap, `config.applied` callback, drift and failure handling
+- **Status:** NOT_STARTED
+- **Stage / Module:** 1A.1 / M31
+- **Depends on:** T-1A.1-M31-03, T-1A.1-M17-01
+- **Decisions:** —
+- **References:** SAAS §3 S15; 19 §4.4, §14 BR-M31-04/05; 20 §5 steps 5–7; DEC D-232, D-248; BP §16.3 (durable jobs), §12.5 (exception cases)
+- **Description:** Apply a newly published configuration version without a restart and without a request ever waiting on it. Subscribe to `config.published`, and keep the pointer-file poll (at most every 30 s) as the fallback path so a lost event cannot strand a store. Download, verify and build the new snapshot on a background worker, then swap the process pointer atomically so in-flight requests finish on the old snapshot. Report `config.applied` back to the publisher out of band. On any failure keep the current snapshot, open an exception case and raise the drift signal. Implement rollback as the ordinary path — republishing an earlier version is just another reload. Refuse a hot reload for keys whose `restart_impact` is cold and surface that as a required deployment instead.
+- **Files/components:** `backend/platform/config/reload/`, outbox/event subscription, health and drift reporting
+- **Database impact:** E-config_state updated per instance; E-exception_case on failure
+- **API impact:** `config.applied` callback to the platform (20 §8 API-M35-16); health endpoint exposes applied version and drift
+- **Frontend impact:** None
+- **Backend impact:** ReloadWorker, snapshot swap, drift detector
+- **Testing requirements:** TS-SAAS-CFG-07 (reload with no dropped or mixed-version request), TS-SAAS-CFG-08 (rollback), TS-SAAS-CFG-09 (cold key refused for hot reload), TS-SAAS-PERF-04 (propagation time), TS-SVC-02 (at-least-once, idempotent handling)
+- **Acceptance criteria:** (1) Publishing a new version updates every running instance within the D-248 propagation budget, by event and, with events disabled, by pointer poll. (2) No request observes a half-applied configuration; in-flight requests complete on the version they started with. (3) A failed download, checksum or validation leaves the previous version serving and opens an exception case with the store, version and reason. (4) Republishing an earlier version rolls the store back with the same mechanism. (5) A change touching a cold key is refused by the hot path and reported as requiring a deployment. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1A.1-M31-05 · Store-editable settings (layer L4): E-store_setting, version-based overlay refresh, schema re-validation, lock enforcement
+- **Status:** NOT_STARTED
+- **Stage / Module:** 1A.1 / M31
+- **Depends on:** T-1A.1-M31-03
+- **Decisions:** —
+- **References:** SAAS §3 S03, S12; 19 §3.1 L4, §4.4, §9 INV-4, §14 BR-M31-06; DEC D-243, D-229
+- **Description:** Give a store the narrow, safe slice of configuration it owns. Store the L4 values in the store database, allow writes only for keys whose `editable_by` permits it and that the root admin has not locked, re-validate every write against the same schema validators the compiler uses, and record who changed what and when. Keep the overlay in memory as a small immutable map refreshed by a version bump and an in-cluster invalidation — never by a per-request read. Attempting to write a root-only or locked key is rejected as if the key did not exist (INV-4), because a permission-style error would disclose that someone else controls it.
+- **Files/components:** `backend/platform/config/settings/` (service, overlay, invalidation), migration for E-store_setting and E-store_setting_version
+- **Database impact:** E-store_setting, E-store_setting_version (new); audit through E-audit_event
+- **API impact:** Store settings read/write endpoints used by P-E15 (catalogued with M24 in 06 §40.3)
+- **Frontend impact:** Consumed by the store settings screen T-1A.16-M24-08
+- **Backend impact:** StoreSettingsService, L4 overlay, lock enforcement
+- **Testing requirements:** TS-SAAS-CFG-10 (only editable, unlocked keys writable; locked and root-only behave as unknown), TS-SAAS-CFG-11 (overlay refresh without request-path reads), TS-SAAS-ISO-04 (locked keys absent, not disabled), TS-AUDIT (change recorded)
+- **Acceptance criteria:** (1) A store admin can change a store-editable unlocked key and the change takes effect within the propagation budget. (2) A write to a root-only or locked key is rejected exactly as an unknown key would be, with no message implying the key exists elsewhere. (3) Every write is validated by the same validators the compiler uses and is audited with actor, before and after. (4) Reading the effective configuration performs no request-path database query, including the L4 overlay. (5) A locked key does not appear in the settings read endpoint at all. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1A.1-M31-06 · Terminology runtime: `TT-*` token registry, compiled terminology maps, `cfg.t`, and the build check against hard-coded concept words
+- **Status:** NOT_STARTED
+- **Stage / Module:** 1A.1 / M31
+- **Depends on:** T-1A.1-M31-03
+- **Decisions:** —
+- **References:** SAAS §3 S03, S12, S16–S18; 19 §11, §15 TS-SAAS-TERM; DEC D-239, D-006, D-050
+- **Description:** Make every concept word configurable. Declare the token registry (19 §11), load the compiled per-locale terminology map from the artefact, and expose `cfg.t(token, count, case)` with pluralisation, gender and case handled inside the token definition rather than at each call site. Provide the locale fallback chain and the missing-token behaviour (build failure in development, logged and rendered as the token's default in production — never an empty string in a customer's face). Add the build check that fails when a store-facing template, email, PDF or API error message hard-codes a concept word instead of using a token. This mechanism is also how D-006 (buyer terminology) and D-050 (languages) are later satisfied without a code-wide rename.
+- **Files/components:** `backend/platform/config/terminology/`, shared token helpers for the frontend packages, `infra/ci/` terminology lint
+- **Database impact:** None (tokens compile into the artefact)
+- **API impact:** Tokens applied to API error messages and any user-visible string the API returns
+- **Frontend impact:** `cfg.t` equivalent available to storefront, workspace and vendor UI packages
+- **Backend impact:** TerminologyMap, token resolution, lint rule
+- **Testing requirements:** TS-SAAS-TERM-01 (no hard-coded concept word in store-facing output), TS-SAAS-TERM-02 (pluralisation and case), TS-SAAS-TERM-03 (locale fallback and missing-token behaviour)
+- **Acceptance criteria:** (1) Every token in the registry resolves from the compiled map with an O(1) lookup. (2) A store-facing string that hard-codes a registered concept word fails the build, demonstrated in the evidence. (3) Pluralisation and case are produced from the token definition, not from call-site string handling. (4) A missing token fails the build in development and never renders as an empty string in production. (5) Changing a token in configuration changes every surface that uses it, verified on at least one screen, one email and one export. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1A.1-M32-01 · Vertical-pack runtime: consumption of the pack profile (catalog schema, item identity model, units, storefront/workspace/vendor profiles) and the no-pack-id-branching guard
+- **Status:** NOT_STARTED
+- **Stage / Module:** 1A.1 / M32
+- **Depends on:** T-1A.1-M31-03, T-1A.1-M31-02
+- **Decisions:** —
+- **References:** SAAS §3 S02, S16–S18; 19 §6.1, §6.3–§6.5, §14 BR-M32-01/02; DEC D-237, D-241
+- **Description:** Teach the runtime to read a pack profile without knowing which pack it is. Load `catalog-schema.json` and the storefront, workspace and vendor profiles from the artefact into typed, frozen structures, and expose them through one accessor set the business modules use (categories and attribute schemas, variant axes, units of measure and whether decimal quantities apply, item identity model, screen/tab/column/facet profiles). Add the build check that fails when any code branches on a pack id or a pack name — behaviour must come from capabilities, schema and configuration only. Pack content is data; a pack may not ship executable code, and the loader refuses one that tries.
+- **Files/components:** `backend/platform/packs/` (profile loader, typed accessors, guard), `infra/ci/` pack-branching check
+- **Database impact:** None (profiles are compiled configuration)
+- **API impact:** Profile-derived shapes used by catalog, inventory, pricing and workspace endpoints
+- **Frontend impact:** Profile accessors available to the three UI packages
+- **Backend impact:** PackProfile, CatalogSchema, IdentityModel, UnitSet
+- **Testing requirements:** TS-SAAS-PACK-01 (profile loading and typing), TS-SAAS-PACK-02 (pack may not ship code), TS-SAAS-PACK-03 (no pack-id branching anywhere)
+- **Acceptance criteria:** (1) The runtime exposes the pack profile through typed accessors with no pack-specific code path. (2) A deliberate `if pack == …` fails the build, demonstrated in the evidence. (3) A pack containing executable content is refused at load with a clear error. (4) Two different profiles produce two different catalog schemas and screen profiles from the same code, verified with fixtures. (5) Unknown profile fields are rejected rather than ignored. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1A.1-M35-01 · Store bootstrap and provisioning CLI (used before the root admin portal exists): artefact build from plan inputs, seed application, first owner user, E-store_bootstrap_run
+- **Status:** NOT_STARTED
+- **Stage / Module:** 1A.1 / M35
+- **Depends on:** T-1A.1-M31-03, T-1A.1-M01-09, T-1A.1-M30-03
+- **Decisions:** —
+- **References:** SAAS §3 S11; 19 §4.2; 20 §5 steps 4–6; DEC D-235, D-250; 03 §6 (seed rules)
+- **Description:** Provide the command-line path that creates a store during stages 1A.* , before the Configurable Root Admin exists, using exactly the same artefact format and the same bootstrap steps the portal will later drive — so the portal replaces the operator, not the mechanism. The CLI takes a configuration source, compiles an artefact with the same compiler contract, provisions storage and secret scopes, applies the pack seed sets idempotently, creates the store's default roles, first location and first owner user with an invitation, and records every step in E-store_bootstrap_run so a re-run completes rather than duplicates. It creates no sample products, customers or placeholder money values (03 §6).
+- **Files/components:** `backend/platform/bootstrap/` (CLI, step runner, seed applier), `infra/runbooks/store-bootstrap.md`
+- **Database impact:** E-store_bootstrap_run (new); writes seed data into the store's tables under its store context
+- **API impact:** None (operator tool)
+- **Frontend impact:** None
+- **Backend impact:** BootstrapRunner, SeedApplier, idempotency records
+- **Testing requirements:** TS-SAAS-DEPLOY-01 (idempotent re-run), TS-SAAS-DEPLOY-02 (resume after interruption), TS-DB-05 (seed loader rejects placeholder values), TS-SAAS-ISO-13 (a bootstrapped second store shares nothing with the first)
+- **Acceptance criteria:** (1) One command creates a working store from a configuration source and the store serves its home page. (2) Running the command twice changes nothing and creates no duplicates. (3) Interrupting it mid-way and re-running completes the remaining steps only. (4) The first owner user exists with an invitation and no default password. (5) No sample product, customer or placeholder money value is created; the seed loader still rejects placeholders. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1A.1-M30-04 · Two-store test fixture and the TS-SAAS-ISO baseline suite used by every later stage
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1A.1 / M30
+- **Depends on:** T-1A.1-M30-02, T-1A.1-M35-01, T-1A.1-M01-07
+- **Decisions:** D-053
+- **References:** SAAS §3 S03; 19 §9, §15; 16 §18; DEC D-229, D-233, D-053
+- **Description:** Make two stores the normal test condition rather than a special case. Build the fixture that provisions two stores with different packs, templates, terminology and data, and wire it into the integration and end-to-end harnesses so every later suite runs against it. Write the baseline isolation suite: cross-store read, write, list, search, report, export, media access, credential use and job execution must all fail; the forbidden-vocabulary crawler must find nothing in store-facing output; a disabled capability must answer 404. A suite that passes with one store and fails with two is exactly the regression this architecture exists to prevent, so the fixture is not optional for later stages.
+- **Files/components:** `tests/fixtures/two-stores/`, `tests/security/saas-isolation/`, harness wiring in `tests/`
+- **Database impact:** Test data only
+- **API impact:** None
+- **Frontend impact:** None
+- **Backend impact:** Test harness support for switching store context
+- **Testing requirements:** TS-SAAS-ISO-01…13 baseline; the fixture is used by TS-REG-01/02 from this stage onwards
+- **Acceptance criteria:** (1) The fixture provisions two stores with different packs, templates and terminology in the test environment. (2) Every cross-store access listed above fails, each with its own test. (3) The forbidden-vocabulary crawler runs over rendered store-facing output and reports zero findings. (4) The integration and E2E harnesses run against two stores by default. (5) Removing the tenant filter from any repository makes at least one isolation test fail (mutation check recorded in the evidence). (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1A.1-M31-07 · Configuration performance budget harness TS-SAAS-PERF-01…06 wired into CI
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1A.1 / M31
+- **Depends on:** T-1A.1-M31-04, T-1A.1-M30-04
+- **Decisions:** D-034, D-053
+- **References:** SAAS §3 S13; 19 §4.5; DEC D-248, D-034, D-053; BP §20.1, §20.2
+- **Description:** Turn the D-248 budget into automated checks that fail the build rather than a paragraph nobody measures. Build the query recorder and I/O recorder that assert zero configuration database queries, file reads and JSON parses while rendering a storefront category page and a workspace list page; the microbenchmark for the three accessors; the boot-load and memory measurement; the reload-propagation measurement; the comparison against a hard-coded single-store build; and the check that `theme.css` is served static, hashed and immutably cached. Record the baseline numbers so later regressions are visible, and fail CI when a budget is exceeded.
+- **Files/components:** `tests/load/saas-perf/`, `tests/e2e/` hooks, CI job definition in `infra/ci/`
+- **Database impact:** None
+- **API impact:** None
+- **Frontend impact:** None
+- **Backend impact:** Instrumentation hooks (disabled in production builds)
+- **Testing requirements:** TS-SAAS-PERF-01…06 as specified in 19 §4.5; results recorded per run
+- **Acceptance criteria:** (1) All six budget checks exist and run in CI. (2) Adding a deliberate configuration database read on the request path fails TS-SAAS-PERF-01, demonstrated in the evidence. (3) Baseline numbers for load time, accessor cost, memory, propagation and added latency are recorded. (4) Exceeding any budget fails the pipeline rather than emitting a warning. (5) The checks run against the two-store fixture. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+
+### Stage 1A.1 additions — control model, quotas and store-aware kernel (D-257, D-258, D-261, D-262)
+
+#### T-1A.1-M31-08 · Surfaces, modules and the three-state control model: `MOD-*` registry, resolution chain, delegated feature state, the run-out rule
+- **Status:** NOT_STARTED
+- **Stage / Module:** 1A.1 / M31
+- **Depends on:** T-1A.1-M31-02, T-1A.1-M31-05
+- **Decisions:** —
+- **References:** SAAS §3 S03, S10; 19 §5.4, §14 BR-M30-06, BR-M31-09…13; DEC D-257, D-258, D-236, D-243
+- **Description:** Build the two coarser levels of control above capabilities, and the delegation that lets a store's own administrator manage part of them. Declare the three surfaces and the sixteen modules of 19 §5.4.2 with their surface membership, contained capabilities and dependency rules, and refuse a configuration that disables `MOD-administration`. Implement the three control states (`off_locked`, `on_locked`, `delegated`) for every module and capability, the resolution chain surface → module control → module store value → capability control → capability store value, and the store-side feature state (`E-store_feature_state`) that holds only delegated values. Implement invariants CTL-1…CTL-7, including the rule that a store write to a non-delegated item behaves exactly as a write to an unknown item, that dependencies are resolved before a switch is offered, and that changing a control state never silently discards the store's value. Implement the run-out rule for switching something off with work in flight: existing records stay completable by staff, no new ones can be created, customer-facing surfaces disappear immediately. Everything still resolves into the same immutable bitset, so there is no request-path database read.
+- **Files/components:** `backend/platform/capabilities/modules/`, `backend/platform/capabilities/control/`, `backend/platform/config/settings/` (feature state), migration for E-store_feature_state
+- **Database impact:** E-store_feature_state (new, store-scoped); module and control state compiled into the artefact
+- **API impact:** Store-facing feature endpoints expose the delegated set only; a non-delegated item answers as unknown (404)
+- **Frontend impact:** Contract consumed by the store Features screen (T-1A.16-M24-09) and the shells
+- **Backend impact:** ModuleRegistry, ControlStateResolver, FeatureStateService, run-out enforcement
+- **Testing requirements:** TS-SAAS-CAP-07 (resolution order across surface, module and capability), TS-SAAS-CAP-08 (three control states), TS-SAAS-CAP-09 (CTL-1…CTL-7), TS-SAAS-CAP-10 (run-out rule with open work), TS-SAAS-CAP-11 (`MOD-administration` cannot be disabled), TS-SAAS-PERF-01 (still zero request-path I/O)
+- **Acceptance criteria:** (1) Disabling a surface removes its routes, bundles and hostname binding for that store, and nothing anywhere names it. (2) Disabling a module switches off every capability inside it regardless of their own state, and re-enabling restores every record untouched. (3) A store can change only `delegated` items; a write to an `off_locked` or `on_locked` item is answered exactly as an unknown item. (4) A configuration that delegates a capability whose module is `off_locked`, or whose dependency is less available, is rejected by the compiler with a precise report. (5) Switching something off with open work leaves those records completable by staff, blocks new ones and removes the customer-facing surface immediately, with the open-work count reported before confirmation. (6) `MOD-administration` cannot be disabled. (7) Reading effective state performs no request-path database query. (8) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1A.1-M30-05 · Per-store quotas, rate limits and fair-share scheduling
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1A.1 / M30
+- **Depends on:** T-1A.1-M30-01, T-1A.1-M17-01
+- **Decisions:** D-084, D-034
+- **References:** SAAS §3 S03, S13; 19 §20, §14 BR-M30-07; DEC D-262, D-084; BP §19.1, §20.2
+- **Description:** Stop one store degrading another. Apply per-store limits to API requests, authentication, checkout and payment attempts, background-job concurrency, outbound messages, storage and media size, import rows, export size and search queries, with platform defaults and audited per-store overrides. Give the job runtime a per-store concurrency cap so one store's bulk import cannot starve the shared queue. Raise an operator alert when a store approaches a limit, before it starts failing. A limit response is an ordinary rate-limit response that names nothing about the platform or any other store.
+- **Files/components:** `backend/platform/tenancy/quotas/`, job-runtime fair-share scheduler, API middleware
+- **Database impact:** Quota configuration in the artefact; usage counters in the cache/store, not in a hot table
+- **API impact:** Rate-limit headers and responses per store; no platform disclosure
+- **Frontend impact:** None (operator view is P-R05/P-R12)
+- **Backend impact:** QuotaService, fair-share queue scheduler, usage metering
+- **Testing requirements:** TS-SAAS-ISO-17 (a limit response discloses nothing), TS-SAAS-PERF-07 (one store's bulk job does not starve another's queue), TS-SEC (auth and checkout abuse limits), TS-ALERT (approach alert)
+- **Acceptance criteria:** (1) Each listed limit is enforced per store with a platform default and an audited override. (2) A store saturating the job queue does not delay another store's jobs beyond its fair share, demonstrated with the two-store fixture. (3) A rate-limited response names no store, feature or platform detail. (4) An operator alert fires before a store starts failing, not after. (5) Limits and current usage are visible to the operator and invisible to the store. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1A.1-M30-06 · Store-aware money, units and time: currency carried with every amount, no cross-store money aggregation, per-store business day, per-store sequences
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1A.1 / M30
+- **Depends on:** T-1A.1-M01-03, T-1A.1-M30-02
+- **Decisions:** D-104, D-124, D-059, D-123
+- **References:** SAAS §3 S01; 19 §19; DEC D-261, D-104, D-124, D-123, D-059; BP §8.1, §8.4; 03 §1.2, §1.6
+- **Description:** Extend the shared kernel for a database that now holds stores in different jurisdictions. Money is an integer in the currency's minor unit carried together with its currency code, because one table holds INR with two decimal places, JPY with none and KWD with three; a bare integer is no longer sufficient and floating point remains forbidden. Make the repository layer refuse an aggregate over money that has no store filter, in the same way it refuses any unscoped query. Take the unit-of-measure set and decimal-quantity rules from the pack. Give every store its own business-day timezone — day close, cut-off times, scheduled reports, digests and "today" in every screen use it, while storage stays UTC. Make document numbers, sequences and fiscal series per store so one store's volume is never inferable from another's numbering.
+- **Files/components:** `backend/platform/tenancy/kernel/` (money type, currency, business day, sequences), repository aggregate guard
+- **Database impact:** Currency alongside every money column; per-store sequence allocation; business-day timezone on E-store
+- **API impact:** Money is serialised with its currency in every payload (06 §1 formats)
+- **Frontend impact:** Price and amount formatting uses the store's currency and locale
+- **Backend impact:** Money type, CurrencyPolicy, BusinessDay, SequenceAllocator
+- **Testing requirements:** TS-UNIT (minor-unit arithmetic for 0-, 2- and 3-decimal currencies; rounding per BP §8.1), TS-SAAS-ISO-18 (unscoped money aggregate refused), TS-DB (per-store sequences never collide or share), TS-SVC (business-day boundaries per store)
+- **Acceptance criteria:** (1) Every money value carries its currency and no floating point is used anywhere in money arithmetic. (2) Arithmetic is correct for currencies with 0, 2 and 3 decimal places, verified by test. (3) An aggregate over money without a store filter fails, demonstrated in the evidence. (4) Two stores in different timezones produce correct and different day boundaries for the same UTC instant. (5) Document numbers and sequences are per store and cannot be used to infer another store's volume. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+
+### Stage 1A.1 addition — category-contributed modules (D-265)
+
+#### T-1A.1-M32-02 · Category-contributed modules at runtime: module origin, single ownership per capability, rejection of modules naming capabilities the release does not have
+- **Status:** NOT_STARTED
+- **Stage / Module:** 1A.1 / M32
+- **Depends on:** T-1A.1-M32-01, T-1A.1-M31-08
+- **Decisions:** —
+- **References:** 19 §5.4.2 (module origin), §14 BR-M32-05, BR-M32-06; DEC D-265, D-257
+- **Description:** Let a vertical category declare its own modules, as data, without letting it declare behaviour. The pack profile may contribute module definitions (id, label token, surfaces, the capabilities it groups, ordering, dependency rules) which the runtime merges with the platform modules into one registry that the control model and the shells treat identically. Enforce the two rules that keep this safe: a module may only name capabilities that exist in the running platform release, and a capability may belong to several modules but exactly one of them owns its control state. A pack that breaks either rule is refused at load with the offending capability or module named, not silently ignored.
+- **Files/components:** `backend/platform/packs/modules/`, module merge and validation in `backend/platform/capabilities/modules/`
+- **Database impact:** None (module definitions are compiled configuration)
+- **API impact:** None (consumed by the control model and the shells)
+- **Frontend impact:** Category modules appear in the shells exactly like platform modules
+- **Backend impact:** ModuleRegistry merge, origin tracking, ownership validation
+- **Testing requirements:** TS-SAAS-PACK-18 (a category module groups existing capabilities and behaves identically to a platform module), TS-SAAS-PACK-19 (module naming a missing capability is refused with it named), TS-SAAS-PACK-20 (a capability owned by two modules is refused), TS-SAAS-CAP-07 (resolution order unchanged)
+- **Acceptance criteria:** (1) A pack-declared module appears in the registry and is switchable, delegatable and run-out-enforced exactly like a platform module. (2) A module naming a capability the release does not have is refused at load with the capability named. (3) A capability claimed as owned by two modules is refused with both named. (4) Module origin is recorded and visible to operators but never to a store. (5) Two packs declaring different module sets produce two different, coherent registries from the same code. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+
+### Stage 1A.1 additions — per-client resource separation and fleet migrations (D-269, D-272)
+
+#### T-1A.1-M30-07 · Topology-aware runtime: per-store database, storage container, search index and cache namespace; single-store mode; connection pooling across many databases
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1A.1 / M30
+- **Depends on:** T-1A.1-M30-01, T-1A.1-M30-02, T-1A.1-M30-03
+- **Decisions:** D-001, D-005, D-033, D-107
+- **References:** 19 §10.1, §10.3, §25.6; DEC D-272, D-269, D-233; BP §15.4, §16.6, §19.1
+- **Description:** Make the runtime resolve every backing resource per store instead of assuming one of each. A store's database connection, object-storage container and credentials, search index and cache namespace come from its resolved identity, so the same code serves a shared server running several separated clients (T2, the default), a dedicated runtime (T3) and a standalone single-store install (T4). Implement `CFG-tenancy.mode = single`, in which every host binds to the one store and the registry holds one entry — with `store_id` scoping still mandatory, so there is no second code path. Put a connection pooler in front of the separated databases with per-store ceilings and a shared upper bound so one runtime can serve many clients without one idle pool per client, and make a missing or misconfigured resource fail fast at boot rather than at the first customer request.
+- **Files/components:** `backend/platform/tenancy/resources/` (database, storage, index, cache resolution), pooling configuration in `infra/`
+- **Database impact:** One database per store by default; the migration runner of T-1A.1-M30-08 applies the same schema to each
+- **API impact:** None (internal resolution)
+- **Frontend impact:** None
+- **Backend impact:** ResourceResolver, ConnectionManager, single-store binding
+- **Testing requirements:** TS-SAAS-ISO-21 (a store cannot reach another store's database, container, index or cache, tested per resource), TS-SAAS-ISO-22 (single-store mode still refuses an unscoped query), TS-SAAS-PERF-11 (pool behaviour with 50 simulated stores), TS-SEC-05 (per-store credentials)
+- **Acceptance criteria:** (1) Each store resolves its own database, container, index and cache namespace, verified per resource with the two-store fixture. (2) A credential or connection for one store cannot reach another store's resources. (3) `single` mode binds every host to the one store and still refuses unscoped queries. (4) A runtime serving 50 simulated stores stays within its connection budget and does not hold one idle pool per store. (5) A missing or misconfigured resource fails at boot with a clear message, never at the first request. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1A.1-M30-08 · Fleet migration runner: apply schema migrations across every store database, resumable, canary first, with per-store status and drift detection
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1A.1 / M30
+- **Depends on:** T-1A.1-M30-07, T-1A.1-M01-04
+- **Decisions:** D-001, D-077
+- **References:** 19 §10.1 (operational consequences), §22 BLAST-2; DEC D-272, D-269; BP §20.5 (migration plan per release)
+- **Description:** Separated databases mean a schema change is not one migration but many, and a half-migrated fleet is the worst possible state. Build the runner that applies the migration set to every store database: it refuses to start if any database is at an unexpected version, runs a canary store first and verifies it, then proceeds in batches with a concurrency cap, records per-store status and timing, resumes after an interruption without repeating completed work, and reports a clear per-store result at the end. Detect and alarm on schema drift between databases continuously, not only during a release, so a divergence is found before an incident. Include the reverse path: a tested rollback per store and a documented decision point for stopping a partially applied fleet migration.
+- **Files/components:** `backend/platform/tenancy/migrations/` (fleet runner, drift detector), `infra/runbooks/fleet-migration.md`
+- **Database impact:** Migration state per store database; a platform-side ledger of per-store schema versions
+- **API impact:** Status surfaced to the root admin (API-M35-18)
+- **Frontend impact:** Status shown on P-R12
+- **Backend impact:** FleetMigrationRunner, DriftDetector
+- **Testing requirements:** TS-SAAS-DEPLOY-16 (resume after interruption at any point, no repeated work), TS-SAAS-DEPLOY-17 (canary failure stops the fleet), TS-DB (forward and rollback per store), TS-SAAS-DEPLOY-18 (drift detected and alarmed)
+- **Acceptance criteria:** (1) The runner applies a migration to every store database with per-store status and timing. (2) Starting with any database at an unexpected version is refused with that store named. (3) A canary failure stops the run before the batches and leaves the fleet in a known state. (4) Interrupting the run at any point and resuming completes only the outstanding stores. (5) Drift between databases is detected and alarmed outside a release window. (6) A per-store rollback is tested, and the stop decision for a partially applied fleet migration is documented in the runbook. (7) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+
+### Stage 1A.1 addition — the full capability catalogue and its build-status gate (D-273)
+
+#### T-1A.1-M31-09 · Capability catalogue seeding and the build-status gate: declare every capability of 19 §5.3 with its gating decision, and refuse to grant a CANDIDATE capability whose decision is open
+- **Status:** NOT_STARTED
+- **Stage / Module:** 1A.1 / M31
+- **Depends on:** T-1A.1-M31-02, T-1A.1-M31-08
+- **Decisions:** —
+- **References:** 19 §5.3 (all 18 areas), §14 BR-M31-17, §26.1; DEC D-273, D-236; 00 §2 (source fidelity)
+- **Description:** Declare the full catalogue so the control model knows about every feature a client might be granted, and make listing safe. Each declaration carries id, area, owning module, plain-language name and description, dependencies, conflicts, data-retaining flag, per-pack default, lockability, the configuration keys it governs, the channel where it is a messaging capability, and its **build status** (`1A`, `1B`, `LATER`, `CANDIDATE`) with the decision that gates it. Implement the gate: a capability whose build status is `CANDIDATE` and whose gating decision is not `DECIDED` cannot be granted to a store — the compiler refuses the configuration and names the decision, so the catalogue can be complete without the plan building anything the sources do not support.
+- **Files/components:** `backend/platform/capabilities/registry/` (one file per area), gate in the validator shared with the root admin compiler
+- **Database impact:** `build_status` and `gating_decision` on the capability definition (03 §12.3)
+- **API impact:** Registry published with the release and imported by the root admin (API-M34-36)
+- **Frontend impact:** None directly; the root admin and the store Features screen consume it
+- **Backend impact:** Catalogue declarations, build-status gate
+- **Testing requirements:** TS-SAAS-CAP-12 (a CANDIDATE capability with an open decision cannot be granted, and the error names the decision), TS-SAAS-CAP-01 (every declared capability that is built has all six enforcement points), TS-SAAS-CAP-13 (every capability has a plain-language description and an owning module)
+- **Acceptance criteria:** (1) Every capability in 19 §5.3 is declared with all of its fields. (2) Granting a `CANDIDATE` capability whose decision is open is refused with the decision named, demonstrated in the evidence. (3) When a gating decision becomes `DECIDED`, the capability becomes grantable with no code change. (4) A capability marked `1A`/`1B` but missing any of the six enforcement points fails TS-SAAS-CAP-01. (5) Every declaration has a description a non-technical operator can read. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
 
 ## Stage 1A.2 — Identity, access, audit & organisation
 
@@ -1616,7 +2108,7 @@ needed to implement it. **This file is the source of truth for task status.** `S
 #### T-1A.2-M02-09 · Stage 1A.2 verification and seed S-04 (owner/admin/finance accounts through invitations with MFA; integration accounts)
 - **Status:** NOT_STARTED
 - **Stage / Module:** 1A.2 / M02
-- **Depends on:** T-1A.2-M02-05, T-1A.2-M02-06, T-1A.2-M02-07, T-1A.2-M02-08, T-1A.2-M03-02, T-1A.2-M17-02, T-1A.2-M24-02
+- **Depends on:** T-1A.2-M02-05, T-1A.2-M02-06, T-1A.2-M02-07, T-1A.2-M02-08, T-1A.2-M03-02, T-1A.2-M17-02, T-1A.2-M24-02, T-1A.2-M02-10, T-1A.2-M30-01, T-1A.2-M24-03
 - **Decisions:** —
 - **References:** 03 §6 S-04; 16 §4 (S), TS-AUTH-01…10, TS-PERM-01, TS-PERM-04, TS-PERM-08, TS-ADM-01, TS-ADM-02, TS-ADM-05, TS-ADM-06, TS-ADM-09, TS-SVC-03, TS-SVC-04; T10 (identity part)
 - **Description:** Verify stage 1A.2 and execute seed S-04: create the owner, operations-admin and finance accounts through the invitation flow with MFA enrolled and the privileged roles second-approved — no direct inserts and no shared accounts (BP §18.2) — and the integration accounts with narrow credentials if D-083 stores them (03 §6 S-04; account ownership per BP §24.2); personal details are entered at run time in each environment, not committed. Run the 16 §4 stage-exit suites for M02, M03, M17, M23 and M24 — TS-AUTH-01…10 (cases for this stage's endpoints; guest order access TS-AUTH-07 and customer/vendor invitation cases run when their endpoints exist), TS-PERM-01, TS-PERM-04, TS-PERM-08, TS-ADM-01, TS-ADM-02, TS-ADM-05, TS-ADM-06, TS-ADM-09, TS-SVC-03, TS-SVC-04, TS-API-01/TS-API-02 for the stage endpoints and TS-REG-01 — plus the identity part of T10 (client-sent role and permission flags ignored). Confirm the 12-phases §6.3 completion criteria and verify the second-approver paths whose ApprovalService dependency is missing from the skeleton (API-M02-22, API-M02-24, API-M02-36, API-M02-37, API-M03-09).
@@ -1627,6 +2119,57 @@ needed to implement it. **This file is the source of truth for task status.** `S
 - **Backend impact:** Verifies AccessPolicy, AuditService, AuthService, OtpService, MfaService, SessionService, InvitationService, UserAdminService, RoleService, AccessReviewService, LocationService, ApprovalService and ExceptionService cores, the adapter framework and messaging adapter, ConfigurationService and IntegrationSettingsService
 - **Testing requirements:** TS-AUTH-01…TS-AUTH-10 (stage cases), TS-PERM-01, TS-PERM-04, TS-PERM-08, TS-ADM-01, TS-ADM-02, TS-ADM-05, TS-ADM-06, TS-ADM-09, TS-SVC-03, TS-SVC-04, TS-API-01 and TS-API-02 (stage endpoints), TS-REG-01; T10 identity part — all pass with results recorded in STATE.md §11.
 - **Acceptance criteria:** (1) Every endpoint of the stage passes AccessPolicy and the route inventory has zero unmapped routes (TS-PERM-01). (2) Privileged accounts cannot operate without MFA (TS-AUTH-02). (3) Audit events exist for every privileged action of the stage (TS-SVC-03). (4) Confirmed companies, branches, warehouses and bins are seeded (S-01/S-02, D-010). (5) No API returns a secret (TS-SVC-04). (6) S-04 owner, operations-admin and finance accounts are active with MFA through invitations, and integration accounts hold named-scope credentials. (7) All listed suites pass and all 1A.2 tasks are COMPLETED. (8) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+
+### Stage 1A.2 additions — store-scoped identity and administration boundary (D-227)
+
+#### T-1A.2-M02-10 · Store-scoped identity and access: `store_id` on users, roles, sessions and audit; one store per user; capability check before permission check; cross-store authentication tests
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1A.2 / M02
+- **Depends on:** T-1A.2-M02-02, T-1A.2-M02-04, T-1A.1-M30-02
+- **Decisions:** D-001, D-083
+- **References:** SAAS §3 S03; 19 §5.1, §10.1, §16 (M02 row); 07 §3, §4; DEC D-229, D-233, D-083; BP §18.1, §19.1
+- **Description:** Make identity a per-store concept. Users, roles, role assignments, delegations, sessions, verification challenges and audit events all carry `store_id`; a store user belongs to exactly one store and a credential valid in one store authenticates nothing in another. Order the checks correctly: capability first (does this store have the feature at all — if not, 404), then permission (may this user do it — if not, 403). Add the authentication-level isolation tests: a session cookie or token issued for store A presented on store B's host is rejected as unauthenticated, not as forbidden; an invitation, password-reset or one-time code is valid only within its issuing store; an audit query returns only the caller's store.
+- **Files/components:** `backend/platform/tenancy/` integration with `backend/<identity module>/`, migration adding `store_id` to the M02 tables
+- **Database impact:** `store_id` on E-user_account, E-role, E-user_role_assignment, E-delegation, E-audit_event, E-invitation, E-verification_challenge, E-user_session (where present); unique constraints re-prefixed
+- **API impact:** Every M02 endpoint scoped to the request's store; capability check ahead of permission check on all store-facing routes
+- **Frontend impact:** None directly (sign-in screens consume it from stage 1A.3)
+- **Backend impact:** AccessPolicy extended with the capability pre-check; session validation bound to the store
+- **Testing requirements:** TS-SAAS-ISO-14 (cross-store session/token/invitation/code rejected), TS-PERM-02 (capability before permission ordering), TS-AUTH-02, TS-AUDIT (audit scoped)
+- **Acceptance criteria:** (1) Every M02 record carries `store_id` and unique constraints are prefixed by it. (2) A valid session for store A is unauthenticated on store B's host. (3) Invitations, password resets and one-time codes are valid only in their issuing store. (4) A request for a capability the store does not have returns 404 before any permission evaluation. (5) Audit queries return only the caller's store, verified with the two-store fixture. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1A.2-M30-01 · Store lifecycle states in the runtime (draft, provisioned, live, suspended, archived) and the store-branded suspension notice
+- **Status:** NOT_STARTED
+- **Stage / Module:** 1A.2 / M30
+- **Depends on:** T-1A.1-M30-01, T-1A.2-M02-02
+- **Decisions:** —
+- **References:** SAAS §3 S11; 19 §14 BR-M30-05; 20 §5 (lifecycle); DEC D-235, D-229, D-036
+- **Description:** Implement the runtime behaviour of each store state. `draft` and `provisioned` serve nothing publicly and allow only bootstrap access; `live` serves normally; `suspended` serves a store-branded notice on the storefront, blocks all writes and still allows authorised staff read access to history; `archived` serves nothing and retains data per the retention policy. The notice is written in the store's own voice with its own branding and says nothing about a platform, an operator or a reason the store owner has not agreed to publish. State transitions are audited and are refused when a precondition is missing (for example, going live without an applied configuration version).
+- **Files/components:** `backend/platform/tenancy/lifecycle/`, storefront and workspace state guards, notice template in the design system
+- **Database impact:** `state` on E-store with transition history; no data deletion on suspension
+- **API impact:** State guard ahead of every store-facing route; health endpoint reports state
+- **Frontend impact:** Store-branded suspension notice rendered by the storefront shell
+- **Backend impact:** StoreLifecycleService with guarded transitions
+- **Testing requirements:** TS-SAAS-ISO-15 (notice names no platform), TS-SAAS-DEPLOY-03 (transition guards), TS-PERM (staff read access during suspension)
+- **Acceptance criteria:** (1) Each state produces the behaviour described above, verified end to end. (2) The suspension notice carries only the store's identity and branding. (3) Writes are refused while suspended and no data is deleted. (4) Going live without an applied configuration version is refused. (5) Every transition is audited with actor, from, to and reason. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1A.2-M24-03 · Store-administration boundary: the configuration service handles only store-editable unlocked keys; platform-owned settings are absent from the workspace
+- **Status:** NOT_STARTED
+- **Stage / Module:** 1A.2 / M24
+- **Depends on:** T-1A.2-M24-01, T-1A.1-M31-05
+- **Decisions:** —
+- **References:** SAAS §3 S03; 19 §9 INV-4, §16 (M24 row); 11 §1; DEC D-243, D-229
+- **Description:** Split administration cleanly at the service layer, before any screen is built. The store's configuration service (T-1A.2-M24-01) accepts, versions and approves changes only for keys the schema marks store-editable and the root admin has not locked. Root-only and locked keys are not merely refused: they are not present in any list, read, search, export or audit view the store can reach, so nothing hints that another party controls them. The existing versioning and approval behaviour of the configuration service applies unchanged to the keys the store does own.
+- **Files/components:** `backend/<admin module>/configuration/` bounded by `backend/platform/config/settings/`
+- **Database impact:** E-configuration_version continues to cover store-owned settings only
+- **API impact:** Store configuration endpoints expose the editable, unlocked subset exclusively
+- **Frontend impact:** Contract for the settings screen T-1A.16-M24-08
+- **Backend impact:** Key filtering inside the configuration service; no bypass path
+- **Testing requirements:** TS-SAAS-ISO-04 (locked and root-only keys absent from every store-reachable surface), TS-ADM (versioning and approval unchanged for owned keys)
+- **Acceptance criteria:** (1) Listing, reading, searching or exporting configuration from inside a store returns only editable, unlocked keys. (2) A locked key produces the same result as a non-existent key on every endpoint. (3) Versioning, approval and audit still work for store-owned keys. (4) There is no code path that lets a store write a root-only key, including bulk import and restore. (5) The two-store fixture shows the boundary holding for both stores independently. (6) TASKS.md and STATE.md updated per the continuation protocol.
 - **Evidence:** —
 
 ## Stage 1A.3 — Design system & app shells
@@ -1891,7 +2434,7 @@ needed to implement it. **This file is the source of truth for task status.** `S
 #### T-1A.3-M09-06 · Stage 1A.3 verification: component, shell and access-flow suites; keyboard sign-in flows; workspace context
 - **Status:** NOT_STARTED
 - **Stage / Module:** 1A.3 / M09
-- **Depends on:** T-1A.3-M09-05, T-1A.3-M02-01, T-1A.3-M02-02, T-1A.3-M03-01, T-1A.3-M09-02
+- **Depends on:** T-1A.3-M09-05, T-1A.3-M02-01, T-1A.3-M02-02, T-1A.3-M03-01, T-1A.3-M09-02, T-1A.3-M33-01, T-1A.3-M33-02, T-1A.3-M33-03, T-1A.3-M32-01, T-1A.3-M31-01, T-1A.3-M09-07, T-1A.3-M31-02
 - **Decisions:** —
 - **References:** 16 §4 (S), TS-API-01 (stage endpoints), TS-FE-01, TS-FE-03, TS-FE-06, TS-A11Y-02, TS-AUTH-01, TS-AUTH-02, TS-ADM-15, TS-API-01 (stage endpoints); T30 (sign-in flows)
 - **Description:** Stage 1A.3 exit gate (16 §4 cadence S): run the suites of the stage on CI and staging — TS-FE-01, TS-FE-03, TS-FE-06, TS-A11Y-02 (components, store shell, workspace shell), TS-AUTH-01 and TS-AUTH-02 through the UI, TS-ADM-01, TS-ADM-02, TS-ADM-05, TS-ADM-06, TS-ADM-09, TS-ADM-15, TS-API-01 for the endpoints implemented in the stage (API-M03-10, API-M03-11), keyboard-only sign-in flows (TS-A11Y-01, T30 sign-in part) and the regression pack TS-REG-01 — and confirm the completion criteria of 12 §6.4: tokens, components, content rules and key states approved (BP §6.7 step 7), loading/empty/error/keyboard/focus states per component (BP §22.5), permission-filtered navigation in both shells (07 §12.2), sign-in flows operable by keyboard. Results are recorded in STATE.md §11. No new features are built; a failing case reopens its owning task (14 step 6).
@@ -1910,6 +2453,127 @@ needed to implement it. **This file is the source of truth for task status.** `S
    6. TASKS.md and STATE.md updated per the continuation protocol.
 - **Evidence:** —
 
+
+
+### Stage 1A.3 additions — theming, templates and configuration-driven shells (D-227)
+
+#### T-1A.3-M33-01 · Theme token contract and compiled-theme consumption: `theme.css`/`theme.json`, no hard-coded colours, contrast gate
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1A.3 / M33
+- **Depends on:** T-1A.3-M09-01, T-1A.1-M31-03
+- **Decisions:** D-049, D-051
+- **References:** SAAS §3 S08, S09, S21; 19 §7.4, §14 BR-M33-02; 04a §3; DEC D-240, D-242, D-049, D-051; input from T-0-M33-01
+- **Description:** Rebuild the design-system foundations so every visual value comes from the compiled theme rather than from the stylesheet. Define the token contract agreed in T-0-M33-01, consume `theme.css` (CSS custom properties) and `theme.json` (the same values as data, for emails, PDFs and later the mobile app), and add the build check that fails when a component hard-codes a colour, font family, radius or shadow instead of using a token. Include the contrast gate: the derived ramp must satisfy WCAG 2.2 AA for every foreground/background pair the components use, and a palette that cannot is a build failure with a readable report, not a silent downgrade.
+- **Files/components:** `frontend/design-system/theme/` (token contract, consumption, checks), updated component styles
+- **Database impact:** None
+- **API impact:** None
+- **Frontend impact:** All design-system components; storefront, workspace and vendor UI inherit the contract
+- **Backend impact:** `theme.json` consumption in notification and document rendering (M20, M19)
+- **Testing requirements:** TS-SAAS-TPL-01 (no hard-coded visual values), TS-A11Y-01 (contrast across the derived ramp), TS-FE (visual regression against the mockup for the Tradex token set)
+- **Acceptance criteria:** (1) Every design-system component renders from tokens with no hard-coded colour, font, radius or shadow; a deliberate violation fails the build. (2) Two different token sets produce two visibly different renderings of the same component set. (3) The contrast gate fails a deliberately poor palette with a report naming the failing pairs. (4) `theme.json` produces the same values as `theme.css` for a non-CSS consumer. (5) With the Tradex token set the components match the approved mockup appearance. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1A.3-M33-02 · Template registry and resolution in the storefront: `templates/<slug>/`, layout contract, component-variant contract, capability-aware rendering
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1A.3 / M33
+- **Depends on:** T-1A.3-M33-01, T-1A.3-M09-03
+- **Decisions:** D-003, D-101
+- **References:** SAAS §3 S07, S19, S20; 19 §7.1, §7.2, §14 BR-M33-01/03; 20 §4 step 3; DEC D-238, D-242, D-003
+- **Description:** Give the storefront a template layer. Each template lives in `frontend/storefront/templates/<slug>/`, declares its version, compatible packs, required capabilities, token contract and layout set, and provides a layout and component-variant implementation for every storefront page. The resolver picks the store's template from the configuration and renders through it; every template receives the same data contracts, so switching template needs no data migration. Enforce the boundary in code review and in tests: a template may change presentation only — never business rules, pricing, validation, capability visibility or checkout logic.
+- **Files/components:** `frontend/storefront/templates/` (registry, contracts, resolver), page-level layout slots
+- **Database impact:** None
+- **API impact:** None (templates consume existing contracts)
+- **Frontend impact:** Storefront rendering pipeline; P-S01–P-S13 slot contracts
+- **Backend impact:** None beyond serving the template id/version from the configuration
+- **Testing requirements:** TS-SAAS-TPL-02 (template switch changes no data and no business behaviour), TS-SAAS-TPL-03 (template cannot alter price, stock, policy or checkout output), TS-SAAS-CAP (disabled capability stays hidden in every template)
+- **Acceptance criteria:** (1) A template declares version, compatible packs, required capabilities and layout set, and the registry refuses an incomplete one. (2) Switching a store's template changes only presentation; order, price, stock and policy output are byte-identical in the test fixture. (3) A template attempting to alter business output fails its contract test. (4) A disabled capability is invisible in every registered template. (5) Adding a template requires no change outside its own folder and the registry. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1A.3-M33-03 · `TPL-forge` — the approved mockup design direction implemented as the first site template
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1A.3 / M33
+- **Depends on:** T-1A.3-M33-02, T-1A.3-M09-02
+- **Decisions:** D-049
+- **References:** SAAS §3 S19; 19 §7.3; DEC D-242, D-049; 04a; MK all store pages; input from T-0-M33-01
+- **Description:** Implement the mockup's visual direction as the template `TPL-forge`: dense, specification-led, comparison-first layouts for the storefront pages, expressed entirely through the token contract and the layout/variant contracts of T-1A.3-M33-02. This is the default template for `VP-electronics` and therefore for the Tradex store. Nothing about electronics may be hard-coded into it: the specification tables, condition badges and comparison affordances render from the pack profile and capabilities, so the same template also works for any other pack that declares it compatible.
+- **Files/components:** `frontend/storefront/templates/forge/` (layouts, variants, assets, preview images, accessibility statement)
+- **Database impact:** None
+- **API impact:** None
+- **Frontend impact:** P-S01–P-S13 layouts under TPL-forge
+- **Backend impact:** None
+- **Testing requirements:** TS-SAAS-TPL-04 (forge renders every P-S page for two different packs), TS-A11Y-02 (WCAG 2.2 AA for the template), TS-FE visual comparison against the approved mockup
+- **Acceptance criteria:** (1) Every storefront page renders under TPL-forge and matches the approved mockup direction. (2) The template contains no electronics-specific string, field or rule; all such content comes from the pack profile. (3) The template renders acceptably for a second, non-electronics pack fixture. (4) The accessibility statement is backed by a passing WCAG 2.2 AA run. (5) The template declares its compatibility, required capabilities and token usage. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1A.3-M32-01 · Configuration-driven shells: storefront, workspace and vendor navigation built from `navigation.json`, capabilities and terminology
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1A.3 / M32
+- **Depends on:** T-1A.3-M09-04, T-1A.3-M24-01, T-1A.1-M32-01, T-1A.1-M31-06
+- **Decisions:** D-004, D-101
+- **References:** SAAS §3 S03, S16–S18; 19 §5.2 point 1, §6.3–§6.5, §8; 04a §2, 04b §2, 04c; DEC D-229, D-237
+- **Description:** Make the three application shells render themselves from configuration. Navigation entries, section groupings, labels and badges come from the compiled navigation trees, the capability set and the terminology map; an entry for a disabled capability does not exist in the markup, is not in the route table and its bundle is not shipped. Permission filtering stays where it is and runs after capability gating. Remove every hard-coded menu label and screen title from the shells, so a store with different capabilities and wording gets a different, coherent shell from the same code.
+- **Files/components:** `frontend/storefront/shell/`, `frontend/workspace/shell/`, `frontend/vendor-portal/shell/`, shared navigation renderer
+- **Database impact:** None
+- **API impact:** Navigation is served from the compiled configuration, not assembled per request
+- **Frontend impact:** Store shell, workspace shell, vendor shell; P-S/P-E/P-V navigation
+- **Backend impact:** Navigation tree exposure from the configuration snapshot
+- **Testing requirements:** TS-SAAS-CAP-05 (disabled entry absent from markup, routes and bundle), TS-SAAS-TERM-04 (labels from tokens), TS-FE-04 (shell behaviour unchanged for the Tradex configuration)
+- **Acceptance criteria:** (1) All three shells build their navigation from configuration with no hard-coded labels or entries. (2) Disabling a capability removes its entry from the markup, the route table and the shipped bundle. (3) Changing a terminology token changes the visible labels without a code change. (4) Permission filtering still applies and runs after capability gating. (5) With the Tradex configuration the shells match the approved mockup. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1A.3-M31-01 · Store-facing invisibility checks in the build: forbidden vocabulary, platform identity in headers and bundles, no link to the root admin
+- **Status:** NOT_STARTED
+- **Stage / Module:** 1A.3 / M31
+- **Depends on:** T-1A.3-M32-01, T-1A.1-M31-06
+- **Decisions:** —
+- **References:** SAAS §3 S03; 19 §9 INV-1, INV-5, INV-7, INV-8, INV-10; DEC D-229, D-249
+- **Description:** Automate the invisibility rule so it cannot erode. Add the lint rule and build step that scan store-facing source, rendered markup, CSS class names, `data-*` attributes, HTML comments, URLs, cookie names, response headers, source maps and bundle file names for the banned vocabulary of 19 §9 INV-5 and for any platform identity leak (INV-10). Add the crawler check that no store-facing page, sitemap, robots file or redirect points at the root admin portal or the root admin mockup (INV-8). Failures list the exact file, line and token so they are fixable in one step.
+- **Files/components:** `infra/ci/invisibility/` (lint rule, crawler, vocabulary list), integration into the frontend build
+- **Database impact:** None
+- **API impact:** Response-header hardening checked
+- **Frontend impact:** Build-time checks across all three UI packages
+- **Backend impact:** Header hygiene
+- **Testing requirements:** TS-SAAS-ISO-01 (vocabulary and markup crawl), TS-SAAS-ISO-07 (no link to the root admin), TS-SAAS-ISO-10 (headers and bundle names)
+- **Acceptance criteria:** (1) The vocabulary check runs over source and rendered output and reports file, line and token on failure. (2) A deliberately added banned word fails the build, demonstrated in the evidence. (3) No response header, generator meta tag, cookie name or bundle name carries a platform identity. (4) The crawler finds no link, sitemap entry or redirect to the root admin from any store-facing page. (5) The checks run in CI on every change, not on demand. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+
+### Stage 1A.3 addition — performance foundations (D-268)
+
+#### T-1A.3-M09-07 · Performance foundations for all three surfaces: rendering strategy, capability-gated code splitting, image and font policy, and the CI budget harness
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1A.3 / M09
+- **Depends on:** T-1A.3-M09-03, T-1A.3-M33-02, T-1A.3-M32-01
+- **Decisions:** D-003, D-101, D-053, D-034
+- **References:** 19 §25.1, §25.2, §25.5, §25.6, §25.8; DEC D-268, D-034, D-207; BP §20.1, §20.2; 04a §2
+- **Description:** Put the performance rules in place before the screens are built, because retrofitting them later means rewriting every page. Establish the storefront rendering strategy of 19 §25.5 — server-rendered HTML streamed for first paint with interactivity hydrated only where it is needed — and the workspace and vendor strategy of an application shell with per-screen loading and virtualised long lists. Wire capability-gated code splitting so a store never downloads a feature it does not have. Set the image policy (responsive sources, modern formats, explicit dimensions, lazy below the fold) and the font policy (self-hosted, preloaded, swap-safe). Build the CI budget harness that measures every budget in 19 §25.2 on seeded realistic volumes with two stores and fails the build on a regression, and record the first measurements as the baseline.
+- **Files/components:** `frontend/design-system/perf/`, rendering configuration in each of the three UI packages, `tests/load/surface-budgets/`, CI budget job in `infra/ci/`
+- **Database impact:** None
+- **API impact:** Screen-shaped endpoint convention documented for the workspace and vendor portal
+- **Frontend impact:** All three surfaces: rendering, splitting, images, fonts
+- **Backend impact:** Streaming render support; per-route query-count instrumentation
+- **Testing requirements:** TS-PERF-01 (storefront LCP, INP, CLS), TS-PERF-06 (payload budgets), TS-SAAS-PERF-08 (one build per template, not per store), TS-A11Y (no regression from splitting), TS-FE (hydrated islands behave with JavaScript disabled where the source requires it)
+- **Acceptance criteria:** (1) A storefront product page renders its content without booting a full client application, verified by payload and by rendering with scripting disabled. (2) A store without a capability does not download that capability's code, verified by bundle analysis. (3) Every budget in 19 §25.2 is measured by the CI harness on two stores at realistic volumes, with the first values recorded as the baseline. (4) A deliberate regression — an oversized image, an extra 100 KB of JavaScript — fails the build, demonstrated in the evidence. (5) The template count drives the build count: adding a store adds no build. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+
+### Stage 1A.3 addition — feature-map enforcement (D-273, D-279)
+
+#### T-1A.3-M31-02 · Feature-map enforcement: every store-facing section declares the capability that governs it, and the map and the build check stay in step
+- **Status:** NOT_STARTED
+- **Stage / Module:** 1A.3 / M31
+- **Depends on:** T-1A.3-M32-01, T-1A.3-M31-01, T-1A.1-M31-09
+- **Decisions:** —
+- **References:** 21-feature-map.md (all sections, FM-1…FM-5); 19 §5.2, §26.1, §26.5; DEC D-273, D-279, D-229
+- **Description:** Make the feature map executable rather than a document somebody remembers to update. Extend the build check so every store-facing route, screen section and component declares the capability that governs it, and fail the build when one does not — the map in `21-feature-map.md` is the human-readable half of the same rule. Add the reconciliation check that compares the declared gating in the code against the map and reports rows in one but not the other, so the two cannot drift apart silently. Seed the map's rows for the screens this stage builds, and make the reconciliation part of the definition of done for every later screen task (`19` §24.1 gate 12). Record explicitly that the client-facing mockup is the reference store with every feature enabled (`D-279`), so an implementer copying a mockup screen knows the mockup will not tell them what to gate.
+- **Files/components:** `infra/ci/feature-map/` (declaration check and reconciliation), `plan/21-feature-map.md` (rows for the stage's screens), gating declarations in the three UI packages
+- **Database impact:** None
+- **API impact:** Every store-facing endpoint already declares its capability (T-1A.1-M31-02); this task adds the same for screen sections
+- **Frontend impact:** All three shells and every screen built from this stage onwards
+- **Backend impact:** Reconciliation check shared with the capability registry
+- **Testing requirements:** TS-SAAS-CAP-02 (no store-facing route or component without a declared capability), TS-SAAS-CAP-14 (code and `21-feature-map.md` reconcile; a row in one and not the other fails), TS-SAAS-ISO-01 (a gated section leaves no heading, empty state or bundle behind)
+- **Acceptance criteria:** (1) Every store-facing route, section and component declares its governing capability, or is explicitly marked as core with its owning module. (2) Adding an undeclared section fails the build, demonstrated in the evidence. (3) The reconciliation check reports any difference between the code and `21-feature-map.md` and fails on it. (4) The map has a row for every section of every screen this stage builds. (5) A gated section leaves no heading, no empty state, no placeholder and no shipped code behind. (6) The reconciliation is part of the definition of done for later screen tasks. (7) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
 
 ## Stage 1A.4 — Catalog, media, search & SEO base
 
@@ -2240,7 +2904,7 @@ needed to implement it. **This file is the source of truth for task status.** `S
 #### T-1A.4-M04-10 · Stage 1A.4 verification: catalog, media, search and SEO suites; T36 catalog/search part; WP06 'representative products import correctly'
 - **Status:** NOT_STARTED
 - **Stage / Module:** 1A.4 / M04
-- **Depends on:** T-1A.4-M04-03, T-1A.4-M04-06, T-1A.4-M04-08, T-1A.4-M04-09, T-1A.4-M21-01, T-1A.4-M27-01, T-1A.4-M25-01
+- **Depends on:** T-1A.4-M04-03, T-1A.4-M04-06, T-1A.4-M04-08, T-1A.4-M04-09, T-1A.4-M21-01, T-1A.4-M27-01, T-1A.4-M25-01, T-1A.4-M32-01, T-1A.4-M32-02, T-1A.4-M32-03
 - **Decisions:** —
 - **References:** 16 §4 (S), TS-API-01 (stage endpoints), TS-ERP-15, TS-UNIT-07, TS-SVC-08, TS-SVC-09, TS-ECOM-01, TS-SEC-03, TS-SEC-04, TS-PROOF-02; T36
 - **Description:** Stage 1A.4 exit gate (16 §4 cadence S): run the stage suites on CI and staging — TS-API-01 for the stage endpoints (API-M04-01, API-M04-02, API-M04-04, API-M04-15…API-M04-29, API-M04-39, API-M04-40, API-M04-41, API-M21-01…API-M21-04, API-M22-01…API-M22-04, API-M27-01, API-M27-02, and API-M04-05 only if D-071 enabled it), TS-DB-01 and TS-DB-02 for DB-G2, TS-DB-05 for S-07…S-10 and S-22, TS-ERP-15, TS-UNIT-04 (product lifecycle), TS-UNIT-07, TS-SVC-08, TS-SVC-09, TS-ECOM-01 (API level), TS-SEC-03, TS-SEC-04, TS-PROOF-02 catalog/publication part rerun on the chosen core (only approved, published offers become visible; actual condition information preserved), TS-MIG-01 catalog part and TS-REG-01 — and confirm the completion criteria of 12 §6.5: representative products import correctly (WP06), T36 catalog/search part passes without code change (listing and purchase parts complete in 1A.9), 10 §3.10, private files never reachable without authorisation, search relevance fixtures pass on the sample catalog (full volume in 1A.17, D-010). Results are recorded in STATE.md §11. No new features; failing cases reopen their owning task.
@@ -2260,6 +2924,57 @@ needed to implement it. **This file is the source of truth for task status.** `S
    7. TASKS.md and STATE.md updated per the continuation protocol.
 - **Evidence:** —
 
+
+
+### Stage 1A.4 additions — pack-driven catalog and the first vertical pack (D-227)
+
+#### T-1A.4-M32-01 · Pack-driven catalog schema: category tree, attribute definitions, variant axes, units of measure and facets loaded from `catalog-schema.json`
+- **Status:** NOT_STARTED
+- **Stage / Module:** 1A.4 / M32
+- **Depends on:** T-1A.4-M04-02, T-1A.1-M32-01
+- **Decisions:** —
+- **References:** SAAS §3 S02, S16; 19 §6.1, §6.3, §16 (M04 row); 03 §2 (catalog entities); DEC D-237
+- **Description:** Drive the catalog structure from the pack instead of from seeds written for one business. The category tree, attribute definitions with their types and units, category-to-attribute assignments, variant axes and the facet set are all read from the compiled `catalog-schema.json`; the catalog configuration service applies them on bootstrap and on a pack-version migration, reconciling rather than overwriting existing store data. Decimal quantities and unit-of-measure handling follow the pack's unit set. Publishing rules, versioned drafts and change history (T-1A.4-M04-04/-05) are unaffected — only where the structure comes from changes.
+- **Files/components:** `backend/platform/packs/catalog/`, `backend/<catalog module>/configuration/`
+- **Database impact:** E-category, E-attribute_definition, E-category_attribute, unit-of-measure reference data populated from the pack; `store_id` on all of them
+- **API impact:** Catalog configuration endpoints read the pack schema; no new public endpoint
+- **Frontend impact:** P-E06 templates tab and storefront facets render the pack schema
+- **Backend impact:** CatalogSchemaApplier with reconcile semantics
+- **Testing requirements:** TS-SAAS-PACK-04 (two packs produce two catalog schemas from the same code), TS-CAT (attribute typing and validation), TS-SAAS-PACK-05 (re-applying a schema is idempotent and never destroys data)
+- **Acceptance criteria:** (1) Applying a pack schema creates its category tree, attributes and facets in the store. (2) Two different packs produce two different structures with no code difference. (3) Re-applying the same schema changes nothing. (4) A schema change that would remove an attribute in use is reported rather than executed silently. (5) Unit-of-measure and decimal-quantity behaviour follow the pack. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1A.4-M32-02 · Item identity model as configuration (none · serial · batch+lot · batch+lot+expiry · unique item) across the catalog, inventory and returns contracts
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1A.4 / M32
+- **Depends on:** T-1A.4-M32-01
+- **Decisions:** D-023, D-126
+- **References:** SAAS §3 S02, S16–S18; 19 §6.1 (item identity model), §16 (M04/M06/M13 rows); DEC D-237, D-023, D-126; BP §9.4, §7.5
+- **Description:** Replace the built-in assumption that stock is serialised with a configured identity model per category. Define the five models and the contracts each implies for the catalog (what identifies a unit), inventory (what is counted, reserved and moved), fulfilment (what is scanned) and returns (what comes back), and implement them behind one interface so the business modules ask the model rather than branching. `serial` keeps the existing BP §9.4 behaviour for Tradex; `batch_lot` and `batch_lot_expiry` add lot identity and shelf-life fields; `unique_item` fixes quantity at one per record; `none` tracks quantity only. Only the contracts and the serial path are implemented here — the batch, expiry and unique paths are implemented with their capabilities when a pack that needs them is authored.
+- **Files/components:** `backend/platform/packs/identity/` (model interface and implementations), integration points in the catalog, inventory and returns modules
+- **Database impact:** Identity fields on the stock and unit entities guarded by their capabilities; no data change for the serial model
+- **API impact:** Identity-aware payload shapes on catalog, inventory and returns endpoints
+- **Frontend impact:** P-E06/P-E08 unit columns and P-S03 unit information render per the model
+- **Backend impact:** IdentityModel interface; serial implementation wired to the existing E-serial_unit behaviour
+- **Testing requirements:** TS-SAAS-PACK-06 (each model's contract), TS-INV (serial behaviour unchanged), TS-SAAS-CAP (batch/expiry/unique paths invisible when their capabilities are off)
+- **Acceptance criteria:** (1) The five models are defined with their catalog, inventory, fulfilment and returns contracts. (2) Business modules call the model interface and do not branch on the model name. (3) With `serial` selected, the Tradex behaviour and its tests are unchanged. (4) Capabilities for batch, expiry and unique items are declared and their surfaces are invisible while off. (5) A pack declaring a model inconsistent with its capabilities fails validation. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1A.4-M32-03 · `VP-electronics` pack v1: capability defaults, configuration defaults, catalog schema, terminology set, storefront/workspace/vendor profiles and seed sets
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1A.4 / M32
+- **Depends on:** T-1A.4-M32-02, T-1A.4-M04-03
+- **Decisions:** D-006, D-022, D-023, D-071, D-049
+- **References:** SAAS §1 (TradeX as a supported type), §3 S02; 19 §6.1, §6.2; 20 §10; DEC D-241, D-251, D-237; BP §6.6, §7.5, §9.4; MK all pages
+- **Description:** Author the first vertical pack: the existing Tradex requirements expressed as pack data rather than as code. It contains the capability defaults of 19 §5.3 for electronics, the configuration defaults, the category tree and attribute schemas for computers, laptops, parts, cameras and accessories, the serial identity model, condition grades and the inspection checklist, warranty and return policy classes, compatibility configuration, the English (India) terminology set, and the storefront, workspace and vendor profiles matching the approved mockup. Seed sets `S-VP-electronics-01…08` carry the structural content only — no sample products, prices, customers or placeholder money values. Every value that is an open client policy cites its decision and is authored once that decision is recorded, not guessed.
+- **Files/components:** Pack source under `root-admin/domain/packs/content/vp-electronics/` (authored as data; published through the root admin in stage 1R.2) plus the bootstrap-consumable copy used by T-1A.1-M35-01
+- **Database impact:** Seed sets S-VP-electronics-01…08 applied into the store at bootstrap; no new entity
+- **API impact:** None (content)
+- **Frontend impact:** Determines the storefront, workspace and vendor profiles the Tradex store renders
+- **Backend impact:** Consumed by the pack runtime T-1A.1-M32-01
+- **Testing requirements:** TS-SAAS-PACK-07 (pack validates against the schema and capability registry), TS-SAAS-PACK-08 (bootstrapping a store from it produces the expected structure), TS-DB-05 (no placeholder values), regression: the Tradex acceptance tests still pass
+- **Acceptance criteria:** (1) The pack validates against the configuration schema, the capability registry and the identity-model rules. (2) Bootstrapping a store from it produces the category tree, attributes, grades, policy classes and profiles the mockup shows. (3) Every value traceable to an open decision is either authored from the recorded decision or left unset with the decision cited — none is invented. (4) The pack contains no executable code and no sample product, customer or money placeholder. (5) The existing Tradex acceptance tests pass against a store built from this pack. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
 
 ## Stage 1A.5 — Pricing
 
@@ -4141,7 +4856,7 @@ needed to implement it. **This file is the source of truth for task status.** `S
 #### T-1A.9-M10-09 · Stage 1A.9 verification: T04, T06 (order part), T10, T22, T33 (order snapshot), T36 end to end, T01, T02, T03; storefront and order suites; TS-E2E-02, TS-E2E-08, TS-E2E-10
 - **Status:** NOT_STARTED
 - **Stage / Module:** 1A.9 / M10
-- **Depends on:** T-1A.9-M06-02, T-1A.9-M10-08, T-1A.9-M09-02, T-1A.9-M09-04, T-1A.9-M09-07, T-1A.9-M09-08, T-1A.9-M27-01
+- **Depends on:** T-1A.9-M06-02, T-1A.9-M10-08, T-1A.9-M09-02, T-1A.9-M09-04, T-1A.9-M09-07, T-1A.9-M09-08, T-1A.9-M27-01, T-1A.9-M33-01, T-1A.9-M09-13
 - **Decisions:** —
 - **References:** 16 §4 (S), TS-API-01 (stage endpoints), §6, TS-ERP-01, TS-ECOM-01…07, TS-FE-02, TS-FE-05, TS-FE-06, TS-FE-08, TS-API-03, TS-API-07, TS-API-09, TS-API-10, TS-PERM-03, TS-PERM-05, TS-PERF-01, TS-E2E-02, TS-E2E-08, TS-E2E-10; T01, T02, T03, T04, T06, T10, T22, T33, T36; WP07, WP09
 - **Description:** Stage 1A.9 exit gate (16 §4 cadence S): run all suites of the stage's modules and the acceptance tests that become runnable (16 §6; 12 §7), record the results in `STATE.md` §11 and confirm the completion criteria of 12 §6.10 — the order part of T04–T10 (05 §5.10), home modules served without private-data leakage (05 §5.9), WP09 "Core customer tasks complete" and the BP §30.2 Checkout/Dealer commerce stories for the order part. T01, T02, T03, T04, T10, T22 and T36 pass here; T06 (order part), T33 (order snapshot) and T32 (P-S15 wiring) are recorded as partial. Journey suites run as far as their steps exist: TS-E2E-02 steps 1–5 (payment and assisted-order steps later), TS-E2E-08 steps 1–3 and purchase up to the pending order, TS-E2E-10 steps 1–4 and the reservation of step 5 (dispatch in 1A.11); PS-4 web part (TS-PROOF-04) re-run on the chosen core. Conditional tasks are included only if their decision approved them. Also checks the stage documentation: storefront route map (D-163) and cache policy (D-105) recorded in `frontend/storefront/`.
@@ -4160,6 +4875,44 @@ needed to implement it. **This file is the source of truth for task status.** `S
   6. TASKS.md and STATE.md updated per the continuation protocol.
 - **Evidence:** —
 
+
+
+### Stage 1A.9 additions — profile-driven storefront composition (D-227)
+
+#### T-1A.9-M33-01 · Storefront pages rendered through the template and the pack storefront profile: block order, badges, facets, product-page modules and checkout steps
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1A.9 / M33
+- **Depends on:** T-1A.3-M33-03, T-1A.9-M09-06, T-1A.9-M09-07, T-1A.4-M32-01
+- **Decisions:** D-003, D-049
+- **References:** SAAS §3 S16, S19; 19 §6.3, §7.2, §8; 04a; DEC D-238, D-237, D-229
+- **Description:** Complete the storefront so that every page's composition comes from the pack's storefront profile rendered through the selected template: which product-page blocks exist and in what order, which badges and listing-card fields appear, which facets the category page offers, which comparison behaviour applies, and which checkout steps are present. Business-carrying blocks (price, availability statement, policy disclosures, checkout validation) stay fixed in content and may vary only in presentation. Remove the remaining electronics assumptions from the page code so the same pages serve a different pack correctly.
+- **Files/components:** `frontend/storefront/pages/` (profile-driven composition), `frontend/storefront/templates/forge/` layouts
+- **Database impact:** None
+- **API impact:** None (existing contracts)
+- **Frontend impact:** P-S01–P-S13 composition
+- **Backend impact:** Storefront profile exposure from the configuration snapshot
+- **Testing requirements:** TS-SAAS-PACK-09 (two packs produce two page compositions), TS-SAAS-TPL-05 (same pack under two templates keeps identical business output), TS-FE (Tradex pages match the approved mockup), TS-A11Y
+- **Acceptance criteria:** (1) Page composition is read from the storefront profile; no page hard-codes a block list. (2) A second pack fixture produces a coherent, different set of pages with no code change. (3) Price, availability, policy and checkout output are identical across templates for the same store. (4) The Tradex store's pages match the approved mockup. (5) Disabled capabilities leave no empty section or placeholder behind. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+
+### Stage 1A.9 addition — storefront read models and caching (D-268)
+
+#### T-1A.9-M09-13 · Storefront read models, the five cache layers and per-route query budgets
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1A.9 / M09
+- **Depends on:** T-1A.9-M09-04, T-1A.9-M09-06, T-1A.3-M09-07, T-1A.4-M32-01
+- **Decisions:** D-105, D-034
+- **References:** 19 §25.3, §25.4; DEC D-268, D-105; BP §16.5, §20.1; 04a
+- **Description:** Make the public storefront fast on real data. Build the product and category read models so a page is served from a maintained projection rather than an eight-table join, and invalidate them on catalog, price and configuration publication. Implement the five cache layers of 19 §25.4 with their exact key composition — every key contains the store, and buyer-context class separates public from dealer pricing so private prices can never be served from a shared cache. Add stampede protection on every expensive rebuild. Assert a maximum query count per storefront route with a query recorder, so an N+1 introduced later fails the test rather than the customer.
+- **Files/components:** `backend/<catalog module>/projections/`, `backend/platform/cache/`, storefront route instrumentation
+- **Database impact:** Read-model tables or materialised projections per store, invalidated on write and publish
+- **API impact:** Cache-control and revalidation headers per route (06 §1)
+- **Frontend impact:** P-S01, P-S02, P-S03 served from projections
+- **Backend impact:** ProjectionBuilder, CacheKey composition, stampede protection
+- **Testing requirements:** TS-SAAS-ISO-20 (no cache key without a store; dealer price never served from a public cache entry), TS-PERF-01 (route budgets), TS-SAAS-PERF-09 (query count per route), TS-CACHE (invalidation on publish and on write, stampede protection)
+- **Acceptance criteria:** (1) Home, category and product pages are served from projections and meet the 19 §25.2 storefront budgets at realistic volumes. (2) Every cache key contains the store and the buyer-context class; a test proves a dealer price is never returned from a guest cache entry. (3) Publishing catalog, price or configuration changes invalidates exactly the affected entries, verified. (4) Each storefront route has a declared maximum query count asserted in its test. (5) A simulated stampede rebuilds once, not once per request. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
 
 ## Stage 1A.10 — Payments & reconciliation
 
@@ -5282,7 +6035,7 @@ needed to implement it. **This file is the source of truth for task status.** `S
 #### T-1A.13-M16-05 · Stage 1A.13 verification: T23 (web chat), T25, T05 (branch/counter vs online), TS-SVC-05, TS-ECOM-11/12/15, TS-INT-04, TS-PERM-06, TS-E2E-04
 - **Status:** NOT_STARTED
 - **Stage / Module:** 1A.13 / M16
-- **Depends on:** T-1A.13-M20-02, T-1A.13-M20-03, T-1A.13-M16-03, T-1A.13-M16-04, T-1A.13-M10-01, T-1A.13-M09-01
+- **Depends on:** T-1A.13-M20-02, T-1A.13-M20-03, T-1A.13-M16-03, T-1A.13-M16-04, T-1A.13-M10-01, T-1A.13-M09-01, T-1A.13-M20-06, T-1A.13-M20-07, T-1A.13-M17-01
 - **Decisions:** —
 - **References:** 16 §4 (S), TS-API-01 (stage endpoints), TS-SVC-05, TS-ECOM-11, TS-ECOM-12, TS-ECOM-15, TS-INT-04, TS-PERM-06, TS-ERP-18, TS-E2E-04; T05, T23, T25; WP14 (Level 1 part)
 - **Description:** Stage 1A.13 exit gate (16 §4 cadence S; 12 §6.14): run every suite of the stage's modules and the acceptance tests that became runnable, record results, and confirm the stage completion criteria — M20 A14 notifications for the D-058 event list with visible delivery status (05 §5.20) and Level 1 support with no disclosure without verification (05 §5.16; T23 web). Covers T05 on the counter path (branch/counter sale vs online order, TS-E2E-04 steps 1–3; step 4 follows D-030), T23 (web chat), T25 (A14 and, if enabled, A28 part), WP14 Level 1 demonstration (click-to-chat with references and one assisted order paid through a secure link, 08 §4.24 completion 1A). No new functionality; defects found go back to the owning task. Conditional tasks T-1A.13-M20-04 and T-1A.13-M20-05 are included only if their decisions enabled them.
@@ -5302,6 +6055,57 @@ needed to implement it. **This file is the source of truth for task status.** `S
   7. TASKS.md and STATE.md updated per the continuation protocol.
 - **Evidence:** —
 
+
+
+### Stage 1A.13 additions — channels, the messaging service and the automation catalogue (D-274, D-273)
+
+#### T-1A.13-M20-06 · Channel model: bindings, sender identity and verification, per-store credentials, and the publish check that blocks a channel without them
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1A.13 / M20
+- **Depends on:** T-1A.13-M20-01, T-1A.1-M31-09, T-1A.1-M30-03
+- **Decisions:** D-014, D-015, D-058, D-107
+- **References:** 19 §5.6 (CH-1…CH-9), §26.2, §14 BR-M31-18, BR-M20-01…05; 03 §12.2, §12.5 DB-G13; DEC D-274, D-272
+- **Description:** Make a communication channel a real, verifiable thing rather than a switch. Build the channel binding (which provider account a store uses, per store by default), the sender identity with its verification state — SPF, DKIM and DMARC for email, the number for WhatsApp and SMS — and the per-store credential reference into that store's own secret scope, with no secret value ever stored in a table or written into a configuration artefact. Implement the publish check: a channel capability that is on without a verified binding, a verified primary sender and the templates its enabled automations need blocks publication with a report naming exactly what is missing. Implement per-channel suspension after repeated delivery failure so a store cannot burn its sender reputation unnoticed.
+- **Files/components:** `backend/<notification module>/channels/`, `backend/platform/tenancy/secrets/` integration, publish check in the compiler contract
+- **Database impact:** DB-G13 part 2: E-channel_binding, E-sender_identity, E-channel_suspension; extensions to E-message_template
+- **API impact:** Channel binding and verification endpoints for the workspace and the root admin
+- **Frontend impact:** P-E15 channel settings for store-owned channels; P-R05 channel view for platform-owned ones
+- **Backend impact:** ChannelRegistry, SenderVerification, BindingService
+- **Testing requirements:** TS-SAAS-CHAN-01 (publish blocked without binding, sender or templates, with a precise report), TS-SAAS-CHAN-02 (no secret in any table or artefact), TS-SAAS-CHAN-03 (verification states and evidence), TS-SAAS-CHAN-04 (suspension after repeated failure), TS-SAAS-ISO-26 (one store's channel credential cannot send as another store)
+- **Acceptance criteria:** (1) A channel can be bound to a provider account, given a sender identity and verified, per store. (2) Publishing with a channel on but unverified is blocked and the report names the missing piece. (3) No secret value appears in any table, log or artefact; credentials resolve only through the store's secret scope. (4) Email sender verification records SPF, DKIM and DMARC state separately. (5) Repeated delivery failure suspends the channel and opens an exception case. (6) A credential from one store cannot send as another store. (7) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1A.13-M20-07 · Messaging service: central consent, preferences, frequency caps, quiet hours, idempotent send, template resolution, delivery tracking and log redaction
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1A.13 / M20
+- **Depends on:** T-1A.13-M20-06, T-1A.13-M20-02
+- **Decisions:** D-058, D-036
+- **References:** 19 §5.6, §26.2 (the central-rules table), §14 BR-M20-01…05; 03 §12.2, §12.4; DEC D-274, D-058; BP §13.3, §12.2 A14, §19.3
+- **Description:** Put every rule that can harm a customer or a sender reputation in one place, above the adapters, so a new channel cannot get them wrong. The messaging service resolves the template for the channel and locale, checks the consent basis for that channel **and purpose**, applies the customer's preferences, applies frequency caps and quiet hours **across all channels together**, enforces idempotency so one business event produces one message however many times the job retries, meters cost and rate per store, records delivery status with retry and backoff, and redacts personal data from logs. An adapter's `send()` does nothing but hand bytes to a provider. A send without a consent basis is refused and recorded, whoever asked for it.
+- **Files/components:** `backend/<notification module>/messaging/` (policy, consent, preferences, caps, dispatch, delivery tracking), adapter interface per 19 §26.2
+- **Database impact:** DB-G13: E-message_dispatch with unique `(store_id, message_key)`, E-channel_suspension; extensions to E-consent_record and E-notification_preference
+- **API impact:** Internal send API used by every module; delivery-status intake endpoints per provider
+- **Frontend impact:** Customer preference centre; staff view of what was sent to a customer
+- **Backend impact:** MessagingPolicy, ConsentService, PreferenceService, TemplateService, DeliveryTracker
+- **Testing requirements:** TS-SAAS-CHAN-05 (no send without a consent basis, from any caller), TS-SAAS-CHAN-06 (caps and quiet hours across channels together), TS-SAAS-CHAN-07 (one event, one message under retry), TS-SAAS-CHAN-08 (delivery status, retry, backoff), TS-SEC (no personal data or secret in logs), TS-SAAS-ISO-27 (a customer of one store is never reachable from another)
+- **Acceptance criteria:** (1) A send without a consent basis is refused and recorded, including when called directly by a service or a job. (2) Frequency caps and quiet hours are applied once, across all channels, not per feature. (3) Retrying a job produces exactly one message, proven by the unique message key. (4) Delivery status is recorded per message with retry and backoff; repeated failure suspends the channel. (5) Logs contain no message body after the retention window and no personal data beyond a subject reference. (6) Adding a second channel adapter requires no change to any of these rules. (7) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1A.13-M17-01 · Automation catalogue: every automation an independently grantable capability, with guard, preview, idempotent execute, run log, pause and value estimate
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1A.13 / M17
+- **Depends on:** T-1A.13-M20-07, T-1A.1-M31-09
+- **Decisions:** D-078, D-193, D-194
+- **References:** 19 §5.3 N, §26.3 (AUT-1…AUT-6); 03 §12.2; DEC D-275, D-078, D-193; BP §12.2 A01–A38, §12.3
+- **Description:** Make each automation its own switch so a client can be given exactly the automations they are paying for. Implement the rule contract of 19 §26.3 — trigger, store-scoped context from the job payload, a guard that returns "not applicable" rather than an error, a preview the owner can review before enabling, an idempotent execute where every effect is a recorded action, a failure path that opens an exception case with a named owner, and a value estimate for the hours-saved tracking. Wire the dependency that matters: an automation that sends a message cannot be enabled unless its channel and its template exist and are approved. Give the owner a pause that takes effect without a deployment and is audited.
+- **Files/components:** `backend/<automation module>/rules/` (one file per automation), scheduler wiring, preview and run-log services
+- **Database impact:** DB-G13: E-automation_run; extensions to E-automation_rule (enabled, paused_by, config, owner_role, value_estimate)
+- **API impact:** Automation list, preview, enable/pause and run-log endpoints for P-E14
+- **Frontend impact:** P-E14 automation list, previews, run log and pause control
+- **Backend impact:** AutomationRegistry, RuleRunner, ExceptionCase integration
+- **Testing requirements:** TS-SAAS-AUTO-01 (each automation independently grantable), TS-SAAS-AUTO-02 (a disabled automation is never scheduled and its queued messages are dead-lettered), TS-SAAS-AUTO-03 (idempotent execute under retry), TS-SAAS-AUTO-04 (enabling a messaging automation without its channel or template is blocked), TS-SAAS-AUTO-05 (pause without deployment, audited), TS-SVC-02
+- **Acceptance criteria:** (1) Every automation in 19 §5.3 N is a separate capability and can be granted or withheld per store. (2) A disabled automation is never registered with the scheduler, and a message queued for one is dead-lettered with a reason. (3) Executing twice for the same trigger produces one outcome. (4) Enabling an automation whose channel or template is missing is blocked with both named. (5) Every run is logged with input, decision, outcome and duration, and a failure opens an exception case with an owner. (6) The owner can pause a rule and it stops within the propagation budget, audited. (7) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
 
 ## Stage 1A.14 — Automation, exceptions, approvals & owner control centre
 
@@ -6065,7 +6869,7 @@ needed to implement it. **This file is the source of truth for task status.** `S
 #### T-1A.16-M24-05 · Stage 1A.16 verification: TS-ADM-01…12 complete, AccessPolicy coverage on every admin endpoint, TS-PERM-10/11/12, TS-SEC-05
 - **Status:** NOT_STARTED
 - **Stage / Module:** 1A.16 / M24
-- **Depends on:** T-1A.16-M24-01, T-1A.16-M24-02, T-1A.16-M24-03, T-1A.16-M26-01, T-1A.16-M26-02
+- **Depends on:** T-1A.16-M24-01, T-1A.16-M24-02, T-1A.16-M24-03, T-1A.16-M26-01, T-1A.16-M26-02, T-1A.16-M24-08, T-1A.16-M24-09, T-1A.16-M24-10, T-1A.16-M24-11
 - **Decisions:** —
 - **References:** 16 §4 (S), TS-API-01 (stage endpoints), TS-ADM-01…12, TS-SVC-04, TS-PERM-10, TS-PERM-11, TS-PERM-12, TS-SEC-05; 11 §15
 - **Description:** Stage 1A.16 exit gate (16 §4 cadence S; 12 §6.17; 11 §15): run the administration suites and confirm the completion criteria — 11 §15 rows for configuration, integrations, audit and system controls; AccessPolicy coverage on every admin endpoint (no admin endpoint reachable without its permission key, privileged role and MFA); all decision-driven values stored as versioned configuration (no code defaults for decision values). Covers TS-ADM-01…12 complete across 1A (users, roles, thresholds, delegation, audit reconstruction, locations, integrations, system, access review, owner control centre, automation admin, configuration) plus the stage's TS-ADM-13 and TS-ADM-15, TS-SVC-04, TS-PERM-10/11/12, TS-SEC-05 and TS-DB-06. No new functionality; defects return to their owning tasks. T-1A.16-M24-04 is included only for items its decisions approved.
@@ -6084,6 +6888,82 @@ needed to implement it. **This file is the source of truth for task status.** `S
   6. TASKS.md and STATE.md updated per the continuation protocol.
 - **Evidence:** —
 
+
+
+### Stage 1A.16 additions — schema-driven store settings (D-227)
+
+#### T-1A.16-M24-08 · P-E15 store settings driven by the `CFG-*` schema: only store-editable unlocked keys, plain-language labels, no platform concepts
+- **Status:** NOT_STARTED
+- **Stage / Module:** 1A.16 / M24
+- **Depends on:** T-1A.16-M24-01, T-1A.2-M24-03, T-1A.1-M31-05
+- **Decisions:** —
+- **References:** SAAS §3 S03; 19 §3.2, §9 INV-4, §16 (M24 row); 11 §1; DEC D-243, D-229; MK:erp-admin.html
+- **Description:** Build the store's own settings experience from the configuration schema so it stays correct as the schema grows. Each editable, unlocked key renders from its declared type, validation and plain-language description, grouped into the business-language sections a store owner expects ("Your store details", "Delivery options", "Returns window"), never into engineering sections and never showing a key name. Locked and root-only keys are absent — not greyed, not labelled "managed elsewhere". Changes go through the existing configuration versioning, approval and audit path.
+- **Files/components:** `frontend/workspace/screens/settings/` schema-driven renderer, section and label mapping
+- **Database impact:** None beyond E-store_setting / E-configuration_version
+- **API impact:** Store settings endpoints from T-1A.1-M31-05
+- **Frontend impact:** P-E15 settings sections
+- **Backend impact:** None new
+- **Testing requirements:** TS-SAAS-ISO-04 (locked and root-only keys absent from the rendered page and its data), TS-ADM (validation, versioning, approval, audit), TS-SAAS-ISO-01 (no platform vocabulary on the screen)
+- **Acceptance criteria:** (1) Every editable unlocked key renders with its plain-language label, help text and validation, with no key identifier visible. (2) Locking a key in the configuration removes it from the screen and from the screen's data entirely. (3) Invalid input is rejected with the same rule the compiler applies. (4) Changes are versioned, approved where required and audited. (5) The rendered page contains none of the banned vocabulary. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+
+### Stage 1A.16 additions — delegated feature management for the store administrator (D-258)
+
+#### T-1A.16-M24-09 · Store Features screen in P-E15: the delegated modules and capabilities only, in the store's own language, with dependency and run-out handling
+- **Status:** NOT_STARTED
+- **Stage / Module:** 1A.16 / M24
+- **Depends on:** T-1A.16-M24-08, T-1A.1-M31-08
+- **Decisions:** —
+- **References:** SAAS §3 S03; 19 §5.4.3 CTL-1…CTL-7, §9 INV-4, §23.3; 11 (SaaS additions); DEC D-258, D-229
+- **Description:** Give the store's administrator the screen the brief asks for: the features they were allowed to manage, and nothing else. It lists only `delegated` modules and capabilities, grouped in business language with the plain-language description from the schema, and never shows a module id, capability id or configuration key. Items that are locked or that the store does not have are absent — not greyed, not labelled as managed elsewhere. Turning something on resolves its dependencies first and explains them in the store's own words; turning something off shows how many open records exist and what the run-out rule will do before it is confirmed. Every change is versioned, audited in the store's own trail and applied within the propagation budget without a deployment.
+- **Files/components:** `frontend/workspace/screens/settings/features/`, store feature endpoints from T-1A.1-M31-08
+- **Database impact:** E-store_feature_state writes; E-audit_event entries
+- **API impact:** Store feature read/write endpoints, delegated set only
+- **Frontend impact:** P-E15 Features section
+- **Backend impact:** None new
+- **Testing requirements:** TS-SAAS-CAP-09 (CTL-1…CTL-7 through the UI), TS-SAAS-ISO-04 (locked and absent items invisible in the page and its data), TS-SAAS-CAP-10 (run-out confirmation), TS-SAAS-ISO-01 (no platform vocabulary), TS-A11Y, TS-AUDIT
+- **Acceptance criteria:** (1) The screen lists exactly the delegated set, in business language, with no identifier visible. (2) A locked or absent feature appears nowhere on the page or in the data the page loads. (3) Enabling a feature with dependencies enables them with an explanation written in the store's own words. (4) Disabling a feature with open work shows the count and the run-out consequence before confirming. (5) A change takes effect within the propagation budget with no deployment, and is audited in the store's own trail. (6) The rendered page contains none of the banned vocabulary. (7) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+
+### Stage 1A.16 addition — workspace and vendor performance (D-268)
+
+#### T-1A.16-M24-10 · Workspace and vendor performance: screen-shaped endpoints, keyset pagination, virtualised lists and per-screen query budgets
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1A.16 / M24
+- **Depends on:** T-1A.16-M24-03, T-1A.3-M09-07, T-1A.1-M30-06
+- **Decisions:** D-034, D-053
+- **References:** 19 §25.2, §25.3; DEC D-268, D-034; BP §20.1; 04b §2, 04c
+- **Description:** Make the staff and vendor applications fast on real data, which is where an ERP is normally slow. Convert the busiest screens to screen-shaped endpoints so one screen is one round trip rather than nine entity calls; move every growing list — orders, stock movements, audit, messages, submissions — to keyset pagination; virtualise long tables; and assert a maximum query count per screen with the query recorder. Review the index of every query path added by the workspace screens and confirm each has a supporting `store_id`-leading index. Move every heavy action — bulk updates, exports, reports, imports — to the job runtime so no request does heavy work.
+- **Files/components:** `backend/<workspace modules>/screens/`, `frontend/workspace/`, `frontend/vendor-portal/`, migration index review
+- **Database impact:** Supporting indexes for every workspace query path; no unindexed scan on a growing table
+- **API impact:** Screen-shaped endpoints for the busiest P-E and P-V screens
+- **Frontend impact:** P-E02, P-E03, P-E06, P-E08, P-E09, P-E10, P-E12, P-E13, P-V02, P-V03 list behaviour
+- **Backend impact:** Query-count instrumentation, keyset pagination helpers
+- **Testing requirements:** TS-PERF-02 (list query p95 and action round trip), TS-SAAS-PERF-10 (query count per screen), TS-DB (every query path has a supporting index), TS-FE (virtualised list keyboard and screen-reader behaviour)
+- **Acceptance criteria:** (1) Every listed screen meets the 19 §25.2 workspace budgets at realistic volumes with two stores. (2) Each screen declares and asserts a maximum query count; an introduced N+1 fails the test. (3) Every growing list uses keyset pagination and stays fast at page 500, verified. (4) Every workspace query path has a supporting `store_id`-leading index, confirmed against the query plans. (5) No bulk action, export or report runs inside a request. (6) Virtualised lists remain keyboard and screen-reader navigable (WCAG 2.2 AA). (7) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+
+### Stage 1A.16 addition — store-side channel and automation administration (D-258, D-274)
+
+#### T-1A.16-M24-11 · Store-side channel and automation administration: the channels the store owns, its templates, its automations — delegated items only
+- **Status:** NOT_STARTED
+- **Stage / Module:** 1A.16 / M24
+- **Depends on:** T-1A.16-M24-09, T-1A.13-M20-06, T-1A.13-M17-01
+- **Decisions:** —
+- **References:** 19 §5.4.3, §5.6, §9 INV-4; 11 (SaaS additions); DEC D-258, D-274, D-273
+- **Description:** Give the store's administrator the channel and automation controls the platform delegated to them, and nothing else. Where a channel is delegated, they can switch it on and off, manage their own sender identity and verification, edit and submit their templates, and see delivery health. Where an automation is delegated, they can enable, preview, pause and read its run log. Channels and automations the store does not have, or that are locked, are absent — no switch, no greyed row, no mention. Enabling a delegated channel still requires its verification to pass, so the store gets the same clear report rather than a silent failure.
+- **Files/components:** `frontend/workspace/screens/settings/channels/`, `.../automations/`
+- **Database impact:** Writes through the delegated-feature and channel services only
+- **API impact:** Store-scoped channel, template and automation endpoints, delegated subset only
+- **Frontend impact:** P-E15 channels and templates; P-E14 automation enable/pause for delegated rules
+- **Backend impact:** None new
+- **Testing requirements:** TS-SAAS-CAP-09 (delegation invariants through the UI), TS-SAAS-ISO-04 (non-delegated channels and automations absent from the page and its data), TS-SAAS-CHAN-01 (verification report shown to the store), TS-A11Y, TS-AUDIT
+- **Acceptance criteria:** (1) Only delegated channels and automations appear; the rest are absent from the page and from the data it loads. (2) A store enabling a delegated channel sees the same verification requirements and the same clear report as an operator would. (3) Template edits are versioned, and where the provider requires approval the state is shown honestly. (4) Automation enable, preview, pause and run log work for delegated rules only. (5) Every change is audited in the store's own trail. (6) The page contains no platform vocabulary and no identifiers. (7) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
 
 ## Stage 1A.17 — Migration, UAT & launch readiness
 
@@ -6275,7 +7155,7 @@ needed to implement it. **This file is the source of truth for task status.** `S
 #### T-1A.17-M26-04 · Performance and load verification: page experience, API p95, propagation, mixed workload, heavy-job isolation (T35), search relevance/latency
 - **Status:** REQUIRES_DECISION
 - **Stage / Module:** 1A.17 / M26
-- **Depends on:** T-1A.15-M18-08, T-1A.13-M16-05
+- **Depends on:** T-1A.15-M18-08, T-1A.13-M16-05, T-1A.3-M09-07, T-1A.9-M09-13, T-1A.16-M24-10
 - **Decisions:** D-207, D-034
 - **References:** 16 §10, TS-PERF-01…07; BP §20.1, §20.2; T35
 - **Description:** Verify performance and load before launch against the D-034 targets (BP §20.1 — negotiation starting points until decided) and the D-207 workload model (BP §20.2: current peak × jointly agreed growth; volumes D-010) on staging with representative data (16 §10): web page experience lab tests on agreed desktop/laptop profiles (TS-PERF-01), internal catalog/quote API p95 excluding provider wait (TS-PERF-02), stock browse propagation movement-to-display (TS-PERF-03), the mixed workload of browsing with images, search, dealer pricing, last-unit contention, bulk import and staff picking at once (TS-PERF-04), heavy-job isolation — a large report/export (and import if 1B is included) during checkout keeps the agreed checkout performance (TS-PERF-05; T35), and search relevance and latency at representative catalog size (TS-PERF-06). Configure the production synthetic checks used for the availability measure after launch (TS-PERF-07). Misses are fixed in the owning tasks or recorded with the agreed acceptance. No invented benchmark (BP §20.2).
@@ -6378,7 +7258,7 @@ needed to implement it. **This file is the source of truth for task status.** `S
 #### T-1A.17-M01-01 · Go-live checklist G1–G13 evidence, Phase 1A exit gate and 'UAT and launch' sign-off
 - **Status:** REQUIRES_DECISION
 - **Stage / Module:** 1A.17 / M01
-- **Depends on:** T-1A.17-M25-05, T-1A.17-M25-04, T-1A.17-M26-04
+- **Depends on:** T-1A.17-M25-05, T-1A.17-M25-04, T-1A.17-M26-04, T-1A.17-M25-07, T-1A.17-M26-08, T-1A.17-M26-09, T-1A.17-M26-10
 - **Decisions:** D-048
 - **References:** 16 §12, §14; BP §5.1 (1A exit gate), §23.4, §31.2 (UAT and launch)
 - **Description:** Phase 1A go-live gate (BP §5.1 1A exit gate "Web end-to-end UAT and reconciled opening stock"; §23.4; 16 §12, §14; BP §31.2 "UAT and launch" sign-off): assemble evidence for every go-live item G1–G13 — G1 approved scope and disposition of every open decision in DECISIONS.md, G2 signed-off product/price/warranty/return policies, G3 correct opening stock and serials (TS-MIG-03, TS-DB-07; TS-MIG-06 at cutover), G4 provider prerequisites for enabled features (TS-INT-10), G5 critical payment, refund, stock, access and recovery tests (TS-REG-01, T04–T10, T18–T21, T22, T23, TS-BKP-02), G6 finance confirmation (T27, TS-ERP-14, TS-INT-05), G7 UI accepted on agreed browsers (TS-FE-07, TS-A11Y-01…03), G8 staff trained with alternates, G9 monitoring, backups, incident contacts and restore evidence, G10 migration rehearsal and rollback plan approved, G11 no unresolved critical defect, G12 ownership of domain, hosting, credentials, repository and vendor accounts, G13 security assessment only if D-208 requires it — and obtain the approvers' sign-offs (16 §14 approver column). D-048 decides whether 1A launches alone; if a combined 1A+1B launch is chosen, this gate is re-staged after 1B.5 per D-213 and the 1B UAT joins. Not in scope: cutover execution (T-1A.17-M25-06).
@@ -6436,6 +7316,762 @@ needed to implement it. **This file is the source of truth for task status.** `S
   3. The first scheduled restore rehearsal, access review and dependency review after launch are evidenced; availability is reported.
   4. The handover is accepted by the owner ("Stable operations and handover").
   5. TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+
+### Stage 1A.17 additions — per-store migration and multi-store launch readiness (D-227)
+
+#### T-1A.17-M25-07 · Migration into store `tradex`: store-scoped load, per-store control totals, store context on every migration script
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1A.17 / M25
+- **Depends on:** T-1A.17-M25-01, T-1A.1-M30-02
+- **Decisions:** D-038, D-001
+- **References:** SAAS §3 S01; 19 §16 (M25 row); 20 §10; DEC D-251, D-233, D-038; BP §21.2, §21.3
+- **Description:** Make the Phase 1 migration a per-store operation. Every migration and reconciliation script runs inside an explicit store context, writes `store_id` on every row, and produces control totals per store rather than globally, so a future second store cannot blur the figures. Verify that a script run without a store context fails rather than defaulting, and that a rehearsal load into a second test store leaves the Tradex store untouched. The datasets, mappings and reconciliation rules of the existing migration tasks are unchanged.
+- **Files/components:** `backend/` migration scripts under the tenancy guard, `plan/records/1A.17/` control totals
+- **Database impact:** All migrated rows carry `store_id`; control totals recorded per store
+- **API impact:** None
+- **Frontend impact:** None
+- **Backend impact:** Migration runner requires a store context
+- **Testing requirements:** TS-MIG-01…06 re-run per store, TS-SAAS-ISO-16 (a load into store B leaves store A byte-identical), TS-SAAS-ISO-10 (unscoped migration write refused)
+- **Acceptance criteria:** (1) Every migration script requires and records a store context; running one without it fails. (2) Control totals are produced per store and reconcile with the source. (3) A rehearsal load into a second store leaves the first store's data unchanged, verified by comparison. (4) No migrated row lacks `store_id`. (5) The existing migration acceptance criteria still hold for the Tradex store. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1A.17-M26-08 · Multi-store launch readiness: full TS-SAAS-ISO run, TS-SAAS-PERF budget sign-off, per-store backup and restore rehearsal, per-store SEO and robots verification
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1A.17 / M26
+- **Depends on:** T-1A.17-M26-01, T-1A.17-M26-02, T-1A.17-M26-04, T-1A.1-M31-07, T-1A.1-M30-04
+- **Decisions:** D-034, D-108, D-208
+- **References:** SAAS §3 S03, S13; 19 §4.5, §9, §15; DEC D-229, D-248, D-034; BP §20.1, §23.4, §19.1
+- **Description:** Prove before launch that the platform properties hold, not only the store's features. Run the complete isolation suite against the two-store environment and record zero findings; sign off every line of the D-248 performance budget with measured numbers; rehearse backup and restore at store granularity (restore one store without touching the other, and verify the restored store's configuration version); and verify per-store SEO behaviour — canonical host, sitemap, robots, and `noindex` on any non-production store. Findings are fixed before go-live, not carried into hypercare.
+- **Files/components:** `plan/records/1A.17/saas-readiness.md`, `tests/restore/per-store/`, evidence under `infra/`
+- **Database impact:** None (verification)
+- **API impact:** None
+- **Frontend impact:** None
+- **Backend impact:** None
+- **Testing requirements:** TS-SAAS-ISO-01…16 complete, TS-SAAS-PERF-01…06 with recorded numbers, TS-BKP per store, TS-SEO per store
+- **Acceptance criteria:** (1) The isolation suite runs complete against two stores with zero findings, evidence attached. (2) Every D-248 budget line has a measured value within budget. (3) A single store is restored from backup without affecting the other, and its configuration version is correct after restore. (4) Each store's canonical host, sitemap and robots behaviour is verified; non-production stores are `noindex`. (5) Any finding is fixed and re-verified before the go-live checklist is signed. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+
+### Stage 1A.17 additions — per-store recovery and the edge-case suite (D-260)
+
+#### T-1A.17-M26-09 · Per-store backup, restore, export and deletion: mechanism, tooling and a timed single-store restore rehearsal
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1A.17 / M26
+- **Depends on:** T-1A.17-M26-01, T-1A.1-M30-02, T-1A.1-M35-01
+- **Decisions:** D-108, D-036, D-122, D-033
+- **References:** 19 §18, §14 BR-M35-05; DEC D-260, D-108, D-036; BP §19.3, §20.1, §23.4, T28
+- **Description:** Make "restore one store" a real, rehearsed procedure rather than an assumption. Build the store-scoped logical export and the key-preserving idempotent import, and document the restore path: scratch-restore the cluster to a point in time, export the target `store_id`, import it back under that store's tenant context, reconcile control totals. Restoring in place over a shared database is not a supported path and the tooling refuses it. Build the per-store export used for portability, end of contract and legal requests, covering business data, store-owned settings and delegated feature states, the configuration artefact and media. Implement deletion with the retention period and destruction evidence, and state plainly to the owner that backups still hold the data until they age out. Rehearse a single-store restore end to end and record the measured time as the store-level recovery figure.
+- **Files/components:** `backend/platform/tenancy/export/`, `infra/runbooks/store-restore.md`, `infra/runbooks/store-export.md`, `tests/restore/per-store/`
+- **Database impact:** No schema change; the export and import operate through the tenant-scoped data-access layer
+- **API impact:** Operator-triggered export job (platform side, API-M34-08)
+- **Frontend impact:** None (operator surfaces are P-R05 and P-R12)
+- **Backend impact:** StoreExporter, StoreImporter with key preservation and idempotency
+- **Testing requirements:** TS-BKP per store, TS-SAAS-ISO-19 (a single-store restore leaves every other store byte-identical), TS-SAAS-DEPLOY-15 (import is idempotent and key-preserving), TS-MIG (control-total reconciliation)
+- **Acceptance criteria:** (1) A single store is restored to a chosen point in time and every other store is byte-identical before and after, verified by comparison. (2) Re-running the import changes nothing and creates no duplicates. (3) Control totals reconcile against the scratch instance. (4) The per-store export contains business data, store-owned settings, delegated feature states, the configuration artefact and media, and is documented. (5) The rehearsal is timed and the figure is recorded as the store-level recovery time. (6) The runbooks exist and have been followed once by someone who did not write them. (7) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1A.17-M26-10 · Edge-case and combination suite `TS-SAAS-EDGE`: every row of 19 §23 as an executable test
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1A.17 / M26
+- **Depends on:** T-1A.17-M26-08, T-1A.1-M31-08, T-1A.2-M30-01
+- **Decisions:** D-053
+- **References:** 19 §23 (all 35 rows), §24; DEC D-053; 16 §18
+- **Description:** Turn the combination table into tests, because these are exactly the cases that are reasoned about once and then broken silently. Cover the store-side rows of 19 §23: the run-out rule for capabilities and modules with open work, a delegated switch whose dependency is missing, a control-state change while the store had its own value set, a job queued for a disabled capability, a surface disabled while users are signed in, a suspended store with paid undispatched orders, a webhook arriving for a suspended, archived or destroyed store, a currency or jurisdiction change attempt after orders exist, a locale removed while customers prefer it, a removed domain still present in sent email, a search query during a schema migration, and a vendor user whose module was switched off. The platform-side rows (publishing, drafts, migrations, schema evolution) are covered by the 1R suites and gated in T-1R.3-M34-03.
+- **Files/components:** `tests/e2e/saas-edge/`, `tests/integration/saas-edge/`
+- **Database impact:** Test data only
+- **API impact:** None
+- **Frontend impact:** None
+- **Backend impact:** None
+- **Testing requirements:** TS-SAAS-EDGE — one case per store-side row of 19 §23, each asserting the defined behaviour rather than merely that nothing crashed
+- **Acceptance criteria:** (1) Every store-side row of 19 §23 has a named test case that asserts the documented behaviour. (2) Each test fails if the behaviour is reverted, demonstrated for at least five cases in the evidence. (3) No case is skipped or marked pending; a case that cannot run yet blocks this task. (4) The suite runs against the two-store fixture in CI. (5) Any row found to be unimplementable as written is corrected in 19 §23 with the reason recorded. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+## Stage 1R.1 — Root admin foundation & store registry
+
+Stage `1R.1` was added by the SaaS architecture change (`D-227`). It starts after the 1A stages and before 1B
+(`12-phases.md` §10.3). References: `20-root-admin.md`, `19-saas-platform.md` §2–§5.
+
+#### T-1R.1-M34-01 · Root admin application scaffolding: separate manifest, build, CI pipeline, database, environments, health endpoint and enforced import boundary
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1R.1 / M34
+- **Depends on:** T-1A.1-M01-11, T-1A.16-M24-05
+- **Decisions:** D-002, D-005, D-077, D-101, D-109, D-244
+- **References:** SAAS §3 S04, S23; 20 §1, §2; 19 §2 SEP-1…SEP-6; DEC D-228, D-244; BP §15.6, §16.6, §19.1
+- **Description:** Stand up the Configurable Root Admin as its own application inside `root-admin/`: dependency manifest, build, test runner, CI pipeline, its own database and migration runner, its own development/staging/production environments and secrets, a health endpoint, and structured logging with correlation ids. Reuse the store platform's conventions — API envelope, pagination, money and date formats, idempotency transport — because one convention across two applications is cheaper than two; reuse no store code. The portal is reachable only through the identity-aware proxy or allow-listed networks, and it can reach object storage and its own database but never a store database.
+- **Files/components:** `root-admin/` (manifest, app/, api/, domain/, compiler/, deploy/, platform-ops/, migrations/, tests/), `infra/` environment and pipeline definitions for the platform
+- **Database impact:** Root admin database created with its own migration runner (separate from the store database)
+- **API impact:** Platform API base path, error envelope and conventions per D-080/D-079; never exposed on a store hostname
+- **Frontend impact:** Portal application skeleton (screens follow in T-1R.1-M34-09)
+- **Backend impact:** Platform application skeleton, configuration loader, health endpoint
+- **Testing requirements:** TS-SAAS-SEP-01…06 (boundary, no shared session, no store database access), TS-API-01 (health and conventions), pipeline runs both test suites independently
+- **Acceptance criteria:** (1) `root-admin/` builds, tests and deploys through its own pipeline without building the store applications. (2) The platform has its own database and cannot open a store database connection, verified by test. (3) No session, cookie domain or token issuer is shared with any store. (4) Health, logging and correlation ids work and the environments are separated with their own secrets. (5) The store applications still build and deploy unchanged. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1R.1-M34-02 · Root admin database migrations: the platform entity set (00 §7.3)
+- **Status:** NOT_STARTED
+- **Stage / Module:** 1R.1 / M34
+- **Depends on:** T-1R.1-M34-01
+- **Decisions:** —
+- **References:** 00 §7.3; 03 §11; 19 §13; 20 §9; DEC D-230, D-233
+- **Description:** Create the root admin schema: platform identity (users, roles, assignments, audit, support access), the store registry (registrations, environments, domains), configuration (drafts, versions, publications, artefacts), packs (packs, versions, migrations), capabilities (definitions, defaults, store overrides), templates (templates, versions, compatibility), branding and terminology (assets, tokens, sets, overrides) and deployment (deployments, steps, notifications). Immutability is enforced in the schema where the model requires it — published configuration versions, pack versions, template versions and artefacts are append-only, with no update path.
+- **Files/components:** `root-admin/migrations/`, entity definitions in `root-admin/domain/`
+- **Database impact:** All root-admin entities of 00 §7.3; append-only constraints on published records
+- **API impact:** None yet
+- **Frontend impact:** None
+- **Backend impact:** Repositories for the platform entities
+- **Testing requirements:** TS-DB (schema shape, constraints), TS-SAAS-CFG-12 (a published version cannot be updated or deleted)
+- **Acceptance criteria:** (1) Every entity of 00 §7.3 exists with keys, constraints and indexes documented in 03 §11. (2) Published configuration, pack and template versions and artefacts cannot be mutated, enforced by the database. (3) Migrations run on an empty database in CI. (4) No table references a store database object. (5) Retention-relevant fields exist for audit and artefacts. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1R.1-M34-03 · Platform identity: users, roles and assignments, mandatory MFA, invitations, sessions and identity-aware access
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1R.1 / M34
+- **Depends on:** T-1R.1-M34-02
+- **Decisions:** D-040, D-083, D-107
+- **References:** 00 §9.1; 20 §3; DEC D-245, D-246; BP §18.2, §19.1, §20.1
+- **Description:** Implement the platform identity realm: the five roles of 00 §9.1, invitation-based user creation, mandatory MFA enrolment before any action (no grace period, no exceptions), session handling per D-083, lockout and abuse protection, and the two-person requirement on the actions listed in 20 §3. No platform user may be created with a password alone, and no platform credential authenticates against any store.
+- **Files/components:** `root-admin/domain/identity/`, `root-admin/api/identity/`
+- **Database impact:** E-platform_user, E-platform_role, E-platform_role_assignment
+- **API impact:** API-M34-54…60 (users, roles, invitations, MFA reset, sessions)
+- **Frontend impact:** Consumed by P-R01 and P-R11
+- **Backend impact:** Platform AccessPolicy, MFA service, two-person approval helper
+- **Testing requirements:** TS-AUTH (sign-in, MFA, lockout, session), TS-SAAS-SEP-03 (no cross-realm authentication), TS-PERM (role capabilities and two-person actions)
+- **Acceptance criteria:** (1) Every platform user must complete MFA enrolment before any action succeeds. (2) A platform credential is rejected by every store and a store credential by the platform. (3) The five roles grant exactly the permissions of 20 §3, verified per role. (4) Two-person actions cannot be completed by a single user, including by API. (5) Sessions, lockout and abuse protection follow D-083/D-084. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1R.1-M34-04 · Platform audit trail: every mutating action recorded with actor, target store, before and after, and reason; query and export
+- **Status:** NOT_STARTED
+- **Stage / Module:** 1R.1 / M34
+- **Depends on:** T-1R.1-M34-03
+- **Decisions:** —
+- **References:** 20 §3, §7; 19 §14 BR-M34-01; DEC D-246; BP §18.2, §19.1, §24.3
+- **Description:** Record every create, configure, publish, deploy, suspend, migrate, retire and support-access action in `E-platform_audit_event`, written in the same transaction as the change so an action cannot succeed unaudited. Each entry carries actor, role, target store (where applicable), object, before and after values, reason where the action requires one, correlation id and timestamp. Provide query with filters and export; the trail is append-only and retained per the platform retention rule.
+- **Files/components:** `root-admin/domain/audit/`, `root-admin/api/audit/`
+- **Database impact:** E-platform_audit_event; append-only
+- **API impact:** API-M34-59, -60 (audit query and export)
+- **Frontend impact:** Consumed by P-R11
+- **Backend impact:** Audit interceptor on every mutating command
+- **Testing requirements:** TS-AUDIT (coverage of every mutating command), TS-SAAS-CFG-13 (no unaudited publish), TS-SEC (no secret value in audit payloads)
+- **Acceptance criteria:** (1) Every mutating platform command writes an audit entry in the same transaction; a command that cannot audit fails. (2) Entries carry actor, role, target store, before, after, reason, correlation id and timestamp. (3) The trail cannot be updated or deleted through any path. (4) Query and export work with the documented filters. (5) No secret or credential value appears in an audit payload. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1R.1-M34-05 · Store registry and lifecycle: registrations, environments, domain records and guarded state transitions (P-R03)
+- **Status:** NOT_STARTED
+- **Stage / Module:** 1R.1 / M34
+- **Depends on:** T-1R.1-M34-04
+- **Decisions:** —
+- **References:** 20 §4 step 1, §5, §6 (P-R03); 19 §13; DEC D-234, D-235; MK-R:ra-stores.html
+- **Description:** Implement the authoritative store record and the list it is managed from. A registration carries key, display name, legal entity, jurisdiction, currency, locales, timezone, isolation mode, environment, state, pinned pack and template versions, current configuration version and owner contact. State transitions follow the lifecycle of 20 §5 and are refused when a precondition is missing. P-R03 lists stores with filters, saved views and the bulk actions the role allows, and shows the fields an operator needs at a glance: category, template, state, domain, configuration version and last deployment.
+- **Files/components:** `root-admin/domain/stores/`, `root-admin/api/stores/`, `root-admin/app/screens/stores/`
+- **Database impact:** E-store_registration, E-store_environment, E-store_domain
+- **API impact:** API-M34-01…09
+- **Frontend impact:** P-R03
+- **Backend impact:** StoreRegistryService with guarded transitions
+- **Testing requirements:** TS-SAAS-DEPLOY-03 (transition guards), TS-PERM (role-limited actions), TS-FE (list, filters, saved views)
+- **Acceptance criteria:** (1) A store registration can be created, read, updated and listed with all the fields above. (2) Illegal transitions are refused with a clear reason. (3) Bulk actions respect the acting role. (4) The list shows category, template, state, domain, configuration version and last deployment. (5) Every change is audited. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1R.1-M34-06 · Capability catalogue in the root admin: mirror of the runtime registry with per-pack defaults, drift detection and the cross-store matrix (P-R08 read side)
+- **Status:** NOT_STARTED
+- **Stage / Module:** 1R.1 / M34
+- **Depends on:** T-1R.1-M34-02, T-1A.1-M31-02
+- **Decisions:** —
+- **References:** 19 §5; 20 §6 (P-R08), §8; DEC D-236; SAAS §3 S10
+- **Description:** Bring the runtime capability registry into the root admin as data it can reason about, and keep the two honest. The platform imports the registry published with each store-platform release (id, area, description, dependencies, conflicts, lockable, data-retaining, governed keys), stores per-pack defaults, and detects drift when a running release declares a registry the platform does not know. Provide the read side of P-R08: the catalogue, the per-pack default matrix and the cross-store matrix showing which stores have which capabilities.
+- **Files/components:** `root-admin/domain/capabilities/`, `root-admin/api/capabilities/`, `root-admin/app/screens/capabilities/`
+- **Database impact:** E-capability_definition, E-capability_default
+- **API impact:** API-M34-36…41
+- **Frontend impact:** P-R08 (read)
+- **Backend impact:** Registry import, drift detection
+- **Testing requirements:** TS-SAAS-CAP-06 (registry import and drift detection), TS-FE (matrix rendering)
+- **Acceptance criteria:** (1) The registry imports from a store-platform release and is versioned with it. (2) A registry mismatch between platform and running release is reported as drift, not silently ignored. (3) Per-pack defaults are stored and readable. (4) The cross-store matrix is correct against the two-store fixture. (5) Dependencies and conflicts are visible in the catalogue. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1R.1-M34-07 · The configuration compiler: layer resolution L0–L3, validation, capability dependency and conflict resolution, deterministic artefact build, checksums and the artefact store
+- **Status:** NOT_STARTED
+- **Stage / Module:** 1R.1 / M34
+- **Depends on:** T-1R.1-M34-06, T-1A.1-M31-03
+- **Decisions:** —
+- **References:** SAAS §3 S12–S15; 19 §3.1, §4.2, §14 BR-M31-04/05, BR-M34-02; 20 §2, §5 steps 1–2; DEC D-230, D-231
+- **Description:** Build the heart of the platform. The compiler takes the platform defaults published with the store release, the pack version, the template version and the store's configuration values, resolves the layers in order, resolves capability dependencies and conflicts, validates everything against the schema and the pack and template rules, and emits the artefact set of 19 §4.2 with a checksum, a schema hash and the target platform release. It is deterministic: the same inputs always produce byte-identical output, which is what makes content addressing, diffing and rollback trustworthy. Secrets are never embedded — only references. A validation failure blocks the build and cannot be overridden.
+- **Files/components:** `root-admin/compiler/` (resolver, validators, emitters, determinism tests), artefact storage adapter
+- **Database impact:** E-config_artifact (metadata: checksum, size, file list, build duration, compiler version, platform release, storage URI)
+- **API impact:** API-M34-12 (validate), API-M34-13 (compile dry run)
+- **Frontend impact:** None (consumed by P-R05 and P-R10)
+- **Backend impact:** Compiler pipeline, artefact writer
+- **Testing requirements:** TS-SAAS-CFG-05 (determinism: identical inputs → identical bytes, 100 runs), TS-SAAS-CFG-14 (validation blocks publish and cannot be overridden), TS-SAAS-CFG-06 (no secret value in the artefact), TS-SAAS-CAP-03 (dependency and conflict resolution)
+- **Acceptance criteria:** (1) Compiling the same inputs twice produces byte-identical artefacts including checksums. (2) A schema, pack, template, capability-dependency, capability-conflict or contrast violation blocks the build with a precise, readable report. (3) There is no override path for a failed validation. (4) The emitted artefact matches the 19 §4.2 file list and validates in the store runtime loader. (5) No secret value appears anywhere in the artefact. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1R.1-M34-08 · Configuration drafts, versions, diff, publish and rollback (P-R05 configuration tabs)
+- **Status:** NOT_STARTED
+- **Stage / Module:** 1R.1 / M34
+- **Depends on:** T-1R.1-M34-07, T-1A.1-M31-04
+- **Decisions:** —
+- **References:** 19 §3.4, §4.4, §14 BR-M31-05, BR-M34-02; 20 §4, §5 steps 3, 5; DEC D-230, D-232; MK-R:ra-store.html
+- **Description:** Give operators the safe editing path. A draft per store per environment holds work in progress and never affects a running store; validation runs on demand and on publish; the diff shows in plain language what would change for the store — capabilities turned on or off, settings changed, terminology changed, theme changed, and any schema change that touches existing data — and requires acknowledgement for anything that looks destructive. Publishing creates an immutable version, writes the artefact, records the publication and emits `config.published`. Rollback republishes an earlier version through exactly the same path.
+- **Files/components:** `root-admin/domain/config/`, `root-admin/api/config/`, `root-admin/app/screens/store/config/`
+- **Database impact:** E-store_config_draft, E-store_config_version, E-config_publication
+- **API impact:** API-M34-10…19
+- **Frontend impact:** P-R05 configuration tabs and the version history/diff view
+- **Backend impact:** Draft service, publisher, event emission through the outbox
+- **Testing requirements:** TS-SAAS-CFG-15 (draft never affects a live store), TS-SAAS-CFG-08 (rollback), TS-SAAS-CFG-16 (diff accuracy against a known change set), TS-SVC-02 (idempotent publish)
+- **Acceptance criteria:** (1) Editing a draft changes nothing in the running store until publish. (2) The diff correctly reports capability, setting, terminology, theme and schema changes for a known change set. (3) Destructive-looking changes require an explicit acknowledgement that is audited. (4) Publish is idempotent and produces exactly one version and one artefact per attempt. (5) Rollback to any retained version works through the same path and is audited. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1R.1-M34-09 · Root admin shell, sign-in (P-R01), platform dashboard (P-R02) and platform users, roles and audit (P-R11)
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1R.1 / M34
+- **Depends on:** T-1R.1-M34-04, T-1R.1-M34-05
+- **Decisions:** D-101, D-051
+- **References:** 20 §6; DEC D-253, D-245; MK-R:ra-login.html, ra-dashboard.html, ra-admin.html
+- **Description:** Build the portal frame and the three screens that make it usable on day one: sign-in with mandatory MFA; the fleet dashboard with stores by state, deployments, configuration drift, failed smoke tests, the attention queue and platform health; and platform user, role and audit administration. The shell carries left navigation, the environment switcher, platform search, notifications, the user menu with the active MFA state and the persistent banner shown whenever a support-access grant is active. The portal's visual identity is deliberately distinct from any store template so the two are never confused.
+- **Files/components:** `root-admin/app/shell/`, `root-admin/app/screens/{login,dashboard,admin}/`
+- **Database impact:** None new
+- **API impact:** API-M34-54…60 consumed
+- **Frontend impact:** P-R01, P-R02, P-R11 and the shell
+- **Backend impact:** Dashboard aggregation from the platform database
+- **Testing requirements:** TS-FE (shell, screens, keyboard and focus behaviour), TS-A11Y (WCAG 2.2 AA), TS-AUTH (MFA-gated access)
+- **Acceptance criteria:** (1) No screen is reachable before MFA is satisfied. (2) The dashboard shows the six groups above with correct values against the fixture. (3) Platform user, role and audit administration works with role restrictions enforced in the UI and the API. (4) The support-access banner appears whenever a grant is active. (5) The portal meets WCAG 2.2 AA for these screens. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1R.1-M34-10 · Stage 1R.1 verification: separation, configuration and compiler suites; a running store applies an artefact published by the portal
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1R.1 / M34
+- **Depends on:** T-1R.1-M34-08, T-1R.1-M34-09, T-1R.1-M34-11
+- **Decisions:** D-053
+- **References:** 19 §15; 20 §5; 16 §18; DEC D-053
+- **Description:** Close the stage with an end-to-end proof that the two platforms work together across the artefact boundary only: publish a configuration change from the portal for an existing store, observe the running store apply it within the propagation budget, and confirm the store never called the platform and the platform never touched the store database. Run the separation, configuration and compiler suites in full and record the results.
+- **Files/components:** `plan/records/1R.1/verification.md`, `tests/` suite wiring
+- **Database impact:** None
+- **API impact:** None
+- **Frontend impact:** None
+- **Backend impact:** None
+- **Testing requirements:** TS-SAAS-SEP-01…06, TS-SAAS-CFG-01…16, TS-SAAS-PERF-04, TS-SAAS-CAP-06; all green
+- **Acceptance criteria:** (1) A change published in the portal reaches the running store within the D-248 propagation budget. (2) Network and query evidence shows the store made no call to the platform and the platform opened no store database connection. (3) Every listed suite passes with evidence recorded. (4) Rollback from the portal returns the store to the previous version. (5) Results are written to the stage record and STATE.md. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+
+### Stage 1R.1 addition — contextual help engine (D-280)
+
+#### T-1R.1-M34-11 · Root admin contextual help: the ⓘ engine, the page-guide panel, search, the platform glossary and the help icons control
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1R.1 / M34
+- **Depends on:** T-1R.1-M34-09
+- **Decisions:** D-051, D-101
+- **References:** 20-root-admin.md §11 (H-1…H-6); DEC D-280, D-224, D-225; MK-R:all screens; 19 §24.1 gate 14
+- **Description:** Build for the platform portal the help the store workspace already has. An ⓘ next to every heading, tab, section and significant control opens a non-modal side panel on that entry, shifting the main column rather than covering it so the thing being explained stays visible. The ? in the top bar opens the whole-page guide; each tab bar gets an "About this tab" control; the panel carries a search across every entry and a glossary of the platform's own vocabulary, reachable from any dotted-underlined word on a screen; and a Help icons control hides or shows every ⓘ, remembered between visits. Each entry follows the six-part shape of 20 §11.2 — what it is, why it matters, how to read it, what to do, what happens next, worth knowing. Keyboard and screen-reader behaviour matches the store workspace: Esc closes, focus returns, the panel is announced, and every ⓘ has an accessible name.
+- **Files/components:** `root-admin/app/shell/help/` (engine, panel, search, glossary), help content beside each screen
+- **Database impact:** None (content ships with the application)
+- **API impact:** None
+- **Frontend impact:** Every P-R screen and the portal shell
+- **Backend impact:** None
+- **Testing requirements:** TS-FE (panel opens on every ⓘ; no empty panel; every referenced key resolves; search, glossary, back history, icons toggle persistence), TS-A11Y (keyboard, Esc, focus return, accessible names, WCAG 2.2 AA), TS-SAAS-ISO-28 (no help text reveals another client's data)
+- **Acceptance criteria:** (1) Every heading, tab, section and significant control on every P-R screen has an ⓘ that opens a populated entry — no empty panels and no missing keys, verified by clicking every one. (2) Each tab bar has an "About this tab" control that explains the open tab. (3) The ? opens the page guide; search returns results across entries and glossary terms. (4) Every glossary term is reachable from the panel and from its dotted-underlined first mention on a screen. (5) Help icons can be hidden and shown, and the choice is remembered. (6) Keyboard and screen-reader behaviour matches the store workspace and passes WCAG 2.2 AA. (7) No help text names another client or exposes data outside this portal. (8) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+## Stage 1R.2 — Store configurator, packs, templates & terminology
+
+The configurator that the SAAS brief describes: category, template, colours, logo, features, behaviour
+(`20-root-admin.md` §4). The stage gate is the brief's own Fashion & Apparel example, executed with no code change.
+
+#### T-1R.2-M34-01 · Vertical pack authoring and versioning (P-R06): create, validate, publish, deprecate, retire, usage tracking and seed sets
+- **Status:** NOT_STARTED
+- **Stage / Module:** 1R.2 / M34
+- **Depends on:** T-1R.1-M34-10
+- **Decisions:** —
+- **References:** SAAS §3 S02, S06, S22; 19 §6.1, §6.6, §14 BR-M32-01/03; 20 §6 (P-R06); DEC D-237, D-247; MK-R:ra-packs.html
+- **Description:** Build the authoring surface for e-commerce categories. A pack version is composed from the sections of 19 §6.1, validated against the configuration schema, the capability registry and the identity-model rules, and published as immutable content with a usage count. Deprecation removes it from selection for new stores without touching existing ones; retirement is possible only when no store uses it. The screen explains each pack in plain language — what it turns on, what structure it creates, which templates suit it — because that is what an operator chooses from.
+- **Files/components:** `root-admin/domain/packs/`, `root-admin/api/packs/`, `root-admin/app/screens/packs/`
+- **Database impact:** E-vertical_pack, E-vertical_pack_version
+- **API impact:** API-M34-20…27
+- **Frontend impact:** P-R06
+- **Backend impact:** Pack validator, publisher, usage tracker
+- **Testing requirements:** TS-SAAS-PACK-10 (validation rejects an inconsistent pack), TS-SAAS-PACK-11 (published version immutable), TS-SAAS-PACK-12 (deprecate/retire rules), TS-FE
+- **Acceptance criteria:** (1) A pack version can be authored, validated and published, and is immutable afterwards. (2) A pack that conflicts with the capability registry or the identity-model rules is rejected with a precise report. (3) Deprecating a pack removes it from new-store selection and changes no existing store. (4) Retirement is refused while any store uses the pack. (5) The screen states in plain language what the pack turns on. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1R.2-M34-02 · Pack migration planner and executor: impact preview per store, staged execution, rollback
+- **Status:** NOT_STARTED
+- **Stage / Module:** 1R.2 / M34
+- **Depends on:** T-1R.2-M34-01
+- **Decisions:** —
+- **References:** 19 §6.6, §14 BR-M32-04; 20 §6; DEC D-247
+- **Description:** Move a store from one pack version to another deliberately and reversibly. The planner shows, per affected store, exactly what would change: capabilities turned on or off, schema additions and removals, attribute type changes, terminology changes, profile changes, and anything that touches existing data. Execution goes through the ordinary configuration publish path so the change is a normal, rollback-able version. Stores are never migrated implicitly by a pack update.
+- **Files/components:** `root-admin/domain/packs/migration/`, `root-admin/app/screens/packs/migration/`
+- **Database impact:** E-pack_migration
+- **API impact:** API-M34-26, -27
+- **Frontend impact:** P-R06 migration planner
+- **Backend impact:** Migration planner and executor over the compiler and publisher
+- **Testing requirements:** TS-SAAS-PACK-13 (preview accuracy), TS-SAAS-PACK-14 (no implicit migration on pack publish), TS-SAAS-CFG-08 (rollback)
+- **Acceptance criteria:** (1) Publishing a new pack version changes no store until a migration is executed. (2) The preview matches the actual change exactly for a known version pair. (3) Migrations that would remove in-use structure are reported and require acknowledgement. (4) A migrated store can be rolled back to its previous configuration version. (5) Every migration is audited with actor, stores, versions and reason. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1R.2-M34-03 · Template registry and versioning (P-R07): compatibility, token contract, required capabilities, previews and lifecycle
+- **Status:** NOT_STARTED
+- **Stage / Module:** 1R.2 / M34
+- **Depends on:** T-1R.1-M34-10, T-1A.3-M33-02
+- **Decisions:** —
+- **References:** SAAS §3 S07, S19, S20; 19 §7.1, §7.5; 20 §6 (P-R07); DEC D-238, D-247; MK-R:ra-templates.html
+- **Description:** Manage the site templates the platform offers. The registry imports each template's declaration from the store-platform release (id, version, compatible packs, required capabilities, token contract, layout set, accessibility statement, preview images), tracks which stores use which version, and runs the same add/update/deprecate/retire lifecycle as packs. The screen shows previews rendered with a chosen store's branding so an operator can compare templates honestly rather than from a name.
+- **Files/components:** `root-admin/domain/templates/`, `root-admin/api/templates/`, `root-admin/app/screens/templates/`
+- **Database impact:** E-template, E-template_version, E-template_compatibility
+- **API impact:** API-M34-28…35
+- **Frontend impact:** P-R07
+- **Backend impact:** Template registry import, preview rendering service
+- **Testing requirements:** TS-SAAS-TPL-06 (registry import and compatibility enforcement), TS-SAAS-TPL-07 (deprecate/retire rules), TS-FE (preview with applied branding)
+- **Acceptance criteria:** (1) Templates import from the store-platform release with their full declaration. (2) A template cannot be assigned to an incompatible pack or to a store missing its required capabilities. (3) Previews render with the selected store's branding. (4) Deprecation and retirement follow the same rules as packs. (5) Usage per template version is visible. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1R.2-M34-04 · Template assignment and per-store template migration with preview
+- **Status:** NOT_STARTED
+- **Stage / Module:** 1R.2 / M34
+- **Depends on:** T-1R.2-M34-03
+- **Decisions:** —
+- **References:** SAAS §3 S07, S19; 19 §7.5, §14 BR-M33-03; 20 §4 step 3; DEC D-238, D-242
+- **Description:** Let an operator select and later change a store's template safely. Assignment pins template id and version in the store's configuration; changing it produces a preview of the storefront under the new template with the store's real configuration and branding, then publishes as an ordinary configuration version. Because a template may not change business behaviour, the switch requires no data migration — and the verification asserts that the store's business output is unchanged across the switch.
+- **Files/components:** `root-admin/domain/templates/assignment/`, `root-admin/app/screens/store/template/`
+- **Database impact:** Template pin stored in the configuration version
+- **API impact:** API-M34-35
+- **Frontend impact:** P-R05 Template tab, P-R07 migration
+- **Backend impact:** Assignment service over the publisher
+- **Testing requirements:** TS-SAAS-TPL-02 (switch changes no data and no business output), TS-SAAS-TPL-08 (preview matches the published result), TS-SAAS-CFG-08 (rollback)
+- **Acceptance criteria:** (1) A store's template can be selected at creation and changed later. (2) The preview matches what the store renders after publishing. (3) Order, price, stock and policy output are identical before and after the switch in the test fixture. (4) Switching back restores the previous appearance exactly. (5) Assignment to an incompatible template is refused. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1R.2-M34-05 · Branding: logo upload and validation, variant generation, palette derivation and the WCAG 2.2 AA contrast gate
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1R.2 / M34
+- **Depends on:** T-1R.1-M34-08, T-1A.4-M22-01
+- **Decisions:** D-051, D-033
+- **References:** SAAS §3 S08, S09, S21; 19 §7.4; 20 §4 steps 4–5; DEC D-240, D-051; BP §6.7
+- **Description:** Implement the brief's steps 4 and 5. Logos (light, dark, mark), favicon and social image are uploaded, validated for format, dimensions, transparency and size, converted into the required variants and stored under the store's storage prefix. Brand colours are entered once and the compiler derives the full surface and text ramps from them; every foreground/background pair the components use is checked against WCAG 2.2 AA and a failing palette blocks publication with a report naming the failing pairs and the nearest passing alternatives. Typography, shape, density and motion settings complete the visual configuration.
+- **Files/components:** `root-admin/domain/branding/`, `root-admin/api/branding/`, `root-admin/app/screens/store/branding/`
+- **Database impact:** E-brand_asset; theme values in the configuration version
+- **API impact:** API-M34-48…53
+- **Frontend impact:** P-R05 Branding tab, P-R04 step 4
+- **Backend impact:** Asset validation and variant generation, palette derivation, contrast checker
+- **Testing requirements:** TS-SAAS-TPL-09 (derivation and contrast gate), TS-A11Y-01 (contrast across the derived ramp), TS-FILE (upload validation), TS-SAAS-CFG-14 (publish blocked on failure)
+- **Acceptance criteria:** (1) Logo upload validates format, dimensions, transparency and size and generates every required variant. (2) Entering brand colours produces a complete ramp without further input. (3) A palette that cannot meet WCAG 2.2 AA blocks publication and the report names the failing pairs. (4) Assets are stored under the store's prefix and referenced, never embedded, in the artefact. (5) The rendered store reflects the branding after publish. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1R.2-M34-06 · Terminology authoring (P-R09): token registry, per-pack sets per locale, per-store overrides, coverage report and preview
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1R.2 / M34
+- **Depends on:** T-1R.2-M34-01, T-1A.1-M31-06
+- **Decisions:** D-050, D-006
+- **References:** SAAS §3 S03, S16–S18; 19 §11; 20 §6 (P-R09); DEC D-239, D-050, D-006; MK-R:ra-terminology.html
+- **Description:** Give operators control of the words each store uses. The screen lists the token registry with each token's meaning and grammatical information, lets a pack author supply a complete set per locale, lets a store override individual tokens where allowed, reports coverage gaps before publication, and previews a real screen with the chosen set applied so wording is judged in context rather than in a spreadsheet. Publication is blocked while a required token is missing for an enabled locale.
+- **Files/components:** `root-admin/domain/terminology/`, `root-admin/api/terminology/`, `root-admin/app/screens/terminology/`
+- **Database impact:** E-terminology_token, E-terminology_set, E-terminology_override
+- **API impact:** API-M34-42…47
+- **Frontend impact:** P-R09, P-R05 Terminology tab
+- **Backend impact:** Coverage checker, preview renderer
+- **Testing requirements:** TS-SAAS-TERM-05 (coverage gate blocks publish), TS-SAAS-TERM-02/03 (pluralisation, fallback), TS-FE (preview accuracy)
+- **Acceptance criteria:** (1) Every token in the registry is authorable per locale with its grammatical information. (2) A missing required token for an enabled locale blocks publication and is listed in the coverage report. (3) Store overrides apply only where the pack and configuration permit. (4) The preview shows the real screen with the chosen wording. (5) Changing a token and publishing changes the wording across the store's screens, emails and exports. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1R.2-M34-07 · Feature configuration (P-R08 / P-R05 Features): capability toggles with dependency and conflict resolution, lock switches and data-retaining acknowledgement
+- **Status:** NOT_STARTED
+- **Stage / Module:** 1R.2 / M34
+- **Depends on:** T-1R.1-M34-06, T-1R.1-M34-08
+- **Decisions:** —
+- **References:** SAAS §3 S10; 19 §5.1, §5.2, §14 BR-M31-03; 20 §4 step 6; DEC D-236, D-243; MK-R:ra-capabilities.html
+- **Description:** Implement the brief's step 6 for features. Capabilities are presented grouped by business area in plain language, pre-set from the pack defaults, with dependencies resolved automatically (turning one on turns on what it needs, with an explanation) and conflicts blocked rather than silently reconciled. Each capability can be locked so the store cannot change it. Turning off a capability that hides existing data requires an explicit acknowledgement recorded in the audit, and the screen states clearly that data is hidden, not deleted.
+- **Files/components:** `root-admin/domain/capabilities/configuration/`, `root-admin/app/screens/store/features/`, `root-admin/app/screens/capabilities/`
+- **Database impact:** E-store_capability_override
+- **API impact:** API-M34-38…41
+- **Frontend impact:** P-R08 (write), P-R05 Features tab, P-R04 step 5
+- **Backend impact:** Dependency and conflict resolver shared with the compiler
+- **Testing requirements:** TS-SAAS-CAP-03 (dependencies and conflicts), TS-SAAS-CAP-04 (disable then re-enable preserves data), TS-SAAS-CFG-14 (conflicting set cannot be published)
+- **Acceptance criteria:** (1) Capabilities are grouped in business language with pack defaults pre-applied. (2) Enabling a capability enables its dependencies with a visible explanation. (3) A conflicting combination cannot be published. (4) Disabling a data-retaining capability requires an acknowledgement that is audited, and no data is deleted. (5) Locking a capability prevents any store-side change to it. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1R.2-M34-08 · Settings editor (P-R05 Settings): `CFG-*` by section with validation, lock control, plain-language documentation and diff preview
+- **Status:** NOT_STARTED
+- **Stage / Module:** 1R.2 / M34
+- **Depends on:** T-1R.1-M34-08
+- **Decisions:** —
+- **References:** SAAS §3 S10, S12; 19 §3.2; 20 §4 step 6, §6 (P-R05); DEC D-230, D-243
+- **Description:** Let an operator set every configuration value a store needs, rendered from the schema so the screen never falls behind the code. Keys are grouped by section with their plain-language descriptions, typed inputs, validation messages from the shared validators, and a lock switch where the key is lockable. Changes accumulate in the draft and are shown in the diff before publication. Keys that require a capability appear only when that capability is on, so the screen never offers a setting that cannot take effect.
+- **Files/components:** `root-admin/app/screens/store/settings/`, schema-driven renderer shared with the store settings screen contract
+- **Database impact:** Values in E-store_config_draft / E-store_config_version
+- **API impact:** API-M34-10, -11, -12
+- **Frontend impact:** P-R05 Settings tab, P-R04 step 5
+- **Backend impact:** Shared validators
+- **Testing requirements:** TS-SAAS-CFG-17 (schema-driven rendering covers every key), TS-SAAS-CFG-02 (unknown key rejected), TS-FE (validation messages), TS-SAAS-CFG-16 (diff)
+- **Acceptance criteria:** (1) Every key in the schema is editable in the correct section with its description and typed input. (2) Validation messages come from the shared validators, not from duplicated UI rules. (3) Keys gated by a capability appear only when that capability is on. (4) Lock switches persist and are reflected in the store. (5) The diff shows accumulated draft changes before publication. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1R.2-M34-09 · Create-store wizard (P-R04): the six steps, resumable draft, review summary and hand-off to deployment
+- **Status:** NOT_STARTED
+- **Stage / Module:** 1R.2 / M34
+- **Depends on:** T-1R.2-M34-04, T-1R.2-M34-05, T-1R.2-M34-06, T-1R.2-M34-07, T-1R.2-M34-08
+- **Decisions:** —
+- **References:** SAAS §1 Configurable Root Admin items 1–7, §1 Example; 20 §4, §6 (P-R04); DEC D-253, D-235; MK-R:ra-store-new.html
+- **Description:** Assemble the seven abilities of the brief into one guided flow: store details, e-commerce category, template, branding and colours, features and behaviour, then review and deploy. Every step writes to the draft and can be left and resumed; each step explains in plain language what the choice will produce; the review step shows the complete resulting store — capabilities, structure, wording, appearance — and the exact artefact that will be built, before anything is created. Completing the wizard hands off to the deployment pipeline (stage 1R.3); until that exists the hand-off targets the bootstrap CLI.
+- **Files/components:** `root-admin/app/screens/store/new/`, `root-admin/domain/stores/wizard/`
+- **Database impact:** E-store_registration in `draft`, E-store_config_draft
+- **API impact:** API-M34-03, -04, -10…13
+- **Frontend impact:** P-R04
+- **Backend impact:** Wizard orchestration over the existing services
+- **Testing requirements:** TS-FE (six steps, resume, validation per step), TS-SAAS-DEPLOY-04 (hand-off), TS-A11Y, TS-SAAS-CFG-14 (review blocked on validation failure)
+- **Acceptance criteria:** (1) All six steps exist in the order of 20 §4 and each maps to a numbered ability in the brief. (2) Leaving and returning resumes the draft with nothing lost. (3) The review step lists the resulting capabilities, structure, wording and appearance and the artefact to be built. (4) Nothing is created in a running environment before the final step. (5) A validation failure at any step prevents reaching review. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1R.2-M32-01 · `VP-fashion_apparel` pack v1, authored entirely as data — the proof that a second category needs no code change
+- **Status:** NOT_STARTED
+- **Stage / Module:** 1R.2 / M32
+- **Depends on:** T-1R.2-M34-01, T-1A.4-M32-03
+- **Decisions:** —
+- **References:** SAAS §1 Example (Fashion & Apparel), §3 S02, S16–S18; 19 §6.2; DEC D-241, D-237; input from T-0-M32-01
+- **Description:** Author the second vertical pack using only the authoring surface, to prove the architecture rather than to serve a specific client. It uses the size/colour variant matrix, a size-guide capability, season and collection structure, an exchange-oriented returns model and apparel terminology, with its own category tree, attribute schemas, storefront/workspace/vendor profiles and seed sets. The acceptance that matters is negative: the work produces **no commit under `frontend/` or `backend/`**. Any change found to be necessary there is a defect in the pack mechanism and is fixed in M32, not worked around in the pack.
+- **Files/components:** Pack content under `root-admin/domain/packs/content/vp-fashion_apparel/`; no store-codebase files
+- **Database impact:** Seed sets S-VP-fashion_apparel-01…06 applied at bootstrap
+- **API impact:** None
+- **Frontend impact:** Determines the fashion store's profiles (rendered by existing code)
+- **Backend impact:** None — this is the point of the task
+- **Testing requirements:** TS-SAAS-PACK-15 (a store bootstrapped from the pack works end to end), TS-SAAS-PACK-03 (no pack-id branching), diff evidence that no store-codebase file changed
+- **Acceptance criteria:** (1) The pack validates and publishes through P-R06. (2) A store created from it serves a coherent fashion storefront, workspace and vendor portal. (3) The version-control diff for this task contains no file under `frontend/` or `backend/`. (4) Any mechanism gap found is fixed in M32 with its own evidence, not by special-casing the pack. (5) The pack contains no executable code and no sample products or prices. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1R.2-M33-01 · `TPL-aurora` — the second site template, proving that two stores on one platform need not look alike
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1R.2 / M33
+- **Depends on:** T-1R.2-M34-03, T-1A.3-M33-03
+- **Decisions:** D-049, D-051
+- **References:** SAAS §3 S19, S20; 19 §7.3; DEC D-242, D-238; input from T-0-M33-01 (TPL-aurora brief)
+- **Description:** Implement the editorial, image-led template from the Phase 0 brief: generous whitespace, large imagery, lookbook and collection sections, a different typographic rhythm — the same components, data contracts and token contract as TPL-forge, arranged differently. It must be recognisably a different website from TPL-forge at a glance while producing identical business output for the same store.
+- **Files/components:** `frontend/storefront/templates/aurora/` (layouts, variants, assets, previews, accessibility statement)
+- **Database impact:** None
+- **API impact:** None
+- **Frontend impact:** P-S01–P-S13 layouts under TPL-aurora
+- **Backend impact:** None
+- **Testing requirements:** TS-SAAS-TPL-05 (identical business output across templates), TS-SAAS-TPL-04 (renders every P-S page for two packs), TS-A11Y-02
+- **Acceptance criteria:** (1) Every storefront page renders under TPL-aurora. (2) Side-by-side screenshots with TPL-forge for the same store are obviously different designs. (3) Price, availability, policy and checkout output are byte-identical across the two templates for the same store. (4) The template hard-codes no colour, brand name or copy string. (5) WCAG 2.2 AA passes for the template. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1R.2-M34-10 · Stage 1R.2 verification: create and configure a complete fashion store from the portal with zero code changes
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1R.2 / M34
+- **Depends on:** T-1R.2-M34-09, T-1R.2-M32-01, T-1R.2-M33-01, T-1R.2-M34-11, T-1R.2-M34-12, T-1R.2-M34-13
+- **Decisions:** D-053
+- **References:** SAAS §1 Example; 19 §6, §7, §15; 20 §4; DEC D-241, D-242, D-247
+- **Description:** Run the brief's own worked example as the stage gate. Using only the portal, select Fashion & Apparel, select a suitable template, configure the colours and other settings, upload a logo, configure the features, and produce a deployable configuration — then verify that the resulting store behaves as a fashion store and that no code changed to make it so. Run the pack, template and terminology suites in full.
+- **Files/components:** `plan/records/1R.2/verification.md` (walkthrough, screenshots, diff evidence)
+- **Database impact:** None
+- **API impact:** None
+- **Frontend impact:** None
+- **Backend impact:** None
+- **Testing requirements:** TS-SAAS-PACK, TS-SAAS-TPL, TS-SAAS-TERM in full; TS-SAAS-ISO on the resulting two-store environment
+- **Acceptance criteria:** (1) The five steps of the SAAS §1 example are completed entirely in the portal and recorded with screenshots. (2) The resulting store's storefront, workspace and vendor portal show fashion behaviour and wording. (3) The version-control diff across the whole walkthrough shows no change under `frontend/` or `backend/`. (4) The pack, template and terminology suites pass. (5) The isolation suite passes with the electronics and fashion stores side by side. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+
+### Stage 1R.2 additions — surface/module/delegation editor and the bundle library (D-257, D-258, D-265, D-266, D-267)
+
+#### T-1R.2-M34-11 · Surface, module and delegation editor: switch applications and modules per store and choose which of them the store's administrator may manage
+- **Status:** NOT_STARTED
+- **Stage / Module:** 1R.2 / M34
+- **Depends on:** T-1R.2-M34-07, T-1A.1-M31-08
+- **Decisions:** —
+- **References:** SAAS §3 S10; 19 §5.4, §23.3; 20 §4 step 6, §6 (P-R05, P-R08); DEC D-257, D-258; MK-R:ra-store.html, ra-capabilities.html
+- **Description:** Give the operator the controls the brief asks for, at the three levels the architecture provides. Switch each **surface** (storefront, staff workspace, vendor portal) on or off for a store. Switch each **module** on or off, seeing what it contains in plain language and what is currently in use. For each module and each capability, set the control state: the store does not have it, the store has it and cannot change it, or the store's administrator may manage it. Dependencies resolve with an explanation; conflicts and invalid delegations are blocked by the compiler rather than resolved silently; and switching something off shows the open work it affects before it is confirmed. Every change is audited and takes effect through the ordinary publish path.
+- **Files/components:** `root-admin/app/screens/store/features/`, `root-admin/app/screens/capabilities/`, `root-admin/domain/capabilities/control/`
+- **Database impact:** E-store_capability_override extended with module and surface rows and the control state
+- **API impact:** API-M34-38…41 extended for surfaces, modules and control states
+- **Frontend impact:** P-R05 Features tab, P-R08, P-R04 step 5
+- **Backend impact:** Control-state validation shared with the compiler
+- **Testing requirements:** TS-SAAS-CAP-08 (three control states through the UI), TS-SAAS-CAP-09 (CTL-1…CTL-7), TS-SAAS-CAP-11 (`MOD-administration` cannot be disabled), TS-SAAS-CAP-10 (open-work confirmation), TS-FE, TS-AUDIT
+- **Acceptance criteria:** (1) Surfaces, modules and capabilities can each be switched, with the module view showing what it contains in plain language. (2) Every module and capability can be set to not-available, available-and-locked, or delegated to the store. (3) An invalid delegation — a delegated capability inside a disabled module, or one whose dependency is less available — cannot be published. (4) Switching something off shows the count of open records and the run-out consequence before confirming. (5) Disabling `MOD-administration` is rejected. (6) Every change is audited with actor, before, after and reason. (7) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1R.2-M34-12 · Bundle library and category assembly with the completeness gate: build a category from reusable bundles and prove nothing is left unconfigured
+- **Status:** NOT_STARTED
+- **Stage / Module:** 1R.2 / M34
+- **Depends on:** T-1R.2-M34-01, T-1R.2-M34-11, T-1R.2-M34-06
+- **Decisions:** —
+- **References:** SAAS §3 S02, S06, S22; 19 §5.5 (BC-1…BC-7), §6.9 (25 dimensions), §14 BR-M32-05/06; DEC D-266, D-267, D-265; MK-R:ra-bundles.html, ra-packs.html
+- **Description:** Build the layer between a capability and a whole category. Author and version bundles — reusable packages of modules, capabilities with their default control states, configuration defaults, catalog-schema fragments, terminology, profile fragments, seed fragments, template compatibility and validation rules — and assemble a category as base plus bundles in a chosen order plus category-specific overrides. Composition follows BC-1…BC-7: declared order, explicit conflict rather than silent resolution, overrides last, immutable published versions pinned by the category, reversible removal during authoring, and nothing about bundles reaching the store runtime. Then enforce the completeness gate: the validator walks the enabled capability set and reports every one of the 25 dimensions with no answer, every terminology token with no value, every attribute with no type, every screen with no help content and every unmet dependency — live in the authoring screen and again as a hard block at publication.
+- **Files/components:** `root-admin/domain/bundles/`, `root-admin/domain/packs/assembly/`, `root-admin/api/bundles/`, `root-admin/app/screens/bundles/`, `root-admin/app/screens/packs/assembly/`
+- **Database impact:** E-bundle, E-bundle_version, E-pack_bundle_application (the pinned bundles and order of a pack version)
+- **API impact:** API-M34-65…72 (bundle list, get, create version, validate, publish, deprecate, retire, apply to a category)
+- **Frontend impact:** P-R13 bundles, P-R06 assembly view and live completeness report
+- **Backend impact:** BundleComposer with conflict detection and origin tracking; CompletenessValidator
+- **Testing requirements:** TS-SAAS-PACK-21 (composition order and override origin), TS-SAAS-PACK-22 (conflicting bundles are an error, never resolved silently), TS-SAAS-PACK-23 (removing a bundle withdraws exactly its contribution), TS-SAAS-PACK-24 (all 25 completeness dimensions enforced), TS-SAAS-PACK-25 (published bundle versions immutable and pinned), TS-SAAS-PACK-19 (bundle naming a missing capability rejected)
+- **Acceptance criteria:** (1) A bundle can be authored, validated, published, deprecated and retired, and is immutable once published. (2) A category assembled from base plus bundles plus overrides produces the same result every time, and the authoring screen shows each value's origin. (3) Two bundles demanding incompatible values produce an error naming both origins, and the author must choose explicitly. (4) Removing a bundle during authoring withdraws exactly what it contributed and leaves overrides and other bundles intact. (5) Publication is blocked while any of the 25 completeness dimensions is unanswered, with a precise report; the same report is visible live while authoring. (6) A bundle or module naming a capability the release does not have is rejected with it named. (7) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+
+### Stage 1R.2 addition — channel, integration and automation grants (D-273, D-274)
+
+#### T-1R.2-M34-13 · Root admin channels, integrations and automation grants: bind providers per store, verify senders, and grant or withhold each channel, automation and integration
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1R.2 / M34
+- **Depends on:** T-1R.2-M34-11, T-1A.13-M20-06, T-1A.13-M17-01
+- **Decisions:** D-012, D-013, D-014, D-015, D-011
+- **References:** 19 §5.3 L, N, P, §5.6; 20 §4 step 6, §6 (P-R05); DEC D-273, D-274; MK-R:ra-store.html
+- **Description:** Give the operator the screen that turns "this client bought WhatsApp and the dispatch automations" into a configured store. For each store: grant or withhold every channel, every automation and every integration, and set the control state so the client's own administrator can manage the ones agreed with them. Bind each granted channel to a provider account, record the sender identity, run and show verification, and list the templates the enabled automations require with their approval state. Show the publish check inline, so an operator sees what is missing before they try to publish rather than after. Provider credentials are entered once, stored in the store's own secret scope, and never displayed again.
+- **Files/components:** `root-admin/app/screens/store/channels/`, `root-admin/domain/channels/`, `root-admin/api/channels/`
+- **Database impact:** E-channel_requirement; store-side bindings written through the platform API
+- **API impact:** API-M34-74…80 (channel bindings, verification, template requirements, integration bindings, automation grants)
+- **Frontend impact:** P-R05 Channels &amp; integrations tab, P-R04 step 5, P-R08 area view
+- **Backend impact:** Channel requirement resolution shared with the compiler
+- **Testing requirements:** TS-SAAS-CHAN-01 (publish check surfaced before publishing), TS-SAAS-AUTO-04 (automation blocked without its channel and template), TS-SEC-05 (credentials write-only), TS-AUDIT, TS-FE
+- **Acceptance criteria:** (1) Every channel, automation and integration can be granted, withheld or delegated per store from one screen. (2) Binding a provider, recording a sender and running verification works per channel and shows an honest state. (3) The publish check is visible inline and lists exactly what is missing. (4) Credentials are entered once, never displayed again, and are stored in the store's own secret scope. (5) An automation requiring a channel or template that is missing cannot be granted, and both are named. (6) Every grant and binding change is audited. (7) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+## Stage 1R.3 — Provisioning, deployment, platform operations & 1R release
+
+Deployment is the brief's step 7 (`20-root-admin.md` §5). The stage gate is two stores of different categories,
+created from an empty platform, entirely from the portal.
+
+#### T-1R.3-M35-01 · Deployment step machine: validate → compile → diff → provision → publish → bootstrap → apply → smoke → go-live, idempotent and resumable with evidence per step (P-R10)
+- **Status:** NOT_STARTED
+- **Stage / Module:** 1R.3 / M35
+- **Depends on:** T-1R.2-M34-10, T-1A.1-M35-01
+- **Decisions:** —
+- **References:** SAAS §3 S11; 20 §5, §6 (P-R10); 19 §14 BR-M35-01/02; DEC D-235; MK-R:ra-deployments.html
+- **Description:** Implement the brief's step 7 as a durable step machine rather than a script. Each of the nine steps records its own start, end, evidence and outcome; each is retried with caps and is safe to re-run; a run can be resumed after an interruption and never double-creates. Redeployment of a live store runs the subset listed in 20 §5 and causes no downtime. The screen shows runs in progress with their step states and logs, and lets an operator retry a step, cancel a run or roll back.
+- **Files/components:** `root-admin/deploy/` (step machine, step implementations, evidence store), `root-admin/app/screens/deployments/`
+- **Database impact:** E-deployment, E-deployment_step
+- **API impact:** API-M35-01…08
+- **Frontend impact:** P-R10
+- **Backend impact:** Durable step runner over the platform job runtime
+- **Testing requirements:** TS-SAAS-DEPLOY-01 (idempotency), TS-SAAS-DEPLOY-02 (resume after interruption at each step), TS-SAAS-DEPLOY-05 (retry caps and failure surfacing), TS-FE (live progress)
+- **Acceptance criteria:** (1) A full first deployment runs all nine steps and produces a live store. (2) Re-running a completed run changes nothing. (3) Killing the runner at each step and resuming completes correctly, tested per step. (4) Redeployment of a live store causes no downtime and no request error. (5) Every step records evidence visible on P-R10. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1R.3-M35-02 · Provisioning: storage prefix, database or schema per isolation mode, secret scope, hostname registration and rollback of allocations
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1R.3 / M35
+- **Depends on:** T-1R.3-M35-01
+- **Decisions:** D-005, D-033, D-107, D-233
+- **References:** SAAS §3 S11; 20 §5 step 4; 19 §10.1; DEC D-233, D-235, D-005
+- **Description:** Create the infrastructure a new store needs, honouring its isolation mode: object-storage prefix, database or schema allocation for `dedicated_db`, runtime pool assignment for `dedicated_runtime`, secret scope with a per-store key, and hostname registration. Every allocation is recorded so a failed provisioning rolls back cleanly and leaves nothing orphaned. Quotas and limits per store are set here so a single store cannot exhaust shared capacity.
+- **Files/components:** `root-admin/deploy/provision/`, `infra/` provisioning definitions and runbook
+- **Database impact:** Allocation records on E-store_environment; store database or schema created for dedicated modes
+- **API impact:** Part of API-M35-01
+- **Frontend impact:** P-R10 step detail
+- **Backend impact:** Provisioner with compensating rollback
+- **Testing requirements:** TS-SAAS-DEPLOY-06 (rollback leaves no orphan), TS-SAAS-ISO-12 (storage and secret isolation), TS-SEC-05 (secret scope)
+- **Acceptance criteria:** (1) Provisioning creates the storage prefix, secret scope, hostname registration and, for dedicated modes, the database or runtime allocation. (2) A deliberate mid-way failure rolls back every allocation with nothing orphaned, verified by inspection. (3) Per-store quotas and limits are applied. (4) Provisioning is idempotent. (5) All three isolation modes are exercised at least once in the evidence. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1R.3-M35-03 · Domains and TLS: custom domain add and verify, certificate issuance and renewal, primary host selection, removal
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1R.3 / M35
+- **Depends on:** T-1R.3-M35-02
+- **Decisions:** D-005, D-102, D-107
+- **References:** SAAS §3 S11; 19 §10.2; 20 §5, §8 (API-M35-09…14); DEC D-234, D-102
+- **Description:** Give each store its own address. A store gets a platform subdomain immediately and may add verified custom domains; verification uses a DNS or HTTP challenge, certificates are issued and renewed automatically, and the primary host drives canonical URLs and redirects so SEO stays coherent. Removing a domain is safe: the store keeps serving on its remaining hosts, and stale certificates are revoked. Unknown hosts continue to return the neutral response of T-1A.1-M30-01.
+- **Files/components:** `root-admin/deploy/domains/`, `root-admin/app/screens/store/domains/`, `infra/` DNS and certificate integration
+- **Database impact:** E-store_domain with verification and certificate state
+- **API impact:** API-M35-09…14
+- **Frontend impact:** P-R05 Domains tab
+- **Backend impact:** Domain verifier, certificate manager, host-map publication
+- **Testing requirements:** TS-SAAS-DEPLOY-07 (verification, issuance, renewal, removal), TS-SEO (canonical host and redirects), TS-SAAS-ISO-09 (unknown host neutral response)
+- **Acceptance criteria:** (1) A custom domain can be added, verified and served with a valid certificate. (2) Renewal happens automatically before expiry and is alerted on failure. (3) The primary host drives canonical URLs and redirects from the other hosts. (4) Removing a domain leaves the store serving on its remaining hosts and revokes the certificate. (5) An unverified domain never serves the store. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1R.3-M35-04 · Artefact publication and distribution: object storage, content addressing, retention, on-disk copy and the artefact inspector (P-R10)
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1R.3 / M35
+- **Depends on:** T-1R.3-M35-01
+- **Decisions:** D-033
+- **References:** SAAS §3 S14; 19 §4.2, §4.4; 20 §5 step 5; DEC D-231, D-232
+- **Description:** Distribute compiled configuration reliably. Artefacts are written content-addressed to object storage, retained for at least the last twenty versions per store so rollback is instant, mirrored to each runtime host's disk so a cold boot needs neither network nor database, and published with the `config.published` event. The inspector shows an artefact's manifest, checksum, size, file list, build time, compiler version and target release, and lets an operator compare two versions.
+- **Files/components:** `root-admin/deploy/publish/`, `root-admin/app/screens/deployments/artifact/`, distribution agent in `backend/platform/bootstrap/`
+- **Database impact:** E-config_artifact, E-config_publication
+- **API impact:** API-M35-04, API-M35-18 (retention job status)
+- **Frontend impact:** P-R10 artefact inspector
+- **Backend impact:** Artefact writer, distribution, retention job
+- **Testing requirements:** TS-SAAS-CFG-18 (content addressing and retention), TS-SAAS-DEPLOY-08 (cold boot from the disk copy with no network), TS-SAAS-CFG-04 (corrupt artefact refused)
+- **Acceptance criteria:** (1) Publishing writes a content-addressed artefact and records its metadata. (2) At least twenty versions per store are retained and any of them can be republished. (3) A runtime host boots from its disk copy with object storage and the platform unreachable. (4) A corrupted disk copy is detected and re-fetched rather than served. (5) The inspector shows the full manifest and can diff two versions. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1R.3-M35-05 · Smoke test and automatic rollback
+- **Status:** NOT_STARTED
+- **Stage / Module:** 1R.3 / M35
+- **Depends on:** T-1R.3-M35-04
+- **Decisions:** —
+- **References:** 20 §5 step 8; 19 §9, §14 BR-M35-02; DEC D-235, D-229
+- **Description:** Make every deployment self-checking. After a configuration is applied, run the store-facing checks of 20 §5 step 8 — home, category, product, search, add to cart, sign-in pages, workspace sign-in, health, `theme.css` served, and a forbidden-vocabulary subset — against the store's real hosts. A failure rolls the store back to the previous configuration version automatically and raises the failure on P-R10 and to the operator; the store keeps serving throughout.
+- **Files/components:** `root-admin/deploy/smoke/`, check definitions shared with the isolation suite
+- **Database impact:** Smoke results on E-deployment_step
+- **API impact:** API-M35-07 (smoke report)
+- **Frontend impact:** P-R10 smoke results
+- **Backend impact:** Smoke runner, automatic rollback trigger
+- **Testing requirements:** TS-SAAS-DEPLOY-09 (failed smoke triggers rollback and the store stays up), TS-SAAS-ISO-01 (vocabulary subset), TS-SAAS-DEPLOY-10 (smoke runs against real hosts, not a mock)
+- **Acceptance criteria:** (1) Every deployment runs the full smoke set against the store's real hosts. (2) A deliberately broken configuration fails smoke and is rolled back automatically. (3) The store serves successfully throughout the failed deployment and the rollback. (4) Smoke results, including the failing check and its output, are visible on P-R10. (5) A smoke failure is alerted, not merely logged. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1R.3-M35-06 · Fleet health and configuration drift (P-R12): instance registry, `config.applied` intake, drift detection and alarms
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1R.3 / M35
+- **Depends on:** T-1R.3-M35-04, T-1A.1-M31-04
+- **Decisions:** D-052, D-034
+- **References:** 19 §4.4 step 6; 20 §6 (P-R12), §8 (API-M35-15…18); DEC D-232, D-052; BP §20.3
+- **Description:** Show the operator the truth about what every runtime is actually serving. Runtime instances register themselves and report the configuration version and checksum they have applied; the platform compares that with what it published and raises drift when an instance is behind, ahead, or serving an unexpected checksum. Fleet health shows instances, applied versions, propagation times and the stores in drift, with alarms owned by a named role per BP §20.3 rather than an unwatched dashboard.
+- **Files/components:** `root-admin/platform-ops/fleet/`, `root-admin/app/screens/settings/health/`
+- **Database impact:** Instance registry and applied-version reports
+- **API impact:** API-M35-15…18
+- **Frontend impact:** P-R12, P-R02 drift tile
+- **Backend impact:** Report intake, drift detector, alarm routing
+- **Testing requirements:** TS-SAAS-DEPLOY-11 (drift detected when an instance is held back), TS-SAAS-PERF-04 (propagation measured from real reports), TS-ALERT (owner and route per alarm)
+- **Acceptance criteria:** (1) Every runtime instance appears in the registry with its applied version and checksum. (2) Holding one instance on an old version raises drift within the alarm window. (3) An unexpected checksum raises drift even when the version number matches. (4) Propagation times shown come from real reports, not estimates. (5) Each alarm has a named owner and route. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1R.3-M35-07 · Suspend, archive and decommission: two-person approval, retention period, destruction evidence
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1R.3 / M35
+- **Depends on:** T-1R.3-M35-01, T-1A.2-M30-01
+- **Decisions:** D-036, D-122
+- **References:** 20 §5 (lifecycle), §3; 19 §14 BR-M30-05, BR-M35-03; DEC D-036, D-246; BP §19.3, §18.2
+- **Description:** Close a store safely. Suspension is reversible and immediate and serves the store-branded notice; archiving stops serving and retains data for the retention period; decommissioning destroys data and is a two-person action that cannot be completed by one operator, produces an export for the owner first where the contract requires it, and records destruction evidence. Every transition notifies the store owner and is audited with the reason.
+- **Files/components:** `root-admin/deploy/lifecycle/`, `root-admin/app/screens/store/danger-zone/`
+- **Database impact:** Lifecycle history on E-store_registration; destruction evidence records
+- **API impact:** API-M34-05, -06
+- **Frontend impact:** P-R05 Danger zone
+- **Backend impact:** Lifecycle service with two-person approval and retention timers
+- **Testing requirements:** TS-SAAS-DEPLOY-12 (two-person enforcement including by API), TS-SAAS-DEPLOY-13 (retention timer and destruction evidence), TS-SAAS-ISO-15 (notice content)
+- **Acceptance criteria:** (1) Suspension is immediate, reversible and serves the store-branded notice with no data loss. (2) Archiving retains data for the configured retention period and serves nothing. (3) Decommission cannot be completed by one user through any path, including the API. (4) Destruction produces evidence and, where required, an owner export beforehand. (5) Every transition is audited and the owner is notified. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1R.3-M34-01 · Support access (break-glass) on P-R11: request, approve, revoke, dual audit, store-owner notification and automatic expiry
+- **Status:** NOT_STARTED
+- **Stage / Module:** 1R.3 / M34
+- **Depends on:** T-1R.1-M34-04, T-1A.2-M02-10
+- **Decisions:** —
+- **References:** SAAS §3 S03; 19 §9 INV-9; 20 §7; DEC D-246, D-229; BP §18.2, §19.1
+- **Description:** Implement the only route by which platform staff may see a store's data. A grant records requester, store, reason, scope, duration up to eight hours and approver; the store owner is notified when it starts; every action taken under it is written to both the platform audit and the store's own audit trail, attributed to the platform user by name; the grant expires automatically and can be revoked at any time. Without a grant, platform staff see no store data anywhere in the portal.
+- **Files/components:** `root-admin/platform-ops/support-access/`, store-side audit intake in `backend/platform/tenancy/`
+- **Database impact:** E-platform_support_access; store-side audit entries
+- **API impact:** API-M34-61…64
+- **Frontend impact:** P-R11 grants, the persistent shell banner, store-side visibility in P-E15 audit
+- **Backend impact:** Grant enforcement in every store-data read path in the platform
+- **Testing requirements:** TS-SAAS-ISO-08 (no store data without a grant), TS-AUDIT (dual audit and attribution), TS-SAAS-DEPLOY-14 (automatic expiry and revocation)
+- **Acceptance criteria:** (1) Without an active grant, no platform screen or API returns store data. (2) A grant requires a reason and an approver distinct from the requester. (3) The store owner is notified and the store's own audit shows every action with the platform user's name. (4) The grant expires automatically at its end time and can be revoked immediately. (5) The portal shows a persistent banner while any grant is active. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1R.3-M34-02 · Platform settings, notification routing, platform backup and restore, rate limits, portal security verification and runbooks (P-R12)
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1R.3 / M34
+- **Depends on:** T-1R.3-M35-06
+- **Decisions:** D-035, D-052, D-108, D-208, D-084
+- **References:** 20 §6 (P-R12); 19 §2; DEC D-108, D-208, D-052; BP §19.1, §20.1, §20.3, §24.1
+- **Description:** Make the platform itself operable. Global defaults, object storage and CDN settings, secret scopes, artefact retention, DNS and certificate provider, notification routing and maintenance windows are configurable on P-R12. The platform database and artefact store are backed up and a restore is rehearsed with evidence. Rate limits and abuse protection cover the portal and the platform API. Security verification of the portal runs before it is used for a real store, and the runbooks (deploy, rollback, incident, restore, support access) are written and reviewed.
+- **Files/components:** `root-admin/app/screens/settings/`, `root-admin/platform-ops/`, `infra/runbooks/platform-*.md`
+- **Database impact:** Platform settings records; backup evidence
+- **API impact:** Rate limiting across the platform API
+- **Frontend impact:** P-R12
+- **Backend impact:** Settings service, notification routing, backup integration
+- **Testing requirements:** TS-BKP (platform backup and restore rehearsal), TS-SEC-01…12 against the portal, TS-SAAS-SEP (no store exposure), TS-ALERT (routing)
+- **Acceptance criteria:** (1) Every platform setting on P-R12 takes effect and is audited. (2) A platform restore rehearsal succeeds with evidence, including the artefact store. (3) Rate limits and abuse protection are active on the portal and the platform API. (4) Security verification of the portal passes before it is used for a real store; findings are fixed and re-verified. (5) The five runbooks exist and have been walked through once. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1R.3-M34-03 · Stage 1R release gate: provision two stores of different categories from scratch, full TS-SAAS suite, handover documentation and root admin training
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1R.3 / M34
+- **Depends on:** T-1R.3-M35-03, T-1R.3-M35-05, T-1R.3-M35-07, T-1R.3-M34-01, T-1R.3-M34-02, T-1R.3-M35-08, T-1R.3-M34-04, T-1R.3-M34-05, T-1R.3-M35-09, T-1R.3-M34-06
+- **Decisions:** D-053, D-035
+- **References:** SAAS §3 all; 19 §15; 20; DEC D-227, D-235; BP §23.4, §24.2, §24.4
+- **Description:** Close the SaaS work with the end-to-end demonstration the brief describes: from an empty platform, create and deploy two stores of different categories with different templates, branding and features, entirely from the portal; verify each behaves as its own business; verify neither can see the other; verify the performance budget holds with both live. Run the complete TS-SAAS suite. Produce the handover pack for platform operations and train the named platform operators.
+- **Files/components:** `plan/records/1R.3/release.md`, `handover/root-admin/` (operations guide, runbooks, training material)
+- **Database impact:** None (verification)
+- **API impact:** None
+- **Frontend impact:** None
+- **Backend impact:** None
+- **Testing requirements:** TS-SAAS-SEP, TS-SAAS-CFG, TS-SAAS-CAP, TS-SAAS-PACK, TS-SAAS-TPL, TS-SAAS-TERM, TS-SAAS-ISO, TS-SAAS-PERF, TS-SAAS-DEPLOY, TS-SAAS-EXP — all complete and green
+- **Acceptance criteria:** (1) Two stores of different categories are created and deployed from the portal, recorded step by step. (2) Each store behaves, reads and looks like its own business; neither exposes the platform or the other store. (3) The complete TS-SAAS suite passes with evidence. (4) The D-248 performance budget holds with both stores live. (5) The handover pack exists and the named operators have been trained, with the session recorded. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+
+### Stage 1R.3 additions — releases, environments, observability and client-hosted installs (D-259, D-263, D-264, D-269, D-271)
+
+#### T-1R.3-M35-08 · Configuration-schema evolution and the release procedure: migrate stored configuration, rebuild every artefact, two-schema acceptance window, rollback eligibility
+- **Status:** NOT_STARTED
+- **Stage / Module:** 1R.3 / M35
+- **Depends on:** T-1R.3-M35-01, T-1R.1-M34-07
+- **Decisions:** —
+- **References:** 19 §17, §14 BR-M31-14; DEC D-259, D-269, D-271; BP §20.5
+- **Description:** Make a platform release safe for stores that are already live. Classify every schema change as additive, widening or breaking, and refuse to ship a breaking change without its configuration migration. Implement the ordered release procedure: deploy the root admin, migrate stored configuration for every store and every retained version, rebuild every artefact and verify that a no-op rebuild is byte-identical except the schema hash, deploy the store platform, publish the rebuilt artefacts, and confirm every instance reports the new version before the release is called done. Implement the two-schema acceptance window in the loader so a rolling deploy never has an instance that refuses everything, and make the root admin offer only rollback-eligible versions for the running release.
+- **Files/components:** `root-admin/compiler/schema/`, `root-admin/deploy/release/`, loader acceptance window in `backend/platform/config/loader/`, `infra/runbooks/platform-release.md`
+- **Database impact:** Configuration migrations against the root admin database; retained versions migrated too
+- **API impact:** Release status and rebuild report (API-M35-18)
+- **Frontend impact:** P-R12 release and rebuild status
+- **Backend impact:** SchemaClassifier, ConfigMigrator, FleetRebuilder
+- **Testing requirements:** TS-SAAS-REL-01 (change classification), TS-SAAS-REL-02 (no-op rebuild byte-identical except the schema hash), TS-SAAS-REL-03 (a store that cannot be migrated stops the release), TS-SAAS-REL-04 (two-schema window during a rolling deploy), TS-SAAS-REL-05 (rollback eligibility), TS-SAAS-CFG-05 (determinism)
+- **Acceptance criteria:** (1) An additive or widening change ships without rebuilding, and existing artefacts keep serving. (2) A breaking change cannot ship without its configuration migration and a successful rebuild of every store's artefact. (3) A no-op rebuild is byte-identical except the schema hash, demonstrated across every store. (4) A store whose configuration cannot be migrated stops the release with that store named. (5) During a rolling deploy, instances on either schema version serve correctly. (6) The root admin offers only rollback-eligible versions and refuses the rest with the reason. (7) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1R.3-M34-04 · Environments and promotion: staging and production per store, and promotion of a published configuration into the production draft
+- **Status:** NOT_STARTED
+- **Stage / Module:** 1R.3 / M34
+- **Depends on:** T-1R.1-M34-08, T-1R.3-M35-01
+- **Decisions:** —
+- **References:** 19 §21, §14 BR-M34-04; 20 §6 (P-R05 Environments); DEC D-263, D-077
+- **Description:** Let a store exist twice without letting the two blur. Keep the configuration draft per store per environment, and implement promotion: copy a published staging version's values into the production draft, then follow the ordinary validate → compile → diff → publish path so nothing reaches production without the usual checks. Promotion never copies domains, certificates, credentials, store-owned settings, the store's delegated feature choices, users or business data, and the screen states that plainly. Mark staging stores so nobody confuses them: always `noindex`, always test provider credentials, and a visible marker inside the workspace. Allow a production store to exist without a staging twin.
+- **Files/components:** `root-admin/domain/config/promotion/`, `root-admin/app/screens/store/environments/`
+- **Database impact:** E-store_environment used as the draft and version scope
+- **API impact:** API-M34-73 (promote), environment scope on API-M34-10…19
+- **Frontend impact:** P-R05 Environments tab, environment switcher in the shell
+- **Backend impact:** PromotionService over the existing publisher
+- **Testing requirements:** TS-SAAS-DEPLOY-19 (promotion copies exactly the permitted values and nothing else), TS-SAAS-DEPLOY-20 (promoted change still goes through validate, diff and publish), TS-SAAS-ISO-23 (staging is `noindex` and uses test credentials), TS-FE
+- **Acceptance criteria:** (1) Drafts and versions are scoped per store per environment, and editing staging never affects production. (2) Promotion lands in the production **draft**, never directly in a published version. (3) Domains, certificates, credentials, store-owned settings, delegated feature states, users and business data are provably not copied. (4) Staging stores are `noindex`, use test provider credentials and are visibly marked in the workspace. (5) A production store can be created without a staging twin. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1R.3-M34-05 · Per-store observability, alert routing, incident severity and canary batching for fleet-wide changes
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1R.3 / M34
+- **Depends on:** T-1R.3-M35-06, T-1R.2-M34-02, T-1R.2-M34-04
+- **Decisions:** D-052, D-035
+- **References:** 19 §22 (OBS-1…3, BLAST-1…4), §14 BR-M35-04; DEC D-264, D-052, D-035; BP §20.3, §24.1
+- **Description:** Make the platform observable per client and keep the blast radius of any change small. Ensure every log line, trace and metric carries `store_id` and no personal data or secret, and build the per-store dashboards, error budgets and alert routing that follow from it, so an alert names the affected store or states that it is platform-wide. Make incident severity include the number of stores affected. Implement canary batching for any change that touches more than one store — a pack or template migration runs one store first, verifies it against its smoke test, then proceeds in batches — and make an all-at-once fleet change impossible through the interface and the API.
+- **Files/components:** `root-admin/platform-ops/observability/`, `root-admin/deploy/batching/`, `infra/runbooks/incident.md`
+- **Database impact:** Batch state on E-pack_migration and the deployment records
+- **API impact:** Batched migration endpoints; alert routing configuration
+- **Frontend impact:** P-R12 health and alerts, P-R06/P-R07 migration batching
+- **Backend impact:** CanaryBatcher, alert router
+- **Testing requirements:** TS-SAAS-ISO-24 (no personal data or secret in logs, traces or metrics), TS-ALERT (routing and named owners), TS-SAAS-DEPLOY-21 (canary failure stops the batch), TS-SAAS-DEPLOY-22 (an all-at-once fleet change is refused)
+- **Acceptance criteria:** (1) Every log line, trace and metric carries `store_id`, and a scan finds no personal data or secret. (2) Per-store dashboards and error budgets exist and alerts name the affected store or state that the issue is platform-wide. (3) Incident severity includes the number of stores affected. (4) A migration touching more than one store runs canary-then-batches; a canary failure stops it. (5) Attempting an all-at-once fleet change is refused through both the interface and the API. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1R.3-M35-09 · Standalone client-hosted installs: provisioning, signed artefact delivery by pull or file, release and upgrade cadence, bounded version skew and health reporting
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1R.3 / M35
+- **Depends on:** T-1R.3-M35-02, T-1R.3-M35-04, T-1R.3-M35-08, T-1A.1-M30-07
+- **Decisions:** D-005, D-107, D-035, D-108
+- **References:** 19 §10.3 (T4), §10.4, §14 BR-M31-15/16; DEC D-269, D-270, D-271, D-272, D-256; BP §16.6, §19.1, §24.1
+- **Description:** Support the client who wants the system on their own server. Provision a standalone install of the unchanged store platform in single-store mode with its own database, storage, index and cache; sign every artefact and bind its manifest to that store and its permitted hosts, so a copied install configures nothing. Implement both delivery paths — a pull from a signed, store-scoped endpoint and an exported file applied by an operator or a pipeline — using the identical artefact, with no special offline format. Define and implement the release and upgrade path for installs the platform does not host, bound version skew to one minor release before the install is flagged, and report health and applied configuration back when connectivity allows, showing a silent install as "unknown" with its last contact time rather than as healthy. Write the runbooks for both operating models, platform-operated and client-operated.
+- **Files/components:** `root-admin/deploy/standalone/`, `backend/platform/bootstrap/standalone/`, signing and key rotation in `root-admin/compiler/`, `infra/runbooks/standalone-install.md`, `infra/runbooks/standalone-upgrade.md`
+- **Database impact:** The store's own database, created by the install; platform-side records of installs, releases and last contact
+- **API impact:** API-M35-09 signed artefact endpoint; API-M35-15…18 health and applied-version intake from remote installs
+- **Frontend impact:** P-R05 Environments &amp; hosting, P-R12 fleet health including remote installs
+- **Backend impact:** ArtefactSigner, key pinning and rotation, SkewMonitor
+- **Testing requirements:** TS-SAAS-DEPLOY-23 (install serves indefinitely with the platform unreachable), TS-SAAS-DEPLOY-24 (artefact for store A refused by store B's install), TS-SAAS-DEPLOY-25 (unsigned or tampered artefact refused), TS-SAAS-DEPLOY-26 (file delivery equals pull delivery), TS-SAAS-REL-04 (skew within the two-schema window), TS-SAAS-ISO-25 (a standalone install shares nothing with any other client)
+- **Acceptance criteria:** (1) A standalone install is provisioned from the unchanged codebase and serves its store in single-store mode with its own database, storage, index and cache. (2) With the platform unreachable it keeps serving indefinitely and only publishing stops. (3) An artefact built for another store, or one whose signature does not verify, is refused with a clear reason. (4) Pull delivery and file delivery produce an identical result from an identical artefact. (5) Version skew beyond one minor release flags the install, and a skewed install still serves correctly within the two-schema window. (6) A silent install shows as "unknown" with its last contact time, never as healthy. (7) Both runbooks exist and have been followed once. (8) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+
+### Stage 1R.3 addition — help content completion (D-280)
+
+#### T-1R.3-M34-06 · Root admin help content completion: an entry for every screen, tab, section and control across P-R01–P-R13, reviewed for accuracy
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1R.3 / M34
+- **Depends on:** T-1R.1-M34-11, T-1R.2-M34-10, T-1R.3-M35-01
+- **Decisions:** D-225
+- **References:** 20-root-admin.md §11 (H-1…H-5); DEC D-280; 19 §24.1 gate 14; MK-R:assets/help/
+- **Description:** Write and review the help content for the finished portal, screen by screen, once the screens are complete enough that the text will not be wrong within a week. Every page gets a guide; every tab, section and control an operator could misread gets its own entry in the six-part shape; the glossary covers the platform's vocabulary. Irreversible and two-person actions say so plainly — decommission, category retirement, changing currency or jurisdiction, changing how stock is identified. Anything gated by an open decision is described as needing a scope decision rather than presented as available. The content is reviewed by somebody who did not write the screen, because the test of an explanation is whether it works for a reader who does not already know the answer.
+- **Files/components:** Help content beside each P-R screen in `root-admin/app/`
+- **Database impact:** None
+- **API impact:** None
+- **Frontend impact:** All P-R screens
+- **Backend impact:** None
+- **Testing requirements:** Automated: every ⓘ opens a populated entry, every referenced key resolves, every glossary term has a definition, coverage report of controls without an entry. Manual: review by a reader who did not build the screen
+- **Acceptance criteria:** (1) Every P-R screen has a page guide and every tab, section and significant control has an entry. (2) The automated coverage check reports zero controls without help and zero unresolved references. (3) Irreversible and two-person actions are flagged in their entries. (4) Capabilities gated by an open decision are described as needing a scope decision, not as available. (5) A reviewer who did not build the screens confirms each entry answers what it is, why it matters and what to do. (6) Sample values are labelled as samples. (7) TASKS.md and STATE.md updated per the continuation protocol.
 - **Evidence:** —
 
 ## Stage 1B.1 — Vendor portal & vendor management
@@ -6824,7 +8460,7 @@ needed to implement it. **This file is the source of truth for task status.** `S
 #### T-1B.1-M14-15 · Stage 1B.1 verification: T11, T12, T13 with two vendors; TS-VEN-01/02/05/06/08/09/10; TS-PROOF-06, TS-PROOF-09; TS-E2E-03
 - **Status:** NOT_STARTED
 - **Stage / Module:** 1B.1 / M14
-- **Depends on:** T-1B.1-M14-05, T-1B.1-M14-07, T-1B.1-M14-08, T-1B.1-M14-09, T-1B.1-M14-11, T-1B.1-M14-13
+- **Depends on:** T-1B.1-M14-05, T-1B.1-M14-07, T-1B.1-M14-08, T-1B.1-M14-09, T-1B.1-M14-11, T-1B.1-M14-13, T-1B.1-M32-01
 - **Decisions:** —
 - **References:** 16 §4 (S), TS-API-01 (stage endpoints), TS-VEN-01, TS-VEN-02, TS-VEN-05, TS-VEN-06, TS-VEN-08, TS-VEN-09, TS-VEN-10, TS-PERM-02, TS-FE-04, TS-PROOF-06, TS-PROOF-09, TS-E2E-03; T11, T12, T13; WP13
 - **Description:** Stage 1B.1 exit gate (16 §4 cadence S; 12 §6.19): run all suites of the stage's module with synthetic data for two vendors V1 and V2 plus the acceptance tests that pass at this stage — T11 (vendor edits another vendor's ID → access denied without exposing data), T12 (new listing non-purchasable until approval) and T13 (edit to an approved warranty → review, no silent live overwrite) (12 §7) — and record the results; no new features are built and any defect is fixed in its owning task, reopened per 14. It re-runs proof scenarios 6 and 9 on the chosen core (TS-PROOF-06, TS-PROOF-09; 12 §8.2), runs the journey TS-E2E-03 (BP §29.3) and TS-REG-01, and verifies the stage completion criteria: no cross-vendor access, approved changes reach the live catalog only after review (WP13), suspended vendors blocked, and the 09 §7 acceptance mapping. The conditional/MOCKUP-ONLY tasks T-1B.1-M14-10 (D-131) and T-1B.1-M14-14 (D-142) are not gate prerequisites; their cases run only if they were built. The availability parts of TS-E2E-03 (API-M14-19 in step 2, API-M06-26 in step 5) and TS-PERM-04.3 (vendor API credential) need stage 1B.2 (T-1B.2-M14-01, T-1B.2-M06-01) and are recorded here as not yet runnable and are run by the 1B.2 gate T-1B.2-M04-04.
@@ -7095,7 +8731,7 @@ needed to implement it. **This file is the source of truth for task status.** `S
 #### T-1B.2-M04-04 · Stage 1B.2 verification: T26, T14, T35 with bulk import during checkout; TS-VEN-03/04, TS-ERP-08, TS-INT-06, TS-ERR-06
 - **Status:** NOT_STARTED
 - **Stage / Module:** 1B.2 / M04
-- **Depends on:** T-1B.2-M22-01, T-1B.2-M04-02, T-1B.2-M14-01, T-1B.2-M14-02
+- **Depends on:** T-1B.2-M22-01, T-1B.2-M04-02, T-1B.2-M14-01, T-1B.2-M14-02, T-1B.2-M32-01
 - **Decisions:** —
 - **References:** 16 §4 (S), TS-API-01 (stage endpoints), TS-ERP-15, TS-VEN-03, TS-VEN-04, TS-ERP-08, TS-INT-06, TS-SEC-04, TS-ERR-06, TS-PERF-05; T14, T26, T35
 - **Description:** Run the Stage 1B.2 exit verification (16 §4 cadence S) once all unconditional 1B.2 tasks are COMPLETED: all suites of the stage's modules (M04, M06, M14, M22, M23 per 16 §17), TS-REG-01, TS-API-01 for the stage endpoints, and the BP acceptance tests that become runnable here — T26 (mixed valid/invalid import rows; repeat import does not duplicate), T14 (a stale supplier feed changes the promise or pauses the listing per the decided D-028 policy) and the bulk-import part of T35 (a large import during checkout keeps agreed checkout performance). Results are recorded in STATE.md §11 and in the Evidence of this task; T14 and T26 are recorded as passed at this gate (12 §7). No new features are built — defects are fixed in the owning task, which is reopened per 14. The conditional tasks T-1B.2-M04-03 and T-1B.2-M05-01 are outside the gate (12 §1.3); if their decisions enabled them, their TS-ECOM-14 cases are run and recorded as well.
@@ -7117,6 +8753,41 @@ needed to implement it. **This file is the source of truth for task status.** `S
    9. TASKS.md and STATE.md updated per the continuation protocol.
 - **Evidence:** —
 
+
+
+### Stage 1B additions — pack-driven vendor portal and import (D-227)
+
+#### T-1B.1-M32-01 · Vendor portal driven by the pack vendor profile: submission fields, availability columns, terminology and capability gating
+- **Status:** NOT_STARTED
+- **Stage / Module:** 1B.1 / M32
+- **Depends on:** T-1B.1-M14-06, T-1A.1-M32-01
+- **Decisions:** —
+- **References:** SAAS §3 S18; 19 §6.5, §16 (M14 row); 04c; DEC D-237, D-236
+- **Description:** Make the vendor portal category-aware. The fields a vendor must supply when submitting an item, the columns of the availability feed, the fulfilment tasks that exist and the wording throughout come from the pack's vendor profile and the store's capabilities, not from electronics assumptions. The vendor portal itself is a capability, so a store that does not use vendors has no portal, no routes and no bundle for it.
+- **Files/components:** `frontend/vendor-portal/` profile-driven forms and tables; vendor profile accessors in `backend/platform/packs/`
+- **Database impact:** None (profile-driven shapes over existing entities)
+- **API impact:** Vendor submission and availability contracts shaped by the profile
+- **Frontend impact:** P-V01–P-V04
+- **Backend impact:** Profile-driven validation of submissions and feeds
+- **Testing requirements:** TS-SAAS-PACK-16 (two packs produce two submission forms and feed shapes), TS-VEN (existing vendor suites unchanged for Tradex), TS-SAAS-CAP (portal absent when the capability is off)
+- **Acceptance criteria:** (1) Submission fields, availability columns and fulfilment tasks come from the vendor profile. (2) A second pack fixture produces a different, coherent vendor experience with no code change. (3) The existing vendor acceptance tests pass unchanged for the Tradex store. (4) With the vendor capability off, no vendor route, screen or bundle exists. (5) All vendor wording comes from terminology tokens. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1B.2-M32-01 · Import mapping profiles driven by the pack catalog schema
+- **Status:** NOT_STARTED
+- **Stage / Module:** 1B.2 / M32
+- **Depends on:** T-1B.2-M04-01, T-1A.4-M32-01
+- **Decisions:** —
+- **References:** SAAS §3 S02, S17; 19 §6.3; DEC D-237; BP §7.4
+- **Description:** Base the validated import on the store's own catalog schema instead of a fixed column set. Mapping profiles are generated from the pack's attribute definitions, units and identity model, so required columns, value validation and error messages are correct for the store's category; the profile is versioned with the schema so an import run records which schema version it validated against.
+- **Files/components:** `backend/<catalog module>/import/` mapping generation from the pack schema
+- **Database impact:** E-import_mapping_profile carries the schema version
+- **API impact:** Import validation responses reference schema-derived rules
+- **Frontend impact:** P-E06 import tab shows the store's own columns
+- **Backend impact:** Schema-derived validators
+- **Testing requirements:** TS-SAAS-PACK-17 (mapping generated per pack), TS-IMP (existing import suites unchanged for Tradex)
+- **Acceptance criteria:** (1) Mapping profiles are generated from the pack schema, including units and identity model. (2) Validation messages name the store's own attributes. (3) An import run records the schema version it validated against. (4) The existing import acceptance tests pass for the Tradex store. (5) A second pack fixture produces different, correct mapping requirements. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
 
 ## Stage 1B.3 — Guided WhatsApp ordering
 
@@ -7655,6 +9326,25 @@ needed to implement it. **This file is the source of truth for task status.** `S
 - **Evidence:** —
 
 
+
+### Stage 2 additions — SaaS scope for the mobile phase (D-227)
+
+#### T-2-M33-01 · Scope only (LATER): mobile experience across templates and packs — the app consumes `theme.json` and the same configuration contracts; per-store app branding and distribution
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 2 / M33
+- **Depends on:** T-2-M28-01
+- **Decisions:** D-085, D-227
+- **References:** SAAS §3 S19, S21; 19 §4.2 (theme.json), §16 (M28 row); DEC D-085, D-238; BP §28.4
+- **Description:** Scope, do not build. Record how the Phase 2 mobile experience works on a multi-store platform: the app reads the same compiled configuration contracts and `theme.json` so a store's branding, terminology and capabilities apply without a per-store build; what template equivalence means on mobile; and how per-store app identity, distribution and store-listing requirements would work if separate apps per store were ever approved. Produce options and costs, decide nothing.
+- **Files/components:** `plan/records/2/mobile-saas-scope.md`
+- **Database impact:** None
+- **API impact:** None
+- **Frontend impact:** None
+- **Backend impact:** None
+- **Testing requirements:** No automated suite (scoping task)
+- **Acceptance criteria:** (1) The document states how configuration, terminology, capabilities and theming reach a mobile client. (2) Template equivalence on mobile is described with options. (3) Per-store app identity and distribution options are costed at option level. (4) Nothing is decided and no code is written. (5) The document feeds the Phase 2 estimate. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
 ## Stage 3 — AI & further expansion — scope and approve only
 
 #### T-3-M29-01 · Scope AI assistance use cases and gates (grounded answers, cost, privacy), incl. A34
@@ -7701,7 +9391,7 @@ needed to implement it. **This file is the source of truth for task status.** `S
 - **Evidence:** —
 
 #### T-3-M03-01 · Assess multiple storefronts / businesses (separate sites or deployments, no SaaS control plane)
-- **Status:** REQUIRES_DECISION
+- **Status:** NOT_APPLICABLE
 - **Stage / Module:** 3 / M03
 - **Depends on:** T-1B.5-M17-01
 - **Decisions:** D-045
@@ -7720,4 +9410,4 @@ needed to implement it. **This file is the source of truth for task status.** `S
    4. D-045 is recorded with value · approver · date (or kept LATER with a reason).
    5. No change is made to frontend/, backend/ or the Phase 1 organisation model.
    6. TASKS.md and STATE.md updated per the continuation protocol.
-- **Evidence:** —
+- **Evidence:** 2026-09-28 · **NOT_APPLICABLE (D-227, D-213)** — the SaaS architecture change superseded D-045: multiple businesses on one configurable platform are Phase 1 architecture, built as stages 1A.1 (multi-store foundation) and 1R.1–1R.3 (Configurable Root Admin), not a Phase 3 assessment. The BP §3.3 boundary rules this task protected (a warehouse is not a company, a supplier is not a tenant) still apply **inside** a store and are carried by `19-saas-platform.md` §10 and BR-M30-01…05. No work outstanding.

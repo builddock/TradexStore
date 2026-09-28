@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<meta name="referrer" content="no-referrer">
+<title>Overview — Configurable Root Admin (internal prototype)</title>
+<link rel="stylesheet" href="assets/ra.css">
+</head>
+<body>
+<div class="ra-internal">INTERNAL PROTOTYPE — <b>Configurable Root Admin</b> — not part of any client store, not linked from the client-facing demo (D-249)</div>
+<main>
+  <section class="hero">
+    <div style="max-width:1100px">
+      <span class="tag acc">Prototype v0.1 · 28 Sep 2026 · internal only</span>
+      <h1 style="font-size:30px;margin-top:14px">Configurable Root Admin</h1>
+      <p class="muted" style="max-width:80ch;margin-top:10px;font-size:15px;line-height:1.6">
+        The control plane of the SaaS commerce platform. It is where a store is created, given an e-commerce
+        category, given a site template, branded, feature-configured and deployed. It is a separate portal on a
+        separate codebase with its own database and its own sign-in — no store user ever reaches it, and no store
+        page links to it.
+      </p>
+      <div class="row" style="margin-top:22px">
+        <a class="btn pri" href="ra-login.html">Open the portal</a>
+        <a class="btn" href="ra-dashboard.html">Skip sign-in → dashboard</a>
+        <a class="btn" href="ra-store-new.html">Create a store (wizard)</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="ra-body" style="max-width:1400px;margin:0 auto">
+    <div class="note acc mb"><svg data-i="info"></svg><div>
+      <b>Every screen explains itself.</b> Click the small <b>ⓘ</b> next to any heading, tab or control for a
+      plain-language explanation of what it is, why it matters, how to read it and what to do. The <b>?</b> in the
+      top bar opens the guide for the whole page, with a search box and a glossary of every term used here. Words
+      with a dotted underline explain themselves on hover. The <b>Help icons on/off</b> button at the foot of the
+      menu hides them once you know your way around.
+    </div></div>
+
+    <div class="note warn mb"><svg data-i="warn"></svg><div>
+      <b>Do not link this folder from the client-facing mockup.</b> Nothing in <code>index.html</code>, the
+      prototype toolbar, <code>credits.html</code> or any <code>store-*</code>, <code>erp-*</code> or
+      <code>vendor-*</code> page may point here (decision <b>D-249</b>, invisibility rule <b>INV-8</b>). Every page
+      here carries <code>noindex</code>. The repository root is published by GitHub Pages, so this folder is
+      reachable by URL even though nothing links to it — see <code>plan/STATE.md</code> known issues.
+    </div></div>
+
+    <h2>The thirteen screens</h2>
+    <p class="muted small mt-s mb">Screen inventory P-R01–P-R12, recorded as decision D-253 and specified in
+      <code>plan/20-root-admin.md</code> §6.</p>
+    <div class="scrn">
+      <a href="ra-login.html"><div class="id">P-R01</div><div class="nm">Platform sign-in</div><div class="ds">Email, password and mandatory multi-factor. Neutral branding, no store identity.</div></a>
+      <a href="ra-dashboard.html"><div class="id">P-R02</div><div class="nm">Platform dashboard</div><div class="ds">Fleet state, deployments, configuration drift, failed smoke tests, attention queue, platform health.</div></a>
+      <a href="ra-stores.html"><div class="id">P-R03</div><div class="nm">Stores</div><div class="ds">The store registry: category, template, state, domain, configuration version, last deployment.</div></a>
+      <a href="ra-store-new.html"><div class="id">P-R04</div><div class="nm">Create store (wizard)</div><div class="ds">Six steps: details · category · template · branding · features · review and deploy.</div></a>
+      <a href="ra-store.html"><div class="id">P-R05</div><div class="nm">Store detail &amp; configuration</div><div class="ds">Everything about one store, including versions, diff, rollback and the danger zone.</div></a>
+      <a href="ra-packs.html"><div class="id">P-R06</div><div class="nm">E-commerce categories</div><div class="ds">Vertical packs: what each turns on, versions, seeds, compatible templates, migrations.</div></a>
+      <a href="ra-templates.html"><div class="id">P-R07</div><div class="nm">Templates</div><div class="ds">Site templates with previews, versions, compatibility and lifecycle.</div></a>
+      <a href="ra-capabilities.html"><div class="id">P-R08</div><div class="nm">Capabilities</div><div class="ds">The feature registry, per-category defaults and the cross-store matrix.</div></a>
+      <a href="ra-terminology.html"><div class="id">P-R09</div><div class="nm">Terminology</div><div class="ds">The words each store uses, per category and per locale, with a coverage report.</div></a>
+      <a href="ra-deployments.html"><div class="id">P-R10</div><div class="nm">Deployments</div><div class="ds">Deployment runs with their step machine, logs, artefact inspector and rollback.</div></a>
+      <a href="ra-admin.html"><div class="id">P-R11</div><div class="nm">Platform users &amp; audit</div><div class="ds">Platform users, roles, multi-factor state, the audit trail and support-access grants.</div></a>
+      <a href="ra-bundles.html"><div class="id">P-R13</div><div class="nm">Bundles</div><div class="ds">The reusable building blocks a category is assembled from, and the completeness check.</div></a>
+      <a href="ra-settings.html"><div class="id">P-R12</div><div class="nm">Settings &amp; health</div><div class="ds">Global defaults, storage, retention, DNS and certificates, fleet health, maintenance.</div></a>
+    </div>
+
+    <h2 style="margin-top:32px">How the two platforms fit together</h2>
+    <div class="grid g2 mt">
+      <div class="card"><div class="card-h"><h3>This platform</h3></div><div class="card-b">
+        <p class="small muted">Holds the authoritative configuration of every store in its own database, compiles it
+          into an immutable, versioned artefact, and publishes it. Operators work here; store users never do.</p>
+        <dl class="kv mt"><dt>Codebase</dt><dd><code>root-admin/</code></dd>
+          <dt>Database</dt><dd>Its own — no connection to a store database</dd>
+          <dt>Sign-in</dt><dd>Separate realm, multi-factor mandatory</dd>
+          <dt>Dependency</dt><dd>One way: platform → artefact → store</dd></dl>
+      </div></div>
+      <div class="card"><div class="card-h"><h3>The store platform</h3></div><div class="card-b">
+        <p class="small muted">One codebase serving every store. At boot it loads the artefact into memory and reads
+          nothing from a database for configuration afterwards, so configuration costs nothing per request.</p>
+        <dl class="kv mt"><dt>Codebase</dt><dd><code>frontend/</code> + <code>backend/</code></dd>
+          <dt>Per store</dt><dd>Category, features, wording, theme, template</dd>
+          <dt>Store users see</dt><dd>A normal e-commerce system for their business</dd>
+          <dt>Store users never see</dt><dd>Other stores, other categories, this portal</dd></dl>
+      </div></div>
+    </div>
+
+    <div class="note mt"><svg data-i="info"></svg><div>
+      Sample store names, colours, counts and dates in this prototype are illustrative and are
+      <b>not requirements</b> — the same rule as the store mockup (<code>plan/00-conventions.md</code> §1.1, §1.3).
+      Architecture: <code>plan/19-saas-platform.md</code> · portal: <code>plan/20-root-admin.md</code> ·
+      source: <code>docs/SAAS_ARCHITECTURE_CHANGE.md</code>.
+    </div></div>
+  </div>
+</main>
+<script src="assets/ra.js"></script>
+<script>document.querySelectorAll("svg[data-i]").forEach(function(s){s.outerHTML=RA.icon(s.dataset.i)});</script>
+</body>
+</html>

@@ -795,3 +795,53 @@ proposed; D-199 is unused.
 | Registry | Addition | Module | Label | Justification | Source |
 |---|---|---|---|---|---|
 | Entity | **E-restore_rehearsal** — restore rehearsal record: environment restored to, backup/restore point, started/finished, measured recovery time and recovery point, reconciliation result (orders, payments, opening stock by location), evidence attachment(s), performed by, reviewed by, state (scheduled / passed / failed) | M26 (created via M24 API-M24-09) | DOCUMENTED | Restore evidence is a documented verification and go-live item; without a record, T28 evidence and the "Restore test" status on P-E15/shell cannot be produced | BP §20.1 ("Backup restore … Restore evidence and reconciliation"), §16.6, §23.4 ("restore evidence available"), §24.3 ("restore rehearsals"), T28; MK:erp-admin.html#system ("Last restore rehearsal … reconciled … Evidence RR-0009") |
+
+---
+
+## SaaS additions — the administration split (2026-09-28, `D-227`)
+
+Everything this file describes is **store administration**. It is one of two administrations now.
+
+| | Store administration (this file, M24, P-E15) | Platform administration (`20-root-admin.md`, M34, P-R01–P-R12) |
+|---|---|---|
+| Who | The store owner, representative admin and authorised staff | Platform operators (`R-root_*`, `00` §9.1) |
+| Where | Inside the store's own workspace | A separate portal on a separate hostname, separate codebase, separate database |
+| What | Store users and roles, thresholds the owner owns, locations, the store's own integrations, audit, and the **store-editable, unlocked** configuration subset (`D-243`) | Store creation, e-commerce category, template, branding, capability set, locked settings, terminology, domains, deployment, decommission |
+| What it must never show | Any platform concept: other stores, categories, templates, capability or configuration identifiers, locked keys (absent, not greyed — `19` §9 INV-4) | — |
+
+Concretely, for P-E15:
+
+- The settings sections are rendered from the configuration schema and contain only keys the store may edit
+  (`T-1A.16-M24-08`). Labels are the schema's plain-language descriptions, grouped in business language; key
+  identifiers are never displayed.
+- Sections that exist in the mockup but describe platform-owned behaviour are removed from the store view and
+  appear instead on P-R05/P-R12 — not duplicated, not disabled.
+- The audit viewer additionally shows any platform support-access action taken in this store, attributed to the
+  named platform user (`D-246`), so the owner can always see who looked at their data.
+- Feature flags (§9.9) remain the store's operational flags. They are **not** capabilities: a capability is
+  platform-owned and invisible here.
+
+---
+
+## Store-side feature, channel and automation administration (2026-09-28, `D-258`, `D-273`, `D-274`)
+
+P-E15 gains two sections beyond the schema-driven settings of the previous addition, and P-E14 gains a grant-aware
+automation list. All three follow the same rule: **only what the platform delegated appears** (`19` §5.4.3 CTL-7,
+§9 INV-4).
+
+| Section | What the store's administrator can do | What they never see |
+|---|---|---|
+| **Features** (`T-1A.16-M24-09`) | Switch the modules and features delegated to them, in business language, with dependencies resolved and an open-work warning before switching something off | Locked features, features the store does not have, module or capability identifiers, configuration keys |
+| **Channels** (`T-1A.16-M24-11`) | For delegated channels: switch on and off, manage the sender identity and its verification, edit and submit templates, see delivery health and any suspension | Channels the store was not granted; other stores' provider accounts; any credential value, ever |
+| **Automations** (P-E14, `T-1A.13-M17-01`) | Enable, preview, pause and read the run log for granted automations | Automations the store was not granted; the platform's catalogue of what exists |
+
+Two behaviours matter more than the screens:
+
+1. **A delegated switch is not a request.** It takes effect within the propagation budget with no deployment and
+   no platform involvement, because delegated values live in the store's own database (layer L4).
+2. **Enabling a delegated channel is still verified.** The store gets the same clear "what is missing" report an
+   operator would — a verified sender, approved templates — rather than a switch that appears to work and then
+   silently fails to send.
+
+Feature flags (§9.9) remain the store's own operational flags and are still **not** capabilities: a capability is
+platform-owned, and the store only ever sees the delegated subset.

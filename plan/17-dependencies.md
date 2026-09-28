@@ -2661,3 +2661,99 @@ graph-independent stage pairs: 22
 Additional checks made while writing this file: all 492 endpoint IDs of `06-api.md` map to at least one skeleton task
 (§11); all 214 suite IDs of `16` §5 are named by at least one task (Appendix C); every decision ID cited here exists in
 `DECISIONS.md` (D-216–D-219 are cited only as the unused reserved range).
+
+---
+
+## SaaS dependency additions (2026-09-28, `D-227`)
+
+Architecture: `19-saas-platform.md`; stages and skeleton: `12-phases.md` §10.
+
+### A. The critical path changed
+
+The Phase 1 critical path now runs through the configuration layer twice:
+
+```
+T-0-M01-05 ──► TS-PROOF-11/12 (T-0-M30-01, T-0-M31-01) ──► T-0-M01-06 (scorecard) ──► D-001
+   └─► T-0-M32-01 (pack inventory) ──► T-0-M31-02 (config inventory) ──┐
+                                                                        ▼
+1A.1: M01-02/03/04 ──► M31-01 (schema) ──► M31-02 (capabilities) ──► M31-03 (loader)
+                            │                                            │
+                            └─► M30-01 (store context) ──► M30-02 (tenant-safe data access)
+                                                                         ▼
+                                              M31-04 (reload) ──► M35-01 (bootstrap CLI)
+                                                                         ▼
+                                              M30-04 (two-store fixture) ──► everything else in 1A
+                                                                         ▼
+1R.1: M34-01 (scaffold) ──► M34-02/03/04 ──► M34-06 ──► **M34-07 (compiler)** ──► M34-08 (publish)
+                                                                         ▼
+1R.2: pack + template + branding + terminology + settings ──► M34-09 (wizard) ──► M34-10 (gate)
+                                                                         ▼
+1R.3: M35-01 (deployment machine) ──► domains/artefacts/smoke/fleet ──► M34-03 (release gate)
+```
+
+### B. The three tasks that gate the most work
+
+| Task | Gates | Why |
+|---|---|---|
+| `T-1A.1-M30-02` tenant-safe data access | Every schema and service task in 1A | A table created without `store_id` has to be migrated later, across live data |
+| `T-1A.1-M31-03` artefact loader and snapshot | Every configuration-driven task in 1A and all of 1R | It is the only supported way to read configuration |
+| `T-1R.1-M34-07` the configuration compiler | All of 1R.2 and 1R.3 | Nothing can be configured or deployed before it exists; it is the critical path of phase 1R |
+
+Schedule these three first within their stages. Slipping any of them slips everything after it.
+
+### C. Parallel work
+
+- In 1A.1, the M30/M31 chain and the existing M01 foundation chain run side by side after `T-1A.1-M01-03`
+  (`12-phases.md` §5 P12).
+- In 1R.2, the pack track (`M34-01`, `M34-02`, `M32-01`) and the template track (`M34-03`, `M34-04`, `M33-01`)
+  are independent until the wizard (`M34-09`).
+- In 1R.3, domains (`M35-03`), artefact distribution (`M35-04`) and fleet health (`M35-06`) are independent after
+  `M35-01`.
+- `T-1R.2-M32-01` (`VP-fashion_apparel`) and `T-1R.2-M33-01` (`TPL-aurora`) can be authored by different people
+  and are the evidence for the stage gate.
+
+### D. What must not be deferred
+
+Deferring any of these creates a migration across live data or a security retrofit, which is more expensive than
+doing them in order: `store_id` on every table; the capability declaration on every endpoint; terminology tokens
+instead of literal concept words; the store context in every job payload; and per-store uniqueness on every
+unique constraint. They are cheap while the table or endpoint is being written and expensive afterwards.
+
+---
+
+## Feature-catalogue, channel and automation dependencies (2026-09-28, `D-273`, `D-274`)
+
+### E. Where these sit on the critical path
+
+```
+1A.1  M31-02 capabilities ──► M31-08 surfaces/modules/control ──► M31-09 full catalogue + build-status gate
+                                     │                                        │
+                                     ▼                                        ▼
+1A.13 M20-01 notification core ──► M20-06 channel model ──► M20-07 messaging service ──► M17-01 automation catalogue
+                                                                                              │
+1A.16 M24-09 store Features screen ──► M24-11 store Channels & Automations screen ◄───────────┘
+                                                                                              │
+1R.2  M34-11 surface/module/delegation editor ──► M34-13 channel, integration & automation grants
+```
+
+### F. The ordering rule that matters most
+
+**The messaging service comes before any automation that sends a message, and the channel model comes before the
+messaging service.** Building automations first produces rules that each talk to a provider, each implement their
+own consent check, and each get it slightly differently — which is the failure this architecture is designed to
+prevent and which is expensive to undo once eight automations exist.
+
+### G. Work that can run in parallel
+
+- `T-1A.1-M31-09` (catalogue declarations) is mostly independent writing and can run alongside the rest of 1A.1
+  once `M31-08` defines the control model.
+- Channel adapters are independent of each other: email, SMS and WhatsApp can be built by different people once
+  `T-1A.13-M20-07` fixes the contract.
+- `T-1R.2-M34-13` (grants in the root admin) needs only the contracts, not the adapters, so it can start as soon
+  as `T-1A.13-M20-06` lands.
+
+### H. What must not be deferred
+
+`store_id` on `E-message_dispatch` and `E-automation_run`; the unique message key; the consent check inside the
+messaging service; the capability declaration on every automation. Each is trivial while the table or handler is
+being written, and each requires a data migration plus a security review afterwards.

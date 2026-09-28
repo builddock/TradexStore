@@ -1931,3 +1931,81 @@ with the reason. **65 endpoints added** (427 → 492).
   API-M14-25/-26 MOCKUP-ONLY D-131.
 - **New pages mapped:** P-S14 (API-M02-02/-03/-08/-16/-17/-38), P-S15 (API-M04-02, API-M27-01), P-E16 and P-V05
   (API-M02-02…-09, -12…-17, -33, -38) — see §7.3.
+
+---
+
+## 9. SaaS API additions (2026-09-28, `D-227`)
+
+Two API surfaces now exist. They share the conventions of §1 (`D-080`, `D-079`: base path and versioning,
+pagination, error envelope with correlation id, money and date formats, idempotency transport, optimistic
+concurrency) because one convention across two applications is cheaper than two — but they are different
+applications on different hostnames with different identity realms (`19` §2 SEP-3).
+
+### 9.1 Store API — what changes
+
+| Change | Detail |
+|---|---|
+| Store scope | Every request is resolved to exactly one store by host before routing. No endpoint takes a store identifier as a parameter, and none accepts one from the client (BP §17.4: never trust a client-sent scope) |
+| Capability gating | Every store-facing endpoint declares the capability it belongs to. When that capability is off, the route is not registered and the response is **404**, with no message naming the feature (`19` §9 INV-3). 403 is reserved for "the store has it, you may not" |
+| Check order | store resolution → capability → authentication → permission → validation → business rule |
+| Configuration exposure | A store-facing endpoint may return the store's **effective** configuration only. It never returns the catalogue of what is possible, a list of disabled features, another store's data, pack or template identifiers, or capability identifiers (`19` §9 INV-2) |
+| Error messages | Rendered from terminology tokens; they never contain platform vocabulary (`19` §9 INV-5) |
+| New endpoints | Store settings read/write for the L4 subset only (`T-1A.1-M31-05`), consumed by P-E15 |
+| Rate limiting | Applied per store as well as per client, so one store cannot exhaust another's budget (`D-084`) |
+
+### 9.2 Platform API — `API-M34-*`, `API-M35-*` (root admin only)
+
+Catalogued in `20-root-admin.md` §8. It is never served on a store hostname, never reachable from a store
+runtime, and authenticates only platform users (`D-245`) or the store-runtime callback credential used for
+`config.applied`.
+
+| Group | Range | Screens |
+|---|---|---|
+| Stores | API-M34-01…09 | P-R03, P-R05 |
+| Configuration (draft, validate, compile, diff, publish, versions, rollback) | API-M34-10…19 | P-R05 |
+| Vertical packs | API-M34-20…27 | P-R06 |
+| Templates | API-M34-28…35 | P-R07 |
+| Capabilities | API-M34-36…41 | P-R08, P-R05 |
+| Terminology | API-M34-42…47 | P-R09, P-R05 |
+| Branding | API-M34-48…53 | P-R05, P-R04 |
+| Platform users, roles, audit | API-M34-54…60 | P-R11 |
+| Support access | API-M34-61…64 | P-R11 |
+| Deployment | API-M35-01…08 | P-R10 |
+| Domains & TLS | API-M35-09…14 | P-R05 |
+| Fleet (instance registry, `config.applied` intake, drift, retention) | API-M35-15…18 | P-R12 |
+
+Each endpoint is contracted in full when its owning task is picked (protocol step 13), in the same format as the
+store endpoints above. Mutating platform endpoints are audited (`BR-M34-01`); publish and deployment endpoints
+are idempotent (`D-079`); two-person actions cannot be completed through a single authenticated call.
+
+---
+
+## 10. Feature-control, channel and automation API additions (2026-09-28, `D-273`, `D-274`, `D-278`)
+
+### 10.1 Store API — new endpoint groups
+
+| Group | Endpoints | Consumed by | Notes |
+|---|---|---|---|
+| Store features | list delegated items with their current value; set a delegated item; read the open-work impact before switching one off | P-E15 Features (`T-1A.16-M24-09`) | Returns **only** delegated items. A non-delegated item behaves exactly as an unknown one (404) |
+| Store channels | list the store's channels; create/update a binding; start and read sender verification; list template requirements and their state | P-E15 Channels (`T-1A.16-M24-11`) | Credentials are write-only; a read never returns a secret |
+| Store templates | list, read, create version, submit for approval, read approval state | P-E15 Templates | Versioned; provider approval state reported honestly |
+| Store automations | list granted automations; preview; enable/pause; read the run log | P-E14 | Only automations whose capability resolves on appear |
+| Delivery status intake | provider webhooks per channel | Providers | Signed, replay-safe, store-scoped by the binding, idempotent on the provider message id |
+| Store public API (`CAP-STORE_API`, `D-278`) | the client's own read/write access under capability-aware scopes | The client's systems | Per-store keys, per-store rate limits, full audit, same 404-not-403 rule |
+| Outbound webhooks (`CAP-WEBHOOKS`, `D-278`) | subscription CRUD; delivery log; replay | The client's systems | Signed, retried with backoff, auto-suspended on repeated failure |
+
+### 10.2 Rules that apply to all of them
+
+| # | Rule |
+|---|---|
+| 1 | Every endpoint declares its capability. When the capability is off the route is not registered and the answer is **404** — including the delivery-status intake, so a provider cannot be used to probe which channels a store has |
+| 2 | No endpoint returns a secret, a credential, another store's data, or the catalogue of what is possible — only the store's **effective** set (`19` §9 INV-2) |
+| 3 | Send-related endpoints are idempotent on the message key; webhook intake is idempotent on the provider message id (`D-079`) |
+| 4 | Rate limits apply per store as well as per client, and per channel (`19` §20) |
+| 5 | Error messages are rendered from terminology tokens and name no platform concept |
+
+### 10.3 Platform API — new group
+
+`API-M34-74…80`: channel bindings per store, sender verification, template requirements, integration bindings,
+automation grants, and the publish-check report that lists what a granted channel is still missing
+(`20-root-admin.md` §8).

@@ -27,7 +27,8 @@ from pathlib import Path
 PLAN = Path(__file__).resolve().parent.parent
 STATUSES = ["NOT_STARTED", "IN_PROGRESS", "BLOCKED", "REQUIRES_DECISION", "COMPLETED", "NOT_APPLICABLE"]
 DONE = ("COMPLETED", "NOT_APPLICABLE")  # both satisfy dependencies (D-213)
-PHASE_ORDER = {"0": 0, "1A": 1, "1B": 2, "2": 3, "3": 4}
+# Stage order after the SaaS change (D-227): 0 -> 1A.* -> 1R.* (root admin) -> 1B.* -> 2 -> 3.
+PHASE_ORDER = {"0": 0, "1A": 1, "1R": 2, "1B": 3, "2": 4, "3": 5}
 TASK_ID = re.compile(r"T-[0-9A-Z.]+-M\d{2}-\d{2,3}")
 
 # Stage-order rules from 12-phases.md §5 (continuation protocol step 8d-e). Keep in sync with that section.
@@ -48,6 +49,8 @@ PARALLEL_TASKS = {"T-1A.17-M25-01": {"1A.14", "1A.15", "1A.16"},
                   "T-1A.17-M02-01": {"1A.14", "1A.15", "1A.16"},
                   "T-1A.17-M27-01": {"1A.14", "1A.15", "1A.16"}}
 # P8: Phase 1B starts after cutover. If D-048 decides a combined 1A+1B launch (P9), remove this gate.
+# P12 (D-227): the Configurable Root Admin (1R.*) is built on the multi-store foundation delivered in stage
+# 1A.1; the ordinary stage-order rule already keeps it behind the 1A stages, so it needs no extra gate.
 STAGE_GATES = {"1B": "T-1A.17-M25-06"}
 LATER_STAGES = {"2", "3"}                      # never offered as next task (protocol step 8e)
 
@@ -61,7 +64,7 @@ DEC_ID = re.compile(r"D-\d{3}")
 
 def stage_key(stage):
     """'1A.10' -> (1, 10); '0' -> (0, 0); unknown stages sort last."""
-    m = re.match(r"^(0|1A|1B|2|3)(?:\.(\d+))?$", stage.strip())
+    m = re.match(r"^(0|1A|1R|1B|2|3)(?:\.(\d+))?$", stage.strip())
     if not m:
         return (99, 0)
     return (PHASE_ORDER[m.group(1)], int(m.group(2) or 0))
@@ -154,7 +157,9 @@ def analyse(tasks, order, decs):
                 issues.append(f"{tid}: references unknown decision {d}")
         deps_ok = all(d in done for d in t["deps"])
         decs_ok = not any(decision_open(decs, d) for d in t["decisions"])
-        if t["status"] in DONE and not deps_ok:
+        # NOT_APPLICABLE means a DECIDED decision cancelled the task (D-213); it satisfies dependents but its
+        # own dependencies are irrelevant, so only COMPLETED is checked here.
+        if t["status"] == "COMPLETED" and not deps_ok:
             issues.append(f"{tid}: COMPLETED but dependencies not all COMPLETED")
         if t["status"] == "NOT_STARTED" and deps_ok and decs_ok:
             eligible.append(tid)

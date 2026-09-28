@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<meta name="referrer" content="no-referrer">
+<title>Deployments — Configurable Root Admin (internal prototype)</title>
+<link rel="stylesheet" href="assets/ra.css">
+</head>
+<body>
+<div class="ra-internal" data-help="ra.internal">INTERNAL PROTOTYPE — <b>Configurable Root Admin</b> — not part of any client store, not linked from the client-facing demo (D-249)</div>
+<main data-tabs>
+  <div class="ra-head">
+    <div><h1>Deployments</h1>
+      <p class="sub">Creating or changing a store runs the same nine steps. Every step is safe to retry, a run can
+        be resumed after an interruption, and a failed check rolls the store back automatically while it keeps
+        serving.</p></div>
+    <div class="act"><a class="btn pri" href="ra-store-new.html">Create store</a></div>
+  </div>
+
+  <div class="tabs">
+    <button data-tab="d-run" data-help="ra.d.run">Running now</button>
+    <button data-tab="d-hist" data-help="ra.d.hist">History</button>
+    <button data-tab="d-art" data-help="ra.d.art">Published configurations</button>
+  </div>
+
+  <section class="pane" id="d-run">
+    <div class="grid g-2-1">
+      <div class="card">
+        <div class="card-h"><h2 data-help="ra.d.run">Oakrow Furniture — first deployment</h2><span class="sp"></span>
+          <span class="tag acc"><span class="dot"></span>Running · 4 m 12 s</span></div>
+        <div class="card-b">
+          <div class="pipe">
+            <div class="st done"><span class="ic">✓</span><div><div class="sn">Check the configuration</div>
+              <div class="sd">86 features, 41 settings, structure and wording all valid · colour contrast passed</div></div><span class="sm">2 s</span></div>
+            <div class="st done"><span class="ic">✓</span><div><div class="sn">Build it</div>
+              <div class="sd">412 KB · 8 files · checksum sha256:3c91b2…77ef · identical to the trial build</div></div><span class="sm">1.8 s</span></div>
+            <div class="st done"><span class="ic">✓</span><div><div class="sn">Show what will change</div>
+              <div class="sd">First deployment — everything is new; accepted by A. Menon</div></div><span class="sm">—</span></div>
+            <div class="st done"><span class="ic">✓</span><div><div class="sn">Set up the store</div>
+              <div class="sd">Storage, secure storage for credentials, address registered, certificate requested</div></div><span class="sm">46 s</span></div>
+            <div class="st done"><span class="ic">✓</span><div><div class="sn">Publish the configuration</div>
+              <div class="sd">Stored and announced to every runtime</div></div><span class="sm">3 s</span></div>
+            <div class="st run"><span class="ic">●</span><div><div class="sn">Create the starting content</div>
+              <div class="sd">Seed set 4 of 7 — furniture categories and room attributes</div></div><span class="sm">running</span></div>
+            <div class="st"><span class="ic">6</span><div><div class="sn">Wait for every runtime to apply it</div>
+              <div class="sd">4 instances</div></div><span class="sm">—</span></div>
+            <div class="st"><span class="ic">7</span><div><div class="sn">Check the store works</div>
+              <div class="sd">Home, category, product, search, basket, sign-in, staff sign-in, theme, wording</div></div><span class="sm">—</span></div>
+            <div class="st"><span class="ic">8</span><div><div class="sn">Go live</div>
+              <div class="sd">Invite the owner and switch the store on</div></div><span class="sm">—</span></div>
+          </div>
+          <div class="row mt"><button class="btn sm" data-demo="Prototype: shows the full log for the running step.">View log</button>
+            <button class="btn sm" data-demo="Prototype: a step can be retried safely — it never creates anything twice.">Retry step</button>
+            <button class="btn sm dan" data-demo="Prototype: cancelling rolls back anything this run created.">Cancel run</button></div>
+        </div>
+      </div>
+      <div class="stack">
+        <div class="card"><div class="card-h"><h3 data-help="ra.d.run">If a check fails</h3></div><div class="card-b small muted stack">
+          <p>The store is put back on its previous configuration automatically and keeps serving throughout. The
+            failure, the check that failed and its output are shown here and sent to the operator.</p>
+          <p>For a first deployment there is no previous configuration, so everything the run created is removed
+            and nothing is left behind.</p>
+        </div></div>
+        <div class="card"><div class="card-h"><h3 data-help="ra.d.run">Yesterday's rollback</h3></div><div class="card-b">
+          <div class="note bad"><svg data-i="warn"></svg><div><b>Atelier Nine v22</b> — the product page returned
+            an error during the check. Rolled back to v21 in 9 seconds. No customer request failed.</div></div>
+          <a class="btn sm mt" href="#" data-demo="Prototype: opens the failed run with its log and the failing check.">Open the run</a>
+        </div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pane" id="d-hist">
+    <div class="card"><div class="card-h"><h2 data-help="ra.d.hist">All runs</h2><span class="sp"></span>
+      <select style="width:auto"><option>All stores</option><option>Atelier Nine</option><option>Tradex Computers</option></select></div>
+      <div id="hist"></div></div>
+  </section>
+
+  <section class="pane" id="d-art">
+    <div class="card mb"><div class="card-h"><h2 data-help="ra.d.art">Published configurations</h2><span class="sp"></span>
+      <span class="tag">at least the last 20 per store are kept, so going back is instant</span></div>
+      <div id="art"></div></div>
+    <div class="card"><div class="card-h"><h3 data-help="ra.d.art">Inside a published configuration</h3><span class="sp"></span>
+      <span class="mono xs dim">config/generated/atelier/v23/</span></div>
+      <div class="card-b"><div class="pre">manifest.json            2.1 KB   <span class="c">what this is: store, version, category, template, languages</span>
+config.json             18.4 KB   <span class="c">every setting, already resolved — nothing left to look up</span>
+capabilities.json        3.2 KB   <span class="c">exactly which features this store has</span>
+navigation.json          9.7 KB   <span class="c">the menus, already filtered</span>
+catalog-schema.json     44.1 KB   <span class="c">categories, attributes, variants, units</span>
+terminology.en-IN.json  11.8 KB   <span class="c">every word this store uses</span>
+theme.json               4.6 KB   <span class="c">colours and type, for emails and documents</span>
+theme.css                6.9 KB   <span class="c">colours and type, for the website</span>
+assets.json              1.1 KB   <span class="c">where the logo and images live</span>
+checksum.sha256            96 B   <span class="c">proof the files are intact</span>
+
+<span class="c">Total 412 KB · built in 1.8 s · loaded once when a server starts · read from memory afterwards,
+so a page view costs nothing in database queries to know how this store behaves.</span></div></div></div>
+  </section>
+</main>
+<script src="assets/ra.js"></script>
+<script src="assets/ra-help.js"></script>
+<script src="assets/help/glossary.js"></script>
+<script src="assets/help/shell.js"></script>
+<script src="assets/help/ra-deployments.js"></script>
+<script>
+document.getElementById("hist").innerHTML = RA.table(
+  ["Started", "Store", "Kind", "Version", "Result", "Duration", "By"],
+  [
+   ["today 11:42", "Oakrow Furniture", "First deployment", "v4", '<span class="tag acc"><span class="dot"></span>Running</span>', "4 m 12 s", "A. Menon"],
+   ["today 08:15", "Harbour Fresh Seafood", "Configuration change", "v9", '<span class="tag ok"><span class="dot"></span>Succeeded</span>', "38 s", "A. Menon"],
+   ["yesterday 18:03", "Atelier Nine", "Template change", "v23", '<span class="tag ok"><span class="dot"></span>Succeeded</span>', "51 s", "S. Iyer"],
+   ["yesterday 17:30", "Atelier Nine", "Configuration change", "v22", '<span class="tag bad"><span class="dot"></span>Rolled back — check failed</span>', "1 m 06 s", "S. Iyer"],
+   ["26 Sep 14:22", "Tradex Computers", "Configuration change", "v42", '<span class="tag ok"><span class="dot"></span>Succeeded</span>', "44 s", "A. Menon"],
+   ["24 Sep 18:19", "Atelier Nine", "Category migration", "v21", '<span class="tag ok"><span class="dot"></span>Succeeded</span>', "2 m 44 s", "R. Nair"],
+   ["22 Sep 10:05", "Verde Leaf Garden Co.", "Configuration change", "v17", '<span class="tag ok"><span class="dot"></span>Succeeded</span>', "40 s", "R. Nair"],
+   ["18 Sep 16:40", "Paw Post Pet Supplies", "Suspend", "—", '<span class="tag ok"><span class="dot"></span>Succeeded</span>', "12 s", "R. Nair"]
+  ]);
+document.getElementById("art").innerHTML = RA.table(
+  ["Store", "Version", "Built", "Size", "Checksum", "Applied by", ""],
+  [
+   ["Atelier Nine", "v23 <span class='tag ok'>live</span>", "yesterday 18:03", "412 KB", "<span class='mono'>9f31c4…a07b</span>", "4 of 4 instances", '<button class="btn sm" data-demo="Prototype: shows the manifest and lets you compare it with another version.">Inspect</button>'],
+   ["Tradex Computers", "v42 <span class='tag ok'>live</span>", "26 Sep 14:22", "986 KB", "<span class='mono'>21ea77…b3c5</span>", "4 of 4 instances", '<button class="btn sm" data-demo="Prototype: inspect this configuration.">Inspect</button>'],
+   ["Harbour Fresh Seafood", "v9 <span class='tag ok'>live</span>", "today 08:15", "357 KB", "<span class='mono'>b70c19…5d8a</span>", "<span class='tag bad'>3 of 4 instances</span>", '<button class="btn sm" data-demo="Prototype: one instance is behind. Force a reload from fleet health.">Inspect</button>'],
+   ["Verde Leaf Garden Co.", "v17 <span class='tag ok'>live</span>", "22 Sep 10:05", "402 KB", "<span class='mono'>4c8f30…12bb</span>", "4 of 4 instances", '<button class="btn sm" data-demo="Prototype: inspect this configuration.">Inspect</button>'],
+   ["Atelier Nine", "v22", "yesterday 17:30", "409 KB", "<span class='mono'>44ba09…31de</span>", "<span class='dim'>rolled back</span>", '<button class="btn sm" data-demo="Prototype: republishing an earlier version is how a rollback works.">Republish</button>']
+  ]);
+RA.boot();
+</script>
+</body>
+</html>

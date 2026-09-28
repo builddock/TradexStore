@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<meta name="referrer" content="no-referrer">
+<title>Settings & health — Configurable Root Admin (internal prototype)</title>
+<link rel="stylesheet" href="assets/ra.css">
+</head>
+<body>
+<div class="ra-internal" data-help="ra.internal">INTERNAL PROTOTYPE — <b>Configurable Root Admin</b> — not part of any client store, not linked from the client-facing demo (D-249)</div>
+<main data-tabs>
+  <div class="ra-head">
+    <div><h1>Platform settings and health</h1>
+      <p class="sub">How the platform itself is set up and how it is behaving. None of this is visible to any
+        store.</p></div>
+    <div class="act"><button class="btn" data-demo="Prototype: opens the operations runbooks.">Runbooks</button></div>
+  </div>
+
+  <div class="tabs">
+    <button data-tab="s-gen" data-help="ra.st.gen">General</button>
+    <button data-tab="health" data-help="ra.st.health">Fleet health</button>
+    <button data-tab="s-store" data-help="ra.st.store">Storage &amp; keeping</button>
+    <button data-tab="s-net" data-help="ra.st.net">Addresses &amp; certificates</button>
+    <button data-tab="s-alert" data-help="ra.st.alert">Alerts &amp; notifications</button>
+    <button data-tab="s-maint" data-help="ra.st.maint">Maintenance</button>
+  </div>
+
+  <section class="pane" id="s-gen">
+    <div class="grid g2">
+      <div class="card"><div class="card-h"><h3 data-help="ra.st.gen">Platform</h3></div><div class="card-b"><dl class="kv">
+        <dt>Release</dt><dd>1.12.3 · deployed 24 Sep 2026</dd>
+        <dt>Store platform release</dt><dd>1.12.3 · every runtime matches</dd>
+        <dt>Environments</dt><dd>Production · Staging</dd>
+        <dt>Platform address</dt><dd class="mono">admin.platform.example</dd>
+        <dt>Store subdomains</dt><dd class="mono">&lt;store&gt;.stores.example</dd>
+        <dt>Reachable from</dt><dd>Approved networks only, through the identity gateway</dd>
+      </dl></div></div>
+      <div class="card"><div class="card-h"><h3 data-help="ra.st.gen">Global defaults for new stores</h3></div><div class="card-b"><dl class="kv">
+        <dt>Data separation</dt><dd><b>Separated client</b> — its own database, image store, search index and cache</dd>
+        <dt>Region</dt><dd>India (Mumbai)</dd>
+        <dt>Currency</dt><dd>INR</dd>
+        <dt>Language</dt><dd>English (India)</dd>
+        <dt>Search indexing</dt><dd>Off until the store goes live</dd>
+        <dt>Owner invitation</dt><dd>Sent automatically after a successful deployment</dd>
+      </dl></div></div>
+    </div>
+  </section>
+
+  <section class="pane" id="health">
+    <div class="grid g4 mb">
+      <div class="kpi warn"><div class="k">Runtimes reporting</div><div class="v">11/12</div><div class="d">one has not reported for 9 minutes</div></div>
+      <div class="kpi bad"><div class="k">Behind on configuration</div><div class="v">1</div><div class="d">Harbour Fresh · web-3</div></div>
+      <div class="kpi ok"><div class="k">Typical time to apply a change</div><div class="v">11 s</div><div class="d">budget is 30 s</div></div>
+      <div class="kpi ok"><div class="k">Typical build time</div><div class="v">1.9 s</div><div class="d">unchanged this week</div></div>
+    </div>
+    <div class="card mb"><div class="card-h"><h3 data-help="ra.st.health">Runtimes</h3><span class="sp"></span>
+      <button class="btn sm" data-demo="Prototype: asks every runtime to check for a newer configuration now.">Ask all to refresh</button></div>
+      <div id="inst"></div></div>
+    <div class="note bad"><svg data-i="warn"></svg><div>
+      <b>web-3 is serving an old configuration for Harbour Fresh.</b> Anyone whose request lands on that server
+      sees yesterday's delivery slots. It has been asked to refresh twice without responding; the next step is a
+      restart. Owner of this alert: platform on-call.
+    </div></div>
+  </section>
+
+  <section class="pane" id="s-store">
+    <div class="card mb"><div class="card-h"><h3 data-help="ra.st.store">Per-client separation</h3><span class="sp"></span>
+      <span class="tag ok">7 of 7 stores separated</span></div>
+      <div id="sep"></div>
+      <div class="card-b" style="border-top:1px solid var(--ra-line)">
+        <p class="hint">Each client has its own database, its own image container with its own credentials, its own
+          search index and its own cache namespace. Nothing is shared between clients. Every record also carries
+          its store identifier, so an operational mistake — a wrong connection, a restore into the wrong place —
+          still cannot mix two clients' data.</p></div></div>
+    <div class="card mb"><div class="card-h"><h3 data-help="ra.st.store">Secret scopes and signing keys</h3></div><div id="keys"></div></div>
+    <div class="card mb"><div class="card-h"><h3 data-help="ra.st.store">Configuration retention</h3></div><div class="card-b"><dl class="kv">
+      <dt>Published configurations kept</dt><dd>Last 20 per store, at least 180 days</dd>
+      <dt>Rollback window</dt><dd>Any retained version built for the running release</dd>
+      <dt>Artefact storage</dt><dd>Content-addressed, immutable, mirrored to every runtime host</dd>
+      <dt>Signing</dt><dd>Every configuration is signed; installs refuse anything that does not verify</dd>
+    </dl></div></div>
+    <div class="grid g2">
+      <div class="card"><div class="card-h"><h3 data-help="ra.st.store">Files and images</h3></div><div class="card-b"><dl class="kv">
+        <dt>Where</dt><dd>Object storage, India (Mumbai)</dd>
+        <dt>Per store</dt><dd class="mono">store/&lt;store&gt;/…</dd>
+        <dt>Links</dt><dd>Signed and store-specific — a link for one store cannot reach another's files</dd>
+        <dt>Delivery network</dt><dd>Enabled for public images</dd>
+        <dt>In use</dt><dd>84 GB across 7 stores</dd>
+      </dl></div></div>
+      <div class="card"><div class="card-h"><h3 data-help="ra.st.store">Keeping things</h3></div><div class="card-b"><dl class="kv">
+        <dt>Published configurations</dt><dd>Last 20 per store, at least 180 days</dd>
+        <dt>Deployment records</dt><dd>2 years</dd>
+        <dt>Record of actions</dt><dd>7 years</dd>
+        <dt>Backups</dt><dd>Nightly, kept 35 days, stored separately</dd>
+        <dt>Last restore rehearsal</dt><dd>21 Sep 2026 · succeeded in 22 minutes</dd>
+        <dt>After a store is deleted</dt><dd>90 days before data is destroyed</dd>
+      </dl></div></div>
+    </div>
+  </section>
+
+  <section class="pane" id="s-net">
+    <div class="card mb"><div class="card-h"><h3 data-help="ra.st.net">DNS and certificate provider</h3></div><div class="card-b"><dl class="kv">
+      <dt>DNS</dt><dd>Managed zone per platform domain; client domains verified by record</dd>
+      <dt>Certificates</dt><dd>Automatic issuance and renewal, 30 days before expiry</dd>
+      <dt>Verification</dt><dd>DNS record or HTTP challenge, operator's choice per domain</dd>
+      <dt>Unknown addresses</dt><dd>Plain response that names nothing</dd>
+    </dl></div></div>
+    <div class="card"><div class="card-h"><h3 data-help="ra.st.net">Certificates</h3></div><div id="cert"></div></div>
+    <div class="note mt"><svg data-i="globe"></svg><div>
+      Certificates are requested and renewed automatically. A renewal that fails raises an alert 14 days before
+      expiry, not on the day. An address the platform does not recognise returns a plain page that names nothing.
+    </div></div>
+  </section>
+
+  <section class="pane" id="s-alert">
+    <div class="card"><div class="card-h"><h3 data-help="ra.st.alert">Alerts</h3></div><div id="alerts"></div></div>
+    <p class="hint mt">Every alert has a named owner. Only the ones that affect a live store's customers wake
+      somebody; the rest are reviewed once a day.</p>
+  </section>
+
+  <section class="pane" id="s-maint">
+    <div class="grid g2">
+      <div class="card"><div class="card-h"><h3 data-help="ra.st.maint">Maintenance windows</h3></div><div class="card-b"><dl class="kv">
+        <dt>Platform</dt><dd>Sundays 02:00–04:00 IST</dd>
+        <dt>Store runtimes</dt><dd>Rolling, no window needed — configuration changes need no restart</dd>
+        <dt>Database changes</dt><dd>Announced 72 hours ahead to every store owner</dd>
+      </dl></div></div>
+      <div class="card"><div class="card-h"><h3 data-help="ra.st.maint">Release and schema state</h3><span class="sp"></span>
+        <span class="tag ok">all stores current</span></div><div id="rel"></div></div>
+      <div class="card"><div class="card-h"><h3 data-help="ra.st.maint">Release notes</h3></div><div class="card-b small muted stack">
+        <p>A new store platform release brings new features and new settings. Existing stores keep their
+          configuration exactly as it is; new settings take their default until someone changes them.</p>
+        <p>If a release changes the configuration format, every published configuration is rebuilt and compared
+          before the release is allowed out.</p>
+        <button class="btn sm mt" data-demo="Prototype: shows what the pending release would change for each store.">Preview the pending release</button>
+      </div></div>
+    </div>
+  </section>
+</main>
+<script src="assets/ra.js"></script>
+<script src="assets/ra-help.js"></script>
+<script src="assets/help/glossary.js"></script>
+<script src="assets/help/shell.js"></script>
+<script src="assets/help/ra-settings.js"></script>
+<script>
+
+document.getElementById("sep").innerHTML = RA.table(
+  ["Client", "Database", "Images", "Search index", "Cache", "Hosting"],
+  [
+   ["Tradex Computers", "<span class='mono'>store_tradex</span>", "<span class='mono'>tradex-media</span>", "<span class='mono'>tradex-catalogue</span>", "<span class='mono'>tradex:</span>", "Shared server"],
+   ["Atelier Nine", "<span class='mono'>store_atelier</span>", "<span class='mono'>atelier-media</span>", "<span class='mono'>atelier-catalogue</span>", "<span class='mono'>atelier:</span>", "Shared server"],
+   ["Verde Leaf Garden Co.", "<span class='mono'>store_verdeleaf</span>", "<span class='mono'>verdeleaf-media</span>", "<span class='mono'>verdeleaf-catalogue</span>", "<span class='mono'>verdeleaf:</span>", "Shared server"],
+   ["Harbour Fresh Seafood", "<span class='mono'>store_harbour</span>", "<span class='mono'>harbour-media</span>", "<span class='mono'>harbour-catalogue</span>", "<span class='mono'>harbour:</span>", "Shared server"],
+   ["Oakrow Furniture", "<span class='mono'>store_oakrow</span>", "<span class='mono'>oakrow-media</span>", "<span class='mono'>oakrow-catalogue</span>", "<span class='mono'>oakrow:</span>", "Shared server"],
+   ["Northgear Industrial", "<span class='mono'>store_northgear</span>", "<span class='mono'>northgear-media</span>", "<span class='mono'>northgear-catalogue</span>", "<span class='mono'>northgear:</span>", "<span class='tag acc'>Own server (client-hosted)</span>"],
+   ["Paw Post Pet Supplies", "<span class='mono'>store_pawpost</span>", "<span class='mono'>pawpost-media</span>", "<span class='mono'>pawpost-catalogue</span>", "<span class='mono'>pawpost:</span>", "Shared server"]
+  ]);
+document.getElementById("keys").innerHTML = RA.table(
+  ["Scope", "Holds", "Rotation", "Last rotated"],
+  [
+   ["<span class='mono'>key/&lt;client&gt;</span>", "Each client's integration credentials, encrypted with its own key", "Per client, on request or on schedule", "varies"],
+   ["<span class='mono'>platform/signing</span>", "The key every configuration is signed with", "Yearly, with an overlap period", "12 Mar 2026"],
+   ["<span class='mono'>platform/callback</span>", "Credential runtimes use to report the configuration they applied", "Quarterly", "01 Sep 2026"]
+  ]);
+document.getElementById("rel").innerHTML = RA.table(
+  ["Client", "Platform release", "Database schema", "Configuration", "Last contact"],
+  [
+   ["Tradex Computers", "1.12.3", "1.12.3", "v42 applied", "now"],
+   ["Atelier Nine", "1.12.3", "1.12.3", "v23 applied", "now"],
+   ["Verde Leaf Garden Co.", "1.12.3", "1.12.3", "v17 applied", "now"],
+   ["Harbour Fresh Seafood", "1.12.3", "1.12.3", "<span class='tag bad'>v8 on 1 of 4 runtimes</span>", "now"],
+   ["Oakrow Furniture", "1.12.3", "1.12.3", "deploying", "now"],
+   ["Northgear Industrial <span class='tag acc'>own server</span>", "1.12.2 <span class='tag warn'>one behind</span>", "1.12.2", "v4 applied", "18 minutes ago"],
+   ["Paw Post Pet Supplies", "1.12.3", "1.12.3", "v11 applied · suspended", "now"]
+  ]);
+document.getElementById("inst").innerHTML = RA.table(
+  ["Runtime", "Role", "Release", "Stores served", "Configuration applied", "Last report"],
+  [
+   ["<span class='mono'>web-1</span>", "Web", "1.12.3", "7", "all current", "8 s ago"],
+   ["<span class='mono'>web-2</span>", "Web", "1.12.3", "7", "all current", "6 s ago"],
+   ["<span class='mono'>web-3</span>", "Web", "1.12.3", "7", "<span class='tag bad'>Harbour Fresh on v8, current is v9</span>", "9 min ago"],
+   ["<span class='mono'>web-4</span>", "Web", "1.12.3", "7", "all current", "4 s ago"],
+   ["<span class='mono'>worker-1</span>", "Background work", "1.12.3", "7", "all current", "11 s ago"],
+   ["<span class='mono'>worker-2</span>", "Background work", "1.12.3", "7", "all current", "10 s ago"],
+   ["<span class='mono'>staging-1</span>", "Staging", "1.13.0-rc1", "2", "all current", "31 s ago"]
+  ]);
+document.getElementById("cert").innerHTML = RA.table(
+  ["Address", "Store", "Valid until", "Renews", "State"],
+  [
+   ["<span class='mono'>ateliernine.example.com</span>", "Atelier Nine", "14 Nov 2026", "automatic, 30 days before", "<span class='tag ok'>Valid</span>"],
+   ["<span class='mono'>tradex.example.in</span>", "Tradex Computers", "02 Dec 2026", "automatic", "<span class='tag ok'>Valid</span>"],
+   ["<span class='mono'>harbourfresh.example.in</span>", "Harbour Fresh", "21 Oct 2026", "automatic", "<span class='tag warn'>Renews in 23 days</span>"],
+   ["<span class='mono'>*.stores.example</span>", "All platform addresses", "30 Nov 2026", "automatic", "<span class='tag ok'>Valid</span>"],
+   ["<span class='mono'>oakrow.example.in</span>", "Oakrow Furniture", "—", "requested 4 minutes ago", "<span class='tag acc'>Being issued</span>"]
+  ]);
+document.getElementById("alerts").innerHTML = RA.table(
+  ["Alert", "When it fires", "Who is told", "How"],
+  [
+   ["A store is behind on its configuration", "Any runtime more than 5 minutes behind", "Platform on-call", "Wakes somebody"],
+   ["A deployment check failed", "Immediately, after the automatic rollback", "The operator who deployed, plus on-call", "Wakes somebody"],
+   ["A runtime stops reporting", "No report for 5 minutes", "Platform on-call", "Wakes somebody"],
+   ["A certificate is close to expiry", "14 days before", "Platform operations", "Daily review"],
+   ["A build failed", "Immediately", "The operator who published", "Message"],
+   ["A store has been suspended a long time", "After 30 days", "Platform owner", "Daily review"],
+   ["Access to store data was refused", "Immediately", "Platform owner", "Message"]
+  ]);
+RA.boot();
+</script>
+</body>
+</html>

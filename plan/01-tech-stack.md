@@ -576,3 +576,52 @@ These are gaps with no fitting existing decision. Do not implement the blocked i
 ## 33. Registry additions requested
 
 None. All technologies map to existing modules (M01, M22, M23, M26 etc.) and entities in `00-conventions.md` §6–7.
+
+---
+
+## 34. SaaS platform additions (2026-09-28, `D-227`)
+
+Architecture: `19-saas-platform.md`. Root admin: `20-root-admin.md`. Nothing below replaces a choice already
+recorded here; it adds the technology needs the SaaS layer creates. Concrete products are still chosen by the
+existing decisions (`D-001`, `D-002`, `D-003`, `D-005`, `D-033`, `D-052`, `D-053`, `D-101`, `D-107`, `D-109`).
+
+| Need | Requirement on the stack | Decision |
+|---|---|---|
+| Mandatory tenant scoping | The operational core must support enforcing a store filter at the data-access layer (not by convention) and, preferably, row-level security | `D-001`, `D-233`; proved by `TS-PROOF-11` |
+| Immutable in-process configuration | The runtime must be able to hold a frozen per-store object for the process lifetime and swap it atomically, across whatever worker/process model it uses | `D-001`, `D-231`; proved by `TS-PROOF-12` |
+| Deterministic compilation | The compiler must produce byte-identical output for identical input (stable key order, no timestamps inside the payload, pinned formatting) | `D-231` |
+| Event distribution | At-least-once publish/subscribe for `config.published`, reusing the existing outbox/job runtime rather than a new broker | `D-232`, existing M17 runtime |
+| Object storage | Per-store prefixes, signed URLs, content-addressed artefacts, ≥ 20 retained versions per store | `D-033` |
+| Local artefact cache | Writable per-host directory (`config/generated/`) so a cold boot needs neither network nor database | `D-231`, `D-109` |
+| Certificates | Automated issuance and renewal (ACME) driven by the platform, for platform subdomains and verified custom domains | `D-107`, `D-234` |
+| Secret management | Per-store scopes with per-store keys; the artefact carries references only | `D-107`, `BR-M31-08` |
+| Second application | `root-admin/` builds and deploys independently, in the same language/framework family as the store backend — one toolchain, two applications | `D-244` |
+| CSS custom properties | The storefront and workspace must theme entirely through CSS custom properties, so one compiled `theme.css` per store is enough | `D-240`, `D-003` |
+| Test tooling | Query/I-O recorders for the zero-DB-query assertion, microbenchmarks for the accessor budget, and a two-store fixture in the integration and E2E harnesses | `D-053`, `D-248` |
+| Lint/CI capability | Custom lint rules are needed for: import boundary, no pack-id branching, no hard-coded concept word, no banned vocabulary, no hard-coded visual value, migration `store_id` check | `D-053`, `D-077` |
+
+**Not added:** no new database engine, no new broker, no service mesh, no per-store container image, no
+general-purpose rules engine (BP §5.3/§15.6 still applies), and no second frontend framework.
+
+---
+
+## 35. Channel, automation and extensibility technology (2026-09-28, `D-273`, `D-274`)
+
+Catalogue: `19-saas-platform.md` §5.3. Channel model: §5.6. Contracts: §26.2, §26.3. Data model: `03` §12.
+
+| Need | Requirement on the stack | Decision |
+|---|---|---|
+| Email sending | A provider supporting a **per-store sending domain** with SPF, DKIM and DMARC, delivery webhooks, suppression lists and per-store reputation isolation | `D-015` |
+| WhatsApp | A Business Solution Provider or the Cloud API, with template management and approval state readable through the API, inbound webhooks and a per-store number | `D-014` |
+| SMS / OTP | A provider with per-store sender ids where the jurisdiction requires registration, and delivery receipts | `D-015` |
+| Web chat | Only if `D-276` approves: a websocket or long-poll transport the chosen stack supports without a second runtime, plus staff presence | `D-276` |
+| Web push | Only if `D-275` approves: standard Web Push with per-store VAPID keys | `D-275` |
+| Template storage and rendering | Versioned templates with variables, per channel and locale, rendered server-side; no template engine that can execute arbitrary code from stored content | `D-058` |
+| Idempotent dispatch | A unique message key per business event, enforced in the database, not in application memory | — |
+| Delivery status intake | Signed provider webhooks, replay-safe, per store | `D-014`, `D-015` |
+| Automation scheduling | The existing durable job runtime (`M17`); one automation is one registered handler, registered only when its capability is on | — |
+| Store API and webhooks | Only if `D-278` approves: per-store API keys with capability-aware scopes, per-store rate limits, signed outbound webhooks with retry and auto-suspension | `D-278` |
+| Analytics tags | Only if `D-277` approves: consent-gated, loaded after first paint so they cannot break the `19` §25.2 budgets, never injected as free-text script by a store user | `D-277` |
+
+**Not added:** no second runtime for chat, no separate marketing-automation platform, no per-store message broker,
+and no provider SDK that requires a shared, platform-wide account — that would defeat `D-272` separation.

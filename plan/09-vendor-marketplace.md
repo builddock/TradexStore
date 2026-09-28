@@ -1397,3 +1397,31 @@ Reserved range D-180–D-189 (agent B3); D-180–D-184 are in `08-ecommerce.md` 
 | A verification-document record (e.g. `E-verification_document`: owner, document type, number/reference, valid-until, verification state, verified by/at, attachment) — or equivalent fields on E-attachment | Entity | M22 (used by M08, M14) | Entity gap 1 (§11): vendor and dealer documents need type, validity and verification tracking; expiry reminders are specified in `05-backend.md` M14 jobs | BP §11.1, §8.3, §19.1; MK:vendor-account.html#documents, MK:store-login.html (dealer and vendor documents), MK:erp-vendors.html checks |
 | A role for the purchasing ("buyer") responsibility, or an explicit mapping of that responsibility to existing R-* roles | Role | M02 (used by M07, M14) | BP §9.3 ("Finance or buyer review"), A17 ("Buyer approves order"); `06-api.md` uses "buyer roles" on API-M14-45/-53/-55; no R-* role exists in `00-conventions.md` §9 | BP §9.3, §12.2 A17; MK:erp-vendors.html ("Buyer" in review policy) — resolve with D-222 |
 | State values: E-vendor_application `info_requested`, `on_hold`; E-vendor_submission `withdrawn` | Enum extension | M14 | Entity gaps 2–3 (§11); endpoints already expose these actions | `06-api.md` API-M14-10, API-M14-50; MK:erp-vendors.html, MK:vendor-products.html |
+
+---
+
+## 14. SaaS additions (2026-09-28, `D-227`)
+
+Architecture: `19-saas-platform.md` §6.5, §16; screens: `04c` §21.
+
+- The vendor portal, vendor submissions, the availability feed and supplier fulfilment are **capabilities**; a
+  store without them has no vendor surface at all (not a disabled one).
+- Submission fields, availability columns and fulfilment-task types come from the pack's vendor profile
+  (`T-1B.1-M32-01`).
+- Vendors are store-scoped: a vendor organisation and its users belong to one store, and no vendor record,
+  document, statement or credential is reachable from another store (`19` §10.1).
+- The marketplace extension (M15) remains `LATER` (`D-046`) and is unaffected by this change; if it is ever
+  activated it becomes a capability like any other.
+
+---
+
+## 15. Vendor channels and grants (2026-09-28, `D-273`, `D-274`)
+
+- `CAP-VENDOR_MESSAGING` makes two-way messages with suppliers a grantable feature; a store without it has no
+  vendor message threads anywhere.
+- Vendor notifications use the same messaging service, the same consent and frequency rules and the same
+  templates as customer messaging — there is no second notification path for suppliers (`19` §26.2).
+- `CAP-VENDOR_API_KEYS` (the availability-feed API a supplier uses) is a capability; keys are per store and per
+  vendor, scoped, and revocable.
+- Each vendor-portal area — submissions, availability feed, statements, performance — is separately grantable, so
+  a store can run a supplier portal that only collects availability without exposing statements.

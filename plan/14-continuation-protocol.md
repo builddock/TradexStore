@@ -101,3 +101,56 @@ Related files: `plan/TASKS.md` (task source of truth) · `plan/STATE.md` (progre
 - *"We decided X"* → record the decision (`DECISIONS.md` procedure), update affected tasks, then continue.
 - *"Change requirement …"* → BP §25.5 change control: record it as a decision/change entry, identify affected tasks,
   and ask for confirmation before editing the plan.
+
+---
+
+## SaaS architecture change — what every session must know (2026-09-28, `D-227`)
+
+The architecture changed on 2026-09-28: this is **one configurable SaaS e-commerce platform**, and Tradex is
+store #1 on it. Source: `docs/SAAS_ARCHITECTURE_CHANGE.md`. Architecture: `19-saas-platform.md`,
+`20-root-admin.md`. Decisions: `D-227`–`D-256`.
+
+### Add to step 1 (inspect)
+After reading `STATE.md`, read **`19-saas-platform.md` §1 and §2** (about five minutes). They change how every
+other plan file must be read: MEET/BP/PR1/PR2 and the mockup specify **one store**, not the whole product
+(`00-conventions.md` §1.2).
+
+### Add to step 9 (decisions)
+`D-227`–`D-253` are already `DECIDED` — the user's brief is the decision and the user asked that work be able to
+start without further questions. **Do not re-open them and do not ask the user to confirm them.** `D-254`
+(`LATER`), `D-255` and `D-256` are open but block nothing in Phase 1. Everything else is unchanged: a task
+blocked by any other `OPEN` decision still stops and asks.
+
+### Add to step 12 (implement) — the seven rules that are easy to break
+1. **One codebase.** A new e-commerce category is a vertical pack (data); a new look is a template under
+   `frontend/storefront/templates/`. Never fork, never branch on a pack id (`BR-M32-02`).
+2. **`store_id` from the first migration.** Every store-scoped table, every unique constraint, every index
+   prefix, every job payload (`BR-M30-01…04`). Adding it later means migrating live data.
+3. **No configuration I/O on the request path.** Read from the immutable snapshot; never add a "just one query"
+   fallback (`BR-M31-01`, `D-248`).
+4. **Declare a capability for every store-facing route and component**, and enforce it at all six points.
+   Disabled means **404**, not 403 (`BR-M31-02`, `D-229` INV-3). Before building any screen, read that screen's
+   row in **`21-feature-map.md`** — it names the capability that governs each section, and the mockup you are
+   copying shows a store with *everything* enabled (`D-279`), so it will not tell you what to gate.
+5. **No hard-coded concept word and no hard-coded visual value.** Terminology tokens and theme tokens
+   (`BR-M33-02`, `D-239`).
+6. **Nothing store-facing may reveal the platform** — no other store, no category list, no template list, no
+   capability or configuration identifier, no platform vocabulary, no link to the root admin (`D-229` INV-1…10).
+   A locked setting is **absent** from the store admin, never greyed out.
+7. **`root-admin/` is a hard boundary.** No import in either direction; the store runtime never reads the
+   platform database (`19` §2 SEP-1…SEP-6).
+
+### Add to step 16 (test)
+Every integration and E2E run uses the **two-store fixture** (`T-1A.1-M30-04`). A change that passes with one
+store and fails with two is the regression this architecture exists to prevent. The `TS-SAAS-*` suites
+(`16-testing.md` §18) run in CI on every change, not before a release.
+
+### Add to step 15 (do not edit)
+The root admin mockup lives in `root-admin-mockup/` and must **never** be linked from `index.html`, the prototype
+toolbar, `credits.html` or any `store-*`/`erp-*`/`vendor-*` page — the client must not see it during a demo
+(`D-249`). Check this before committing any mockup change.
+
+### Where the work is
+`12-phases.md` §10 lists every added stage and task and the eleven existing tasks that changed. Stage order is
+`0 → 1A.1…1A.17 → 1R.1…1R.3 → 1B.1…1B.5 → 2 → 3`; `tools/status.py` enforces it and still reports the next
+eligible task exactly as before.

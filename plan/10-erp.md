@@ -1518,3 +1518,46 @@ D-199 is not used.
 |---|---|---|---|
 | — | None for modules, pages or roles | "Buyer", "warehouse lead", "returns desk", "vendor manager" are responsibilities mapped to existing roles pending D-222 | BP §9.3, A17; MK |
 | Entities | See `11-admin.md` "Registry additions requested" (restore-rehearsal evidence) | — | — |
+
+---
+
+## SaaS additions (2026-09-28, `D-227`)
+
+Architecture: `19-saas-platform.md` §6.4, §16.
+
+The ERP modules described in this file are unchanged in behaviour. What changes is that each of them is now
+store-scoped and capability-gated:
+
+| Area | Change |
+|---|---|
+| Catalog | Category tree, attribute schemas, variant axes and units come from the pack (`T-1A.4-M32-01`). Condition grades, compatibility and bundles are capabilities |
+| Pricing | Quantity tiers, promotions, location pricing and unit-price display are capabilities. Money rules (BP §8.1) unchanged |
+| Inventory | The **item identity model** is configuration — `none`, `serial`, `batch_lot`, `batch_lot_expiry` or `unique_item` (`T-1A.4-M32-02`). Serial behaviour is unchanged for a store that selects `serial`. Cold chain and shelf-life rules are capabilities |
+| Purchasing | QC inspection, landed cost and reorder rules are capabilities |
+| Fulfilment | The available shipping modes are configuration; digital delivery, service appointments and rental logistics are capabilities |
+| Returns | Policy classes come from the pack; exchanges and non-returnable classes are capabilities |
+| Automation | Rules are store-scoped; the available rule set is capability-gated; the owner digest is per store |
+| Reporting | Every report is store-scoped, and the report set comes from the pack's workspace profile |
+| Exceptions & approvals | Store-scoped, with thresholds as store configuration (`D-024` becomes a per-store value) |
+
+No ERP business rule (BR-*) is weakened, re-scoped or made optional by the SaaS change. A rule that applied to
+Tradex now applies to every store whose capability set includes it.
+
+---
+
+## Automation catalogue and channels (2026-09-28, `D-273`, `D-274`)
+
+The automation content of §15 is unchanged. What changes is granularity and ownership:
+
+- **Every automation is its own capability** (`19` §5.3 N), so a client can be given exactly the automations they
+  are paying for. `D-078` still selects the launch set for a given store; the catalogue is what makes that
+  selection expressible per store rather than global.
+- An automation is **never scheduled** when its capability is off, so it cannot run, cannot appear in a report and
+  cannot send a message.
+- An automation that sends a message **cannot be enabled without its channel and its approved template** — the
+  compiler blocks that configuration and names both (`19` §26.3 AUT-2). This removes the most common silent
+  failure in an ERP: a rule that fires correctly and then sends nothing.
+- Every run is logged with input, decision, outcome and duration (`E-automation_run`), every failure opens an
+  exception case with a named owner, and the owner can pause a rule without a deployment.
+- Exception queues, approvals, thresholds and delegation are capabilities too, so a store that does not use
+  approvals does not carry an empty approvals screen.

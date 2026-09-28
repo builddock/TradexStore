@@ -3845,3 +3845,167 @@ None outstanding. `E-data_request` (requested by this file) and the other additi
 and §7.2 were accepted on 2026-09-27 and are specified in §2.7.8, §2.21 and §2.22, with the relationship clarifications (reverse and
 RTO fulfilments, vendor support counter-party, single exception record type) applied in §2.10.1, §2.11.1, §2.14.1 and
 §2.15.5.
+
+---
+
+## 11. SaaS data model (2026-09-28, `D-227`)
+
+Architecture: `19-saas-platform.md` §3, §10, §13. Registry: `00-conventions.md` §7.3.
+
+### 11.1 The global rule — `store_id` everywhere
+
+Every entity registered in `00` §7, §7.1 and §7.2 is **store-scoped** and gains:
+
+| Requirement | Detail |
+|---|---|
+| Column | `store_id`, not null, foreign key to `E-store` |
+| Key | `store_id` is part of the primary key, or the leading column of a mandatory covering index |
+| Uniqueness | Every unique constraint is prefixed by `store_id` (document numbers, SKU codes, e-mail addresses, slugs — all unique **per store**, never globally) |
+| Sequences | Per-store numbering; a shared sequence would leak volume between stores |
+| Foreign keys | A foreign key may never cross stores; enforced by composite keys `(store_id, id)` wherever the core supports them |
+| Row-level security | Enabled where the core supports it, as defence in depth behind the data-access guard |
+| Migration lint | A migration adding a store-scoped table or unique constraint without `store_id` fails CI (`T-1A.1-M30-02`) |
+
+Exceptions, and only these: the root-admin entities of §20.2 (different database) and code-level reference data
+identical for every store (country codes, currency codes, and similar).
+
+### 11.2 Root admin database (module M34/M35 — a separate database, `D-228`)
+
+| Entity | Key fields | Notes |
+|---|---|---|
+| E-platform_user | id, email, name, status, mfa_state, created_by | No relationship to any store user (`D-245`) |
+| E-platform_role, E-platform_role_assignment | role id, user id | The five roles of `00` §9.1 |
+| E-platform_audit_event | id, actor, role, target_store_id, object, before, after, reason, correlation_id, at | Append-only; written in the same transaction as the change (`BR-M34-01`) |
+| E-platform_support_access | id, requester, store, reason, scope, requested_until, approver, started_at, ended_at, revoked_by | Max 8 h; dual-audited (`D-246`) |
+| E-store_registration | id, key, display_name, legal_entity, jurisdiction, currency, locales, timezone, isolation_mode, environment, state, pack_version_id, template_version_id, current_config_version_id, owner_contact | The authoritative store record |
+| E-store_environment | id, store_id, kind (staging/production), allocations, quotas | Allocation record for rollback |
+| E-store_domain | id, store_id, host, is_primary, verification_state, certificate_state, expires_at | `D-234` |
+| E-store_config_draft | id, store_id, environment, values, validation_report, updated_by, updated_at | Mutable working copy; never affects a running store |
+| E-store_config_version | id, store_id, version, pack_version_id, template_version_id, values (delta), compiled_checksum, published_at, published_by, notes, supersedes | **Immutable, append-only** (`BR-M31-05`) |
+| E-config_publication | id, store_id, config_version_id, artifact_id, published_at, event_id | One row per publish attempt outcome |
+| E-config_artifact | id (content address), checksum, size, file_list, build_duration, compiler_version, platform_release, storage_uri | Content-addressed; ≥ 20 retained per store |
+| E-vertical_pack, E-vertical_pack_version | pack id, version, status, content, validation_report, usage_count | Content is data only (`BR-M32-01`); versions immutable |
+| E-pack_migration | id, store_id, from_version, to_version, preview, executed_at, executed_by | Explicit migrations only (`BR-M32-04`) |
+| E-capability_definition | id (CAP-*), area, description, depends_on, conflicts_with, lockable, data_retaining, governed_keys, platform_release | Imported from the store-platform release; drift-checked |
+| E-capability_default | pack_version_id, capability_id, default_state, overridable | Per-pack defaults |
+| E-store_capability_override | store_id, capability_id, state, locked, acknowledged_by | Per-store overrides |
+| E-template, E-template_version, E-template_compatibility | template id, version, token contract, required capabilities, layout set, a11y statement, previews; compatibility rows per pack | Imported from the store-platform release |
+| E-brand_asset | id, store_id, kind (logo_light/logo_dark/mark/favicon/og), source_uri, variants, validation_report | Stored under the store's storage prefix |
+| E-terminology_token | id (TT-*), meaning, grammatical info | The registry |
+| E-terminology_set | id, pack_version_id, locale, values | One complete set per pack version per locale |
+| E-terminology_override | store_id, token_id, locale, value | Where the pack and configuration allow it |
+| E-deployment, E-deployment_step | id, store_id, kind, state, started/ended, steps with evidence and outcome | The nine-step machine (`20` §5) |
+| E-platform_notification | id, kind, target, payload, sent_at | Operator and store-owner notifications |
+
+### 11.3 Store database additions (modules M30/M31/M35)
+
+| Entity | Key fields | Notes |
+|---|---|---|
+| E-store | id, key, display_name, jurisdiction, currency, locales, timezone, state | The store's own identity record; the parent of every `store_id` |
+| E-store_setting | store_id, key, value, updated_by, updated_at | **Layer L4 only** — store-editable, unlocked keys (`D-243`) |
+| E-store_setting_version | store_id, version | Monotonic; invalidates the L4 overlay without polling |
+| E-config_state | store_id, applied_version, applied_checksum, applied_at, instance_id, drift | One row per instance per store |
+| E-store_bootstrap_run | store_id, seed_set, state, started/ended, evidence | Idempotency record for provisioning (`D-250`) |
+
+### 11.4 Migration group
+
+`DB-G12` — SaaS platform: `E-store`, `E-store_setting`, `E-store_setting_version`, `E-config_state`,
+`E-store_bootstrap_run`, and the `store_id` addition across all existing groups. It runs **with DB-G0** in stage
+1A.1 (`T-1A.1-M30-01`, `T-1A.1-M30-02`), before any business table is created with a schema that would have to be
+altered later. The root admin schema is a separate migration set in `root-admin/migrations/`, not part of the
+`DB-G*` series.
+
+### 11.5 Seeds
+
+Pack seed sets use the identifier `S-VP-<slug>-##` (`00` §5) and are applied by the bootstrap runner
+(`T-1A.1-M35-01`) inside a store context. The §6 rule that the seed loader rejects placeholder and sample values
+applies unchanged: a pack seeds **structure** (categories, attributes, units, policy classes, saved views, help
+content), never products, customers, prices or money placeholders.
+
+---
+
+## 12. Feature, channel and automation data model (2026-09-28, `D-273`, `D-274`, `D-275`)
+
+Architecture: `19-saas-platform.md` §5.3 (capability catalogue), §5.4 (control model), §5.6 (channels),
+§26 (implementation contracts). Registry: `00-conventions.md` §7.3.
+
+### 12.1 What lives where
+
+The single most common mistake in this area is putting the catalogue and the per-store state in the same place.
+They are different things with different lifecycles:
+
+| Thing | Where | Lifecycle |
+|---|---|---|
+| The **catalogue** of capabilities, modules and channels | Store codebase (declarations), mirrored into the root admin | Changes with a platform release |
+| Per-pack **defaults** and control states | Root admin, inside a pack version | Changes when a category version is published |
+| Per-store **control state** (`off_locked` / `on_locked` / `delegated`) | Root admin, inside a store configuration version → compiled into the artefact | Changes when a store configuration is published |
+| Per-store **delegated on/off value** | **Store database** (`E-store_feature_state`) | Changes whenever the store's own administrator flips a switch — no deployment |
+| Channel **bindings, senders, credentials** | Store database + the store's secret scope | Changes when the client's provider account changes |
+| Message **templates** | Store database (`E-message_template`) | Changes with content, versioned and approval-tracked |
+| **Consent** and preferences | Store database (`E-consent_record`, `E-notification_preference`) | Changes per customer, continuously |
+
+### 12.2 Store-database entities (all store-scoped: `store_id` non-null, in every unique key — §11.1)
+
+| Entity | Key columns | Notes |
+|---|---|---|
+| `E-store_feature_state` | `store_id`, `item_kind` (`module`\|`capability`), `item_id`, `enabled`, `updated_by`, `updated_at` | Layer L4. Holds **only delegated items**; a row for a non-delegated item is rejected by the service and by a check constraint on write. Unique `(store_id, item_kind, item_id)` |
+| `E-store_feature_change` | `store_id`, `item_kind`, `item_id`, `from`, `to`, `actor`, `reason`, `at` | Append-only history behind the store's own audit view; also records changes the platform made to a control state (CTL-6) |
+| `E-channel_binding` | `store_id`, `channel` (`email`\|`sms`\|`whatsapp`\|`web_chat`\|`push_web`\|`push_mobile`\|`in_app`\|`voice_callback`), `provider`, `account_ref`, `state` (`draft`\|`verifying`\|`verified`\|`suspended`), `credential_ref`, `limits`, `verified_at` | One row per channel per store. `credential_ref` points into the store's secret scope — **no secret value is ever stored here** (`BR-M31-08`). Unique `(store_id, channel)` |
+| `E-sender_identity` | `store_id`, `channel`, `identity` (domain, number, sender id), `is_primary`, `verification_state`, `verification_evidence`, `spf_ok`, `dkim_ok`, `dmarc_ok`, `expires_at` | Proves the store may send as this identity. A channel with no verified primary identity cannot be published on (`CH-1`) |
+| `E-message_template` *(extended)* | `store_id`, `key`, `channel`, `locale`, `version`, `body`, `variables`, `approval_state`, `provider_template_ref`, `published_at` | Already registered in `00` §7; gains `channel`, `locale`, `approval_state` and `provider_template_ref` for channels whose provider must approve content. Unique `(store_id, key, channel, locale, version)` |
+| `E-consent_record` *(extended)* | `store_id`, `subject_ref`, `channel`, `purpose`, `basis`, `granted`, `source`, `evidence`, `granted_at`, `withdrawn_at` | Consent is per **channel and purpose**, not one flag. Withdrawal is a new row, never an update — proof must survive |
+| `E-notification_preference` *(extended)* | `store_id`, `subject_ref`, `channel`, `category`, `enabled` | What the customer chose, separate from what they consented to |
+| `E-message_dispatch` | `store_id`, `message_key` (idempotency), `channel`, `template_key`, `subject_ref`, `state`, `provider_message_id`, `attempts`, `last_error_code`, `cost`, `queued_at`, `sent_at`, `delivered_at` | One row per outbound message. Unique `(store_id, message_key)` gives idempotency: one business event, one message, however many retries |
+| `E-channel_suspension` | `store_id`, `channel`, `reason`, `failure_rate`, `started_at`, `cleared_at` | Repeated delivery failure suspends a channel rather than burning the sender's reputation (`CH-6`) |
+| `E-conversation` / `E-conversation_message` | `store_id`, `channel`, `counterparty_ref`, `assigned_to`, `state`, `sla_due_at` / message rows | Two-way channels (WhatsApp, web chat) — the existing `E-support_conversation` and `E-support_message` extended with `channel` rather than duplicated |
+| `E-automation_rule` *(extended)* | `store_id`, `rule_id` (`CAP-AUTO_*`), `enabled`, `paused_by`, `paused_reason`, `config`, `owner_role`, `value_estimate`, `last_run_at` | One row per automation per store. `enabled` is only meaningful when the capability resolves on |
+| `E-automation_run` | `store_id`, `rule_id`, `trigger_ref`, `input_summary`, `decision`, `outcome`, `duration_ms`, `exception_case_ref`, `at` | The run log that makes an automation auditable (`AUT-4`) |
+| `E-integration_binding` | `store_id`, `integration` (`payment`\|`shipping`\|`accounting`\|`pos`\|`tax`\|`analytics`\|…), `provider`, `account_ref`, `credential_ref`, `state`, `last_health_at` | The same shape as a channel binding, for non-messaging integrations |
+| `E-api_credential` *(extended)* | `store_id`, `name`, `key_hash`, `scopes`, `created_by`, `last_used_at`, `revoked_at` | The store's own API keys when `CAP-STORE_API` is granted; scopes are capability-aware |
+| `E-webhook_subscription` | `store_id`, `event`, `url`, `secret_ref`, `state`, `failure_count`, `last_delivery_at` | Outbound webhooks when `CAP-WEBHOOKS` is granted; signed, retried, auto-suspended on repeated failure |
+
+### 12.3 Root-admin entities (the control side)
+
+| Entity | Purpose |
+|---|---|
+| `E-capability_definition` *(extended)* | Gains `build_status` (`1A`\|`1B`\|`LATER`\|`CANDIDATE`), `gating_decision` (the `D-###` that must be `DECIDED` before it may be granted) and `channel` where it is a messaging capability |
+| `E-module_definition` | Platform and category modules: id, origin, label token, surfaces, contained capabilities, ordering, dependency rules, single-ownership marker |
+| `E-store_capability_override` *(extended)* | Gains `item_kind` so it covers surfaces, modules and capabilities with one shape, and `control_state` (`off_locked`\|`on_locked`\|`delegated`) |
+| `E-channel_requirement` | Per capability, what a channel needs before it can be published: verified binding, verified sender, named templates. Drives the `CH-1` publish check |
+
+### 12.4 Indexes that matter
+
+| Table | Index | Why |
+|---|---|---|
+| `E-store_feature_state` | `(store_id, item_kind, item_id)` unique | The L4 overlay is built from one scan per store; it is read at reload, never per request |
+| `E-message_dispatch` | `(store_id, message_key)` unique · `(store_id, state, queued_at)` · `(store_id, subject_ref, sent_at desc)` | Idempotency, the send queue, and "what did we send this customer" |
+| `E-consent_record` | `(store_id, subject_ref, channel, purpose, granted_at desc)` | The consent check is on the send path and must be a single index lookup |
+| `E-automation_run` | `(store_id, rule_id, at desc)` | The run log grows fastest of anything here; keyset pagination, and a retention rule (`D-036`) |
+| `E-conversation` | `(store_id, channel, state, sla_due_at)` | The shared inbox work queue |
+
+`E-message_dispatch` and `E-automation_run` are the two tables that grow without limit. Both are partition
+candidates by `store_id` and time (`19` §25.3 rule 9), and both have a retention class in the `D-036` matrix.
+
+### 12.5 Migration group
+
+**`DB-G13` — feature control, channels and automation.** Contains `E-store_feature_state`,
+`E-store_feature_change`, `E-channel_binding`, `E-sender_identity`, `E-message_dispatch`,
+`E-channel_suspension`, `E-integration_binding`, `E-webhook_subscription`, `E-automation_run`, and the extensions
+to `E-message_template`, `E-consent_record`, `E-notification_preference`, `E-automation_rule` and
+`E-api_credential`.
+
+Order: `DB-G13` runs **after** `DB-G0`/`DB-G12` (the store and configuration core) and **before** the messaging
+and automation stages that use it — the feature-state part with `T-1A.1-M31-08` in stage 1A.1, the channel and
+automation part with `T-1A.13-M20-05` in stage 1A.13. Splitting it that way keeps stage 1A.1 free of messaging
+concerns while still giving the control model its table from the start.
+
+### 12.6 Rules that the schema itself enforces
+
+| # | Rule |
+|---|---|
+| 1 | `store_id` non-null on every table above, in every unique key (§11.1) |
+| 2 | A secret value never appears in any of these tables — only a `*_ref` into the store's secret scope |
+| 3 | `E-consent_record` is append-only; a withdrawal is a new row |
+| 4 | `E-message_dispatch` is unique on `(store_id, message_key)`, which is what makes "one event, one message" true under retry |
+| 5 | `E-store_feature_state` may only hold items whose control state is `delegated`; enforced by the service and by a check against the compiled control set at write time |
+| 6 | `E-automation_run` and `E-message_dispatch` carry no personal data beyond a subject reference and no message body after the retention window |
