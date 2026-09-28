@@ -939,3 +939,52 @@ Decisions D-200, D-202 and D-205 are proposed in `07-auth-roles-permissions.md` 
 | RA-T2 | `00-conventions.md` §11: `tests/` sub-folders `acceptance/`, `e2e/`, `load/`, `a11y/`, `security/`, `restore/`, `migration/`, `uat/` | Folder names delegated to the plan (D-054); matches `tests/` purpose in §11 | D-054 |
 | RA-T3 | `STATE.md` §11 columns: Suite/T · Status · Last run · Result · Environment · Evidence (§16.2) | Consistent recording across sessions | `14-continuation-protocol.md` step 19 |
 | RA-T4 | Entity for **migration**-rehearsal evidence (E-T1) if D-038 decides it is kept in-system (M25); restore evidence uses the registered `E-restore_rehearsal` | Go-live evidence G3/G10 | BP §21.3, §23.4 |
+
+---
+
+## 18. SaaS test suites `TS-SAAS-*` (2026-09-28, `D-227`)
+
+Architecture: `19-saas-platform.md` §15. These suites test **platform properties** — the things that stop being
+true silently. They run in CI on every change, not before a release.
+
+### 18.1 Suites
+
+| Suite | Cases | Verifies |
+|---|---|---|
+| `TS-SAAS-SEP-01…06` | import boundary, no committed artefact, no shared session, no store-DB access from the platform, independent builds, independent pipelines | `19` §2 SEP-1…SEP-6 |
+| `TS-SAAS-CFG-01…18` | schema completeness, unknown key rejected, layer resolution, artefact validation (checksum, schema hash, release), determinism (100 runs byte-identical), no secret in the artefact, reload without mixed-version requests, rollback, cold-key refusal, L4 overlay, draft isolation, diff accuracy, immutability, publish audit, validation not overridable, schema-driven rendering coverage, content addressing and retention | `19` §3, §4 |
+| `TS-SAAS-CAP-01…06` | all six enforcement points per capability, no undeclared store-facing route or component, dependency and conflict resolution, disable/re-enable preserves data, registry import and drift | `19` §5 |
+| `TS-SAAS-PACK-01…17` | profile loading, packs carry no code, no pack-id branching, two packs → two schemas, idempotent schema application, identity models, pack validation, bootstrap result, publish immutability, deprecate/retire rules, migration preview accuracy, no implicit migration, second-pack end-to-end, vendor and import profiles | `19` §6 |
+| `TS-SAAS-TPL-01…09` | no hard-coded visual value, template switch changes no data or business output, template cannot alter business output, renders every page for two packs, preview matches published result, registry import and compatibility, deprecate/retire, palette derivation and contrast gate | `19` §7 |
+| `TS-SAAS-TERM-01…05` | no hard-coded concept word in store-facing output, pluralisation and case, locale fallback and missing-token behaviour, labels from tokens, coverage gate blocks publish | `19` §11 |
+| `TS-SAAS-ISO-01…16` | the invisibility rules INV-1…INV-10 and cross-store isolation: vocabulary crawl, effective-config-only responses, 404 not 403, locked keys absent, suspension notice, emails/PDFs/exports, no link to the root admin, no store data without a grant, unknown host, unscoped query refused, cross-store CRUD/search/export refused, signed-URL isolation, bootstrap isolation, cross-store session/invitation/code, notice content, migration isolation | `19` §9, §10 |
+| `TS-SAAS-PERF-01…06` | zero configuration DB queries / file reads / JSON parses per request, accessor cost, boot load and memory, reload propagation, added latency vs a single-store build, `theme.css` caching | `19` §4.5 / `D-248` |
+| `TS-SAAS-DEPLOY-01…14` | idempotency, resume at each step, hand-off from the wizard, retry caps, provisioning rollback, domain lifecycle, cold boot from the disk copy, smoke failure → automatic rollback, smoke against real hosts, drift detection, two-person decommission, retention and destruction evidence, support-access expiry, transition guards | `20` §5, §7 |
+| `TS-SAAS-EXP-01` | every store-facing output traces to the five inputs of `19` §8 | `19` §8 |
+| `TS-SAAS-REL-01…05` | Schema-change classification, migrate-and-rebuild release procedure, no-op rebuild byte-identical, two-schema acceptance window, rollback eligibility | `19` §17 |
+| `TS-SAAS-EDGE` | Every row of `19` §23 as an executable case: run-out rule, delegation invariants, lifecycle and webhook edges, currency and locale changes, search during migration | `19` §23 |
+| `TS-PROOF-11`, `TS-PROOF-12` | Stage 0: isolation and configuration cost per candidate core | `D-252` |
+
+### 18.2 The two-store rule
+
+**Every** integration and end-to-end run uses the two-store fixture (`T-1A.1-M30-04`): `VP-electronics` /
+`TPL-forge` and `VP-fashion_apparel` / `TPL-aurora`, with different terminology and different data. A suite that
+passes with one store and fails with two is precisely the regression this architecture exists to prevent, so the
+fixture is mandatory from stage 1A.1 onward, not an extra scenario added at the end.
+
+A mutation check is part of the isolation suite's own acceptance: removing a tenant filter from any repository
+must make at least one test fail. A suite that still passes after that mutation is not testing isolation.
+
+### 18.3 Effect on the existing suites
+
+No existing suite is replaced. Each gains the store dimension: fixtures are created inside a store context,
+assertions that used global uniqueness become per-store, and any test that asserted an electronics-specific
+behaviour now asserts it for the store configured with `VP-electronics`. The BP acceptance tests T01–T36 are
+unchanged in content and are run against the Tradex store.
+
+### 18.4 New go-live items
+
+Added to the §14 go-live checklist: **G14** the isolation suite passes with zero findings on the launch
+environment; **G15** every line of the `D-248` performance budget is measured and within budget; **G16** a
+single-store restore has been rehearsed without affecting another store. All three are evidenced by
+`T-1A.17-M26-08`.

@@ -1518,3 +1518,27 @@ D-199 is not used.
 |---|---|---|---|
 | — | None for modules, pages or roles | "Buyer", "warehouse lead", "returns desk", "vendor manager" are responsibilities mapped to existing roles pending D-222 | BP §9.3, A17; MK |
 | Entities | See `11-admin.md` "Registry additions requested" (restore-rehearsal evidence) | — | — |
+
+---
+
+## SaaS additions (2026-09-28, `D-227`)
+
+Architecture: `19-saas-platform.md` §6.4, §16.
+
+The ERP modules described in this file are unchanged in behaviour. What changes is that each of them is now
+store-scoped and capability-gated:
+
+| Area | Change |
+|---|---|
+| Catalog | Category tree, attribute schemas, variant axes and units come from the pack (`T-1A.4-M32-01`). Condition grades, compatibility and bundles are capabilities |
+| Pricing | Quantity tiers, promotions, location pricing and unit-price display are capabilities. Money rules (BP §8.1) unchanged |
+| Inventory | The **item identity model** is configuration — `none`, `serial`, `batch_lot`, `batch_lot_expiry` or `unique_item` (`T-1A.4-M32-02`). Serial behaviour is unchanged for a store that selects `serial`. Cold chain and shelf-life rules are capabilities |
+| Purchasing | QC inspection, landed cost and reorder rules are capabilities |
+| Fulfilment | The available shipping modes are configuration; digital delivery, service appointments and rental logistics are capabilities |
+| Returns | Policy classes come from the pack; exchanges and non-returnable classes are capabilities |
+| Automation | Rules are store-scoped; the available rule set is capability-gated; the owner digest is per store |
+| Reporting | Every report is store-scoped, and the report set comes from the pack's workspace profile |
+| Exceptions & approvals | Store-scoped, with thresholds as store configuration (`D-024` becomes a per-store value) |
+
+No ERP business rule (BR-*) is weakened, re-scoped or made optional by the SaaS change. A rule that applied to
+Tradex now applies to every store whose capability set includes it.

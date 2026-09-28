@@ -15,6 +15,8 @@ identifiers defined here. If an identifier is needed that is not defined here, a
 | **PR1** | Integrated Commerce & Business Management Platform — Proposal | `docs/Integrated_Commerce_Business_Platform_Proposal.pdf` | Owner-facing proposal. Cite as `PR1 §x` |
 | **PR2** | Integrated Commerce & Business Management Platform — Detailed solution proposal | `docs/Professional_Ecommerce_ERP_Implementation_Proposal_CLEAN.pdf` | Consolidates PR1 + BP. Cite as `PR2 §x` |
 | **MK** | Clickable HTML mockup v0.1 (32 screens) | repo root: `store-*.html`, `erp-*.html`, `vendor-*.html`, `assets/` | UI source. Cite as `MK:<page-file>` |
+| **SAAS** | SaaS architecture change request (2026-09-28, from the user) | `docs/SAAS_ARCHITECTURE_CHANGE.md` | **Authoritative for the architecture.** Cite as `SAAS §1` / `SAAS §3 S##`. Expanded in `19-saas-platform.md`, `20-root-admin.md` |
+| **MK-R** | Configurable Root Admin mockup (12 screens, internal) | `root-admin-mockup/` | UI source for P-R01–P-R12. Cite as `MK-R:<page-file>`. Not linked from the client-facing mockup (`D-249`) |
 
 To read the PDFs as text: `pdftotext -layout docs/<file>.pdf -`.
 
@@ -33,6 +35,28 @@ To read the PDFs as text: `pdftotext -layout docs/<file>.pdf -`.
 - Where the mockup shows something **not mentioned in any document** (e.g. product Q&A, bank/UPI offer cards,
   EMI plans), the plan records it as `MOCKUP-ONLY` and links a decision on whether to build it.
 
+### 1.2 Source authority after the SaaS change (2026-09-28)
+
+`SAAS` changed the *shape* of the product, not the requirements of the business the other documents describe.
+
+| Question | Authoritative source |
+|---|---|
+| What must a store be able to do? | MEET, BP, PR1, PR2, MK — unchanged |
+| How is the system built, deployed, configured and separated? | **SAAS**, then BP where SAAS is silent |
+| Who configures a store's category, features, template, branding? | **SAAS** → `20-root-admin.md` |
+| What may a store user see? | **SAAS §3 S03** (`D-229`) overrides any mockup or BP screen that would expose the platform |
+
+Concretely: everything MEET/BP/PR1/PR2/MK specify is now the specification of **one store** — store `tradex`,
+vertical pack `VP-electronics` (`D-251`). Where BP §3.3 / R15 / `D-045` said "prepare boundaries but do not build
+SaaS", `D-227` supersedes them. No BP engineering rule is relaxed (money, idempotency, trust boundaries, one
+stock authority all stand).
+
+### 1.3 How the root admin mockup may be used as a source
+Same rules as §1.1: authoritative for screen inventory, layout, sections, fields, actions, states and flows;
+its sample values (store names, counts, colours, pack and template names beyond `VP-electronics`,
+`VP-fashion_apparel`, `TPL-forge`, `TPL-aurora`) are **not** requirements. It must never be linked from a
+client-facing page (`D-249`).
+
 ## 2. Evidence labels (use exactly these)
 
 | Label | Meaning |
@@ -44,6 +68,8 @@ To read the PDFs as text: `pdftotext -layout docs/<file>.pdf -`.
 | `CONDITIONAL` | BP capability matrix "C" — build only if the linked decision/dependency is met |
 | `LATER` | BP Phase 2/3 or "Later" — out of Phase 1 scope; listed only |
 | `REQUIRES_DECISION` | Needed for implementation but not specified. Must reference a `D-xxx` in `DECISIONS.md` |
+| `SAAS` | Required by the SaaS architecture change (`docs/SAAS_ARCHITECTURE_CHANGE.md`); cite the `S##` requirement |
+| `PACK` | Belongs to a vertical pack as data/configuration, not to the codebase (`19 §6`) |
 
 Rule: **never silently fill a gap.** If a value, technology, field, rule or behaviour is not specified, write
 `REQUIRES_DECISION (D-xxx)` and stop there.
@@ -71,9 +97,16 @@ Inventory & serials · `1A.7` Purchasing & receiving · `1A.8` Customers & deale
 cart, checkout & orders · `1A.10` Payments & reconciliation · `1A.11` Fulfilment & shipping · `1A.12` Returns, RMA &
 warranty · `1A.13` Support L1 & notifications · `1A.14` Automation, exceptions, approvals & owner control centre ·
 `1A.15` Reporting & finance export · `1A.16` Administration completion · `1A.17` Migration, UAT & launch readiness ·
-`1B.1` Vendor portal & vendor management · `1B.2` Validated bulk import & supplier feeds · `1B.3` Guided WhatsApp
-ordering & shared inbox · `1B.4` Approval extensions, selected integrations & P1B automations · `1B.5` 1B UAT &
-release · `2` · `3` (scope/approve only).
+`1R.1` Root admin foundation & store registry · `1R.2` Store configurator, packs, templates & terminology · `1R.3`
+Provisioning, deployment, platform operations & 1R release · `1B.1` Vendor portal & vendor management · `1B.2`
+Validated bulk import & supplier feeds · `1B.3` Guided WhatsApp ordering & shared inbox · `1B.4` Approval
+extensions, selected integrations & P1B automations · `1B.5` 1B UAT & release · `2` · `3` (scope/approve only).
+
+**Stage order after the SaaS change (`D-227`):** `0` → `1A.1`…`1A.17` → `1R.1`…`1R.3` → `1B.1`…`1B.5` → `2` → `3`.
+The multi-store foundation (M30–M33) is built **inside stage 1A.1** — the store platform is tenant-aware and
+configuration-driven from its first line of code, never retrofitted. The `1R` stages build the Configurable Root
+Admin on top of it; until `1R` exists, stores are provisioned by the `M35` bootstrap CLI seeded from the same
+artefact format, so Phase 1A is never blocked on the portal (`D-235`).
 
 ## 5. Canonical ID schemes
 
@@ -89,10 +122,21 @@ release · `2` · `3` (scope/approve only).
 | Test | `TS-<area>-##` (suite), `TS-<area>-##.<n>` (case) and BP acceptance tests `T01…T36` | TS-INV-04, TS-PERM-02.4, T04 | `16-testing.md`, BP §23.1 |
 | Task | `T-<stage>-<M##>-##` (permanent; stage prefix = original stage, D-213) | T-1A.6-M06-02 | skeleton `12-phases.md` §9; tracker & status `TASKS.md` |
 | Stage | `0`, `1A.1`…`1A.17`, `1B.1`…`1B.5`, `2`, `3` | 1A.6 | `12-phases.md` §6 |
-| DB migration group | `DB-G0`…`DB-G11` | DB-G4 | `03-database.md` §4 |
+| DB migration group | `DB-G0`…`DB-G12` | DB-G4 | `03-database.md` §4 (DB-G12 SaaS platform: §11.4) |
 | Seed set | `S-01`… | S-03 | `03-database.md` §6 |
 | Automation | `A01…A38` (from BP §12.2) | A05 | BP §12.2 / `10-erp.md` |
 | Requirement | `R01…R20` (from BP §2.1) | R08 | BP §2.1 |
+| SaaS requirement | `S##` (from SAAS §3) | S13 | `docs/SAAS_ARCHITECTURE_CHANGE.md` §3 |
+| Capability | `CAP-<UPPER_SNAKE>` | CAP-SERIAL_TRACKING | registry in `19-saas-platform.md` §5.3 |
+| Module | `MOD-<slug>` | MOD-inventory, MOD-rental | `19-saas-platform.md` §5.4.2 (platform and category modules) |
+| Bundle | `BND-<slug>` | BND-perishables | `19-saas-platform.md` §5.5 |
+| Surface | `storefront` · `workspace` · `vendor` | workspace | `19-saas-platform.md` §5.4.1 |
+| Vertical pack | `VP-<slug>` | VP-fashion_apparel | catalogue in `19-saas-platform.md` §6.2 |
+| Site template | `TPL-<slug>` | TPL-aurora | `19-saas-platform.md` §7.3 |
+| Configuration key | `CFG-<section>.<name>` | CFG-checkout.guest_allowed | schema in `19-saas-platform.md` §3.2 |
+| Terminology token | `TT-<slug>` | TT-product_plural | `19-saas-platform.md` §11 |
+| Root admin page | `P-R##` | P-R05 | this file §8 |
+| Pack seed set | `S-VP-<slug>-##` | S-VP-electronics-01 | `19-saas-platform.md` §6.1 |
 | Work package | `WP01…WP17` (from BP §22.2) | WP08 | BP §22.2 |
 
 ## 6. Module registry
@@ -128,6 +172,12 @@ release · `2` · `3` (scope/approve only).
 | M27 | SEO & discoverability | §6.8 | 1A |
 | M28 | Mobile web optimisation & mobile app | §28.4 | 2 (`LATER`) |
 | M29 | AI assistance | §28.1–28.3 | 3 (`LATER`) |
+| **M30** | **Tenancy & store context** (store registry runtime, host resolution, tenant context, data-access guard, per-store storage/secrets, store lifecycle) | SAAS §3 S01, S03; `19` §10 | 1A (stage 1A.1) |
+| **M31** | **Configuration & capability runtime** (`CFG-*` schema, capability registry, artefact loader, immutable snapshot, reload/invalidation, store-editable settings, performance budget) | SAAS §3 S12–S15; `19` §3–§5 | 1A (stage 1A.1) |
+| **M32** | **Vertical packs (runtime)** (catalog schema, item identity model, units, storefront/workspace/vendor profiles, pack seeds) | SAAS §3 S02, S06, S16–S18; `19` §6 | 1A |
+| **M33** | **Templates & theming (runtime)** (template registry & resolution, token contract, compiled theme, template-safe components) | SAAS §3 S07–S09, S19–S21; `19` §7 | 1A |
+| **M34** | **Root Admin platform** (portal P-R01–P-R12, pack/template/capability/terminology authoring, store registry, configurator, compiler, publisher, platform users & audit) — **separate codebase** `root-admin/` | SAAS §3 S04–S10; `20` | 1R |
+| **M35** | **Store provisioning & deployment** (provisioning pipeline, bootstrap & seeding, domains/TLS, config publication, health callbacks, rollback, decommission) | SAAS §3 S11; `20` §5 | 1A (bootstrap CLI) / 1R (pipeline & portal) |
 
 ## 7. Entity registry (logical names; detail in `03-database.md`)
 
@@ -213,8 +263,40 @@ Relationship clarifications accepted: E-fulfilment also covers reverse pickups a
 (BP §10.5); E-support_conversation may have a vendor as the counter-party (MK:erp-support.html); E-exception_case is
 the single exception record type for all exception queues (BP §12.5).
 
-Rules for the registry: an entity may only be added if a source (BP/PR/MEET/MK) requires or clearly implies it;
-the entity's row in `03-database.md` must cite that source.
+### 7.3 SaaS platform entities added 2026-09-28 (source: SAAS · `D-227`–`D-253`; detail in `03-database.md` §11)
+
+**Root admin database** (module M34/M35 — a *different database* from the store database, SEP-1):
+
+| Area | Entities |
+|---|---|
+| Platform identity | E-platform_user, E-platform_role, E-platform_role_assignment, E-platform_audit_event, E-platform_support_access |
+| Store registry | E-store_registration, E-store_environment, E-store_domain |
+| Configuration | E-store_config_draft, E-store_config_version, E-config_publication, E-config_artifact |
+| Vertical packs | E-vertical_pack, E-vertical_pack_version, E-pack_migration |
+| Capabilities | E-capability_definition, E-capability_default, E-store_capability_override |
+| Templates | E-template, E-template_version, E-template_compatibility |
+| Branding & wording | E-brand_asset, E-terminology_token, E-terminology_set, E-terminology_override |
+| Deployment | E-deployment, E-deployment_step, E-platform_notification |
+| Bundles (`D-266`) | E-bundle, E-bundle_version, E-pack_bundle_application |
+
+**Store database** (module M30/M31/M35):
+
+| Entity | Purpose |
+|---|---|
+| E-store | The store's own identity record: id, key, display name, jurisdiction, currency, locales, state |
+| E-store_setting | Layer L4 — the store-editable subset only (`D-243`) |
+| E-store_feature_state | Layer L4 — the on/off value of every **delegated** module and capability, set by the store's own administrator (`D-258`) |
+| E-store_setting_version | Monotonic version used to invalidate the L4 overlay without polling |
+| E-config_state | Applied config version, checksum, applied_at, per-instance report, drift flag |
+| E-store_bootstrap_run | Idempotent record of seed sets applied during provisioning (`D-250`) |
+
+**Global rule (`BR-M30-01`):** every entity in §7, §7.1 and §7.2 is **store-scoped** and gains a non-null
+`store_id`, included in its primary key or a mandatory index prefix and in every unique constraint. The only
+exceptions are the root-admin entities above (different database) and pure code-level reference data that is
+identical for all stores.
+
+Rules for the registry: an entity may only be added if a source (BP/PR/MEET/MK/SAAS) requires or clearly implies
+it; the entity's row in `03-database.md` must cite that source.
 
 ## 8. Page / screen registry (source: mockup)
 
@@ -271,8 +353,30 @@ routes follow D-003/D-004 (framework and staff-UI approach).
 | P-V04 | Business profile & statements | vendor-account.html |
 | P-V05 | Vendor sign-in, invitation acceptance & security (no mockup screen) | DOCUMENTED — BP §11.1 (admin invitation), §19.1; methods D-040, route D-047 |
 
+### Configurable Root Admin portal — `P-R` (separate platform, separate codebase; `20-root-admin.md` §6)
+| ID | Screen | Mockup file (`root-admin-mockup/`) |
+|---|---|---|
+| P-R01 | Platform sign-in (MFA mandatory) | ra-login.html |
+| P-R02 | Platform dashboard | ra-dashboard.html |
+| P-R03 | Stores (registry) | ra-stores.html |
+| P-R04 | Create store (6-step wizard) | ra-store-new.html |
+| P-R05 | Store detail & configuration | ra-store.html |
+| P-R06 | E-commerce categories (vertical packs) | ra-packs.html |
+| P-R07 | Templates | ra-templates.html |
+| P-R08 | Capabilities & feature matrix | ra-capabilities.html |
+| P-R09 | Terminology | ra-terminology.html |
+| P-R10 | Deployments & publications | ra-deployments.html |
+| P-R11 | Platform users, roles & audit | ra-admin.html |
+| P-R12 | Platform settings & health | ra-settings.html |
+| P-R13 | Bundles (reusable building blocks for categories) | ra-bundles.html |
+| (shell) | Left nav, environment switcher, platform search, notifications, user menu, support-access banner | `root-admin-mockup/assets/ra.js` |
+
+**No `P-S`, `P-E` or `P-V` screen may link to, mention or hint at a `P-R` screen** (`D-229` INV-8).
+
 BP §30.1 note (applies to all `P-E`): *"Reuse native ERP screens where they fit. Build custom staff UI only where
 it materially improves a frequent task."* → decision **D-004** decides, per P-E screen, native vs custom UI.
+After the SaaS change every `P-S`/`P-E`/`P-V` screen is additionally **configuration-driven**: its sections,
+columns, fields and wording come from the store's capability set, pack profile and terminology (`19` §6, §11).
 
 ## 9. Role registry (source: BP §3.1 actors, BP §18.1 authority matrix)
 
@@ -293,6 +397,22 @@ it materially improves a frequent task."* → decision **D-004** decides, per P-
 | R-owner | Owner / super admin | §3.1 | MFA, logged privileged actions |
 | R-integration | Integration account | §3.1 | Machine-to-machine, narrow |
 
+All roles above are **store roles**: they exist inside one store and can never see or affect another store
+(`19` §10, `BR-M30-01`).
+
+### 9.1 Platform roles (Configurable Root Admin — a separate identity realm, `D-245`)
+
+| ID | Role | May |
+|---|---|---|
+| R-root_owner | Platform owner / super admin | Everything, incl. platform users, pack/template retirement, store decommission (two-person), support-access approval |
+| R-root_operator | Platform operator | Create/configure/deploy stores, publish configuration, manage domains, run migrations |
+| R-root_author | Pack & template author | Author/publish vertical packs, templates, capability defaults, terminology sets; no store access |
+| R-root_support | Platform support | Read-only fleet view; may request time-boxed, approved, audited store support access (`D-246`) |
+| R-root_readonly | Platform read-only | Fleet health and audit only |
+
+A platform role never grants implicit access to store data, and a store role never grants any platform access.
+The two realms share no user table, session, token issuer or cookie domain (SEP-3).
+
 BP §18.1 collapses staff roles into columns *Staff / Manager / Finance / Owner-admin / Vendor*; exact monetary
 thresholds are client-supplied (D-024). Detailed mapping: `07-auth-roles-permissions.md`.
 
@@ -310,8 +430,10 @@ One repository (`TradexStore`) holds the whole project.
 ```
 TradexStore/
 ├── index.html, credits.html, store-*.html, erp-*.html, vendor-*.html, assets/
-│                               ← clickable mockup (UI reference, published by GitHub Pages via CNAME). Do not
-│                                 modify as part of implementation unless the user asks.
+│                               ← clickable store mockup (UI reference, published by GitHub Pages via CNAME). Do
+│                                 not modify as part of implementation unless the user asks.
+├── root-admin-mockup/          ← Configurable Root Admin mockup P-R01–P-R12 with its own assets/ (D-249).
+│                                 INTERNAL: never linked from any page above; noindex on every page.
 ├── docs/                       ← source requirement documents (read-only sources)
 ├── plan/                       ← this implementation plan, TASKS.md, STATE.md, DECISIONS.md, tools/status.py
 │   ├── phase0/                 ← Phase 0 records (D-210): decision-briefs/, discovery/, audit/, ui/, proof/,
@@ -320,14 +442,27 @@ TradexStore/
 │                                 scoping), UAT evidence summaries
 ├── handover/                   ← BP §24.2 handover package documents that are not code: SOPs, training material,
 │                                 owner dashboard guide, user guides, data dictionary exports
-├── frontend/
-│   ├── design-system/          ← shared design tokens & UI components extracted from mockup assets/tradex.css (M09, D-049)
+├── frontend/                   ← THE STORE PLATFORM UI — one codebase, every store (SAAS §3 S01)
+│   ├── design-system/          ← design tokens & UI components (M09, D-049)
+│   │   └── theme/              ← token contract + compiled-theme consumption (M33)
 │   ├── storefront/             ← customer-facing web application: P-S01…P-S13 (M09, framework D-003)
+│   │   └── templates/<slug>/   ← site templates TPL-* (M33, D-238): TPL-forge, TPL-aurora, …
 │   ├── workspace/              ← ERP staff workspace UI: P-E01…P-E15 — only screens decided "custom" under D-004
 │   └── vendor-portal/          ← vendor portal UI: P-V01…P-V04 (M14)
-├── backend/                    ← operational core customisation / extension app, controlled commerce API,
-│                                 business modules, adapters, jobs, migrations & data-migration scripts
-│                                 (internal structure depends on D-001 / D-002)
+├── backend/                    ← THE STORE PLATFORM BACKEND — operational core customisation / extension app,
+│   │                             controlled commerce API, business modules, adapters, jobs, migrations &
+│   │                             data-migration scripts (internal structure depends on D-001 / D-002)
+│   └── platform/               ← the SaaS runtime layer (19-saas-platform.md)
+│       ├── tenancy/            ← M30: store context, host resolution, data-access guard, per-store storage
+│       ├── config/             ← M31: CFG-* schema, artefact loader, immutable snapshot, reload, L4 settings
+│       ├── capabilities/       ← M31: capability registry and the six enforcement points
+│       ├── packs/              ← M32: pack profile consumption (catalog schema, identity model, profiles)
+│       └── bootstrap/          ← M35 store side: provisioning bootstrap, seed application, health callbacks
+├── root-admin/                 ← THE CONFIGURABLE ROOT ADMIN PLATFORM — separate codebase (M34/M35, D-228)
+│                                 app/ api/ domain/ compiler/ deploy/ platform-ops/ migrations/ tests/
+│                                 (layout: 20-root-admin.md §2). Its own dependency manifest, build and pipeline.
+├── config/generated/           ← compiled config artefacts per store (19 §4.2). GENERATED — never hand-edited,
+│                                 never committed (git-ignored); present on each runtime host.
 ├── infra/                      ← environment definitions, deployment, CI/CD configuration; operational
 │                                 runbooks in infra/runbooks/ (backup/restore, incident, release) (D-005, D-052, D-077)
 └── tests/                      ← cross-application suites (tools per D-053):
@@ -339,6 +474,18 @@ Rules:
 - Whether `frontend/storefront`, `frontend/workspace` and `frontend/vendor-portal` deploy as separate
   applications or share one deployable is an architecture detail recorded in `02-architecture.md`; the folders
   exist so each application boundary (BP §15.6 "one codebase per real application boundary") is clear.
+- **`root-admin/` is a hard boundary.** Nothing under `frontend/` or `backend/` may import anything under
+  `root-admin/`, and nothing under `root-admin/` may import store business code. Enforced by a lint rule and a
+  CI check (`TS-SAAS-SEP-01`, `19` §2 SEP-6).
+- **Each client's data is separated** (`D-272`): its own database, object-storage container, search index, cache
+  namespace and encryption key. `store_id` scoping stays mandatory on every store-scoped row regardless, in every
+  topology including a single-store standalone install (`19` §10.1, `BR-M30-10`).
+- **One codebase, four placements** (`D-269`): shared platform (exception), separated client on a shared server
+  (default), dedicated runtime, standalone install on the client's own server. No topology fork in the code.
+- **There is never a second store codebase.** A new e-commerce category is a vertical pack (data); a new look is
+  a template inside `frontend/storefront/templates/`; neither is a fork (`SAAS §3 S01`, `S20`, `S22`).
+- `config/generated/` is machine-written output of the root admin compiler. It is in `.gitignore`; committing an
+  artefact is a defect (`BR-M31-07`).
 - If D-004 decides a P-E screen uses native ERP screens, that screen gets **no** code in `frontend/workspace/`;
   its configuration lives in `backend/`.
 - Unit tests live next to the code they test inside each folder; `tests/` holds only cross-application suites.
@@ -358,3 +505,7 @@ Rules:
 | 8 | Mockup reserves stock when a WhatsApp checkout link is sent; BP §29.5 implies reservation at customer confirmation | Open | D-151 |
 | 9 | Mockup staff role labels vs BP §3.1 roles | Map labels to R-* roles | D-222 |
 | 10 | Mockup audit sample rows mention staff "iPhone/Android app"; BP §28.4 "staff ERP mobile … is not implied" | Not in scope; sample data only | D-085 |
+| 11 | BP §3.3 / R15 and `D-045`: "multiple businesses / separate domains — later; prepare boundaries **without building SaaS**" vs SAAS: build the SaaS platform now | **SAAS wins.** `D-045` is superseded; BP §3.3's company/branch/location boundary advice still applies *inside* a store | D-227 |
+| 12 | MEET/BP/PR1/PR2 describe electronics-specific behaviour (serials, refurbished grades, compatibility) as product requirements vs SAAS: the codebase must be category-agnostic | Both hold: the behaviour is required, but it belongs to vertical pack `VP-electronics`, not to the code (`19` §6) | D-237, D-251 |
+| 13 | Mockup shows one fixed storefront design vs SAAS §3 S19 "templates must not make every client website look identical" | The mockup is `TPL-forge`, one of several templates; a second template `TPL-aurora` proves the mechanism | D-242 |
+| 14 | BP §18 / `11-admin.md` treat "administration" as one thing vs SAAS: two administrations | Split: store administration = P-E15 (M24, store-editable keys only); platform administration = P-R* (M34) | D-228, D-243 |

@@ -2037,3 +2037,23 @@ No page or role registry additions are requested (role labels are covered by D-2
 | 8 | MK shell Help icon links staff to Settings (`erp-admin.html`) | MK `assets/tradex.js` | D-174 |
 | 9 | Order audit shows "viewed order · read access logged" — read logging of operational records is not documented; D-114 only covers audit-log mechanism | MK:erp-orders.html `od-time` | §5.4.4 → D-114 scope |
 | 10 | Mockup nav/page labels differ from registry names (e.g. "Products" / "Products & catalog" for P-E06 Catalog & imports; "Settings & access" for P-E15) | MK vs 00-conventions §8 | Registry names used |
+
+---
+
+## 19. SaaS additions — the workspace is configuration-driven (2026-09-28, `D-227`)
+
+Architecture: `19-saas-platform.md` §6.4, §9, §11; administration split: `11-admin.md` (SaaS additions).
+
+| Rule | Detail | Task |
+|---|---|---|
+| WS-S1 | The sidebar, section grouping, screen set, tabs, columns, saved views and KPI tiles come from the pack's **workspace profile** and the store's capability set — not from the shell code | `T-1A.3-M32-01` |
+| WS-S2 | Every label, heading, column name, status name, help text and empty-state sentence comes from a terminology token. A grocery store's Inventory screen says "batch" where an electronics store says "serial", from the same code | `T-1A.1-M31-06` |
+| WS-S3 | A screen, tab, column, action or queue belonging to a disabled capability does not exist: not in the navigation, not in the route table, not in the bundle | `T-1A.1-M31-02` |
+| WS-S4 | P-E15 shows only the store-editable, unlocked configuration keys, rendered from the schema with plain-language labels. Locked and platform-owned keys are **absent**, never greyed out | `T-1A.16-M24-08` |
+| WS-S5 | No workspace screen shows another store, a category list, a template list, a capability or configuration identifier, or any platform vocabulary | `T-1A.3-M31-01` |
+| WS-S6 | The audit viewer additionally shows platform support-access actions taken in this store, attributed to the named platform user | `T-1R.3-M34-01` |
+| WS-S7 | The contextual help of §2.21–§2.23 and the responsive behaviour of §2.24 apply to whatever screen set the configuration produces; help content for a pack-specific screen is pack content | `T-1A.16-M24-06` |
+
+Read §1–§18 as the specification of the workspace **for a store configured with `VP-electronics`** — which is
+the Tradex store and the approved mockup. The screens, flows, states and rules are unchanged; where they come
+from changes.

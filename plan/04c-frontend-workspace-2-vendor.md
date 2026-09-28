@@ -2610,3 +2610,20 @@ No new modules or roles are requested (vendor sub-roles stay under D-137; staff 
 | I-15 | MK thresholds callout cites "decision log D-07" — the mockup's own numbering, unrelated to DECISIONS.md D-007 (vendor model) | MK:erp-admin.html | Ignore the MK reference; thresholds are D-024 |
 | I-16 | Vendor model enums differ: 03-database E-vendor_application `proposed_model {supplier_reseller, supplier_fulfilment, marketplace_seller}` vs 06-api API-M14-01 `model {supplier, supplier_fulfilment_pilot, marketplace_waitlist}` | 03-database §2.12.1; 06-api §3.13 | DB/API owners to align names |
 | I-17 | Report catalogue in MK adds "Inventory extract (accountant)" and "Branch comparison" to the 13 BP §14.3 reports | MK:erp-reports.html; BP §14.1, §14.3, §30.1 | Kept with sources (BP §14.1, §30.1); launch set D-075 |
+
+---
+
+## 21. SaaS additions — the vendor portal is configuration-driven (2026-09-28, `D-227`)
+
+Architecture: `19-saas-platform.md` §6.5, §9, §11.
+
+| Rule | Detail | Task |
+|---|---|---|
+| VND-1 | The vendor portal itself is a capability (`CAP-VENDOR_PORTAL`). A store that does not use vendors has no portal, no routes, no bundle and no sign-in page for it | `T-1A.1-M31-02` |
+| VND-2 | Submission form fields, availability-feed columns and fulfilment-task types come from the pack's **vendor profile**, so a fashion vendor submits sizes and colourways where an electronics vendor submits serials and condition | `T-1B.1-M32-01` |
+| VND-3 | Every label and message comes from a terminology token | `T-1A.1-M31-06` |
+| VND-4 | A vendor user belongs to one store and one vendor organisation. Cross-store vendor access does not exist, and a credential from one store is unauthenticated on another | `T-1A.2-M02-10` |
+| VND-5 | No vendor screen shows another store, a category or template list, or any platform vocabulary; the vendor sees a portal built for their client's business | `T-1A.3-M31-01` |
+| VND-6 | Vendor terminology, help content (X20) and responsive behaviour (X16) apply to whatever screen set the configuration produces | `T-1B.1-M14-16`, `T-1B.1-M14-17` |
+
+Read §1–§20 as the specification of the vendor portal **for a store configured with `VP-electronics`**.

@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<meta name="referrer" content="no-referrer">
+<title>Stores — Configurable Root Admin (internal prototype)</title>
+<link rel="stylesheet" href="assets/ra.css">
+</head>
+<body>
+<div class="ra-internal">INTERNAL PROTOTYPE — <b>Configurable Root Admin</b> — not part of any client store, not linked from the client-facing demo (D-249)</div>
+<main>
+  <div class="ra-head">
+    <div><h1>Stores</h1>
+      <p class="sub">Every store on the platform. A store's category, template, features, wording and appearance are
+        all configuration — none of them is a separate codebase.</p></div>
+    <div class="act">
+      <button class="btn" data-demo="Prototype: the export would contain the registry rows shown, without any store's business data.">Export registry</button>
+      <a class="btn pri" href="ra-store-new.html">Create store</a>
+    </div>
+  </div>
+
+  <div class="card mb">
+    <div class="card-b row" style="gap:10px">
+      <div style="min-width:220px;flex:1"><label class="fl" for="q">Search</label>
+        <input id="q" type="search" placeholder="Store, key or domain"></div>
+      <div style="min-width:170px"><label class="fl" for="f1">Category</label>
+        <select id="f1"><option>All categories</option><option>Electronics</option><option>Fashion &amp; Apparel</option>
+          <option>Agriculture &amp; Gardening</option><option>Fish</option><option>Home &amp; Furniture</option>
+          <option>Industrial &amp; Hardware</option><option>Pet Supplies</option></select></div>
+      <div style="min-width:150px"><label class="fl" for="f2">State</label>
+        <select id="f2"><option>All states</option><option>Live</option><option>Deploying</option><option>Draft</option>
+          <option>Suspended</option><option>Archived</option></select></div>
+      <div style="min-width:150px"><label class="fl" for="f3">Environment</label>
+        <select id="f3"><option>Production</option><option>Staging</option><option>Both</option></select></div>
+      <div style="min-width:170px"><label class="fl" for="f4">Saved view</label>
+        <select id="f4"><option>All stores</option><option>Needs attention</option><option>Behind on configuration</option>
+          <option>Deployed this week</option><option>Never deployed</option></select></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-h"><h2>7 stores</h2><span class="sp"></span>
+      <button class="btn sm" data-demo="Prototype: bulk publish would validate, compile, diff and deploy each selected store, one run per store.">Bulk publish</button>
+      <button class="btn sm" data-demo="Prototype: bulk migration shows a per-store impact preview before anything changes.">Migrate category version</button>
+    </div>
+    <div id="tbl"></div>
+  </div>
+
+  <div class="note mt"><svg data-i="info"></svg><div>
+    Every row here is one deployment of the same store codebase. Adding a store adds configuration and starting
+    content — never an application, never a fork. Each client's database, images, search index and cache are its
+    own; one server can run several stores without their data ever meeting.
+  </div></div>
+</main>
+<script src="assets/ra.js"></script>
+<script>
+var rows = RA.stores.map(function (s) {
+  return [
+    '<a href="ra-store.html"><b>' + s.name + '</b></a><div class="sub mono">' + s.key + ' · ' + s.host + '</div>',
+    s.pack + '<div class="sub">' + s.packv + '</div>',
+    s.tpl + '<div class="sub">' + s.tplv + '</div>',
+    RA.stateTag(s.state) + '<div class="sub">' + s.env + '</div>',
+    s.cfg ? ('v' + s.cfg) : '<span class="dim">none</span>',
+    (s.key === 'northgear'
+      ? '<span class="tag acc">Own server</span><div class="sub">separated</div>'
+      : 'Shared server<div class="sub">separated database, images, index</div>'),
+    s.dep,
+    '<div class="row" style="gap:6px;flex-wrap:nowrap"><a class="btn sm" href="ra-store.html">Open</a>' +
+      '<button class="btn sm" data-demo="Prototype: opens the deployment run for ' + s.name + '.">Deploy</button></div>'
+  ];
+});
+document.getElementById("tbl").innerHTML =
+  RA.table(["Store", "E-commerce category", "Template", "State", "Configuration", "Hosting", "Last deployment", ""], rows);
+RA.boot();
+</script>
+</body>
+</html>

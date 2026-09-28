@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<meta name="referrer" content="no-referrer">
+<title>Terminology — Configurable Root Admin (internal prototype)</title>
+<link rel="stylesheet" href="assets/ra.css">
+</head>
+<body>
+<div class="ra-internal">INTERNAL PROTOTYPE — <b>Configurable Root Admin</b> — not part of any client store, not linked from the client-facing demo (D-249)</div>
+<main data-tabs>
+  <div class="ra-head">
+    <div><h1>Wording</h1>
+      <p class="sub">The words a store uses are configuration, not code. One concept, one entry, and every screen,
+        email, document and export in that store follows it. This is how a fish shop says “catch” where an
+        electronics shop says “product”, from the same system.</p></div>
+    <div class="act">
+      <button class="btn" data-demo="Prototype: exports the wording set for translation.">Export for translation</button>
+      <button class="btn pri" data-demo="Prototype: opens a real screen rendered with the selected wording so it can be judged in context.">Preview a screen</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button data-tab="w-comp">Compare categories</button>
+    <button data-tab="w-set">Wording set</button>
+    <button data-tab="w-cov">Coverage</button>
+  </div>
+
+  <section class="pane" id="w-comp">
+    <div class="card"><div class="card-h"><h2>The same concept, five categories</h2></div><div id="cmp"></div></div>
+    <div class="note mt"><svg data-i="info"></svg><div>
+      Nothing in the system is called “product” in code. Everything asks the wording set, which is why adding a
+      category never means renaming anything.
+    </div></div>
+  </section>
+
+  <section class="pane" id="w-set">
+    <div class="card mb"><div class="card-b row">
+      <div style="min-width:220px"><label class="fl">Category</label><select><option>Fashion &amp; Apparel 1.1.0</option>
+        <option>Electronics 1.4.0</option><option>Fish 0.6.0</option></select></div>
+      <div style="min-width:180px"><label class="fl">Language</label><select><option>English (India)</option><option>Hindi</option></select></div>
+      <div style="min-width:220px"><label class="fl">Store override</label><select><option>None — category default</option>
+        <option>Atelier Nine</option></select></div>
+      <span class="sp"></span>
+      <button class="btn" data-demo="Prototype: saves to the draft. Nothing changes in a store until it is published.">Save draft</button>
+    </div></div>
+    <div class="card"><div id="set"></div></div>
+  </section>
+
+  <section class="pane" id="w-cov">
+    <div class="grid g3 mb">
+      <div class="kpi ok"><div class="k">Fashion &amp; Apparel · en-IN</div><div class="v">148/148</div><div class="d">complete</div></div>
+      <div class="kpi ok"><div class="k">Electronics · en-IN</div><div class="v">203/203</div><div class="d">complete</div></div>
+      <div class="kpi bad"><div class="k">Grocery (draft) · en-IN</div><div class="v">134/148</div><div class="d">14 missing — cannot be published</div></div>
+    </div>
+    <div class="card"><div class="card-h"><h3>Missing entries · Grocery &amp; Supermarket 0.3.0 · English (India)</h3></div>
+      <div id="miss"></div></div>
+    <div class="note warn mt"><svg data-i="warn"></svg><div>
+      A category with missing wording cannot be given to a store. Publishing is blocked until every concept the
+      category uses has a word in every language the store enables.
+    </div></div>
+  </section>
+</main>
+<script src="assets/ra.js"></script>
+<script>
+document.getElementById("cmp").innerHTML = RA.table(
+  ["Concept", "Electronics", "Fashion &amp; Apparel", "Fish", "Agriculture &amp; Gardening", "Home &amp; Furniture"],
+  [
+   ["The thing being sold", "product", "piece", "catch", "product", "piece"],
+   ["Plural", "products", "pieces", "catches", "products", "pieces"],
+   ["A variation of it", "model", "size / colour", "grade", "variety", "finish"],
+   ["How a unit is identified", "serial number", "— (quantity only)", "batch", "lot", "— (quantity only)"],
+   ["Grouping on the storefront", "category", "collection", "day's landing", "season", "room"],
+   ["A trade buyer", "dealer", "stockist", "wholesaler", "nursery", "trade account"],
+   ["Someone who supplies you", "vendor", "maker", "supplier", "grower", "maker"],
+   ["Where stock is kept", "warehouse", "stockroom", "cold store", "yard", "warehouse"],
+   ["Sending goods out", "dispatch", "dispatch", "despatch", "dispatch", "delivery"],
+   ["Bringing goods back", "return", "return or exchange", "quality claim", "return", "collection"],
+   ["Condition of an item", "condition grade", "—", "freshness grade", "—", "finish quality"]
+  ]);
+
+document.getElementById("set").innerHTML = RA.table(
+  ["Concept", "Singular", "Plural", "In a sentence", "Overridden by a store"],
+  [
+   ["Item sold", "<input value='piece'>", "<input value='pieces'>", "Add this piece to your bag", "<span class='dim'>no</span>"],
+   ["Variation", "<input value='size'>", "<input value='sizes'>", "Choose a size", "<span class='dim'>no</span>"],
+   ["Second variation axis", "<input value='colour'>", "<input value='colours'>", "Available in 6 colours", "<span class='dim'>no</span>"],
+   ["Grouping", "<input value='collection'>", "<input value='collections'>", "Browse the autumn collection", "<span class='dim'>no</span>"],
+   ["Trade buyer", "<input value='stockist'>", "<input value='stockists'>", "Stockist prices", "<span class='tag acc'>Atelier Nine</span>"],
+   ["Supplier", "<input value='maker'>", "<input value='makers'>", "Makers submit new pieces for review", "<span class='dim'>no</span>"],
+   ["Basket", "<input value='bag'>", "<input value='bags'>", "Your bag is empty", "<span class='tag acc'>Atelier Nine</span>"],
+   ["Order", "<input value='order'>", "<input value='orders'>", "Your order is on its way", "<span class='dim'>no</span>"]
+  ]);
+
+document.getElementById("miss").innerHTML = RA.table(
+  ["Concept", "Used by", "Needed because"],
+  [
+   ["Unit of weight", "product page, basket, invoice", "the category prices by weight"],
+   ["Best-before date", "product page, stock screens, picking", "the category tracks expiry"],
+   ["Delivery slot", "checkout, order screens, notifications", "the category offers delivery slots"],
+   ["Daily cut-off", "checkout, storefront banner", "the category offers same-day delivery"],
+   ["Substitution", "order screens, notifications", "the category allows substitutes when stock runs out"],
+   ["Crate", "picking and packing", "the category packs into crates"],
+   ["<span class='dim'>… 8 more</span>", "", ""]
+  ]);
+RA.boot();
+</script>
+</body>
+</html>

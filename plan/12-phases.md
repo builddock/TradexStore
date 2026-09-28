@@ -104,6 +104,7 @@ sets · `TS-*` = 16 suites · `T01…T36` = BP §23.1 · `WP##` = BP §22.2 · `
 |---|---|---|---|---|
 | 0 Discovery & proof | 0 | Remove uncertainty before commitment | Owner and operations approve business model and scope | TS-PROOF-01…10, D-001, BP §31.2 sign-off (T-0-M01-29) |
 | 1A Core web launch | 1A.1–1A.17 | Deliver the e-commerce and ERP web applications | Web end-to-end UAT and reconciled opening stock | All 1A T-tests, UAT sign-off, TS-MIG-03/06, go-live checklist (T-1A.17-M01-01) |
+| 1R Configurable Root Admin (SaaS control plane) | 1R.1–1R.3 | Create, configure and deploy stores from one portal (`D-227`) | Two stores of different categories created from an empty platform, entirely from the portal, with no code change | Full `TS-SAAS-*` suite (T-1R.3-M34-03) |
 | 1B Operational completion | 1B.1–1B.5 | Reduce repetitive work further | Measured process improvement and manageable exceptions | T11–T14, T24, T26; BP §4 measures vs baseline (T-1B.5-M17-01) |
 | 2 Mobile & approved growth | 2 (scope only) | Mobile-friendly e-commerce and mobile app; optional marketplace | Mobile web/app UAT; marketplace financial controls if included | T29; TS-MKT-01…07 (`LATER`) |
 | 3 AI & expansion | 3 (scope only) | Scoped AI assistance, possible multiple storefronts | Evidence of adoption, quality and sustainable cost | `LATER` |
@@ -117,32 +118,40 @@ after Phase 0" (D-220).
 
 | Stage | Name | Task modules | Work packages | Tasks | of which decision tasks | Initially REQUIRES_DECISION |
 |---|---|---|---|---:|---:|---:|
-| 0 | Discovery & proof | M01, M02, M03, M04, M05, M06, M08, M09, M11, M13, M14, M17, M19, M25, M26 | WP01, WP02, WP03 (prototype sign-off), WP04; estimation BP §25; sign-off worksheet BP §31.2. | 69 | 48 | 59 |
-| 1A.1 | Foundation | M01, M17, M26 | WP05. | 13 | 0 | 10 |
-| 1A.2 | Identity, access, audit & organisation | M02, M03, M17, M23, M24 | WP05 (secrets, integration settings); WP06 (organisation master data). | 17 | 0 | 11 |
-| 1A.3 | Design system & app shells | M01, M02, M03, M09, M24 | WP03 (design system), WP09 (storefront shell). | 11 | 0 | 9 |
-| 1A.4 | Catalog, media, search & SEO base | M04, M21, M22, M25, M27 | WP06; WP09 (search). | 15 | 0 | 11 |
+| 0 | Discovery & proof | M01, M02, M03, M04, M05, M06, M08, M09, M11, M13, M14, M17, M19, M25, M26 | WP01, WP02, WP03 (prototype sign-off), WP04; estimation BP §25; sign-off worksheet BP §31.2. | 77 | 48 | 47 |
+| 1A.1 | Foundation | M01, M17, M26 | WP05. | 33 | 0 | 19 |
+| 1A.2 | Identity, access, audit & organisation | M02, M03, M17, M23, M24 | WP05 (secrets, integration settings); WP06 (organisation master data). | 20 | 0 | 12 |
+| 1A.3 | Design system & app shells | M01, M02, M03, M09, M24 | WP03 (design system), WP09 (storefront shell). | 18 | 0 | 14 |
+| 1A.4 | Catalog, media, search & SEO base | M04, M21, M22, M25, M27 | WP06; WP09 (search). | 18 | 0 | 13 |
 | 1A.5 | Pricing | M04, M05 | WP07. | 10 | 0 | 6 |
 | 1A.6 | Inventory & serials | M03, M04, M06, M23, M25 | WP08. | 16 | 0 | 11 |
 | 1A.7 | Purchasing & receiving | M05, M07, M25 | WP08. | 12 | 0 | 8 |
 | 1A.8 | Customers & dealer accounts | M02, M08, M09, M25 | WP07 (dealer context), WP09 (account). | 17 | 0 | 11 |
-| 1A.9 | Storefront pages, cart, checkout & orders | M04, M05, M06, M08, M09, M10, M12, M27 | WP09, WP07 (quote snapshots). | 29 | 0 | 21 |
+| 1A.9 | Storefront pages, cart, checkout & orders | M04, M05, M06, M08, M09, M10, M12, M27 | WP09, WP07 (quote snapshots). | 32 | 0 | 24 |
 | 1A.10 | Payments & reconciliation | M09, M11, M23 | WP10. | 12 | 0 | 7 |
 | 1A.11 | Fulfilment & shipping | M09, M12, M19, M23 | WP11. | 15 | 0 | 9 |
 | 1A.12 | Returns, RMA & warranty | M04, M08, M09, M10, M13 | WP11. | 13 | 0 | 8 |
 | 1A.13 | Support L1 & notifications | M09, M10, M16, M20 | WP14 (Level 1), WP12 (A14). | 12 | 0 | 9 |
 | 1A.14 | Automation, exceptions, approvals & owner control centre | M17, M18 | WP12. | 13 | 0 | 10 |
 | 1A.15 | Reporting & finance export | M09, M10, M11, M18, M19 | WP15. | 13 | 0 | 10 |
-| 1A.16 | Administration completion | M24, M26 | WP05 (operations part), WP17 (monitoring preparation). | 7 | 0 | 6 |
-| 1A.17 | Migration, UAT & launch readiness | M01, M02, M09, M25, M26, M27 | WP16, WP17. | 17 | 0 | 13 |
-| 1B.1 | Vendor portal & vendor management | M14 | WP13. | 15 | 0 | 11 |
-| 1B.2 | Validated bulk import & supplier feeds | M04, M05, M06, M14, M22, M23 | WP06 (import), WP13 (feeds). | 10 | 0 | 7 |
+| 1A.16 | Administration completion | M24, M26 | WP05 (operations part), WP17 (monitoring preparation). | 12 | 0 | 9 |
+| 1A.17 | Migration, UAT & launch readiness | M01, M02, M09, M25, M26, M27 | WP16, WP17. | 21 | 0 | 17 |
+| 1R.1 | Root admin foundation & store registry | M34 | WP18. | 10 | 0 | 4 |
+| 1R.2 | Store configurator, packs, templates & terminology | M32, M33, M34 | WP18. | 14 | 0 | 4 |
+| 1R.3 | Provisioning, deployment, platform operations & 1R release | M34, M35 | WP18. | 14 | 0 | 9 |
+| 1B.1 | Vendor portal & vendor management | M14 | WP13. | 18 | 0 | 13 |
+| 1B.2 | Validated bulk import & supplier feeds | M04, M05, M06, M14, M22, M23 | WP06 (import), WP13 (feeds). | 11 | 0 | 7 |
 | 1B.3 | Guided WhatsApp ordering (L2) & shared inbox | M16, M20, M23 | WP14. | 8 | 0 | 6 |
 | 1B.4 | Approval extensions, selected integrations & P1B automations | M05, M14, M17, M23 | WP12 (P1B rules), WP13 (pilot). | 7 | 0 | 5 |
 | 1B.5 | 1B UAT & release | M14, M17, M25, M26 | WP16 (1B UAT), WP17 (1B release). | 4 | 0 | 2 |
-| 2 | Mobile experience & separately approved growth — scope and approve only | M01, M15, M28 | — | 3 | 0 | 3 |
-| 3 | AI & further expansion — scope and approve only | M03, M17, M29 | — | 3 | 0 | 3 |
-| **Total** | | | | **361** | **48** | **266** |
+| 2 | Mobile experience & separately approved growth — scope and approve only | M01, M15, M28 | — | 4 | 0 | 4 |
+| 3 | AI & further expansion — scope and approve only | M03, M17, M29 | — | 3 | 0 | 2 |
+| **Total** | | | | **457** | **48** | **300** |
+
+> Counts recomputed 2026-09-28 after the SaaS architecture change (`D-227`, 71 tasks) and the
+> production-readiness and control-model second pass (`D-257`–`D-272`, 28 tasks); `tools/status.py`
+> is authoritative. The 48 decision tasks are unchanged: `D-227`–`D-253` were recorded as `DECIDED` with the
+> change itself, so they need no "Decide D-xxx" task.
 
 ## 4. Stage dependency diagram
 
@@ -211,6 +220,8 @@ entry is open. Stages not listed together run in order.
 | P7 | 1A.14–1A.16 ∥ 1A.17 migration track | T-1A.17-M25-01, T-1A.17-M02-01, T-1A.17-M27-01 when their dependencies are complete |
 | P8 | 1A.17 hypercare ∥ 1B.1–1B.5 | 1B work may start once cutover T-1A.17-M25-06 is `COMPLETED` while hypercare T-1A.17-M26-07 runs |
 | P9 | 1A.17 ∥ 1B.1–1B.4 | **Only if D-048 = combined launch** |
+| P12 | 1A.1 multi-store foundation ∥ 1A.1 foundation | The M30/M31/M32/M35 tasks of stage 1A.1 run alongside the M01 foundation tasks once their own dependencies are complete — they are one stage, not two |
+| P13 | 1A.17 ∥ 1R.1 | Root admin scaffolding, identity and audit (T-1R.1-M34-01…04) may overlap 1A.17 **if the owner approves it**; otherwise 1R starts after 1A. Not enabled in `tools/status.py` by default — enable by adding `{"1A.17", "1R.1"}` to `PARALLEL_GROUPS` |
 | P10 | 1B.1 ∥ 1B.2 ∥ 1B.3 | 1B.2 feed tasks after vendor accounts (T-1B.1-M14-04) |
 | P11 | 1B.3 ∥ 1B.4 | — |
 
@@ -1793,3 +1804,164 @@ None new. Placement notes are listed below as inconsistencies (#1–#3).
 | 7 | BP §12.2 A01/A02 P1 vs BP §5.1 validated bulk import in 1B (`00` §12 #5) | Kept in 1B.2; re-staging rule in §1.5 |
 | 8 | `00` §5 says tasks are defined in `TASKS.md`; the skeleton with IDs is defined here | Registry addition #3 |
 | 9 | BP §5.2 "Vendor admin-created accounts and submissions" C in 1A vs BP §5.1 vendor portal in 1B | 1B.1 by default; re-staging rule in §1.5 |
+
+---
+
+## 10. SaaS architecture change — added stages and tasks (2026-09-28, `D-227`)
+
+Source: `docs/SAAS_ARCHITECTURE_CHANGE.md`. Architecture: `19-saas-platform.md`, `20-root-admin.md`.
+This section is additive: no existing stage, task ID or dependency was removed, and only the tasks listed in
+§10.6 changed at all.
+
+### 10.1 What the change does to the phase plan
+
+| Question | Answer |
+|---|---|
+| Does Phase 0 change? | It grows: two proof scenarios (`TS-PROOF-11`, `TS-PROOF-12`), a vertical-pack inventory, a configuration inventory, a template direction study, a root-admin operating model, and the scorecard/estimate/exit-gate update — 7 tasks (§10.2) |
+| Does Phase 1A change? | The multi-store foundation is built **inside 1A.1**, and 1A.2/1A.3/1A.4/1A.9/1A.16/1A.17 gain the tasks that make the existing work configuration-driven — 29 tasks |
+| Is there a new phase? | Yes: **1R** (three stages) for the Configurable Root Admin — 32 tasks |
+| Does Phase 1B change? | Two tasks: the vendor portal and the validated import become pack-driven |
+| Does Phase 2/3 change? | One scoping task in stage 2; `T-3-M03-01` becomes `NOT_APPLICABLE` (its question is now `D-227`) |
+| Total | 361 → 438 tasks (`tools/status.py` is authoritative) |
+
+### 10.2 Why the multi-store foundation lives in stage 1A.1 and not in a stage of its own
+
+Tenancy and configuration are not a feature that can be added later: every table needs `store_id` from its first
+migration, every screen needs its labels from the terminology map from its first render, and every endpoint needs
+its capability declaration from the day it is written. Putting M30–M33 into a separate stage before or after 1A
+would either block the foundation on work that depends on it, or guarantee a retrofit across every module. They
+are therefore tasks of stage 1A.1, ordered after the existing foundation tasks they depend on (`P12`).
+
+### 10.3 Why the root admin is phase 1R, between 1A and 1B
+
+The Configurable Root Admin is a control plane over a working store platform; it cannot be verified before one
+exists. Until it does, stores are created by the `M35` bootstrap CLI (`T-1A.1-M35-01`) using **the same artefact
+format and the same bootstrap steps** the portal later drives, so Phase 1A is never blocked on the portal and the
+portal replaces the operator, not the mechanism. Stage order is enforced by `tools/status.py`
+(`PHASE_ORDER = 0 → 1A → 1R → 1B → 2 → 3`); an owner-approved overlap with 1A.17 is `P13`.
+
+### 10.4 Stage specifications
+
+#### 10.4.1 Stage 1R.1 — Root admin foundation & store registry
+
+| Field | Content |
+|---|---|
+| Objective | Stand up the separate platform (`root-admin/`), its identity realm, audit, store registry, capability catalogue, configuration compiler and publish/rollback path, and prove a running store applies a configuration published by the portal (SAAS §3 S04, S12; `20` §1–§3). |
+| Prerequisites | Stage 1A complete through 1A.16 (`T-1A.16-M24-05`), and the codebase boundary `T-1A.1-M01-11`. |
+| Modules | M34 |
+| Work packages | WP18 (defined in `T-0-M34-01`). |
+| Frontend | P-R01 sign-in, P-R02 dashboard, P-R03 stores, P-R11 users/roles/audit, portal shell. |
+| Backend | Platform identity, audit, store registry, capability catalogue, **the configuration compiler**, draft/version/diff/publish/rollback. |
+| Database | Root admin database: the entity set of `00` §7.3 (separate database, append-only published records). |
+| API | API-M34-01…19, -36…41, -54…60. |
+| Integrations | Object storage (artefacts), identity-aware proxy, outbox event to the store runtimes. |
+| Testing | TS-SAAS-SEP-01…06, TS-SAAS-CFG-01…16, TS-SAAS-CAP-06, TS-SAAS-PERF-04, TS-AUTH, TS-AUDIT. |
+| Documentation | Platform operations runbook (first draft), compiler determinism note. |
+| Dependencies (stages) | 1A.1 (config runtime), 1A.16 (administration complete). |
+| Deliverables | A portal that can register a store, edit its configuration, compile a deterministic artefact, publish it and roll it back. |
+| Completion criteria | `T-1R.1-M34-10`: a change published from the portal is applied by a running store within the `D-248` budget, with evidence that neither platform crossed the other's boundary. |
+| Parallelisation | Internal only; optional overlap with 1A.17 under `P13` with owner approval. |
+| Conflicts and notes | The compiler is the critical path of the whole phase; schedule it first after the scaffolding. |
+| Decisions referenced | D-002, D-005, D-040, D-051, D-053, D-077, D-083, D-101, D-107, D-109, D-244, D-245 |
+| Gate task / task count | `T-1R.1-M34-10` · 10 tasks |
+
+#### 10.4.2 Stage 1R.2 — Store configurator, packs, templates & terminology
+
+| Field | Content |
+|---|---|
+| Objective | The seven abilities of SAAS §1: create/configure a store, choose its category, choose its template, set colours and visual settings, upload the logo, configure features and behaviour — and prove a second category needs no code (`20` §4). |
+| Prerequisites | `T-1R.1-M34-10`. |
+| Modules | M32 (pack content), M33 (template), M34 (portal) |
+| Work packages | WP18. |
+| Frontend | P-R04 wizard, P-R05 store detail tabs, P-R06 packs, P-R07 templates, P-R08 capabilities, P-R09 terminology. |
+| Backend | Pack and template authoring, versioning and migration; branding pipeline with the contrast gate; terminology authoring; capability and settings configuration. |
+| Database | E-vertical_pack(_version), E-template(_version, _compatibility), E-brand_asset, E-terminology_*, E-store_capability_override, E-pack_migration. |
+| API | API-M34-20…53. |
+| Integrations | Object storage (brand assets, previews). |
+| Testing | TS-SAAS-PACK, TS-SAAS-TPL, TS-SAAS-TERM, TS-A11Y (contrast), TS-SAAS-ISO on the resulting two stores. |
+| Documentation | Pack authoring guide, template authoring guide, operator guide for the wizard. |
+| Dependencies (stages) | 1R.1; 1A.3 (template layer), 1A.4 (`VP-electronics`). |
+| Deliverables | A working configurator and the second pack (`VP-fashion_apparel`) and template (`TPL-aurora`). |
+| Completion criteria | `T-1R.2-M34-10`: the SAAS §1 Fashion & Apparel example executed end to end in the portal with **no commit under `frontend/` or `backend/`**. |
+| Parallelisation | Pack and template tracks run in parallel after `T-1R.1-M34-10`. |
+| Conflicts and notes | `T-1R.2-M32-01` is a negative-evidence task: a needed store-codebase change is a defect in M32, fixed there. |
+| Decisions referenced | D-033, D-049, D-050, D-051, D-053, D-006, D-237, D-238, D-241, D-242, D-247 |
+| Gate task / task count | `T-1R.2-M34-10` · 12 tasks |
+
+#### 10.4.3 Stage 1R.3 — Provisioning, deployment, platform operations & 1R release
+
+| Field | Content |
+|---|---|
+| Objective | SAAS §1 item 7 — deploy the configured store — plus the operations the platform needs to be run safely (`20` §5, §7). |
+| Prerequisites | `T-1R.2-M34-10`. |
+| Modules | M34, M35 |
+| Work packages | WP18, WP17 (platform operations part). |
+| Frontend | P-R10 deployments, P-R12 settings & health, P-R05 domains and danger zone, P-R11 support access. |
+| Backend | The nine-step deployment machine, provisioning, domains and TLS, artefact distribution and retention, smoke and automatic rollback, fleet health and drift, lifecycle and decommission, support access. |
+| Database | E-deployment(_step), E-store_domain, E-config_artifact, E-config_publication, E-platform_support_access. |
+| API | API-M34-61…64, API-M35-01…18. |
+| Integrations | DNS and ACME, object storage, alerting (`D-052`), notification routing. |
+| Testing | TS-SAAS-DEPLOY-01…14, TS-SAAS-ISO full, TS-SAAS-PERF full, TS-BKP (platform), TS-SEC against the portal. |
+| Documentation | `handover/root-admin/`: operations guide, five runbooks, training material. |
+| Dependencies (stages) | 1R.2; 1A.17 (per-store backup/restore and readiness evidence). |
+| Deliverables | One-click store deployment with automatic rollback, and an operable platform. |
+| Completion criteria | `T-1R.3-M34-03`: two stores of different categories created and deployed from an empty platform, entirely from the portal; the full `TS-SAAS-*` suite green; handover and training done. |
+| Parallelisation | Domains/TLS and fleet health run in parallel with the deployment machine after `T-1R.3-M35-01`. |
+| Conflicts and notes | Decommission is two-person (`BR-M35-03`); support access is the only route to store data (`D-246`). |
+| Decisions referenced | D-005, D-033, D-035, D-036, D-052, D-053, D-084, D-102, D-107, D-108, D-122, D-208, D-233, D-234, D-235, D-246 |
+| Gate task / task count | `T-1R.3-M34-03` · 10 tasks |
+
+### 10.5 Task skeleton for the added tasks
+
+The added tasks are written directly into `TASKS.md` in the same block format as every other task, in the
+sections titled "Stage &lt;n&gt; additions — …" and in the two new `## Stage 1R.*` sections. `tools/status.py`
+parses them exactly as it parses the rest; there is no separate skeleton table for them, because the skeleton
+(§9) exists to generate `TASKS.md` and these blocks already are `TASKS.md`. The stage map in §3 carries their
+counts.
+
+### 10.6 Existing tasks changed by this update (nothing else was touched)
+
+| Task | Change | Reason |
+|---|---|---|
+| `T-0-M01-28` | **Depends on** += `T-0-M01-30` | The estimate must include WP18 and M30–M35 |
+| `T-0-M01-29` | **Depends on** += `T-0-M01-30`, `T-0-M31-02`, `T-0-M33-01`, `T-0-M34-01` | The Phase 0 exit gate now covers the SaaS items |
+| `T-1A.1-M01-10` | **Depends on** += the 14 new 1A.1 tasks | Stage verification must cover the multi-store foundation |
+| `T-1A.2-M02-09` | **Depends on** += `T-1A.2-M02-10`, `T-1A.2-M30-01`, `T-1A.2-M24-03` | Stage verification |
+| `T-1A.3-M09-06` | **Depends on** += the 5 new 1A.3 tasks | Stage verification |
+| `T-1A.4-M04-10` | **Depends on** += the 3 new 1A.4 tasks | Stage verification |
+| `T-1A.9-M10-09` | **Depends on** += `T-1A.9-M33-01` | Stage verification |
+| `T-1A.16-M24-05` | **Depends on** += `T-1A.16-M24-08` | Stage verification |
+| `T-1A.17-M01-01` | **Depends on** += `T-1A.17-M25-07`, `T-1A.17-M26-08` | Go-live checklist must include the platform properties |
+| `T-1B.1-M14-15`, `T-1B.2-M04-04` | **Depends on** += the pack-driven task in their stage | Stage verification |
+| `T-3-M03-01` | **Status** → `NOT_APPLICABLE`, Evidence filled | Its question is `D-045`, superseded by `D-227` (D-213 procedure) |
+
+### 10.7 Second pass — production readiness, the control model and topologies (2026-09-28, `D-257`–`D-272`)
+
+Added after a readiness review of the architecture and three further user instructions the same day: the root
+admin must switch **modules and applications** and delegate features to the store's own administrator; a
+**category may bring its own modules** and be assembled from reusable **bundles** with a completeness gate; the
+system must be **fast** on all three surfaces; the code must run **on a shared server and on a client's own
+server**; and **each client's data, database and images must be separated**.
+
+| Area | Decisions | New tasks |
+|---|---|---|
+| Surfaces, modules, three-state control, delegation to the store administrator | D-257, D-258 | `T-1A.1-M31-08`, `T-1A.16-M24-09`, `T-1R.2-M34-11` |
+| Category-contributed modules and reusable bundles with a completeness gate | D-265, D-266, D-267 | `T-1A.1-M32-02`, `T-1R.2-M34-12` |
+| Configuration-schema evolution and the release procedure | D-259 | `T-1R.3-M35-08` |
+| Per-store backup, restore, export, deletion | D-260 | `T-1A.17-M26-09` |
+| Money, currency, units and time across stores | D-261 | `T-1A.1-M30-06` |
+| Quotas, rate limits, fair share | D-262 | `T-1A.1-M30-05` |
+| Environments and promotion | D-263 | `T-1R.3-M34-04` |
+| Observability, alert routing, canary batching | D-264 | `T-1R.3-M34-05` |
+| Performance architecture for storefront, workspace and vendor portal | D-268 | `T-0-M09-06`, `T-1A.3-M09-07`, `T-1A.9-M09-13`, `T-1A.16-M24-10` |
+| Deployment topologies, signed artefacts, client-hosted installs | D-269, D-270, D-271 | `T-1A.1-M30-07`, `T-1R.3-M35-09` |
+| Per-client separation of database, images, index and cache; fleet migrations | D-272 | `T-1A.1-M30-08` (and `T-1A.1-M30-07`) |
+| Edge cases and combinations as executable tests | — | `T-1A.17-M26-10` |
+
+Existing tasks that gained dependencies in this pass: `T-0-M01-29`, `T-0-M01-30`, `T-1A.1-M01-10`,
+`T-1A.3-M09-06`, `T-1A.9-M10-09`, `T-1A.16-M24-05`, `T-1A.17-M01-01`, `T-1A.17-M26-04`, `T-1R.2-M34-10`,
+`T-1R.3-M34-03`. Existing tasks whose scope was extended in place, recorded here rather than silently:
+`T-1R.1-M34-08` gains optimistic concurrency on drafts (`BR-M34-03`); `T-1R.2-M34-02` and `T-1R.2-M34-04` gain
+canary batching (`BR-M35-04`). No task ID was renamed, removed or re-staged.
+
+No task ID was renamed, removed or re-staged. No acceptance criterion of an existing task was weakened.

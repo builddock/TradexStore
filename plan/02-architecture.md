@@ -1258,3 +1258,52 @@ D-101–D-114 are defined in `01-tech-stack.md` §32. This file adds:
 ## 28. Registry additions requested
 
 None.
+
+---
+
+## 29. SaaS architecture (2026-09-28, `D-227`)
+
+The full description is in `19-saas-platform.md` (tenancy, configuration, capabilities, packs, templates) and
+`20-root-admin.md` (the control plane). This section records only how it changes the architecture already
+described above, so a reader of this file is not misled.
+
+### 29.1 System context — corrected
+
+There are now **two systems**, not one:
+
+1. **The store platform** — everything this file already describes (storefront, workspace, vendor portal,
+   backend, integrations), with the addition of the platform layer (`backend/platform/`: tenancy, configuration,
+   capabilities, packs, bootstrap) and the template layer (`frontend/storefront/templates/`). It serves **many
+   stores from one deployment**, resolved by host.
+2. **The Configurable Root Admin** — a separate codebase, portal, hostname, database and identity realm that
+   configures and deploys stores.
+
+They are connected by exactly two artefacts: the **compiled configuration artefact** (root admin → store,
+one-way, immutable, versioned) and **deployment/health callbacks** (store → root admin, out of band). Rules
+SEP-1…SEP-6 in `19` §2 are binding and CI-enforced.
+
+### 29.2 Request path — corrected
+
+`Host` → store resolution (O(1), no I/O) → immutable `StoreConfig` attached to the request → capability check →
+authentication → permission check → business logic → rendering through the store's template with its terminology
+and theme. Configuration never touches the database on this path (`D-248`).
+
+### 29.3 Deployment topology — corrected
+
+Default: one multi-store runtime per environment, host-based resolution, shared database with mandatory
+`store_id` scoping. Per-store options `dedicated_db` and `dedicated_runtime` exist as configuration with
+`restart_impact = cold`. The root admin is a separate deployable in the same environment set, reachable only
+through an identity-aware proxy.
+
+### 29.4 Data architecture — corrected
+
+Every store-scoped table carries a non-null `store_id`, included in unique constraints and index prefixes
+(`03-database.md` §11). The root admin has its own database with no foreign key, view, replica trigger or
+connection into a store database. Cross-store reporting, where it is ever needed, happens in the root admin
+against a read replica, never in the store codebase.
+
+### 29.5 What did not change
+
+The module boundaries (M01–M27), the order state machine, the stock authority model, the idempotency and outbox
+patterns, the trust boundaries of BP §17.4, the money model of BP §8.1 and the integration adapter framework are
+all unchanged. The SaaS layer sits **around** them, not inside them.

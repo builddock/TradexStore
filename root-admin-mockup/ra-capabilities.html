@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<meta name="referrer" content="no-referrer">
+<title>Capabilities — Configurable Root Admin (internal prototype)</title>
+<link rel="stylesheet" href="assets/ra.css">
+</head>
+<body>
+<div class="ra-internal">INTERNAL PROTOTYPE — <b>Configurable Root Admin</b> — not part of any client store, not linked from the client-facing demo (D-249)</div>
+<main data-tabs>
+  <div class="ra-head">
+    <div><h1>Capabilities</h1>
+      <p class="sub">Every switchable piece of behaviour the platform has. A capability decides whether a store has
+        a thing at all; permissions inside a store decide who may use it. A capability that is off leaves nothing
+        behind — no menu entry, no page, no code sent to the browser, and no hint that it exists.</p></div>
+    <div class="act"><button class="btn" data-demo="Prototype: exports the registry with per-category defaults and per-store overrides.">Export registry</button></div>
+  </div>
+
+  <div class="tabs">
+    <button data-tab="c-reg">Registry</button>
+    <button data-tab="c-mat">Store matrix</button>
+    <button data-tab="c-rules">How enforcement works</button>
+  </div>
+
+  <section class="pane" id="c-reg">
+    <div class="card"><div class="card-h"><h2>86 capabilities</h2><span class="sp"></span>
+      <select style="width:auto"><option>All areas</option><option>Catalog</option><option>Pricing</option>
+        <option>Inventory</option><option>Orders</option><option>Fulfilment</option><option>Returns</option>
+        <option>Customers</option><option>Vendor</option><option>Storefront</option></select></div>
+      <div id="reg"></div></div>
+  </section>
+
+  <section class="pane" id="c-mat">
+    <div class="note mb"><svg data-i="info"></svg><div>This view exists only here. No store can see it, and no
+      store can see which features another store has.</div></div>
+    <div class="card"><div id="mat"></div></div>
+  </section>
+
+  <section class="pane" id="c-rules">
+    <div class="grid g2">
+      <div class="card"><div class="card-h"><h3>Six places a switched-off capability is enforced</h3></div>
+        <div class="card-b"><ol class="small muted" style="line-height:2;padding-left:18px">
+          <li><b>Navigation</b> — the entry is not in the menu and the address is not routed</li>
+          <li><b>Interface</b> — the endpoint answers “not found”, never “not allowed”</li>
+          <li><b>Inside the system</b> — internal callers and background jobs are refused too</li>
+          <li><b>Screens</b> — the component is not rendered and its code is not sent to the browser</li>
+          <li><b>Automations</b> — the job is never scheduled; queued work is parked with a reason</li>
+          <li><b>Data out</b> — nothing appears in exports, search, reports or notifications</li>
+        </ol></div></div>
+      <div class="card"><div class="card-h"><h3>Rules</h3></div><div class="card-b small muted stack" style="gap:12px">
+        <div><b style="color:var(--ra-tx)">Not found, not forbidden.</b> “Not allowed” would confirm the feature
+          exists. Anything a store does not have simply is not there.</div>
+        <div><b style="color:var(--ra-tx)">Nothing is deleted.</b> Switching a capability off hides its data.
+          Switching it back on restores everything, unchanged.</div>
+        <div><b style="color:var(--ra-tx)">Dependencies resolve, conflicts block.</b> Turning on a capability turns
+          on what it needs and says so. A combination that cannot work cannot be published.</div>
+        <div><b style="color:var(--ra-tx)">Locking is invisible.</b> A locked capability does not appear as
+          disabled in the store's own admin — it is absent.</div>
+      </div></div>
+    </div>
+  </section>
+</main>
+<script src="assets/ra.js"></script>
+<script>
+document.getElementById("reg").innerHTML = RA.table(
+  ["Capability", "Area", "What it does", "Categories that need it", "Stores with it on"],
+  RA.caps.map(function (c) {
+    return ["<span class='mono' style='font-size:12px'>" + c[0] + "</span>", c[1], c[2],
+      "<span class='dim'>" + c[3] + "</span>",
+      c[4] ? "<b>" + c[4] + "</b>" : "<span class='dim'>0</span>"];
+  }));
+
+var show = ["CAP-SERIAL_TRACKING","CAP-BATCH_LOT","CAP-EXPIRY_DATES","CAP-VARIANT_MATRIX","CAP-SIZE_GUIDE",
+  "CAP-WEIGHT_PRICED_ITEMS","CAP-COLD_CHAIN","CAP-SCHEDULED_DELIVERY_SLOTS","CAP-FREIGHT_BULKY",
+  "CAP-VENDOR_PORTAL","CAP-BUSINESS_ACCOUNTS","CAP-EXCHANGES"];
+var on = {
+  "tradex":      ["CAP-SERIAL_TRACKING","CAP-VENDOR_PORTAL","CAP-BUSINESS_ACCOUNTS"],
+  "verdeleaf":   ["CAP-BATCH_LOT","CAP-EXPIRY_DATES","CAP-WEIGHT_PRICED_ITEMS","CAP-SCHEDULED_DELIVERY_SLOTS"],
+  "atelier":     ["CAP-VARIANT_MATRIX","CAP-SIZE_GUIDE","CAP-EXCHANGES","CAP-VENDOR_PORTAL"],
+  "harbour":     ["CAP-BATCH_LOT","CAP-EXPIRY_DATES","CAP-WEIGHT_PRICED_ITEMS","CAP-COLD_CHAIN","CAP-SCHEDULED_DELIVERY_SLOTS"],
+  "oakrow":      ["CAP-FREIGHT_BULKY","CAP-SCHEDULED_DELIVERY_SLOTS"],
+  "northgear":   ["CAP-BUSINESS_ACCOUNTS","CAP-VENDOR_PORTAL"],
+  "pawpost":     ["CAP-BATCH_LOT","CAP-EXPIRY_DATES"]
+};
+var head = ["Capability"].concat(RA.stores.map(function (s) { return s.name.split(" ")[0]; }));
+var rows = show.map(function (c) {
+  return ["<span class='mono' style='font-size:12px'>" + c + "</span>"].concat(
+    RA.stores.map(function (s) {
+      return (on[s.key] || []).indexOf(c) >= 0
+        ? '<span class="tag ok" style="padding:1px 7px">on</span>'
+        : '<span class="dim">·</span>';
+    }));
+});
+document.getElementById("mat").innerHTML = RA.table(head, rows);
+RA.boot();
+</script>
+</body>
+</html>

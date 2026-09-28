@@ -795,3 +795,28 @@ proposed; D-199 is unused.
 | Registry | Addition | Module | Label | Justification | Source |
 |---|---|---|---|---|---|
 | Entity | **E-restore_rehearsal** — restore rehearsal record: environment restored to, backup/restore point, started/finished, measured recovery time and recovery point, reconciliation result (orders, payments, opening stock by location), evidence attachment(s), performed by, reviewed by, state (scheduled / passed / failed) | M26 (created via M24 API-M24-09) | DOCUMENTED | Restore evidence is a documented verification and go-live item; without a record, T28 evidence and the "Restore test" status on P-E15/shell cannot be produced | BP §20.1 ("Backup restore … Restore evidence and reconciliation"), §16.6, §23.4 ("restore evidence available"), §24.3 ("restore rehearsals"), T28; MK:erp-admin.html#system ("Last restore rehearsal … reconciled … Evidence RR-0009") |
+
+---
+
+## SaaS additions — the administration split (2026-09-28, `D-227`)
+
+Everything this file describes is **store administration**. It is one of two administrations now.
+
+| | Store administration (this file, M24, P-E15) | Platform administration (`20-root-admin.md`, M34, P-R01–P-R12) |
+|---|---|---|
+| Who | The store owner, representative admin and authorised staff | Platform operators (`R-root_*`, `00` §9.1) |
+| Where | Inside the store's own workspace | A separate portal on a separate hostname, separate codebase, separate database |
+| What | Store users and roles, thresholds the owner owns, locations, the store's own integrations, audit, and the **store-editable, unlocked** configuration subset (`D-243`) | Store creation, e-commerce category, template, branding, capability set, locked settings, terminology, domains, deployment, decommission |
+| What it must never show | Any platform concept: other stores, categories, templates, capability or configuration identifiers, locked keys (absent, not greyed — `19` §9 INV-4) | — |
+
+Concretely, for P-E15:
+
+- The settings sections are rendered from the configuration schema and contain only keys the store may edit
+  (`T-1A.16-M24-08`). Labels are the schema's plain-language descriptions, grouped in business language; key
+  identifiers are never displayed.
+- Sections that exist in the mockup but describe platform-owned behaviour are removed from the store view and
+  appear instead on P-R05/P-R12 — not duplicated, not disabled.
+- The audit viewer additionally shows any platform support-access action taken in this store, attributed to the
+  named platform user (`D-246`), so the owner can always see who looked at their data.
+- Feature flags (§9.9) remain the store's operational flags. They are **not** capabilities: a capability is
+  platform-owned and invisible here.

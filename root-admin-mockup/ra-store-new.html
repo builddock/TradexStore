@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<meta name="referrer" content="no-referrer">
+<title>Create store — Configurable Root Admin (internal prototype)</title>
+<link rel="stylesheet" href="assets/ra.css">
+</head>
+<body>
+<div class="ra-internal">INTERNAL PROTOTYPE — <b>Configurable Root Admin</b> — not part of any client store, not linked from the client-facing demo (D-249)</div>
+<main>
+  <div class="crumb"><a href="ra-stores.html">Stores</a> › Create store</div>
+  <div class="ra-head">
+    <div><h1>Create a store</h1>
+      <p class="sub">Six steps. Everything is saved as a draft as you go and nothing reaches a running system until
+        the last step. The example below follows a client who wants a fashion and apparel website.</p></div>
+    <div class="act"><button class="btn" data-demo="Draft saved. You can leave and come back to it from the store list.">Save draft and exit</button></div>
+  </div>
+
+  <div class="steps" id="steps">
+    <div class="s on" data-step="w1"><span class="n">1</span> Store details</div><span class="ln"></span>
+    <div class="s" data-step="w2"><span class="n">2</span> E-commerce category</div><span class="ln"></span>
+    <div class="s" data-step="w3"><span class="n">3</span> Template</div><span class="ln"></span>
+    <div class="s" data-step="w4"><span class="n">4</span> Branding &amp; colours</div><span class="ln"></span>
+    <div class="s" data-step="w5"><span class="n">5</span> Features &amp; behaviour</div><span class="ln"></span>
+    <div class="s" data-step="w6"><span class="n">6</span> Review &amp; deploy</div>
+  </div>
+
+  <!-- 1 -->
+  <section class="pane on" id="w1">
+    <div class="grid g-2-1">
+      <div class="card"><div class="card-h"><h2>Store details</h2></div><div class="card-b grid g2">
+        <div><label class="fl" for="d1">Store name (shown to customers)</label><input id="d1" value="Atelier Nine"></div>
+        <div><label class="fl" for="d2">Store key (internal, permanent)</label><input id="d2" value="atelier" class="mono">
+          <p class="hint">Used for storage paths and the platform subdomain. It cannot be changed later.</p></div>
+        <div><label class="fl" for="d3">Legal entity</label><input id="d3" value="Atelier Nine Retail Pvt Ltd"></div>
+        <div><label class="fl" for="d4">Country / jurisdiction</label><select id="d4"><option>India</option><option>United Arab Emirates</option><option>Singapore</option></select></div>
+        <div><label class="fl" for="d5">Currency</label><select id="d5"><option>INR — Indian rupee</option><option>AED</option><option>SGD</option></select></div>
+        <div><label class="fl" for="d6">Time zone</label><select id="d6"><option>Asia/Kolkata</option><option>Asia/Dubai</option></select></div>
+        <div><label class="fl" for="d7">Languages</label><select id="d7"><option>English (India)</option><option>English (India) + Hindi</option></select></div>
+        <div><label class="fl" for="d8">Owner contact (invited after deployment)</label><input id="d8" value="hello@ateliernine.example.com"></div>
+        <div><label class="fl" for="d9">Environment</label><select id="d9"><option>Production</option><option>Staging</option></select></div>
+        <div><label class="fl" for="d10">Hosting and separation</label><select id="d10">
+            <option>Separated client on a shared server (default)</option>
+            <option>Dedicated runtime for this client</option>
+            <option>Standalone install on the client's own server</option>
+            <option>Shared database (internal / agreed exception only)</option></select>
+          <p class="hint">The default gives this client its own database, image store, search index and cache on a
+            server that also runs other stores. Changing it later is a scheduled deployment, not a setting.</p></div>
+      </div></div>
+      <div class="card"><div class="card-h"><h3>What this step decides</h3></div><div class="card-b small muted stack">
+        <p>The store's identity, where its data lives and who receives the first invitation. The key becomes part of
+          every storage path and the platform address, so it is permanent.</p>
+        <p><b>This client's data is its own.</b> Deploying creates its own database, its own image container with
+          its own credentials, its own search index and its own cache namespace. Nothing is shared with another
+          client, whichever hosting option is chosen.</p>
+        <p>Nothing here is visible to other stores, and this store will never see that other stores exist.</p>
+      </div></div>
+    </div>
+    <div class="row mt"><span class="sp"></span><button class="btn pri" data-go="w2">Continue to category</button></div>
+  </section>
+
+  <!-- 2 -->
+  <section class="pane" id="w2" data-pickgroup>
+    <div class="ra-head" style="margin-bottom:12px"><div><h2>Choose the e-commerce category</h2>
+      <p class="sub">The category decides what the store can do: its product structure, how stock is identified,
+        which features start switched on, and the words its staff and customers see. It is not a label.</p></div></div>
+    <div class="grid g3" id="packgrid"></div>
+    <div class="card mt" id="packinfo"></div>
+    <div class="row mt"><button class="btn" data-go="w1">Back</button><span class="sp"></span>
+      <button class="btn pri" data-go="w3">Continue to template</button></div>
+  </section>
+
+  <!-- 3 -->
+  <section class="pane" id="w3" data-pickgroup>
+    <div class="ra-head" style="margin-bottom:12px"><div><h2>Choose the site template</h2>
+      <p class="sub">The template decides how the storefront looks and is laid out. It cannot change prices, stock,
+        policies or checkout behaviour, so it can be swapped later without touching any data.</p></div></div>
+    <div class="grid g2">
+      <button class="pick tplpick" data-tpl="Aurora">
+        <span class="pt">Aurora 1.3.0 <span class="tag ok">Recommended for this category</span></span>
+        <span class="pd">Editorial and image-led. Large photography, generous whitespace, lookbook and collection
+          sections, a soft typographic rhythm. Suits stores where the picture sells the product.</span>
+        <span class="pm"><span class="tag">Fashion</span><span class="tag">Home</span><span class="tag">Beauty</span><span class="tag">Handmade</span></span>
+        <span class="prev" style="display:block;margin-top:12px">
+          <span class="pb" style="background:#f6f2ee;color:#3a2f28">ATELIER NINE</span>
+          <span class="pc"><span class="ph" style="background:#e8ddd3"></span>
+            <span class="pl" style="width:52%"></span>
+            <span class="pr"><i style="background:#f1e9e2;height:56px"></i><i style="background:#f1e9e2;height:56px"></i><i style="background:#f1e9e2;height:56px"></i></span></span>
+        </span>
+      </button>
+      <button class="pick tplpick" data-tpl="Forge">
+        <span class="pt">Forge 2.1.0</span>
+        <span class="pd">Dense and specification-led. Comparison-first layouts, compact tables, technical imagery.
+          Suits stores where buyers choose on numbers rather than on pictures.</span>
+        <span class="pm"><span class="tag">Electronics</span><span class="tag">Industrial</span><span class="tag">Automotive</span><span class="tag">Office</span></span>
+        <span class="prev" style="display:block;margin-top:12px">
+          <span class="pb" style="background:#0f1a2b;color:#cfe0ff">ATELIER NINE</span>
+          <span class="pc"><span class="ph" style="background:#dde5f0;height:40px"></span>
+            <span class="pr"><i></i><i></i><i></i></span>
+            <span class="pl" style="width:80%"></span><span class="pl" style="width:64%"></span></span>
+        </span>
+      </button>
+    </div>
+    <div class="note mt"><svg data-i="info"></svg><div>
+      Two clients on this platform never have to look alike. More templates can be added later and assigned to
+      categories without changing any store's data or creating a second codebase.
+    </div></div>
+    <div class="row mt"><button class="btn" data-go="w2">Back</button><span class="sp"></span>
+      <button class="btn pri" data-go="w4">Continue to branding</button></div>
+  </section>
+
+  <!-- 4 -->
+  <section class="pane" id="w4">
+    <div class="ra-head" style="margin-bottom:12px"><div><h2>Branding and colours</h2>
+      <p class="sub">Upload the client's logo and set the brand colours. The full colour system is derived from
+        them and every text-on-background pair is checked for contrast before the store can be deployed.</p></div></div>
+    <div class="grid g-2-1">
+      <div class="stack">
+        <div class="card"><div class="card-h"><h3>Logo and marks</h3></div><div class="card-b grid g2">
+          <div><label class="fl">Primary logo (light backgrounds)</label>
+            <div class="note" style="justify-content:center;padding:22px;text-align:center"><div>
+              <div style="font-weight:700;letter-spacing:.14em">ATELIER NINE</div>
+              <div class="xs dim mt-s">atelier-nine-logo.svg · SVG · 34 KB · transparent</div>
+              <button class="btn sm mt-s" data-demo="Prototype: the file would be validated for format, dimensions, transparency and size, then converted into every required variant.">Replace</button>
+            </div></div></div>
+          <div><label class="fl">Logo for dark backgrounds</label>
+            <div class="note" style="justify-content:center;padding:22px;text-align:center;background:#0a0e14"><div>
+              <div style="font-weight:700;letter-spacing:.14em;color:#fff">ATELIER NINE</div>
+              <div class="xs dim mt-s">atelier-nine-logo-dark.svg · SVG · 34 KB</div>
+              <button class="btn sm mt-s" data-demo="Prototype: replace the dark-background variant.">Replace</button>
+            </div></div></div>
+          <div><label class="fl">Square mark and favicon</label>
+            <div class="row"><span class="swatch" style="background:#b5446e;display:grid;place-items:center;color:#fff;font-weight:800;font-size:12px">A9</span>
+              <span class="small dim">Generated from the mark · 16, 32, 180, 512 px</span></div></div>
+          <div><label class="fl">Social sharing image</label>
+            <div class="row"><span class="swatch" style="background:linear-gradient(120deg,#b5446e,#f0d9e2)"></span>
+              <span class="small dim">1200 × 630 · generated, can be replaced</span></div></div>
+        </div></div>
+
+        <div class="card"><div class="card-h"><h3>Colour</h3></div><div class="card-b">
+          <div class="grid g3">
+            <div><label class="fl" for="c1">Brand primary</label>
+              <div class="row"><input id="c1" type="color" value="#b5446e" style="width:44px;padding:2px;height:34px">
+                <input value="#B5446E" class="mono" style="flex:1"></div></div>
+            <div><label class="fl" for="c2">Accent</label>
+              <div class="row"><input id="c2" type="color" value="#2f855a" style="width:44px;padding:2px;height:34px">
+                <input value="#2F855A" class="mono" style="flex:1"></div></div>
+            <div><label class="fl" for="c3">Surface base</label>
+              <div class="row"><input id="c3" type="color" value="#faf7f4" style="width:44px;padding:2px;height:34px">
+                <input value="#FAF7F4" class="mono" style="flex:1"></div></div>
+          </div>
+          <label class="fl mt">Derived ramp</label>
+          <div class="ramp"><span style="background:#fdf2f6"></span><span style="background:#f8d9e5"></span>
+            <span style="background:#eda9c3"></span><span style="background:#d9749d"></span>
+            <span style="background:#b5446e"></span><span style="background:#8e3255"></span>
+            <span style="background:#66223c"></span><span style="background:#3d1424"></span></div>
+          <div class="note ok mt" style="border-color:rgba(52,211,153,.35);background:var(--ra-ok-bg);color:#bdf0d8">
+            <svg data-i="check"></svg><div><b>Contrast check passed.</b> 34 of 34 text-on-background pairs meet
+            WCAG 2.2 AA. A palette that fails cannot be deployed — it is an error, not a warning.</div></div>
+        </div></div>
+
+        <div class="card"><div class="card-h"><h3>Type, shape and motion</h3></div><div class="card-b grid g4">
+          <div><label class="fl">Heading typeface</label><select><option>Fraunces</option><option>Inter</option><option>Source Serif</option></select></div>
+          <div><label class="fl">Body typeface</label><select><option>Inter</option><option>Source Sans</option></select></div>
+          <div><label class="fl">Corner style</label><select><option>Soft (10 px)</option><option>Square (2 px)</option><option>Round (18 px)</option></select></div>
+          <div><label class="fl">Density</label><select><option>Comfortable</option><option>Compact</option></select></div>
+        </div></div>
+      </div>
+
+      <div class="card"><div class="card-h"><h3>Live preview</h3></div><div class="card-b">
+        <div class="prev">
+          <div class="pb" style="background:#b5446e;color:#fff">ATELIER NINE</div>
+          <div class="pc">
+            <div class="ph" style="background:#f8d9e5"></div>
+            <div class="pl" style="width:58%;background:#e3c6d2"></div>
+            <div class="pr"><i style="background:#faf0f4;height:58px"></i><i style="background:#faf0f4;height:58px"></i><i style="background:#faf0f4;height:58px"></i></div>
+            <div class="pl" style="width:40%;background:#2f855a;height:12px;border-radius:6px"></div>
+          </div>
+        </div>
+        <p class="hint">Aurora 1.3.0 with this store's colours and logo. The same page under Forge would look
+          different and behave identically.</p>
+      </div></div>
+    </div>
+    <div class="row mt"><button class="btn" data-go="w3">Back</button><span class="sp"></span>
+      <button class="btn pri" data-go="w5">Continue to features</button></div>
+  </section>
+
+  <!-- 5 -->
+  <section class="pane" id="w5">
+    <div class="ra-head" style="margin-bottom:12px"><div><h2>Features and behaviour</h2>
+      <p class="sub">Three levels. Which applications this client gets, which modules are switched on inside them,
+        and which individual features — and for each one, whether the client's own administrator may manage it.
+        The category has already set sensible starting points.</p></div></div>
+
+    <div class="card mb"><div class="card-h"><h3>1 · Applications</h3></div><div class="card-b grid g3">
+      <label class="pick on" style="cursor:pointer"><span class="pt"><span class="sw"><input type="checkbox" checked><i></i></span> Customer website</span>
+        <span class="pd">The public shop. Switch it off for a back-office-only or invitation-only business.</span></label>
+      <label class="pick on" style="cursor:pointer"><span class="pt"><span class="sw"><input type="checkbox" checked><i></i></span> Staff workspace</span>
+        <span class="pd">Where the client's team runs the business day to day.</span></label>
+      <label class="pick on" style="cursor:pointer"><span class="pt"><span class="sw"><input type="checkbox" checked><i></i></span> Supplier portal</span>
+        <span class="pd">Where suppliers submit products and stock. Off means it does not exist at all.</span></label>
+    </div></div>
+
+    <div class="card mb"><div class="card-h"><h3>2 · Modules</h3><span class="sp"></span>
+      <span class="tag acc">3 come from Fashion &amp; Apparel</span></div>
+      <div id="wmods"></div></div>
+
+    <h3 class="mb">3 · Individual features</h3>
+    <div id="feat"></div>
+    <div class="note mt"><svg data-i="info"></svg><div>
+      Switching something off hides it completely — it is not greyed out anywhere, and the client's own staff will
+      never see that it exists. Nothing is deleted: switching it back on restores everything. Anything marked
+      <b>store may manage</b> appears as a plain switch in the client's own settings screen; everything else
+      simply works, or simply is not there.
+    </div></div>
+    <div class="row mt"><button class="btn" data-go="w4">Back</button><span class="sp"></span>
+      <button class="btn pri" data-go="w6">Continue to review</button></div>
+  </section>
+
+  <!-- 6 -->
+  <section class="pane" id="w6">
+    <div class="ra-head" style="margin-bottom:12px"><div><h2>Review and deploy</h2>
+      <p class="sub">This is everything that will exist when the store is created. Nothing has been created yet.</p></div></div>
+    <div class="grid g2">
+      <div class="card"><div class="card-h"><h3>The store</h3></div><div class="card-b">
+        <dl class="kv">
+          <dt>Name</dt><dd>Atelier Nine</dd>
+          <dt>Key</dt><dd class="mono">atelier</dd>
+          <dt>Addresses</dt><dd class="mono">atelier.stores.example<br>ateliernine.example.com <span class="tag warn">to verify</span></dd>
+          <dt>Category</dt><dd>Fashion &amp; Apparel 1.1.0</dd>
+          <dt>Template</dt><dd>Aurora 1.3.0</dd>
+          <dt>Jurisdiction</dt><dd>India · INR · Asia/Kolkata · English (India)</dd>
+          <dt>Isolation</dt><dd>Shared</dd>
+          <dt>First user</dt><dd>hello@ateliernine.example.com — invited after deployment</dd>
+        </dl>
+      </div></div>
+      <div class="card"><div class="card-h"><h3>What will be created</h3></div><div class="card-b small muted stack" style="gap:8px">
+        <div class="row"><svg data-i="check" style="width:15px;color:var(--ra-ok)"></svg> Category tree: 6 top-level, 34 sub-categories</div>
+        <div class="row"><svg data-i="check" style="width:15px;color:var(--ra-ok)"></svg> 22 product attributes, 2 variant axes (size, colour)</div>
+        <div class="row"><svg data-i="check" style="width:15px;color:var(--ra-ok)"></svg> Size systems: IN, UK, EU, US</div>
+        <div class="row"><svg data-i="check" style="width:15px;color:var(--ra-ok)"></svg> 4 return and exchange policy classes</div>
+        <div class="row"><svg data-i="check" style="width:15px;color:var(--ra-ok)"></svg> 5 staff roles with default permissions</div>
+        <div class="row"><svg data-i="check" style="width:15px;color:var(--ra-ok)"></svg> 12 saved views and 9 workspace KPI tiles</div>
+        <div class="row"><svg data-i="check" style="width:15px;color:var(--ra-ok)"></svg> 148 wording entries for English (India)</div>
+        <div class="row"><svg data-i="check" style="width:15px;color:var(--ra-ok)"></svg> Help content for every workspace screen</div>
+        <div class="row"><svg data-i="check" style="width:15px;color:var(--ra-ok)"></svg> 3 applications · 19 modules · 38 features on · 9 delegated to the client</div>
+        <div class="row"><svg data-i="check" style="width:15px;color:var(--ra-ok)"></svg> Its own database, image store, search index and cache</div>
+        <div class="row"><svg data-i="check" style="width:15px;color:var(--ra-ok)"></svg> All 25 configuration areas answered — nothing left unset</div>
+        <hr><p class="xs dim">No sample products, customers, prices or placeholder amounts are created. The store
+          starts empty and real.</p>
+      </div></div>
+    </div>
+
+    <div class="card mt"><div class="card-h"><h3>The configuration that will be built</h3><span class="sp"></span>
+      <button class="btn sm" data-demo="Prototype: downloads the compiled artefact manifest for review.">Download manifest</button></div>
+      <div class="card-b"><div class="pre"><span class="c">// config/generated/atelier/v1/manifest.json  (preview — not yet built)</span>
+{
+  <span class="k">"store"</span>: { <span class="k">"key"</span>: <span class="s">"atelier"</span>, <span class="k">"name"</span>: <span class="s">"Atelier Nine"</span>, <span class="k">"jurisdiction"</span>: <span class="s">"IN"</span>, <span class="k">"currency"</span>: <span class="s">"INR"</span> },
+  <span class="k">"version"</span>: <span class="n">1</span>,
+  <span class="k">"pack"</span>: { <span class="k">"id"</span>: <span class="s">"VP-fashion_apparel"</span>, <span class="k">"version"</span>: <span class="s">"1.1.0"</span> },
+  <span class="k">"template"</span>: { <span class="k">"id"</span>: <span class="s">"TPL-aurora"</span>, <span class="k">"version"</span>: <span class="s">"1.3.0"</span> },
+  <span class="k">"locales"</span>: [<span class="s">"en-IN"</span>],
+  <span class="k">"files"</span>: [<span class="s">"config.json"</span>, <span class="s">"capabilities.json"</span>, <span class="s">"navigation.json"</span>,
+            <span class="s">"catalog-schema.json"</span>, <span class="s">"terminology.en-IN.json"</span>,
+            <span class="s">"theme.json"</span>, <span class="s">"theme.css"</span>, <span class="s">"assets.json"</span>],
+  <span class="k">"platform_release"</span>: <span class="s">"1.12.3"</span>
+}</div></div></div>
+
+    <div class="note acc mt"><svg data-i="rocket"></svg><div>
+      <b>Deploying runs nine steps:</b> validate → compile → show the difference → provision → publish →
+      create the starting content → wait for every runtime to apply it → smoke test → go live. If the smoke test
+      fails, the store rolls back automatically and keeps serving.
+    </div></div>
+    <div class="row mt"><button class="btn" data-go="w5">Back</button><span class="sp"></span>
+      <button class="btn" data-demo="Draft saved. Nothing has been created.">Save as draft</button>
+      <a class="btn pri" href="ra-deployments.html">Deploy store</a></div>
+  </section>
+</main>
+<script src="assets/ra.js"></script>
+<script>
+/* stepper */
+function show(id) {
+  document.querySelectorAll(".pane").forEach(function (p) { p.classList.toggle("on", p.id === id); });
+  var seen = true;
+  document.querySelectorAll("#steps .s").forEach(function (s) {
+    var on = s.dataset.step === id;
+    s.classList.toggle("on", on);
+    s.classList.toggle("done", seen && !on);
+    if (on) seen = false;
+  });
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+document.addEventListener("click", function (e) {
+  var g = e.target.closest("[data-go]");
+  if (g) { show(g.dataset.go); return; }
+  var s = e.target.closest("#steps .s");
+  if (s) show(s.dataset.step);
+});
+
+/* category picker */
+var detail = {
+  "VP-fashion_apparel": ["Size and colour variant grid", "No serial numbers — quantity per size and colour",
+    "Size guide on every product page", "Seasons and collections", "Exchanges as well as refunds",
+    "Wording: product, style, size, colour, collection"],
+  "VP-electronics": ["Serial numbers per unit", "Condition grades: new, open-box, refurbished, used",
+    "Compatibility (“fits your device”)", "Inspection reports on refurbished units",
+    "Dealer price tiers", "Wording: product, SKU, serial number, dealer"],
+  "VP-agriculture": ["Batch and lot tracking with expiry", "Seasonal availability", "Bulk units (kg, litre, bag)",
+    "Regulated product handling", "Live plants with care information", "Wording: product, batch, season, variety"],
+  "VP-seafood": ["Catch and pack dates, very short shelf life", "Price by weight", "Cold-chain packing rules",
+    "Delivery slots and daily cut-off", "Wording: catch, pack date, grade"],
+  "VP-furniture": ["Room and dimension attributes", "Bulky freight delivery with lead times",
+    "Made-to-order options", "Assembly services", "Wording: piece, finish, dimensions, lead time"],
+  "VP-industrial_hardware": ["Technical specifications and datasheets", "Bulk pack sizes",
+    "Business accounts and contract pricing", "Quotation-led buying", "Wording: part, specification, pack, account"]
+};
+var order = ["VP-fashion_apparel", "VP-electronics", "VP-agriculture", "VP-seafood", "VP-furniture", "VP-industrial_hardware"];
+var byId = {};
+RA.packs.forEach(function (p) { byId[p[0]] = p; });
+document.getElementById("packgrid").innerHTML = order.map(function (id) {
+  var p = byId[id];
+  return '<button class="pick packpick' + (id === "VP-fashion_apparel" ? " on" : "") + '" data-pack="' + id + '">' +
+    '<span class="pt">' + p[1] + '</span><span class="pd">' + p[5] + '</span>' +
+    '<span class="pm"><span class="tag">' + p[2] + '</span><span class="tag">' + p[3] + '</span>' +
+    (p[4] ? '<span class="tag">' + p[4] + ' store using it</span>' : '<span class="tag">not used yet</span>') +
+    '</span></button>';
+}).join("") +
+'<button class="pick" data-demo="Prototype: 24 further categories are available — grocery, beauty, jewellery, automotive, books, toys, pet supplies, construction, office, digital, services, handmade, luxury, wholesale, subscriptions, rental, made-to-order, combined and more.">' +
+'<span class="pt">Show all 31 categories</span><span class="pd">Every supported e-commerce type, including a combined category for stores that sell across several.</span></button>';
+
+function packInfo(id) {
+  var p = byId[id];
+  document.getElementById("packinfo").innerHTML =
+    '<div class="card-h"><h3>' + p[1] + ' ' + p[2] + ' — what this turns on</h3></div>' +
+    '<div class="card-b"><div class="grid g2"><ul class="small muted" style="margin:0;padding-left:18px;line-height:1.9">' +
+    detail[id].map(function (d) { return "<li>" + d + "</li>"; }).join("") +
+    '</ul><div class="note">' + RA.icon('info') + '<div>The storefront, the staff workspace and the vendor ' +
+    'section all follow this category. No code is written for it — it is configuration and starting content, so a ' +
+    'category can be added, updated or removed later without a new application.</div></div></div></div>';
+}
+packInfo("VP-fashion_apparel");
+RA.picks(".packpick", function (b) { packInfo(b.dataset.pack); });
+RA.picks(".tplpick");
+document.querySelector(".tplpick").classList.add("on");
+
+/* features */
+document.getElementById("wmods").innerHTML = RA.table(
+  ["Module", "From", "On?", "Client's admin may manage it?"],
+  [
+   ["<b>Catalogue</b>", "Platform", "<span class='tag ok'>On</span>", "<span class='tag'>No — always on</span>"],
+   ["<b>Pricing</b>", "Platform", "<span class='tag ok'>On</span>", "<span class='tag acc'>Promotions and codes</span>"],
+   ["<b>Inventory</b>", "Platform", "<span class='tag ok'>On</span>", "<span class='tag'>No — always on</span>"],
+   ["<b>Purchasing</b>", "Platform", "<span class='tag ok'>On</span>", "<span class='tag acc'>Yes</span>"],
+   ["<b>Customers</b>", "Platform", "<span class='tag ok'>On</span>", "<span class='tag'>No — always on</span>"],
+   ["<b>Website</b>", "Platform", "<span class='tag ok'>On</span>", "<span class='tag acc'>Reviews, wishlist, comparison</span>"],
+   ["<b>Orders &amp; checkout</b>", "Platform", "<span class='tag ok'>On</span>", "<span class='tag'>No — always on</span>"],
+   ["<b>Payments</b>", "Platform", "<span class='tag ok'>On</span>", "<span class='tag'>No</span>"],
+   ["<b>Delivery</b>", "Platform", "<span class='tag ok'>On</span>", "<span class='tag acc'>Shop collection</span>"],
+   ["<b>Returns &amp; exchanges</b>", "Platform", "<span class='tag ok'>On</span>", "<span class='tag acc'>Exchanges</span>"],
+   ["<b>Supplier portal</b>", "Platform", "<span class='tag ok'>On</span>", "<span class='tag acc'>Yes</span>"],
+   ["<b>Support</b>", "Platform", "<span class='tag ok'>On</span>", "<span class='tag acc'>Yes</span>"],
+   ["<b>Automation &amp; approvals</b>", "Platform", "<span class='tag ok'>On</span>", "<span class='tag acc'>Yes</span>"],
+   ["<b>Reports</b>", "Platform", "<span class='tag ok'>On</span>", "<span class='tag'>No</span>"],
+   ["<b>Accounts &amp; finance export</b>", "Platform", "<span class='tag ok'>On</span>", "<span class='tag'>No</span>"],
+   ["<b>Store administration</b>", "Platform", "<span class='tag ok'>On</span>", "<span class='tag'>Cannot be switched off</span>"],
+   ["<b>Seasons &amp; collections</b>", "<span class='tag acc'>Fashion</span>", "<span class='tag ok'>On</span>", "<span class='tag acc'>Yes</span>"],
+   ["<b>Trade accounts</b>", "<span class='tag acc'>Fashion</span>", "<span class='tag'>Off</span>", "<span class='tag'>No</span>"],
+   ["<b>Made to order</b>", "<span class='tag acc'>Fashion</span>", "<span class='tag'>Off</span>", "<span class='tag'>No</span>"]
+  ]);
+
+var groups = [
+  ["Products and catalogue", [
+    ["Size and colour variants", 1, 0, "A product exists in a grid of sizes and colours"],
+    ["Size guide", 1, 0, "Measurement table on the product page"],
+    ["Collections and seasons", 1, 0, "Group products into seasonal collections"],
+    ["Serial numbers", 0, 0, "Track each unit individually — not used in fashion"],
+    ["Batch, lot and expiry", 0, 0, "For perishable or regulated goods"],
+    ["Made to order", 0, 0, "Items produced after the order, with a lead time"]
+  ]],
+  ["Selling", [
+    ["Guest checkout", 1, 0, "Buy without creating an account"],
+    ["Wishlist", 1, 0, "Save items for later"],
+    ["Product comparison", 0, 0, "Side-by-side specification comparison"],
+    ["Customer reviews", 1, 0, "Reviews with moderation"],
+    ["Discount codes", 1, 0, "Coupon codes at checkout"],
+    ["Quantity price breaks", 0, 1, "Cheaper per unit above a quantity — locked off for this store"],
+    ["Business accounts", 0, 1, "Approved trade buyers with members and terms — locked off"]
+  ]],
+  ["Delivery and returns", [
+    ["Courier delivery", 1, 1, "Standard parcel delivery — locked on"],
+    ["Store pickup", 1, 0, "Collect from a shop"],
+    ["Delivery time slots", 0, 0, "Customer chooses a slot"],
+    ["Returns", 1, 1, "Locked on — required in this jurisdiction"],
+    ["Exchanges", 1, 0, "Swap for another size or colour instead of a refund"]
+  ]],
+  ["Suppliers and operations", [
+    ["Supplier portal", 1, 0, "Suppliers submit products and stock themselves"],
+    ["Purchase orders and receiving", 1, 0, "Order stock and receive it into the warehouse"],
+    ["Quality inspection", 0, 0, "Check goods on arrival before they can be sold"],
+    ["Stock counts", 1, 0, "Scheduled counting and reconciliation"]
+  ]]
+];
+document.getElementById("feat").innerHTML = '<div class="grid g2">' + groups.map(function (g) {
+  return '<div class="card"><div class="card-h"><h3>' + g[0] + '</h3></div><div class="card-b stack" style="gap:12px">' +
+    g[1].map(function (f) {
+      var ctl = f[2] ? (f[1] ? "the store cannot change it" : "not available to the store")
+                     : "the store's admin can switch it";
+      var tag = f[2] ? '<span class="tag">locked</span>' : '<span class="tag acc">store may manage</span>';
+      return '<div class="row" style="gap:12px;flex-wrap:nowrap;align-items:flex-start">' +
+        '<span class="sw" style="margin-top:2px"><input type="checkbox"' + (f[1] ? " checked" : "") +
+        (f[2] ? " disabled" : "") + '><i></i></span>' +
+        '<span style="flex:1"><span style="font-weight:600;font-size:13px">' + f[0] + '</span> ' + tag +
+        '<span class="hint" style="margin-top:2px">' + f[3] + ' &middot; <i>' + ctl + '</i></span></span></div>';
+    }).join("") + "</div></div>";
+}).join("") + "</div>";
+RA.boot();
+</script>
+</body>
+</html>

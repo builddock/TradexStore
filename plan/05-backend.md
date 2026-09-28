@@ -1328,3 +1328,73 @@ Other new decisions used in this file (D-141, D-142, D-145–D-147, D-149, D-151
 | 5 | PR1 §12 roadmap puts vendor platform in Phase 2 and purchasing/warehouses/RMA in Phase 3, whereas BP §5.1/PR2 §11 put vendor portal in 1B and purchasing/RMA in 1A | PR1 §12 vs BP §5.1, PR2 §11 | Plan follows BP/PR2 (later, consolidated) phasing per `00-conventions.md` §4 |
 | 6 | Mockup assisted-order form lets the user pick "Acting as" role; roles must come from the session | MK:erp-orders.html m-assisted vs BP §17.4 | Treated as prototype aid (API-M10-18 guard) |
 | 7 | Vendor portal shows API-key **reveal** ("password + OTP"); BP requires secret rotation and careful handling | MK:vendor-availability.html m-api vs BP §19.1 | API-M14-22 kept as MOCKUP, REQUIRES_DECISION (D-083) |
+
+---
+
+## 9. SaaS platform modules M30–M35 (2026-09-28, `D-227`)
+
+Architecture: `19-saas-platform.md`. Root admin: `20-root-admin.md`. Registry: `00-conventions.md` §6.
+These modules wrap the existing M01–M27 modules; they do not change a single business rule inside them.
+
+### 9.1 M30 — Tenancy & store context (`backend/platform/tenancy/`)
+
+| Item | Content |
+|---|---|
+| Services | StoreRegistry, HostResolver, StoreContext (+ propagation), tenant-aware repository base, StoreStorage, StoreSecrets, StoreLifecycleService |
+| Rules | `BR-M30-01` explicit store context for every store-scoped operation · `BR-M30-02` unscoped query refused · `BR-M30-03` context immutable per request/job · `BR-M30-04` every async unit carries `store_id` · `BR-M30-05` suspended/archived behaviour |
+| Jobs | None of its own; it supplies the context every job runs in |
+| Tests | TS-SAAS-ISO-09…16, TS-PROOF-11 |
+| Completion | Two stores share one runtime with no reachable path between their data, verified by the isolation suite and by a mutation check (removing a tenant filter must break a test) |
+
+### 9.2 M31 — Configuration & capability runtime (`backend/platform/config/`, `.../capabilities/`)
+
+| Item | Content |
+|---|---|
+| Services | ConfigSchema + layer resolver + validators, CapabilityRegistry + guards, ArtefactLoader, StoreConfig snapshot, ReloadWorker, StoreSettingsService (L4), TerminologyMap |
+| Rules | `BR-M31-01` no I/O on the request path · `-02` six enforcement points · `-03` disable hides, never deletes · `-04` artefact validated or refused · `-05` versions immutable, rollback by republish · `-06` store writes only editable, unlocked keys · `-07` artefact never hand-edited · `-08` no secret in the artefact |
+| Jobs | Reload worker; artefact fetch/verify; drift reporter |
+| Tests | TS-SAAS-CFG-01…18, TS-SAAS-CAP-01…06, TS-SAAS-TERM-01…05, TS-SAAS-PERF-01…06 |
+| Completion | A published change reaches every instance within the `D-248` budget, zero configuration database queries per request, and a broken artefact never reaches a customer |
+
+### 9.3 M32 — Vertical packs, runtime side (`backend/platform/packs/`)
+
+| Item | Content |
+|---|---|
+| Services | PackProfile loader, CatalogSchema applier (reconciling), IdentityModel interface and implementations, UnitSet, workspace/vendor/storefront profile accessors |
+| Rules | `BR-M32-01` packs are data, never code · `BR-M32-02` no code branches on a pack id · `BR-M32-03` published pack versions immutable · `BR-M32-04` no implicit migration |
+| Jobs | Seed application during bootstrap and pack migration |
+| Tests | TS-SAAS-PACK-01…17 |
+| Completion | Two packs produce two coherent stores from the same code, with a build check that no pack-id conditional exists |
+
+### 9.4 M33 — Templates & theming, runtime side (`frontend/…`, backed by `theme.json` consumers)
+
+| Item | Content |
+|---|---|
+| Services | Template registry and resolver, token contract, compiled-theme consumption (`theme.css`/`theme.json`), template-safe component contracts; `theme.json` is also consumed by M19 documents and M20 notifications |
+| Rules | `BR-M33-01` presentation only · `BR-M33-02` no hard-coded visual value or copy string · `BR-M33-03` template switch needs no data migration |
+| Tests | TS-SAAS-TPL-01…09 |
+| Completion | The same store renders under two templates with byte-identical business output |
+
+### 9.5 M34 — Root Admin platform (`root-admin/` — a separate codebase)
+
+Specified in `20-root-admin.md`. Backend concerns: platform identity and audit, store registry, pack/template/
+capability/terminology authoring, branding pipeline, and **the configuration compiler** (`root-admin/compiler/`),
+which is the critical path of the whole phase. Rules `BR-M34-01` (audit everything) and `BR-M34-02` (validation
+cannot be overridden).
+
+### 9.6 M35 — Store provisioning & deployment (`root-admin/deploy/` + `backend/platform/bootstrap/`)
+
+| Item | Content |
+|---|---|
+| Services | The nine-step deployment machine, provisioner, domain and certificate manager, artefact publisher and distributor, smoke runner with automatic rollback, fleet health and drift, lifecycle and decommission; store side: BootstrapRunner and SeedApplier |
+| Rules | `BR-M35-01` idempotent and resumable · `BR-M35-02` go-live only after smoke, failure rolls back · `BR-M35-03` decommission is two-person with retention |
+| Jobs | Deployment steps, certificate renewal, artefact retention, drift detection |
+| Tests | TS-SAAS-DEPLOY-01…14 |
+| Completion | Two stores of different categories deployed from an empty platform, entirely from the portal |
+
+### 9.7 How the existing modules change
+
+`19-saas-platform.md` §16 lists, module by module, what M01–M29 must do differently. The summary for backend
+work: every service takes its store from the context rather than from configuration constants; every feature the
+capability registry names is guarded; every user-visible string is a terminology token; every job payload carries
+`store_id`; and no module reads the root admin database.

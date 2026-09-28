@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<meta name="referrer" content="no-referrer">
+<title>Bundles — Configurable Root Admin (internal prototype)</title>
+<link rel="stylesheet" href="assets/ra.css">
+</head>
+<body>
+<div class="ra-internal">INTERNAL PROTOTYPE — <b>Configurable Root Admin</b> — not part of any client store, not linked from the client-facing demo (D-249)</div>
+<main>
+  <div class="ra-head">
+    <div><h1>Bundles</h1>
+      <p class="sub">The reusable building blocks a category is assembled from. Author the hard thinking once —
+        what a perishable business needs, what a trade business needs — then apply it to any category instead of
+        making the same forty decisions again and getting a different answer each time.</p></div>
+    <div class="act"><button class="btn pri" data-open="dlg-newbnd">New bundle</button></div>
+  </div>
+
+  <div class="note acc mb"><svg data-i="info"></svg><div>
+    A category is assembled as <b>base + bundles (in the order you choose) + category-specific changes</b>.
+    Two bundles asking for incompatible things is an error you resolve, never something the system decides
+    quietly. Nothing about bundles ever reaches a store — a store only receives the finished configuration.
+  </div></div>
+
+  <div class="grid g4 mb">
+    <div class="kpi"><div class="k">Published</div><div class="v">11</div><div class="d">usable in categories</div></div>
+    <div class="kpi"><div class="k">Draft</div><div class="v">3</div><div class="d">being authored</div></div>
+    <div class="kpi"><div class="k">Categories using bundles</div><div class="v">7</div><div class="d">of 12</div></div>
+    <div class="kpi ok"><div class="k">Composition conflicts</div><div class="v">0</div><div class="d">across published categories</div></div>
+  </div>
+
+  <div class="card"><div class="card-h"><h2>Bundle library</h2><span class="sp"></span>
+    <select style="width:auto"><option>All states</option><option>Published</option><option>Draft</option><option>Deprecated</option></select></div>
+    <div id="tbl"></div></div>
+
+  <div class="card mt"><div class="card-h"><h2>Worked example — how Fashion &amp; Apparel is assembled</h2></div>
+    <div class="card-b">
+      <div class="pipe">
+        <div class="st done"><span class="ic">1</span><div><div class="sn">Base retail profile</div>
+          <div class="sd">Catalogue, pricing, inventory, orders, payments, delivery, returns, customers, administration</div></div><span class="sm">platform</span></div>
+        <div class="st done"><span class="ic">2</span><div><div class="sn">+ Sizes &amp; colours bundle <span class="tag">1.2.0</span></div>
+          <div class="sd">Two-axis variants, size systems IN/UK/EU/US, size guide, exchange-led returns</div></div><span class="sm">18 settings</span></div>
+        <div class="st done"><span class="ic">3</span><div><div class="sn">+ Seasons &amp; collections bundle <span class="tag">1.0.1</span></div>
+          <div class="sd">Seasonal ranges, lookbooks, collection pages, end-of-season handling</div></div><span class="sm">9 settings</span></div>
+        <div class="st done"><span class="ic">4</span><div><div class="sn">+ Supplier network bundle <span class="tag">2.0.0</span></div>
+          <div class="sd">Supplier portal, submissions, availability feeds</div></div><span class="sm">14 settings</span></div>
+        <div class="st done"><span class="ic">5</span><div><div class="sn">+ Shopfront essentials bundle <span class="tag">1.4.0</span></div>
+          <div class="sd">Reviews, wishlist, comparison, curated collections, stock alerts</div></div><span class="sm">11 settings</span></div>
+        <div class="st run"><span class="ic">6</span><div><div class="sn">+ Category-specific changes</div>
+          <div class="sd">Fashion wording, the fashion category tree, 22 attributes, 4 return classes</div></div><span class="sm">overrides win</span></div>
+      </div>
+      <div class="note mt"><svg data-i="check"></svg><div>
+        Result: <b>Fashion &amp; Apparel 1.1.0</b> — 19 modules, 38 features on, 148 wording entries, 6 seed sets.
+        Every value shows where it came from, so an author can always tell a bundle's default from a deliberate
+        category change.
+      </div></div>
+    </div></div>
+
+  <div class="card mt"><div class="card-h"><h2>Completeness — what must be answered before a category can be published</h2>
+    <span class="sp"></span><span class="tag ok">25 of 25 answered for Fashion &amp; Apparel</span></div>
+    <div id="cmpl"></div>
+    <div class="card-b" style="border-top:1px solid var(--ra-line)">
+      <p class="hint">This is checked by the system, not by a person with a list. Publication is blocked while
+        anything is unanswered, and the same report is visible while authoring so nothing is a surprise at the end.</p>
+    </div></div>
+
+  <div class="modal" id="dlg-newbnd">
+    <div class="dh"><h3>New bundle</h3><span class="sp"></span><button class="x" data-close>✕</button></div>
+    <div class="db stack">
+      <div class="grid g2">
+        <div><label class="fl">Name</label><input placeholder="Perishable goods"></div>
+        <div><label class="fl">Identifier</label><input class="mono" placeholder="BND-perishables"></div>
+      </div>
+      <div><label class="fl">What it gives a category</label>
+        <textarea rows="3" placeholder="Batch and lot tracking, expiry, shelf-life rules, cold chain, weight pricing, delivery slots"></textarea></div>
+      <div><label class="fl">Start from</label><select><option>Empty</option><option>A copy of Sizes &amp; colours 1.2.0</option><option>A copy of Trade accounts 1.1.0</option></select></div>
+      <div class="note"><svg data-i="info"></svg><div>A bundle may only use features that exist in the platform
+        release. If it needs something new, that is one change to the system — and every category gets it
+        afterwards.</div></div>
+    </div>
+    <div class="df"><button class="btn" data-close>Cancel</button>
+      <button class="btn pri" data-demo="Prototype: draft bundle created. Open it to choose its modules, features, wording and starting content.">Create draft</button></div>
+  </div>
+</main>
+<script src="assets/ra.js"></script>
+<script>
+document.getElementById("tbl").innerHTML = RA.table(
+  ["Bundle", "Version", "State", "What it gives a category", "Used by", ""],
+  [
+   ["<b>Sizes &amp; colours</b><div class='sub mono'>BND-variant_matrix</div>", "1.2.0", "<span class='tag ok'>Published</span>", "Two-axis variants, size systems, size guide, exchange-led returns", "Fashion, Footwear", "<button class='btn sm' data-demo='Prototype: opens the bundle with its modules, features, wording and seeds.'>Open</button>"],
+   ["<b>Serialised goods</b><div class='sub mono'>BND-serialised_goods</div>", "1.3.0", "<span class='tag ok'>Published</span>", "Serial numbers, condition grades, inspection records, warranty per unit", "Electronics, Jewellery", "<button class='btn sm' data-demo='Prototype: opens the bundle.'>Open</button>"],
+   ["<b>Perishable goods</b><div class='sub mono'>BND-perishables</div>", "0.9.0", "<span class='tag ok'>Published</span>", "Batch and lot, expiry, shelf life, cold chain, weight pricing, delivery slots", "Fish, Agriculture", "<button class='btn sm' data-demo='Prototype: opens the bundle.'>Open</button>"],
+   ["<b>Trade accounts</b><div class='sub mono'>BND-trade_b2b</div>", "1.1.0", "<span class='tag ok'>Published</span>", "Business accounts, quantity tiers, contract prices, quotes, credit terms", "Industrial", "<button class='btn sm' data-demo='Prototype: opens the bundle.'>Open</button>"],
+   ["<b>Supplier network</b><div class='sub mono'>BND-supplier_network</div>", "2.0.0", "<span class='tag ok'>Published</span>", "Supplier portal, submissions, availability feeds, supplier fulfilment", "Electronics, Fashion, Industrial", "<button class='btn sm' data-demo='Prototype: opens the bundle.'>Open</button>"],
+   ["<b>Shopfront essentials</b><div class='sub mono'>BND-marketplace_basics</div>", "1.4.0", "<span class='tag ok'>Published</span>", "Reviews, wishlist, comparison, curated collections, stock alerts", "6 categories", "<button class='btn sm' data-demo='Prototype: opens the bundle.'>Open</button>"],
+   ["<b>Bulky &amp; freight</b><div class='sub mono'>BND-bulky_freight</div>", "1.0.0", "<span class='tag ok'>Published</span>", "Freight delivery, dimensions, lead times, assembly services", "Home &amp; Furniture", "<button class='btn sm' data-demo='Prototype: opens the bundle.'>Open</button>"],
+   ["<b>Unique items</b><div class='sub mono'>BND-unique_items</div>", "1.0.0", "<span class='tag ok'>Published</span>", "One-of-a-kind stock, provenance, authentication record, no variants", "<span class='dim'>none yet</span>", "<button class='btn sm' data-demo='Prototype: opens the bundle.'>Open</button>"],
+   ["<b>Seasons &amp; collections</b><div class='sub mono'>BND-seasons</div>", "1.0.1", "<span class='tag ok'>Published</span>", "Seasonal ranges, lookbooks, collection pages, end-of-season handling", "Fashion", "<button class='btn sm' data-demo='Prototype: opens the bundle.'>Open</button>"],
+   ["<b>Digital delivery</b><div class='sub mono'>BND-digital_delivery</div>", "0.8.0", "<span class='tag ok'>Published</span>", "Digital products, licence keys, downloads, no shipping", "<span class='dim'>none yet</span>", "<button class='btn sm' data-demo='Prototype: opens the bundle.'>Open</button>"],
+   ["<b>Regulated goods</b><div class='sub mono'>BND-regulated_goods</div>", "0.6.0", "<span class='tag ok'>Published</span>", "Age confirmation, compliance attributes, restricted delivery, document capture", "<span class='dim'>none yet</span>", "<button class='btn sm' data-demo='Prototype: opens the bundle.'>Open</button>"],
+   ["<b>Appointments</b><div class='sub mono'>BND-appointments</div>", "0.3.0", "<span class='tag'>Draft</span>", "Service items, appointments, capacity, service areas", "—", "<button class='btn sm' data-demo='Prototype: opens the draft bundle.'>Open</button>"],
+   ["<b>Rentals</b><div class='sub mono'>BND-rental</div>", "0.2.0", "<span class='tag'>Draft</span>", "Rental periods, availability calendar, deposits, return condition", "—", "<button class='btn sm' data-demo='Prototype: opens the draft bundle.'>Open</button>"],
+   ["<b>Subscriptions</b><div class='sub mono'>BND-subscriptions</div>", "0.2.0", "<span class='tag'>Draft</span>", "Plans, billing cycles, pause and resume, renewal notices", "—", "<button class='btn sm' data-demo='Prototype: opens the draft bundle.'>Open</button>"]
+  ]);
+
+var dims = [
+ ["Identity and description","Category header"],["Bundles applied, in order, with versions","Assembly"],
+ ["Applications the category expects","Defaults"],["Every module: present or absent, and its control state","Module matrix"],
+ ["Every feature: default state and control state","Feature matrix"],["What the store's own admin may manage","Delegation defaults"],
+ ["How a stock unit is identified","Category"],["Units, decimals, minimum order","Category"],
+ ["Category tree and attributes with types","Structure"],["Variant axes and browsing filters","Structure"],
+ ["Pricing model","Category"],["Delivery models and packing rules","Category"],
+ ["Return and exchange classes","Category"],["Tax and compliance attributes","Category"],
+ ["Website sections, product blocks, badges, checkout steps","Website profile"],
+ ["Workspace screens, tabs, columns, saved views, tiles","Workspace profile"],
+ ["Supplier submission fields and feed columns","Supplier profile"],
+ ["Every word, in every language the category supports","Wording"],
+ ["What a new store starts with","Starting content"],["Compatible templates and the default","Templates"],
+ ["Validation rules the category adds","Validation"],["Message and document templates","Starting content"],
+ ["Help content for every workspace screen","Starting content"],["Reports the category expects","Workspace profile"],
+ ["Automation rules and their defaults","Category"]
+];
+document.getElementById("cmpl").innerHTML = RA.table(["#","Must be answered","Answered in","State"],
+  dims.map(function (d, i) {
+    return [String(i + 1), d[0], d[1], "<span class='tag ok'>answered</span>"];
+  }));
+RA.boot();
+</script>
+</body>
+</html>

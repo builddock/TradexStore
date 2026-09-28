@@ -1441,3 +1441,56 @@ D-206–D-209 are proposed in `16-testing.md`.
 | RA-01 | None for pages: sign-in/landing pages are now registered as P-S14, P-S15, P-E16, P-V05 (`00-conventions.md` §8). Staff "My profile / Security & MFA" is expected inside P-E16 or the shell — confirm under D-174 | — | `00-conventions.md` §8 |
 | RA-02 | No new roles. Designations (buyer, reviewer, rule owner, warehouse lead, returns desk) are assignment data, pending D-222, D-081, D-194 | Keeps the role registry to BP §3.1 | BP §3.1, §18.1 |
 | RA-03 | Permission-key catalogue of §5 as seed set S-03 content (`03-database.md` §6) | `E-permission.code` "catalogue in `07-auth-roles-permissions.md`" | `03-database.md` §2.1.3 |
+
+---
+
+## SaaS additions (2026-09-28, `D-227`)
+
+Architecture: `19-saas-platform.md` §5, §9, §10; `20-root-admin.md` §3, §7.
+
+### A. Two identity realms
+
+| | Store realm | Platform realm |
+|---|---|---|
+| Users | `E-user_account` (consumers, dealers, staff, vendor users), scoped by `store_id` | `E-platform_user`, in the root admin database |
+| Roles | `R-guest` … `R-owner`, `R-integration` (`00` §9) — always **inside one store** | `R-root_owner`, `R-root_operator`, `R-root_author`, `R-root_support`, `R-root_readonly` (`00` §9.1) |
+| MFA | Per `D-040`/`D-200` | **Mandatory for every user, no exception** (`D-245`) |
+| Session | Per `D-083`, bound to the issuing store's host | Separate issuer, separate cookie domain, identity-aware proxy |
+| Cross-realm | None. A store credential authenticates nothing on the platform and vice versa (SEP-3) | |
+
+A store user belongs to exactly one store. A credential valid on store A's host is **unauthenticated** — not
+forbidden — on store B's host, because "forbidden" would confirm the other store exists.
+
+### B. Capability check before permission check
+
+The evaluation order on every store-facing route is:
+
+1. **Store resolution** — unknown host → neutral 404.
+2. **Capability** — the store does not have this feature → **404** (`19` §9 INV-3). No permission is evaluated,
+   nothing is logged that names the feature to the user, and the audit entry is a platform-internal one.
+3. **Authentication** — not signed in → 401.
+4. **Permission** (`AccessPolicy`, this file §3–§9) → 403 with the existing envelope.
+5. **Record scope** (branch, vendor, business account) → 404 or 403 per the existing rules.
+
+This ordering is a security property, not a convenience: it prevents a store's own staff from enumerating what
+the platform can do by probing endpoints.
+
+### C. Permissions for store-editable configuration
+
+The existing configuration permissions apply only to the L4 subset (`D-243`). A locked or root-only key behaves
+as a non-existent key for **every** store principal including `R-owner`: it is absent from reads, lists,
+searches, exports and audit views (`19` §9 INV-4). There is no store role that can unlock a key; only the root
+admin can, and the store is not told that it happened.
+
+### D. Platform staff access to store data (`D-246`)
+
+No platform role grants implicit access to store data. Access requires an approved, time-boxed grant
+(`E-platform_support_access`, max 8 h) with a recorded reason and an approver who is not the requester. Every
+action under a grant is written to **both** audit trails, attributed to the named platform user, and appears in
+the store's own audit viewer (P-E15). Grants expire automatically and can be revoked at any time.
+
+### E. Integration accounts
+
+`R-integration` credentials are per store and encrypted per store (`19` §10.1). A credential leaked from one
+store grants nothing in another. The store-runtime callback credential used for `config.applied` is a platform
+credential with exactly one permission and no read access to anything.
