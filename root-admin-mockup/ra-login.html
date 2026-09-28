@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="assets/ra.css">
 </head>
 <body>
-<div class="ra-internal">INTERNAL PROTOTYPE — <b>Configurable Root Admin</b> — not part of any client store, not linked from the client-facing demo (D-249)</div>
+<div class="ra-internal" data-help="ra.internal">INTERNAL PROTOTYPE — <b>Configurable Root Admin</b> — not part of any client store, not linked from the client-facing demo (D-249)</div>
 <main class="auth">
   <div class="box">
     <div style="text-align:center;margin-bottom:22px">
@@ -63,6 +63,10 @@
   </div>
 </main>
 <script src="assets/ra.js"></script>
+<script src="assets/ra-help.js"></script>
+<script src="assets/help/glossary.js"></script>
+<script src="assets/help/shell.js"></script>
+<script src="assets/help/ra-login.js"></script>
 <script>
   document.querySelectorAll("svg[data-i]").forEach(function(s){s.outerHTML=RA.icon(s.dataset.i)});
   RA.wireDemo();
@@ -76,6 +80,7 @@
     document.getElementById("step2").style.display = "none";
     document.getElementById("step1").style.display = "";
   });
+  if (RA.help) RA.help.mount();
 </script>
 </body>
 </html>

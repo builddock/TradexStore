@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="assets/ra.css">
 </head>
 <body>
-<div class="ra-internal">INTERNAL PROTOTYPE — <b>Configurable Root Admin</b> — not part of any client store, not linked from the client-facing demo (D-249)</div>
+<div class="ra-internal" data-help="ra.internal">INTERNAL PROTOTYPE — <b>Configurable Root Admin</b> — not part of any client store, not linked from the client-facing demo (D-249)</div>
 <main>
   <div class="ra-head">
     <div><h1>Stores</h1>
@@ -41,7 +41,7 @@
   </div>
 
   <div class="card">
-    <div class="card-h"><h2>7 stores</h2><span class="sp"></span>
+    <div class="card-h"><h2 data-help="ra.stores.table">7 stores</h2><span class="sp"></span>
       <button class="btn sm" data-demo="Prototype: bulk publish would validate, compile, diff and deploy each selected store, one run per store.">Bulk publish</button>
       <button class="btn sm" data-demo="Prototype: bulk migration shows a per-store impact preview before anything changes.">Migrate category version</button>
     </div>
@@ -55,6 +55,10 @@
   </div></div>
 </main>
 <script src="assets/ra.js"></script>
+<script src="assets/ra-help.js"></script>
+<script src="assets/help/glossary.js"></script>
+<script src="assets/help/shell.js"></script>
+<script src="assets/help/ra-stores.js"></script>
 <script>
 var rows = RA.stores.map(function (s) {
   return [

@@ -206,9 +206,58 @@ thresholds, payment provider, tax convention, …) become **store configuration 
 global constants. Those that are platform engineering decisions (stack, hosting, API conventions, observability)
 stay platform-wide.
 
-## 11. Mockup (`D-249`, `D-253`)
+## 11. Contextual help (`D-280`)
 
-`root-admin-mockup/` holds a clickable HTML prototype of P-R01–P-R12 with its own `assets/` (no dependency on the
+The portal can create, reconfigure, suspend and close a client's entire business. Somebody operating it needs to
+know what each control does **before** they use it, not after — so the same contextual-help pattern the store
+workspace and vendor portal carry (`D-224`) applies here, with content written for the platform operator.
+
+### 11.1 What every screen carries
+
+| Element | Behaviour |
+|---|---|
+| **ⓘ** next to each heading, tab, section and significant control | Opens a non-modal side panel on that entry. The main column shifts rather than being covered, so the thing being explained stays visible |
+| **?** in the top bar | The guide for the whole page: what it is for, how to read it, what to do, what to watch out for, and an index of its sections |
+| **About this tab** on every tab bar | Explains the tab that is currently open |
+| **Search** in the panel | Across every entry and every glossary term |
+| **Glossary** | The platform's own vocabulary — store, category, bundle, template, feature, module, delegation, built configuration, drift, propagation, separation, support access, canary, completeness check… reachable from the panel and from any dotted-underlined word on a screen |
+| **Help icons on/off** | Hides or shows every ⓘ; remembered between visits. Also `Shift`-click on the **?** |
+
+### 11.2 What an entry contains
+
+The same six-part shape as `D-224`, because it is what makes an explanation usable rather than merely present:
+
+| Part | Answers |
+|---|---|
+| What it is | In one or two sentences, in plain language |
+| Why it matters | The consequence of getting it wrong — usually the most useful part |
+| How to read it | What each column, state or number on the screen means |
+| What to do | The action, in order |
+| What happens next | Where the work goes after this screen |
+| Worth knowing | The non-obvious rule, the irreversible step, the sample value |
+
+### 11.3 Rules
+
+| # | Rule |
+|---|---|
+| H-1 | Every screen has a page guide, and every tab, section and control that an operator could misread has its own entry. A control with no entry is incomplete work, not a documentation gap |
+| H-2 | Entries are written for whoever is managing the platform, assuming no technical background. A term that needs a definition gets a glossary entry rather than a parenthesis |
+| H-3 | Irreversible and two-person actions say so in **Worth knowing**: decommission, category retirement, currency and jurisdiction, changing how stock is identified |
+| H-4 | Sample values in the prototype are labelled as samples. Open decisions are described as “needs a scope decision” rather than presented as available |
+| H-5 | Help content is part of the definition of done for every `P-R` screen task (`19` §24.1 gate 14), in the same way the store workspace's help is (`D-224`) |
+| H-6 | The help text never reveals another client's data, and the glossary explains the platform's vocabulary — it is an operator tool, and it stays inside this portal |
+
+### 11.4 Where it lives
+
+Mockup: `root-admin-mockup/assets/ra-help.js` (engine) and `root-admin-mockup/assets/help/` — `glossary.js`,
+`shell.js` and one file per screen. Self-contained, with no dependency on the store mockup's help engine, for the
+same reason the rest of the portal is (`D-228`).
+
+Product: the same split — one help engine in `root-admin/app/shell/`, content per screen beside each screen.
+
+## 12. Mockup (`D-249`, `D-253`, `D-280`)
+
+`root-admin-mockup/` holds a clickable HTML prototype of P-R01–P-R13 with its own `assets/` (no dependency on the
 store mockup's `assets/tradex.*`), its own visual identity (deliberately different from any store template so the
 two are never confused), and `<meta name="robots" content="noindex,nofollow">` on every page.
 

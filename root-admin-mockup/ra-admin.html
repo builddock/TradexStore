@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="assets/ra.css">
 </head>
 <body>
-<div class="ra-internal">INTERNAL PROTOTYPE — <b>Configurable Root Admin</b> — not part of any client store, not linked from the client-facing demo (D-249)</div>
+<div class="ra-internal" data-help="ra.internal">INTERNAL PROTOTYPE — <b>Configurable Root Admin</b> — not part of any client store, not linked from the client-facing demo (D-249)</div>
 <main data-tabs>
   <div class="ra-head">
     <div><h1>Platform people and records</h1>
@@ -19,10 +19,10 @@
   </div>
 
   <div class="tabs">
-    <button data-tab="a-users">People</button>
-    <button data-tab="a-roles">What each role can do</button>
-    <button data-tab="a-sup">Access to store data</button>
-    <button data-tab="audit">Record of actions</button>
+    <button data-tab="a-users" data-help="ra.a.users">People</button>
+    <button data-tab="a-roles" data-help="ra.a.roles">What each role can do</button>
+    <button data-tab="a-sup" data-help="ra.a.sup">Access to store data</button>
+    <button data-tab="audit" data-help="ra.a.audit">Record of actions</button>
   </div>
 
   <section class="pane" id="a-users">
@@ -87,6 +87,10 @@
   </div>
 </main>
 <script src="assets/ra.js"></script>
+<script src="assets/ra-help.js"></script>
+<script src="assets/help/glossary.js"></script>
+<script src="assets/help/shell.js"></script>
+<script src="assets/help/ra-admin.js"></script>
 <script>
 document.getElementById("users").innerHTML = RA.table(
   ["Person", "Role", "Two-step sign-in (MFA)", "Active sessions", "Last active", "Created", ""],

@@ -41,6 +41,21 @@ store is created, given an e-commerce category, given a site template, branded, 
 `assets/tradex.css` or `assets/tradex.js`, and its visual identity is deliberately different so the two are never
 confused.
 
+## Contextual help
+
+Every screen carries the same help pattern as the ERP and vendor mockups (`D-224`, extended by `D-280`):
+
+- a small **ⓘ** next to each heading, tab and control, opening a panel with *what it is · why it matters · how to
+  read it · what to do · what happens next · worth knowing*;
+- **? in the top bar** for the whole-page guide, with search across every entry;
+- a **glossary** of about fifty platform terms (store, category, bundle, template, feature, module, delegation,
+  artefact, drift, propagation, separation, support access…), reachable from the panel and from any dotted-underlined
+  word on the screen;
+- **Help icons on/off** at the foot of the menu, remembered between visits.
+
+Content lives in `assets/help/` — one file per screen, plus `glossary.js` and `shell.js`. The engine is
+`assets/ra-help.js`, self-contained like the rest of this prototype.
+
 ## Reading it
 
 - Start at `index.html`, or go straight to `ra-login.html` → `ra-dashboard.html`.

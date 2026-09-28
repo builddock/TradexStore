@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="assets/ra.css">
 </head>
 <body>
-<div class="ra-internal">INTERNAL PROTOTYPE — <b>Configurable Root Admin</b> — not part of any client store, not linked from the client-facing demo (D-249)</div>
+<div class="ra-internal" data-help="ra.internal">INTERNAL PROTOTYPE — <b>Configurable Root Admin</b> — not part of any client store, not linked from the client-facing demo (D-249)</div>
 <main>
   <div class="ra-head">
     <div><h1>E-commerce categories</h1>
@@ -29,11 +29,11 @@
     <div class="kpi"><div class="k">Stores using a category</div><div class="v">7</div><div class="d">one category each</div></div>
   </div>
 
-  <div class="card"><div class="card-h"><h2>Category catalogue</h2><span class="sp"></span>
+  <div class="card"><div class="card-h"><h2 data-help="ra.p.table">Category catalogue</h2><span class="sp"></span>
     <select style="width:auto"><option>All states</option><option>Published</option><option>Draft</option><option>Deprecated</option></select></div>
     <div id="tbl"></div></div>
 
-  <div class="card mt"><div class="card-h"><h2>What a category contains</h2></div><div class="card-b">
+  <div class="card mt"><div class="card-h"><h2 data-help="ra.p.contains">What a category contains</h2></div><div class="card-b">
     <div class="grid g3 small muted" style="line-height:1.9">
       <div><b style="color:var(--ra-tx)">Structure</b><br>Category tree · product attributes and their units ·
         variant axes · search filters · how a stock unit is identified · units of measure</div>
@@ -47,7 +47,7 @@
       accepts the preview of what would change.</div></div>
   </div></div>
 
-  <div class="card mt"><div class="card-h"><h2>All 31 supported categories</h2><span class="sp"></span>
+  <div class="card mt"><div class="card-h"><h2 data-help="ra.p.all">All 31 supported categories</h2><span class="sp"></span>
     <span class="tag">from the architecture brief</span></div>
     <div class="card-b"><div id="all" class="grid" style="grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px"></div></div></div>
 
@@ -79,6 +79,10 @@
   </div>
 </main>
 <script src="assets/ra.js"></script>
+<script src="assets/ra-help.js"></script>
+<script src="assets/help/glossary.js"></script>
+<script src="assets/help/shell.js"></script>
+<script src="assets/help/ra-packs.js"></script>
 <script>
 var rows = RA.packs.map(function (p) {
   return [

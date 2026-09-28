@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="assets/ra.css">
 </head>
 <body>
-<div class="ra-internal">INTERNAL PROTOTYPE — <b>Configurable Root Admin</b> — not part of any client store, not linked from the client-facing demo (D-249)</div>
+<div class="ra-internal" data-help="ra.internal">INTERNAL PROTOTYPE — <b>Configurable Root Admin</b> — not part of any client store, not linked from the client-facing demo (D-249)</div>
 <main data-tabs>
   <div class="ra-head">
     <div><h1>Wording</h1>
@@ -23,13 +23,13 @@
   </div>
 
   <div class="tabs">
-    <button data-tab="w-comp">Compare categories</button>
-    <button data-tab="w-set">Wording set</button>
-    <button data-tab="w-cov">Coverage</button>
+    <button data-tab="w-comp" data-help="ra.tm.comp">Compare categories</button>
+    <button data-tab="w-set" data-help="ra.tm.set">Wording set</button>
+    <button data-tab="w-cov" data-help="ra.tm.cov">Coverage</button>
   </div>
 
   <section class="pane" id="w-comp">
-    <div class="card"><div class="card-h"><h2>The same concept, five categories</h2></div><div id="cmp"></div></div>
+    <div class="card"><div class="card-h"><h2 data-help="ra.tm.comp">The same concept, five categories</h2></div><div id="cmp"></div></div>
     <div class="note mt"><svg data-i="info"></svg><div>
       Nothing in the system is called “product” in code. Everything asks the wording set, which is why adding a
       category never means renaming anything.
@@ -55,7 +55,7 @@
       <div class="kpi ok"><div class="k">Electronics · en-IN</div><div class="v">203/203</div><div class="d">complete</div></div>
       <div class="kpi bad"><div class="k">Grocery (draft) · en-IN</div><div class="v">134/148</div><div class="d">14 missing — cannot be published</div></div>
     </div>
-    <div class="card"><div class="card-h"><h3>Missing entries · Grocery &amp; Supermarket 0.3.0 · English (India)</h3></div>
+    <div class="card"><div class="card-h"><h3 data-help="ra.tm.cov">Missing entries · Grocery &amp; Supermarket 0.3.0 · English (India)</h3></div>
       <div id="miss"></div></div>
     <div class="note warn mt"><svg data-i="warn"></svg><div>
       A category with missing wording cannot be given to a store. Publishing is blocked until every concept the
@@ -64,6 +64,10 @@
   </section>
 </main>
 <script src="assets/ra.js"></script>
+<script src="assets/ra-help.js"></script>
+<script src="assets/help/glossary.js"></script>
+<script src="assets/help/shell.js"></script>
+<script src="assets/help/ra-terminology.js"></script>
 <script>
 document.getElementById("cmp").innerHTML = RA.table(
   ["Concept", "Electronics", "Fashion &amp; Apparel", "Fish", "Agriculture &amp; Gardening", "Home &amp; Furniture"],

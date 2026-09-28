@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="assets/ra.css">
 </head>
 <body>
-<div class="ra-internal">INTERNAL PROTOTYPE — <b>Configurable Root Admin</b> — not part of any client store, not linked from the client-facing demo (D-249)</div>
+<div class="ra-internal" data-help="ra.internal">INTERNAL PROTOTYPE — <b>Configurable Root Admin</b> — not part of any client store, not linked from the client-facing demo (D-249)</div>
 <main data-tabs>
   <div class="ra-head">
     <div><h1>Platform settings and health</h1>
@@ -19,17 +19,17 @@
   </div>
 
   <div class="tabs">
-    <button data-tab="s-gen">General</button>
-    <button data-tab="health">Fleet health</button>
-    <button data-tab="s-store">Storage &amp; keeping</button>
-    <button data-tab="s-net">Addresses &amp; certificates</button>
-    <button data-tab="s-alert">Alerts &amp; notifications</button>
-    <button data-tab="s-maint">Maintenance</button>
+    <button data-tab="s-gen" data-help="ra.st.gen">General</button>
+    <button data-tab="health" data-help="ra.st.health">Fleet health</button>
+    <button data-tab="s-store" data-help="ra.st.store">Storage &amp; keeping</button>
+    <button data-tab="s-net" data-help="ra.st.net">Addresses &amp; certificates</button>
+    <button data-tab="s-alert" data-help="ra.st.alert">Alerts &amp; notifications</button>
+    <button data-tab="s-maint" data-help="ra.st.maint">Maintenance</button>
   </div>
 
   <section class="pane" id="s-gen">
     <div class="grid g2">
-      <div class="card"><div class="card-h"><h3>Platform</h3></div><div class="card-b"><dl class="kv">
+      <div class="card"><div class="card-h"><h3 data-help="ra.st.gen">Platform</h3></div><div class="card-b"><dl class="kv">
         <dt>Release</dt><dd>1.12.3 · deployed 24 Sep 2026</dd>
         <dt>Store platform release</dt><dd>1.12.3 · every runtime matches</dd>
         <dt>Environments</dt><dd>Production · Staging</dd>
@@ -37,7 +37,7 @@
         <dt>Store subdomains</dt><dd class="mono">&lt;store&gt;.stores.example</dd>
         <dt>Reachable from</dt><dd>Approved networks only, through the identity gateway</dd>
       </dl></div></div>
-      <div class="card"><div class="card-h"><h3>Global defaults for new stores</h3></div><div class="card-b"><dl class="kv">
+      <div class="card"><div class="card-h"><h3 data-help="ra.st.gen">Global defaults for new stores</h3></div><div class="card-b"><dl class="kv">
         <dt>Data separation</dt><dd><b>Separated client</b> — its own database, image store, search index and cache</dd>
         <dt>Region</dt><dd>India (Mumbai)</dd>
         <dt>Currency</dt><dd>INR</dd>
@@ -55,7 +55,7 @@
       <div class="kpi ok"><div class="k">Typical time to apply a change</div><div class="v">11 s</div><div class="d">budget is 30 s</div></div>
       <div class="kpi ok"><div class="k">Typical build time</div><div class="v">1.9 s</div><div class="d">unchanged this week</div></div>
     </div>
-    <div class="card mb"><div class="card-h"><h3>Runtimes</h3><span class="sp"></span>
+    <div class="card mb"><div class="card-h"><h3 data-help="ra.st.health">Runtimes</h3><span class="sp"></span>
       <button class="btn sm" data-demo="Prototype: asks every runtime to check for a newer configuration now.">Ask all to refresh</button></div>
       <div id="inst"></div></div>
     <div class="note bad"><svg data-i="warn"></svg><div>
@@ -66,7 +66,7 @@
   </section>
 
   <section class="pane" id="s-store">
-    <div class="card mb"><div class="card-h"><h3>Per-client separation</h3><span class="sp"></span>
+    <div class="card mb"><div class="card-h"><h3 data-help="ra.st.store">Per-client separation</h3><span class="sp"></span>
       <span class="tag ok">7 of 7 stores separated</span></div>
       <div id="sep"></div>
       <div class="card-b" style="border-top:1px solid var(--ra-line)">
@@ -74,22 +74,22 @@
           search index and its own cache namespace. Nothing is shared between clients. Every record also carries
           its store identifier, so an operational mistake — a wrong connection, a restore into the wrong place —
           still cannot mix two clients' data.</p></div></div>
-    <div class="card mb"><div class="card-h"><h3>Secret scopes and signing keys</h3></div><div id="keys"></div></div>
-    <div class="card mb"><div class="card-h"><h3>Configuration retention</h3></div><div class="card-b"><dl class="kv">
+    <div class="card mb"><div class="card-h"><h3 data-help="ra.st.store">Secret scopes and signing keys</h3></div><div id="keys"></div></div>
+    <div class="card mb"><div class="card-h"><h3 data-help="ra.st.store">Configuration retention</h3></div><div class="card-b"><dl class="kv">
       <dt>Published configurations kept</dt><dd>Last 20 per store, at least 180 days</dd>
       <dt>Rollback window</dt><dd>Any retained version built for the running release</dd>
       <dt>Artefact storage</dt><dd>Content-addressed, immutable, mirrored to every runtime host</dd>
       <dt>Signing</dt><dd>Every configuration is signed; installs refuse anything that does not verify</dd>
     </dl></div></div>
     <div class="grid g2">
-      <div class="card"><div class="card-h"><h3>Files and images</h3></div><div class="card-b"><dl class="kv">
+      <div class="card"><div class="card-h"><h3 data-help="ra.st.store">Files and images</h3></div><div class="card-b"><dl class="kv">
         <dt>Where</dt><dd>Object storage, India (Mumbai)</dd>
         <dt>Per store</dt><dd class="mono">store/&lt;store&gt;/…</dd>
         <dt>Links</dt><dd>Signed and store-specific — a link for one store cannot reach another's files</dd>
         <dt>Delivery network</dt><dd>Enabled for public images</dd>
         <dt>In use</dt><dd>84 GB across 7 stores</dd>
       </dl></div></div>
-      <div class="card"><div class="card-h"><h3>Keeping things</h3></div><div class="card-b"><dl class="kv">
+      <div class="card"><div class="card-h"><h3 data-help="ra.st.store">Keeping things</h3></div><div class="card-b"><dl class="kv">
         <dt>Published configurations</dt><dd>Last 20 per store, at least 180 days</dd>
         <dt>Deployment records</dt><dd>2 years</dd>
         <dt>Record of actions</dt><dd>7 years</dd>
@@ -101,13 +101,13 @@
   </section>
 
   <section class="pane" id="s-net">
-    <div class="card mb"><div class="card-h"><h3>DNS and certificate provider</h3></div><div class="card-b"><dl class="kv">
+    <div class="card mb"><div class="card-h"><h3 data-help="ra.st.net">DNS and certificate provider</h3></div><div class="card-b"><dl class="kv">
       <dt>DNS</dt><dd>Managed zone per platform domain; client domains verified by record</dd>
       <dt>Certificates</dt><dd>Automatic issuance and renewal, 30 days before expiry</dd>
       <dt>Verification</dt><dd>DNS record or HTTP challenge, operator's choice per domain</dd>
       <dt>Unknown addresses</dt><dd>Plain response that names nothing</dd>
     </dl></div></div>
-    <div class="card"><div class="card-h"><h3>Certificates</h3></div><div id="cert"></div></div>
+    <div class="card"><div class="card-h"><h3 data-help="ra.st.net">Certificates</h3></div><div id="cert"></div></div>
     <div class="note mt"><svg data-i="globe"></svg><div>
       Certificates are requested and renewed automatically. A renewal that fails raises an alert 14 days before
       expiry, not on the day. An address the platform does not recognise returns a plain page that names nothing.
@@ -115,21 +115,21 @@
   </section>
 
   <section class="pane" id="s-alert">
-    <div class="card"><div class="card-h"><h3>Alerts</h3></div><div id="alerts"></div></div>
+    <div class="card"><div class="card-h"><h3 data-help="ra.st.alert">Alerts</h3></div><div id="alerts"></div></div>
     <p class="hint mt">Every alert has a named owner. Only the ones that affect a live store's customers wake
       somebody; the rest are reviewed once a day.</p>
   </section>
 
   <section class="pane" id="s-maint">
     <div class="grid g2">
-      <div class="card"><div class="card-h"><h3>Maintenance windows</h3></div><div class="card-b"><dl class="kv">
+      <div class="card"><div class="card-h"><h3 data-help="ra.st.maint">Maintenance windows</h3></div><div class="card-b"><dl class="kv">
         <dt>Platform</dt><dd>Sundays 02:00–04:00 IST</dd>
         <dt>Store runtimes</dt><dd>Rolling, no window needed — configuration changes need no restart</dd>
         <dt>Database changes</dt><dd>Announced 72 hours ahead to every store owner</dd>
       </dl></div></div>
-      <div class="card"><div class="card-h"><h3>Release and schema state</h3><span class="sp"></span>
+      <div class="card"><div class="card-h"><h3 data-help="ra.st.maint">Release and schema state</h3><span class="sp"></span>
         <span class="tag ok">all stores current</span></div><div id="rel"></div></div>
-      <div class="card"><div class="card-h"><h3>Release notes</h3></div><div class="card-b small muted stack">
+      <div class="card"><div class="card-h"><h3 data-help="ra.st.maint">Release notes</h3></div><div class="card-b small muted stack">
         <p>A new store platform release brings new features and new settings. Existing stores keep their
           configuration exactly as it is; new settings take their default until someone changes them.</p>
         <p>If a release changes the configuration format, every published configuration is rebuilt and compared
@@ -140,6 +140,10 @@
   </section>
 </main>
 <script src="assets/ra.js"></script>
+<script src="assets/ra-help.js"></script>
+<script src="assets/help/glossary.js"></script>
+<script src="assets/help/shell.js"></script>
+<script src="assets/help/ra-settings.js"></script>
 <script>
 
 document.getElementById("sep").innerHTML = RA.table(

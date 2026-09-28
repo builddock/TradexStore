@@ -7540,7 +7540,7 @@ Stage `1R.1` was added by the SaaS architecture change (`D-227`). It starts afte
 #### T-1R.1-M34-10 · Stage 1R.1 verification: separation, configuration and compiler suites; a running store applies an artefact published by the portal
 - **Status:** REQUIRES_DECISION
 - **Stage / Module:** 1R.1 / M34
-- **Depends on:** T-1R.1-M34-08, T-1R.1-M34-09
+- **Depends on:** T-1R.1-M34-08, T-1R.1-M34-09, T-1R.1-M34-11
 - **Decisions:** D-053
 - **References:** 19 §15; 20 §5; 16 §18; DEC D-053
 - **Description:** Close the stage with an end-to-end proof that the two platforms work together across the artefact boundary only: publish a configuration change from the portal for an existing store, observe the running store apply it within the propagation budget, and confirm the store never called the platform and the platform never touched the store database. Run the separation, configuration and compiler suites in full and record the results.
@@ -7551,6 +7551,25 @@ Stage `1R.1` was added by the SaaS architecture change (`D-227`). It starts afte
 - **Backend impact:** None
 - **Testing requirements:** TS-SAAS-SEP-01…06, TS-SAAS-CFG-01…16, TS-SAAS-PERF-04, TS-SAAS-CAP-06; all green
 - **Acceptance criteria:** (1) A change published in the portal reaches the running store within the D-248 propagation budget. (2) Network and query evidence shows the store made no call to the platform and the platform opened no store database connection. (3) Every listed suite passes with evidence recorded. (4) Rollback from the portal returns the store to the previous version. (5) Results are written to the stage record and STATE.md. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+
+### Stage 1R.1 addition — contextual help engine (D-280)
+
+#### T-1R.1-M34-11 · Root admin contextual help: the ⓘ engine, the page-guide panel, search, the platform glossary and the help icons control
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1R.1 / M34
+- **Depends on:** T-1R.1-M34-09
+- **Decisions:** D-051, D-101
+- **References:** 20-root-admin.md §11 (H-1…H-6); DEC D-280, D-224, D-225; MK-R:all screens; 19 §24.1 gate 14
+- **Description:** Build for the platform portal the help the store workspace already has. An ⓘ next to every heading, tab, section and significant control opens a non-modal side panel on that entry, shifting the main column rather than covering it so the thing being explained stays visible. The ? in the top bar opens the whole-page guide; each tab bar gets an "About this tab" control; the panel carries a search across every entry and a glossary of the platform's own vocabulary, reachable from any dotted-underlined word on a screen; and a Help icons control hides or shows every ⓘ, remembered between visits. Each entry follows the six-part shape of 20 §11.2 — what it is, why it matters, how to read it, what to do, what happens next, worth knowing. Keyboard and screen-reader behaviour matches the store workspace: Esc closes, focus returns, the panel is announced, and every ⓘ has an accessible name.
+- **Files/components:** `root-admin/app/shell/help/` (engine, panel, search, glossary), help content beside each screen
+- **Database impact:** None (content ships with the application)
+- **API impact:** None
+- **Frontend impact:** Every P-R screen and the portal shell
+- **Backend impact:** None
+- **Testing requirements:** TS-FE (panel opens on every ⓘ; no empty panel; every referenced key resolves; search, glossary, back history, icons toggle persistence), TS-A11Y (keyboard, Esc, focus return, accessible names, WCAG 2.2 AA), TS-SAAS-ISO-28 (no help text reveals another client's data)
+- **Acceptance criteria:** (1) Every heading, tab, section and significant control on every P-R screen has an ⓘ that opens a populated entry — no empty panels and no missing keys, verified by clicking every one. (2) Each tab bar has an "About this tab" control that explains the open tab. (3) The ? opens the page guide; search returns results across entries and glossary terms. (4) Every glossary term is reachable from the panel and from its dotted-underlined first mention on a screen. (5) Help icons can be hidden and shown, and the choice is remembered. (6) Keyboard and screen-reader behaviour matches the store workspace and passes WCAG 2.2 AA. (7) No help text names another client or exposes data outside this portal. (8) TASKS.md and STATE.md updated per the continuation protocol.
 - **Evidence:** —
 
 ## Stage 1R.2 — Store configurator, packs, templates & terminology
@@ -7956,7 +7975,7 @@ created from an empty platform, entirely from the portal.
 #### T-1R.3-M34-03 · Stage 1R release gate: provision two stores of different categories from scratch, full TS-SAAS suite, handover documentation and root admin training
 - **Status:** REQUIRES_DECISION
 - **Stage / Module:** 1R.3 / M34
-- **Depends on:** T-1R.3-M35-03, T-1R.3-M35-05, T-1R.3-M35-07, T-1R.3-M34-01, T-1R.3-M34-02, T-1R.3-M35-08, T-1R.3-M34-04, T-1R.3-M34-05, T-1R.3-M35-09
+- **Depends on:** T-1R.3-M35-03, T-1R.3-M35-05, T-1R.3-M35-07, T-1R.3-M34-01, T-1R.3-M34-02, T-1R.3-M35-08, T-1R.3-M34-04, T-1R.3-M34-05, T-1R.3-M35-09, T-1R.3-M34-06
 - **Decisions:** D-053, D-035
 - **References:** SAAS §3 all; 19 §15; 20; DEC D-227, D-235; BP §23.4, §24.2, §24.4
 - **Description:** Close the SaaS work with the end-to-end demonstration the brief describes: from an empty platform, create and deploy two stores of different categories with different templates, branding and features, entirely from the portal; verify each behaves as its own business; verify neither can see the other; verify the performance budget holds with both live. Run the complete TS-SAAS suite. Produce the handover pack for platform operations and train the named platform operators.
@@ -8034,6 +8053,25 @@ created from an empty platform, entirely from the portal.
 - **Backend impact:** ArtefactSigner, key pinning and rotation, SkewMonitor
 - **Testing requirements:** TS-SAAS-DEPLOY-23 (install serves indefinitely with the platform unreachable), TS-SAAS-DEPLOY-24 (artefact for store A refused by store B's install), TS-SAAS-DEPLOY-25 (unsigned or tampered artefact refused), TS-SAAS-DEPLOY-26 (file delivery equals pull delivery), TS-SAAS-REL-04 (skew within the two-schema window), TS-SAAS-ISO-25 (a standalone install shares nothing with any other client)
 - **Acceptance criteria:** (1) A standalone install is provisioned from the unchanged codebase and serves its store in single-store mode with its own database, storage, index and cache. (2) With the platform unreachable it keeps serving indefinitely and only publishing stops. (3) An artefact built for another store, or one whose signature does not verify, is refused with a clear reason. (4) Pull delivery and file delivery produce an identical result from an identical artefact. (5) Version skew beyond one minor release flags the install, and a skewed install still serves correctly within the two-schema window. (6) A silent install shows as "unknown" with its last contact time, never as healthy. (7) Both runbooks exist and have been followed once. (8) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+
+### Stage 1R.3 addition — help content completion (D-280)
+
+#### T-1R.3-M34-06 · Root admin help content completion: an entry for every screen, tab, section and control across P-R01–P-R13, reviewed for accuracy
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1R.3 / M34
+- **Depends on:** T-1R.1-M34-11, T-1R.2-M34-10, T-1R.3-M35-01
+- **Decisions:** D-225
+- **References:** 20-root-admin.md §11 (H-1…H-5); DEC D-280; 19 §24.1 gate 14; MK-R:assets/help/
+- **Description:** Write and review the help content for the finished portal, screen by screen, once the screens are complete enough that the text will not be wrong within a week. Every page gets a guide; every tab, section and control an operator could misread gets its own entry in the six-part shape; the glossary covers the platform's vocabulary. Irreversible and two-person actions say so plainly — decommission, category retirement, changing currency or jurisdiction, changing how stock is identified. Anything gated by an open decision is described as needing a scope decision rather than presented as available. The content is reviewed by somebody who did not write the screen, because the test of an explanation is whether it works for a reader who does not already know the answer.
+- **Files/components:** Help content beside each P-R screen in `root-admin/app/`
+- **Database impact:** None
+- **API impact:** None
+- **Frontend impact:** All P-R screens
+- **Backend impact:** None
+- **Testing requirements:** Automated: every ⓘ opens a populated entry, every referenced key resolves, every glossary term has a definition, coverage report of controls without an entry. Manual: review by a reader who did not build the screen
+- **Acceptance criteria:** (1) Every P-R screen has a page guide and every tab, section and significant control has an entry. (2) The automated coverage check reports zero controls without help and zero unresolved references. (3) Irreversible and two-person actions are flagged in their entries. (4) Capabilities gated by an open decision are described as needing a scope decision, not as available. (5) A reviewer who did not build the screens confirms each entry answers what it is, why it matters and what to do. (6) Sample values are labelled as samples. (7) TASKS.md and STATE.md updated per the continuation protocol.
 - **Evidence:** —
 
 ## Stage 1B.1 — Vendor portal & vendor management

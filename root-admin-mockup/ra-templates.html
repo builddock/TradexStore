@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="assets/ra.css">
 </head>
 <body>
-<div class="ra-internal">INTERNAL PROTOTYPE — <b>Configurable Root Admin</b> — not part of any client store, not linked from the client-facing demo (D-249)</div>
+<div class="ra-internal" data-help="ra.internal">INTERNAL PROTOTYPE — <b>Configurable Root Admin</b> — not part of any client store, not linked from the client-facing demo (D-249)</div>
 <main>
   <div class="ra-head">
     <div><h1>Site templates</h1>
@@ -20,7 +20,7 @@
   </div>
 
   <div class="grid g2">
-    <div class="card"><div class="card-h"><h2>Aurora</h2><span class="sp"></span><span class="tag ok">Published 1.3.0</span></div>
+    <div class="card"><div class="card-h"><h2 data-help="ra.t.may">Aurora</h2><span class="sp"></span><span class="tag ok">Published 1.3.0</span></div>
       <div class="card-b">
         <div class="prev"><div class="pb" style="background:#f6f2ee;color:#3a2f28">STORE NAME</div>
           <div class="pc"><div class="ph" style="background:#e8ddd3"></div>
@@ -41,7 +41,7 @@
           <button class="btn sm" disabled title="In use by 4 stores">Retire</button></div>
       </div></div>
 
-    <div class="card"><div class="card-h"><h2>Forge</h2><span class="sp"></span><span class="tag ok">Published 2.1.0</span></div>
+    <div class="card"><div class="card-h"><h2 data-help="ra.t.may">Forge</h2><span class="sp"></span><span class="tag ok">Published 2.1.0</span></div>
       <div class="card-b">
         <div class="prev"><div class="pb" style="background:#0f1a2b;color:#cfe0ff">STORE NAME</div>
           <div class="pc"><div class="ph" style="background:#dde5f0;height:42px"></div>
@@ -63,13 +63,13 @@
       </div></div>
   </div>
 
-  <div class="card mt"><div class="card-h"><h2>Versions and assignment</h2></div><div id="tbl"></div></div>
+  <div class="card mt"><div class="card-h"><h2 data-help="ra.t.versions">Versions and assignment</h2></div><div id="tbl"></div></div>
 
   <div class="grid g2 mt">
-    <div class="card"><div class="card-h"><h3>What a template may change</h3></div><div class="card-b small muted" style="line-height:2">
+    <div class="card"><div class="card-h"><h3 data-help="ra.t.may">What a template may change</h3></div><div class="card-b small muted" style="line-height:2">
       Layout and section order · component styling and density · typography and spacing · imagery treatment ·
       motion · which presentational sections exist · how a section is arranged on small screens</div></div>
-    <div class="card" style="border-color:rgba(248,113,113,.3)"><div class="card-h"><h3>What a template may never change</h3></div>
+    <div class="card" style="border-color:rgba(248,113,113,.3)"><div class="card-h"><h3 data-help="ra.t.maynot">What a template may never change</h3></div>
       <div class="card-b small muted" style="line-height:2">
       Prices or how they are calculated · stock and availability statements · tax · policies and disclosures ·
       validation · checkout steps and their rules · which features exist · a brand name, colour or wording, which
@@ -83,6 +83,10 @@
   </div></div>
 </main>
 <script src="assets/ra.js"></script>
+<script src="assets/ra-help.js"></script>
+<script src="assets/help/glossary.js"></script>
+<script src="assets/help/shell.js"></script>
+<script src="assets/help/ra-templates.js"></script>
 <script>
 document.getElementById("tbl").innerHTML = RA.table(
   ["Template", "Version", "State", "Suits categories", "Stores", "Accessibility", ""],

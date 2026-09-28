@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="assets/ra.css">
 </head>
 <body>
-<div class="ra-internal">INTERNAL PROTOTYPE — <b>Configurable Root Admin</b> — not part of any client store, not linked from the client-facing demo (D-249)</div>
+<div class="ra-internal" data-help="ra.internal">INTERNAL PROTOTYPE — <b>Configurable Root Admin</b> — not part of any client store, not linked from the client-facing demo (D-249)</div>
 <main data-tabs>
   <div class="ra-head">
     <div><h1>Deployments</h1>
@@ -20,15 +20,15 @@
   </div>
 
   <div class="tabs">
-    <button data-tab="d-run">Running now</button>
-    <button data-tab="d-hist">History</button>
-    <button data-tab="d-art">Published configurations</button>
+    <button data-tab="d-run" data-help="ra.d.run">Running now</button>
+    <button data-tab="d-hist" data-help="ra.d.hist">History</button>
+    <button data-tab="d-art" data-help="ra.d.art">Published configurations</button>
   </div>
 
   <section class="pane" id="d-run">
     <div class="grid g-2-1">
       <div class="card">
-        <div class="card-h"><h2>Oakrow Furniture — first deployment</h2><span class="sp"></span>
+        <div class="card-h"><h2 data-help="ra.d.run">Oakrow Furniture — first deployment</h2><span class="sp"></span>
           <span class="tag acc"><span class="dot"></span>Running · 4 m 12 s</span></div>
         <div class="card-b">
           <div class="pipe">
@@ -57,13 +57,13 @@
         </div>
       </div>
       <div class="stack">
-        <div class="card"><div class="card-h"><h3>If a check fails</h3></div><div class="card-b small muted stack">
+        <div class="card"><div class="card-h"><h3 data-help="ra.d.run">If a check fails</h3></div><div class="card-b small muted stack">
           <p>The store is put back on its previous configuration automatically and keeps serving throughout. The
             failure, the check that failed and its output are shown here and sent to the operator.</p>
           <p>For a first deployment there is no previous configuration, so everything the run created is removed
             and nothing is left behind.</p>
         </div></div>
-        <div class="card"><div class="card-h"><h3>Yesterday's rollback</h3></div><div class="card-b">
+        <div class="card"><div class="card-h"><h3 data-help="ra.d.run">Yesterday's rollback</h3></div><div class="card-b">
           <div class="note bad"><svg data-i="warn"></svg><div><b>Atelier Nine v22</b> — the product page returned
             an error during the check. Rolled back to v21 in 9 seconds. No customer request failed.</div></div>
           <a class="btn sm mt" href="#" data-demo="Prototype: opens the failed run with its log and the failing check.">Open the run</a>
@@ -73,16 +73,16 @@
   </section>
 
   <section class="pane" id="d-hist">
-    <div class="card"><div class="card-h"><h2>All runs</h2><span class="sp"></span>
+    <div class="card"><div class="card-h"><h2 data-help="ra.d.hist">All runs</h2><span class="sp"></span>
       <select style="width:auto"><option>All stores</option><option>Atelier Nine</option><option>Tradex Computers</option></select></div>
       <div id="hist"></div></div>
   </section>
 
   <section class="pane" id="d-art">
-    <div class="card mb"><div class="card-h"><h2>Published configurations</h2><span class="sp"></span>
+    <div class="card mb"><div class="card-h"><h2 data-help="ra.d.art">Published configurations</h2><span class="sp"></span>
       <span class="tag">at least the last 20 per store are kept, so going back is instant</span></div>
       <div id="art"></div></div>
-    <div class="card"><div class="card-h"><h3>Inside a published configuration</h3><span class="sp"></span>
+    <div class="card"><div class="card-h"><h3 data-help="ra.d.art">Inside a published configuration</h3><span class="sp"></span>
       <span class="mono xs dim">config/generated/atelier/v23/</span></div>
       <div class="card-b"><div class="pre">manifest.json            2.1 KB   <span class="c">what this is: store, version, category, template, languages</span>
 config.json             18.4 KB   <span class="c">every setting, already resolved — nothing left to look up</span>
@@ -100,6 +100,10 @@ so a page view costs nothing in database queries to know how this store behaves.
   </section>
 </main>
 <script src="assets/ra.js"></script>
+<script src="assets/ra-help.js"></script>
+<script src="assets/help/glossary.js"></script>
+<script src="assets/help/shell.js"></script>
+<script src="assets/help/ra-deployments.js"></script>
 <script>
 document.getElementById("hist").innerHTML = RA.table(
   ["Started", "Store", "Kind", "Version", "Result", "Duration", "By"],

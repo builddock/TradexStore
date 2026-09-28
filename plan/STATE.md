@@ -27,18 +27,18 @@ Architecture: `19-saas-platform.md` §1–§2 (read first), `20-root-admin.md`. 
 | Current phase | **0 — Discovery & proof** |
 | Current stage | 0 |
 | Current task | — (none in progress). Next eligible: **T-0-M01-03** Discovery questionnaire & next-meeting pack |
-| Last session | 2026-09-28 — SaaS architecture change (D-227, 71 tasks), production-readiness and control-model pass (D-257–D-272, 28 tasks), feature-catalogue and channel pass (D-273–D-278, 6 tasks), **and the feature map** (D-279, `21-feature-map.md`, 1 task): every screen section mapped to the capability that governs it, with the mockup recorded as the all-features-enabled reference store |
+| Last session | 2026-09-28 — SaaS architecture change (D-227, 71 tasks), production-readiness and control-model pass (D-257–D-272, 28 tasks), feature-catalogue and channel pass (D-273–D-278, 6 tasks), the feature map (D-279, `21-feature-map.md`, 1 task), **and contextual help for the root admin** (D-280, 2 tasks): ⓘ on every heading, tab and control, page guides, search and a platform glossary, built and verified in the mockup |
 | Application code present | No (`frontend/`, `backend/`, `root-admin/`, `infra/`, `tests/` not yet created) |
 | UI prototype | Mockup v0.1 (32 screens) at repo root — **awaiting client sign-off (D-049)**. Storefront pages responsive (desktop · tablet · phone) since 2026-09-27; Phase 1 mobile scope is D-223. ERP workspace and vendor portal have contextual help (ⓘ, help panel, glossary) and 8 operational ERP pages have guided workflows since 2026-09-28 (D-224). ERP and vendor pages responsive (tablet · phone, desktop unchanged) since 2026-09-28; Phase 1 scope is D-226 |
-| UI prototype (root admin) | `root-admin-mockup/` — **13 screens P-R01–P-R13**, own assets, `noindex`, **not linked from any client-facing page** (D-249). Verified 2026-09-28 after the second pass: 0 console errors on 14 pages, `scrollWidth == clientWidth` at 390/768/1280/1600 px, all internal links resolve, no inbound or outbound link between the two mockups |
+| UI prototype (root admin) | `root-admin-mockup/` — **13 screens P-R01–P-R13** with contextual help on every screen (ⓘ, page guide, search, 50-term glossary — D-280), own assets, `noindex`, **not linked from any client-facing page** (D-249). Verified 2026-09-28 after the second pass: 0 console errors on 14 pages, `scrollWidth == clientWidth` at 390/768/1280/1600 px, all internal links resolve, no inbound or outbound link between the two mockups |
 | Blocking decisions for Phase 1A start | D-001 (operational core), D-003 (storefront framework), D-004 (staff UI), D-005 (hosting), D-049 (UI sign-off) — see `DECISIONS.md`. The SaaS decisions D-227–D-253 are DECIDED and block nothing |
 
 ## 2. Task counts
 Run `python3 plan/tools/status.py` and paste the summary here at the end of each session.
 
 ```
-Tradex plan status — 464 tasks
-  NOT_STARTED=158 · IN_PROGRESS=0 · BLOCKED=0 · REQUIRES_DECISION=304 · COMPLETED=1 · NOT_APPLICABLE=1
+Tradex plan status — 466 tasks
+  NOT_STARTED=158 · IN_PROGRESS=0 · BLOCKED=0 · REQUIRES_DECISION=306 · COMPLETED=1 · NOT_APPLICABLE=1
 Current (earliest unfinished) stage: 0
 Per stage:
   0       done   1/77   in-progress 0  blocked 0  needs-decision 47
@@ -59,9 +59,9 @@ Per stage:
   1A.15   done   0/13   in-progress 0  blocked 0  needs-decision 10
   1A.16   done   0/13   in-progress 0  blocked 0  needs-decision 9
   1A.17   done   0/21   in-progress 0  blocked 0  needs-decision 17
-  1R.1    done   0/10   in-progress 0  blocked 0  needs-decision 4
+  1R.1    done   0/11   in-progress 0  blocked 0  needs-decision 5
   1R.2    done   0/15   in-progress 0  blocked 0  needs-decision 5
-  1R.3    done   0/14   in-progress 0  blocked 0  needs-decision 9
+  1R.3    done   0/15   in-progress 0  blocked 0  needs-decision 10
   1B.1    done   0/18   in-progress 0  blocked 0  needs-decision 13
   1B.2    done   0/11   in-progress 0  blocked 0  needs-decision 7
   1B.3    done   0/8    in-progress 0  blocked 0  needs-decision 6
@@ -75,13 +75,13 @@ Open decisions blocking the most tasks:
   D-004 blocks 41 — Staff ERP UI: native ERP screens or custom UI (per mockup) — per P-E screen
   D-034 blocks 10 — Service levels & performance targets (availability, RPO, RTO, LCP/INP/CLS, API p95, stock 
   D-053 blocks 10 — Testing tools/frameworks (unit, integration, E2E, load, accessibility, security)
+  D-101 blocks 9 — Which frontend framework builds the custom ERP staff workspace screens (`frontend/workspac
   D-107 blocks 9 — Secrets management and TLS certificate tooling: secrets store, rotation cadence, who may r
   D-035 blocks 8 — Support & maintenance model (hours, severities, response targets, coverage)
   D-001 blocks 8 — Which operational core owns stock, reservations, orders, permissions and integrations?
-  D-101 blocks 8 — Which frontend framework builds the custom ERP staff workspace screens (`frontend/workspac
   D-033 blocks 8 — Object storage & CDN provider
 ```
-`status.py --check`: 0 issues in 464 tasks.
+`status.py --check`: 0 issues in 466 tasks.
 
 ## 3. In-progress tasks
 | Task ID | Started | Done so far | Remaining |
@@ -162,6 +162,7 @@ Open decisions blocking the most tasks:
 | 2026-09-28 | D-277 | Third-party analytics and marketing tags — **OPEN**, listed as CANDIDATE | Owner |
 | 2026-09-28 | D-278 | The store's own API access and outbound webhooks — **OPEN**, listed as CANDIDATE | Owner |
 | 2026-09-28 | D-279 | The client-facing mockup is **the reference store**: a store with every Phase-1 feature enabled, deliberately not feature-gated. `21-feature-map.md` is the authority for which capability governs which element | User |
+| 2026-09-28 | D-280 | The Configurable Root Admin carries the same contextual help as the ERP and vendor portals (D-224): ⓘ on every heading, tab and control with a six-part explanation, a page guide behind the ?, search, a platform glossary reachable from dotted-underlined words, and a help-icons toggle. Help content is part of the definition of done for every P-R screen | User |
 | 2026-09-28 | D-045 | **Superseded by D-227** — multiple businesses on one configurable platform are Phase 1 architecture, not a Phase 3 assessment | User |
 
 ## 7. Database migrations
@@ -202,6 +203,7 @@ Open decisions blocking the most tasks:
 | 2026-09-28 | (mockup help & guided workflows) | `assets/tradex.js`, `assets/tradex.css`, new `assets/help/` (glossary.js, shell.js, 19 page files), all 15 `erp-*.html`, all 4 `vendor-*.html`, `index.html`; `plan/DECISIONS.md` (D-224, D-225, D-174 note), `plan/04b-frontend-workspace-1.md` (rule 23, §2.21–2.23, §3.2 #5), `plan/04c-frontend-workspace-2-vendor.md` (X20), `plan/TASKS.md` (T-1A.3-M24-02, T-1A.16-M24-06, T-1B.1-M14-16; T-1A.16-M24-03 description), `plan/12-phases.md`, `plan/18-master-checklist.md`, `plan/STATE.md` |
 | 2026-09-28 | (SaaS architecture change, D-227) | **New:** `docs/SAAS_ARCHITECTURE_CHANGE.md`, `plan/19-saas-platform.md`, `plan/20-root-admin.md`, `.gitignore`. **Updated:** `CLAUDE.md`; `plan/00-conventions.md` (§1.2–1.3 sources, §2 labels, §4 stages, §5 IDs, §6 M30–M35, §7.3 entities, §8 P-R, §9.1 platform roles, §11 layout, §12 conflicts 11–14), `plan/DECISIONS.md` (D-227–D-256; D-045 superseded), `plan/12-phases.md` (§2, §3, §5 P12–P13, §10), `plan/TASKS.md` (71 new blocks; 11 existing tasks' dependencies; T-3-M03-01 → NOT_APPLICABLE), `plan/14-continuation-protocol.md`, `plan/README.md`, `plan/tools/status.py` (phase 1R; NOT_APPLICABLE check), and end-of-file SaaS sections in `01`, `02`, `03` (§20), `04a` (§12), `04b` (§19), `04c` (§21), `05` (§9), `06` (§9), `07`, `08` (§13), `09` (§14), `10`, `11`, `16` (§20), `17`, `18` |
 | 2026-09-28 | (SaaS second pass, D-257–D-272) | `plan/19-saas-platform.md` (§5.4 surfaces/modules/control, §5.5 bundles, §6.9 completeness gate, §10.1 per-client separation, §10.3 topologies, §10.4 standalone, §17 schema evolution, §18 per-store recovery, §19 money/time, §20 quotas, §21 environments, §22 observability, §23 edge cases, §24 definition of done, §25 performance architecture, new BR-M30-06…10, BR-M31-09…16, BR-M32-05/06, BR-M34-03/04, BR-M35-04/05), `plan/20-root-admin.md` (P-R13, P-R05 tabs, topology note, API groups), `plan/DECISIONS.md` (D-257–D-272; D-233 amended), `plan/00-conventions.md` (MOD-*, BND-*, surfaces, P-R13, bundle and feature-state entities, separation and topology rules), `plan/16-testing.md` (TS-SAAS-REL, TS-SAAS-EDGE), `plan/12-phases.md` (§3 counts, §10.7), `plan/TASKS.md` (28 new blocks; 10 existing tasks gained dependencies), `plan/README.md`, `plan/STATE.md` |
+| 2026-09-28 | (root admin contextual help, D-280) | **New:** `root-admin-mockup/assets/ra-help.js` (engine) and `root-admin-mockup/assets/help/` — `glossary.js` (about 50 platform terms), `shell.js` and one file per screen (13). **Updated:** `root-admin-mockup/assets/ra.css` (help panel, ⓘ, glossary marks, responsive), `assets/ra.js` (? button, help-icons control, shell markers, mount), all 13 `ra-*.html` (script loading, `data-help` on 80 headings, 36 tabs, 5 tiles and the shell), `index.html`, `README.md`. **Plan:** `plan/DECISIONS.md` (D-280), `plan/20-root-admin.md` (§11 help specification, H-1…H-6), `plan/00-conventions.md` §1.3, `plan/12-phases.md` (§3, §10.8 addendum), `plan/TASKS.md` (`T-1R.1-M34-11`, `T-1R.3-M34-06` + 2 gate dependencies), `plan/README.md`, `plan/STATE.md`. **No client-facing file changed** |
 | 2026-09-28 | (feature map, D-279) | **New:** `plan/21-feature-map.md` (screen-by-screen capability map for P-S01–P-S15, P-E01–P-E16, P-V01–P-V05; reverse index; mockup baseline; FM-1…FM-5). **Updated:** `CLAUDE.md`, `plan/00-conventions.md` §1.1, `plan/14-continuation-protocol.md`, `plan/19-saas-platform.md` (§5.3 pointer, §26.5 step 1, `CAP-CATALOG_REVIEW`/`CAP-CATALOG_VERSIONS` added), `plan/DECISIONS.md` (D-279), `plan/README.md`, `plan/12-phases.md` (§3, §10.8 addendum), `plan/TASKS.md` (`T-1A.3-M31-02` + gate dependency), `plan/STATE.md`. **No client-facing file changed** — the mockup stays ungated by design |
 | 2026-09-28 | (feature catalogue and channels, D-273–D-278) | `plan/19-saas-platform.md` (§5.3 the full catalogue, §5.6 channels and providers, §26 implementation contracts, BR-M20-01…05, BR-M31-17/18, TS-SAAS-CHAN/AUTO), `plan/03-database.md` (§12 feature/channel/automation data model, indexes, DB-G13), `plan/DECISIONS.md` (D-273–D-278), `plan/00-conventions.md` (channels, automation capability ids, new entities, DB-G13), `plan/01-tech-stack.md` (§35), `plan/02-architecture.md` (§30), `plan/05-backend.md` (§10), `plan/06-api.md` (§10), `plan/07-auth-roles-permissions.md`, `plan/08-ecommerce.md` (§14), `plan/09-vendor-marketplace.md` (§15), `plan/10-erp.md`, `plan/11-admin.md`, `plan/04b` (§20), `plan/16-testing.md`, `plan/17-dependencies.md`, `plan/18-master-checklist.md`, `plan/12-phases.md` (§3, §10.8), `plan/20-root-admin.md`, `plan/TASKS.md` (6 new blocks, 4 gate dependencies, 1 ID collision corrected), `plan/README.md`, `plan/STATE.md` |
 | 2026-09-28 | (root admin mockup, channels) | `root-admin-mockup/ra-store.html` new **Channels &amp; integrations** tab (channels with provider, sender and template state; automations granted per store; integrations; a live publish check), `ra-capabilities.html` catalogue by area plus a channels-and-automations view, `ra-store-new.html` wizard steps 4 and 5 grant channels and automations, `assets/ra.js` scroll fix, `assets/ra.css` base icon size. **No client-facing file changed** |
@@ -528,5 +530,37 @@ Open decisions blocking the most tasks:
   completeness for "these sections are always present", and an implementer copying a mockup screen knows the
   mockup will not tell them what to gate — the map will.
 - **Tracker:** 463 → **464 tasks**, 0 issues.
+- **Next:** unchanged. "Continue implementation" starts at `T-0-M01-03`.
+
+### 2026-09-28 — contextual help for the Configurable Root Admin (user request)
+- **User instruction:** the same ⓘ explanations the ERP and vendor sections have (D-224), in the root admin, so
+  anyone managing the platform has a clear idea of each section, subsection and item and what it does.
+- **Why it matters here more than anywhere else:** this portal can create, reconfigure, suspend and permanently
+  close a client's entire business. An operator needs to know what a control does *before* using it.
+- **Engine** (`assets/ra-help.js`, self-contained like the rest of the portal — no dependency on the store
+  mockup's help engine, for the same reason as D-228): ⓘ injection from `data-help` attributes, a non-modal side
+  panel that **shifts the main column rather than covering it** so the thing being explained stays visible, an
+  "About this tab" control per tab bar, search across every entry, a glossary reachable from the panel and from
+  dotted-underlined first mentions, back history, Esc to close, and a help-icons toggle remembered between visits.
+- **Content** (`assets/help/`): a glossary of about 50 platform terms — store, category, bundle, template,
+  feature, module, delegation, built configuration, publish, deploy, drift, propagation, separation, hosting,
+  client-hosted install, support access, canary, completeness check, and the rest — plus a shell file and one file
+  per screen. Every entry follows the six-part shape: what it is · why it matters · how to read it · what to do ·
+  what happens next · worth knowing. Written for a manager, not an engineer; irreversible and two-person actions
+  say so; anything gated by an open decision is described as needing a scope decision rather than as available.
+- **Coverage:** 80 headings, 36 tabs, 5 dashboard tiles and the shell elements marked across all 13 screens.
+- **Verification:** every ⓘ on every page clicked in headless Chrome — **517 help targets, 0 missing entries,
+  0 empty panels, 0 console errors**. A 10-check functional test passed: panel opens, glossary lists entries, a
+  term opens, back works, search returns results, Esc closes, icons hide and show, terms are underlined and carry
+  a tooltip. Layout re-verified at 390 px and 1600 px across all 14 pages: no overflow, no scroll problems, no
+  console errors.
+- **Three fixes found while verifying:** the panel padded only the inner body, so the top bar and the
+  support-access banner were cut off — now the whole main column shifts; the panel title showed a focus box from
+  the programmatic focus used for screen-reader announcement; and glossary underlining was marking text inside
+  table headers and headings, which read as noise.
+- **Plan:** `D-280` recorded; `20-root-admin.md` §11 specifies the pattern, the six-part entry shape and rules
+  H-1…H-6, including that help content is part of the definition of done for every root admin screen;
+  `T-1R.1-M34-11` builds the engine and `T-1R.3-M34-06` completes and reviews the content.
+- **Tracker:** 464 → **466 tasks**, 0 issues.
 - **Next:** unchanged. "Continue implementation" starts at `T-0-M01-03`.
 

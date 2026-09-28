@@ -136,9 +136,9 @@ after Phase 0" (D-220).
 | 1A.15 | Reporting & finance export | M09, M10, M11, M18, M19 | WP15. | 13 | 0 | 10 |
 | 1A.16 | Administration completion | M24, M26 | WP05 (operations part), WP17 (monitoring preparation). | 13 | 0 | 9 |
 | 1A.17 | Migration, UAT & launch readiness | M01, M02, M09, M25, M26, M27 | WP16, WP17. | 21 | 0 | 17 |
-| 1R.1 | Root admin foundation & store registry | M34 | WP18. | 10 | 0 | 4 |
+| 1R.1 | Root admin foundation & store registry | M34 | WP18. | 11 | 0 | 5 |
 | 1R.2 | Store configurator, packs, templates & terminology | M32, M33, M34 | WP18. | 15 | 0 | 5 |
-| 1R.3 | Provisioning, deployment, platform operations & 1R release | M34, M35 | WP18. | 14 | 0 | 9 |
+| 1R.3 | Provisioning, deployment, platform operations & 1R release | M34, M35 | WP18. | 15 | 0 | 10 |
 | 1B.1 | Vendor portal & vendor management | M14 | WP13. | 18 | 0 | 13 |
 | 1B.2 | Validated bulk import & supplier feeds | M04, M05, M06, M14, M22, M23 | WP06 (import), WP13 (feeds). | 11 | 0 | 7 |
 | 1B.3 | Guided WhatsApp ordering (L2) & shared inbox | M16, M20, M23 | WP14. | 8 | 0 | 6 |
@@ -146,7 +146,7 @@ after Phase 0" (D-220).
 | 1B.5 | 1B UAT & release | M14, M17, M25, M26 | WP16 (1B UAT), WP17 (1B release). | 4 | 0 | 2 |
 | 2 | Mobile experience & separately approved growth — scope and approve only | M01, M15, M28 | — | 4 | 0 | 4 |
 | 3 | AI & further expansion — scope and approve only | M03, M17, M29 | — | 3 | 0 | 2 |
-| **Total** | | | | **464** | **48** | **304** |
+| **Total** | | | | **466** | **48** | **306** |
 
 > Counts recomputed 2026-09-28 after the SaaS architecture change (`D-227`, 71 tasks) and the
 > production-readiness and control-model second pass (`D-257`–`D-272`, 28 tasks) and the feature-
@@ -2000,3 +2000,11 @@ entities and tasks. `T-1A.3-M31-02` makes it executable: the build fails when a 
 declared capability, and a reconciliation check fails when the code and the map disagree. The same decision
 records that the **client-facing mockup is the reference store** — every feature enabled, deliberately not
 gated — so nobody mistakes the mockup's completeness for "these sections are always present".
+
+**Addendum — contextual help in the root admin (`D-280`).** The portal can create, reconfigure, suspend and close
+a client's whole business, so an operator needs to know what a control does before using it. The help pattern the
+store workspace already carries (`D-224`) now applies to every `P-R` screen: an ⓘ on every heading, tab and
+control opening a six-part explanation, a page guide behind the **?**, search across every entry, a glossary of
+the platform's vocabulary reachable from dotted-underlined words, and a help-icons toggle. Built by
+`T-1R.1-M34-11` and completed by `T-1R.3-M34-06`; help content is part of the definition of done for every root
+admin screen (`20` §11, H-5).

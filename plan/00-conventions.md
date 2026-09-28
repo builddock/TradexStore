@@ -57,7 +57,9 @@ stock authority all stand).
 
 ### 1.3 How the root admin mockup may be used as a source
 Same rules as §1.1: authoritative for screen inventory, layout, sections, fields, actions, states and flows;
-its sample values (store names, counts, colours, pack and template names beyond `VP-electronics`,
+Every screen carries contextual help (ⓘ, page guide, search, glossary) written for the platform
+operator (`D-280`) — part of the specification, not a review aid. Its sample values (store names, counts,
+colours, pack and template names beyond `VP-electronics`,
 `VP-fashion_apparel`, `TPL-forge`, `TPL-aurora`) are **not** requirements. It must never be linked from a
 client-facing page (`D-249`).
 

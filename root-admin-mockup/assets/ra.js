@@ -38,7 +38,8 @@
     up: "M12 19V5M5 12l7-7 7 7",
     copy: "M9 9h11v11H9zM5 15H4V4h11v1",
     eye: "M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7zM12 15a3 3 0 100-6 3 3 0 000 6z",
-    pulse: "M3 12h4l3 8 4-16 3 8h4"
+    pulse: "M3 12h4l3 8 4-16 3 8h4",
+    link: "M10 13a5 5 0 007.5.5l3-3a5 5 0 00-7-7l-1.7 1.7M14 11a5 5 0 00-7.5-.5l-3 3a5 5 0 007 7l1.7-1.7"
   };
   RA.icon = function (n, cls) {
     var d = P[n] || P.info;
@@ -142,7 +143,7 @@
   function navHtml(cur) {
     var h = "";
     RA.nav.forEach(function (g) {
-      h += '<div class="grp">' + g[0] + "</div>";
+      h += '<div class="grp" data-help="ra.nav.' + g[0].toLowerCase() + '">' + g[0] + "</div>";
       g[1].forEach(function (i) {
         var label = i[0];
         h += '<a href="' + i[1] + '"' + (i[1] === cur ? ' class="on" aria-current="page"' : "") + ">" +
@@ -165,10 +166,12 @@
       '<div class="ra-brand"><span class="ra-logo" aria-hidden="true">RA</span>' +
       '<span class="bi"><span class="bt">Configurable Root Admin</span>' +
       '<span class="bs">Commerce platform control plane</span></span></div>' +
-      '<div class="ra-env"><label for="ra-env">Environment</label>' +
+      '<div class="ra-env"><label for="ra-env" data-help="ra.env">Environment</label>' +
       '<select id="ra-env"><option>Production</option><option>Staging</option></select></div>' +
       '<nav class="ra-nav" aria-label="Platform">' + navHtml(cur) + "</nav>" +
-      '<div class="foot">Prototype v0.1 &middot; internal<br>Platform release 1.12.3</div>';
+      '<div class="foot"><button class="btn sm" id="ra-hitoggle" style="width:100%;justify-content:center">' +
+      RA.icon("info") + ' Help icons on/off</button>' +
+      '<div style="margin-top:9px">Prototype v0.1 &middot; internal<br>Platform release 1.12.3</div></div>';
 
     var top = document.createElement("div");
     top.className = "ra-top";
@@ -177,6 +180,8 @@
       '<div class="ra-search">' + RA.icon("search") +
       '<input type="search" placeholder="Search stores, domains, categories, templates…" aria-label="Platform search"></div>' +
       '<span class="sp"></span>' +
+      '<button class="btn sm" id="ra-helpbtn" title="Help for this page" aria-label="Help for this page">' +
+      RA.icon("info") + "</button>" +
       '<button class="btn sm ra-bell" id="ra-bell" title="Notifications" aria-label="Notifications: 3 unread">' +
       RA.icon("bell") + '<span class="cnt">3</span></button>' +
       '<button class="ra-user" id="ra-user" aria-label="Signed in as A. Menon, platform operator">' +
@@ -196,7 +201,7 @@
     if (opts.support) {
       var sup = document.createElement("div");
       sup.className = "ra-support";
-      sup.innerHTML = RA.icon("shield") + "<span><b>Support access active</b> &middot; store <b>" + opts.support +
+      sup.innerHTML = RA.icon("shield") + '<span data-help="ra.support"><b>Support access active</b> &middot; store <b>' + opts.support +
         "</b> &middot; read-only &middot; expires in 3 h 12 min &middot; the store owner has been notified and every " +
         "action is written to their own audit trail.</span>" +
         '<span style="margin-left:auto"><button class="btn sm" data-demo="Support access ended. The grant is closed ' +
@@ -207,12 +212,18 @@
     main.className = "ra-body";
 
     document.getElementById("ra-menu").addEventListener("click", function () { side.classList.toggle("on"); });
+    document.getElementById("ra-helpbtn").addEventListener("click", function (e) {
+      if (e.shiftKey && RA.help) { RA.help.toggleIcons(); return; }
+      if (RA.help) RA.help.open();
+    });
     document.getElementById("ra-bell").addEventListener("click", function () {
       RA.toast("3 notifications: Oakrow deployment running · Paw Post suspended 28 days · 1 instance behind on configuration");
     });
     document.getElementById("ra-user").addEventListener("click", function () {
       RA.toast("Signed in as A. Menon · Platform operator · MFA verified 41 minutes ago");
     });
+    var hit = document.getElementById("ra-hitoggle");
+    if (hit) hit.addEventListener("click", function () { if (RA.help) RA.help.toggleIcons(); });
     document.getElementById("ra-env").addEventListener("change", function () {
       RA.toast("Prototype: the environment switcher is not wired to sample data.");
     });
@@ -341,6 +352,7 @@
     RA.wireOpeners();
     RA.wireDemo();
     document.querySelectorAll("[data-tabs]").forEach(function (h) { RA.tabs(h); });
+    if (RA.help && RA.help.mount) RA.help.mount();
     RA.toTop();
     document.querySelectorAll("svg[data-i]").forEach(function (s) {
       s.outerHTML = RA.icon(s.dataset.i);

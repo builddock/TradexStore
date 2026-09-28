@@ -1,0 +1,58 @@
+/* Root Admin help · Platform settings & health (P-R12). Source: plan/19-saas-platform.md §17–§22, plan/20 §6. */
+RA.help.add({
+  "page": { t: "Platform settings and health", k: "Page guide",
+    what: "How the platform itself is set up, and how it is behaving right now.",
+    why: "Everything here affects every client. It is the one part of the portal where a careless change is not limited to one store.",
+    read: ["<b>General</b> is the platform's own identity and the defaults every new store starts from.",
+      "<b>Fleet health</b> is the live picture: which servers are reporting, which stores are current, how long changes take to land.",
+      "<b>Storage & keeping</b> covers per-client separation, keys and how long things are kept.",
+      "<b>Addresses & certificates</b>, <b>Alerts</b> and <b>Maintenance</b> are the operational settings."],
+    do: ["Check fleet health first thing. Drift and a silent server are the two faults clients notice before you do.",
+      "Before a platform release, read the release and schema state table — a client-hosted install one version behind is expected; two is not."],
+    notes: ["None of this is visible to any store."],
+    map: [["ra.st.gen", "Platform and defaults"], ["ra.st.health", "Fleet health"], ["ra.st.store", "Separation, keys and retention"],
+      ["ra.st.net", "Addresses and certificates"], ["ra.st.alert", "Alerts"], ["ra.st.maint", "Maintenance and releases"]],
+    rel: ["g.fleet", "g.drift", "g.separation", "g.release"] },
+
+  "ra.st.gen": { t: "General", k: "Tab",
+    what: "The platform's own release and addresses, and the defaults every new store starts from.",
+    read: ["<b>Data separation</b> default is the important line: every new client gets their own database, image store, search index and cache."],
+    rel: ["g.separation", "g.hosting"] },
+
+  "ra.st.health": { t: "Fleet health", k: "Tab",
+    what: "Which servers are running, what each is serving, and whether any store has fallen behind.",
+    read: ["<b>Runtimes reporting</b> below the total means a server has gone quiet. It may be dead, or serving customers and unable to report — both need looking at.",
+      "A runtime row showing an old version for one store is drift: real customers on that server are seeing stale settings.",
+      "<b>Typical time to apply a change</b> is the number clients feel. The budget is thirty seconds."],
+    do: ["Ask a drifted server to refresh. If it does not respond, restart it.",
+      "Every alert here has a named owner. If one does not, that is the fault to fix first."],
+    rel: ["g.drift", "g.fleet", "g.propagation"] },
+
+  "ra.st.store": { t: "Storage & keeping", k: "Tab",
+    what: "Where each client's files live, which resources are separated per client, the secret scopes and signing keys, and how long everything is kept.",
+    read: ["<b>Per-client separation</b> lists, for every client, their own database, image container, search index and cache namespace.",
+      "<b>Secret scopes and signing keys</b>: one per client for their credentials, plus the platform key every configuration is signed with."],
+    notes: ["Every record also carries which store it belongs to, as a second layer, so even an operational mistake cannot mix two clients' data.",
+      "Deleted stores are destroyed after the retention period; backups hold the data until they age out."],
+    rel: ["g.separation", "g.artefact", "g.retention"] },
+
+  "ra.st.net": { t: "Addresses & certificates", k: "Tab",
+    what: "How client web addresses are verified and how their security certificates are issued and renewed.",
+    notes: ["Renewal is automatic and alerted fourteen days before expiry, not on the day.",
+      "An address the platform does not recognise returns a plain page that names nothing."],
+    rel: ["g.sender"] },
+
+  "ra.st.alert": { t: "Alerts & notifications", k: "Tab",
+    what: "What raises an alert, who is told, and whether it wakes somebody or waits for the daily review.",
+    why: "An alert with no owner is not an alert. This table is where that is prevented.",
+    read: ["Only faults that affect a live store's customers wake anybody. The rest are reviewed once a day."],
+    rel: ["g.drift"] },
+
+  "ra.st.maint": { t: "Maintenance & release", k: "Tab",
+    what: "Maintenance windows, and the state of the platform release across every client.",
+    read: ["<b>Release and schema state</b> shows each client's platform release, database schema and applied configuration. All three should match the fleet.",
+      "A client-hosted install one release behind is expected and flagged; two is not."],
+    notes: ["Configuration changes need no restart, so store runtimes have no maintenance window.",
+      "When a release changes the shape of the configuration, every store's built configuration is rebuilt and checked before the release is allowed out."],
+    rel: ["g.release", "g.standalone", "g.artefact"] }
+});

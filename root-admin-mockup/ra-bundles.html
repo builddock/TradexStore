@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="assets/ra.css">
 </head>
 <body>
-<div class="ra-internal">INTERNAL PROTOTYPE — <b>Configurable Root Admin</b> — not part of any client store, not linked from the client-facing demo (D-249)</div>
+<div class="ra-internal" data-help="ra.internal">INTERNAL PROTOTYPE — <b>Configurable Root Admin</b> — not part of any client store, not linked from the client-facing demo (D-249)</div>
 <main>
   <div class="ra-head">
     <div><h1>Bundles</h1>
@@ -32,11 +32,11 @@
     <div class="kpi ok"><div class="k">Composition conflicts</div><div class="v">0</div><div class="d">across published categories</div></div>
   </div>
 
-  <div class="card"><div class="card-h"><h2>Bundle library</h2><span class="sp"></span>
+  <div class="card"><div class="card-h"><h2 data-help="ra.b.table">Bundle library</h2><span class="sp"></span>
     <select style="width:auto"><option>All states</option><option>Published</option><option>Draft</option><option>Deprecated</option></select></div>
     <div id="tbl"></div></div>
 
-  <div class="card mt"><div class="card-h"><h2>Worked example — how Fashion &amp; Apparel is assembled</h2></div>
+  <div class="card mt"><div class="card-h"><h2 data-help="ra.b.example">Worked example — how Fashion &amp; Apparel is assembled</h2></div>
     <div class="card-b">
       <div class="pipe">
         <div class="st done"><span class="ic">1</span><div><div class="sn">Base retail profile</div>
@@ -59,7 +59,7 @@
       </div></div>
     </div></div>
 
-  <div class="card mt"><div class="card-h"><h2>Completeness — what must be answered before a category can be published</h2>
+  <div class="card mt"><div class="card-h"><h2 data-help="ra.b.complete">Completeness — what must be answered before a category can be published</h2>
     <span class="sp"></span><span class="tag ok">25 of 25 answered for Fashion &amp; Apparel</span></div>
     <div id="cmpl"></div>
     <div class="card-b" style="border-top:1px solid var(--ra-line)">
@@ -86,6 +86,10 @@
   </div>
 </main>
 <script src="assets/ra.js"></script>
+<script src="assets/ra-help.js"></script>
+<script src="assets/help/glossary.js"></script>
+<script src="assets/help/shell.js"></script>
+<script src="assets/help/ra-bundles.js"></script>
 <script>
 document.getElementById("tbl").innerHTML = RA.table(
   ["Bundle", "Version", "State", "What it gives a category", "Used by", ""],

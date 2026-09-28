@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="assets/ra.css">
 </head>
 <body>
-<div class="ra-internal">INTERNAL PROTOTYPE — <b>Configurable Root Admin</b> — not part of any client store, not linked from the client-facing demo (D-249)</div>
+<div class="ra-internal" data-help="ra.internal">INTERNAL PROTOTYPE — <b>Configurable Root Admin</b> — not part of any client store, not linked from the client-facing demo (D-249)</div>
 <main>
   <div class="ra-head">
     <div><h1>Platform dashboard</h1>
@@ -21,16 +21,16 @@
   </div>
 
   <div class="grid g5">
-    <div class="kpi ok"><div class="k">Live stores</div><div class="v">5</div><div class="d">across 5 categories</div></div>
-    <div class="kpi"><div class="k">Draft</div><div class="v">1</div><div class="d">not deployed yet</div></div>
-    <div class="kpi warn"><div class="k">Suspended</div><div class="v">1</div><div class="d">28 days</div></div>
-    <div class="kpi"><div class="k">Deployments today</div><div class="v">4</div><div class="d">1 running · 3 succeeded</div></div>
-    <div class="kpi bad"><div class="k">Configuration drift</div><div class="v">1</div><div class="d">1 instance behind</div></div>
+    <div class="kpi ok"><div class="k" data-help="ra.kpi.live">Live stores</div><div class="v">5</div><div class="d">across 5 categories</div></div>
+    <div class="kpi"><div class="k" data-help="ra.kpi.draft">Draft</div><div class="v">1</div><div class="d">not deployed yet</div></div>
+    <div class="kpi warn"><div class="k" data-help="ra.kpi.suspended">Suspended</div><div class="v">1</div><div class="d">28 days</div></div>
+    <div class="kpi"><div class="k" data-help="ra.kpi.deploys">Deployments today</div><div class="v">4</div><div class="d">1 running · 3 succeeded</div></div>
+    <div class="kpi bad"><div class="k" data-help="ra.kpi.drift">Configuration drift</div><div class="v">1</div><div class="d">1 instance behind</div></div>
   </div>
 
   <div class="grid g-2-1 mt">
     <div class="card">
-      <div class="card-h"><h2>Needs an operator</h2><span class="sp"></span>
+      <div class="card-h"><h2 data-help="ra.attention">Needs an operator</h2><span class="sp"></span>
         <span class="tag warn">4 items</span></div>
       <div class="card-b stack">
         <div class="note bad"><svg data-i="warn"></svg><div>
@@ -59,7 +59,7 @@
 
     <div class="stack">
       <div class="card">
-        <div class="card-h"><h3>Platform health</h3></div>
+        <div class="card-h"><h3 data-help="ra.health">Platform health</h3></div>
         <div class="card-b stack">
           <div><div class="row small"><span>Runtime instances reporting</span><span class="sp"></span><b>11 of 12</b></div>
             <div class="bar warn mt-s"><i style="width:92%"></i></div></div>
@@ -73,7 +73,7 @@
         </div>
       </div>
       <div class="card">
-        <div class="card-h"><h3>Categories in use</h3></div>
+        <div class="card-h"><h3 data-help="ra.categoriesinuse">Categories in use</h3></div>
         <div class="card-b small stack" style="gap:9px">
           <div class="row"><span>Electronics</span><span class="sp"></span><span class="dim">1 store</span></div>
           <div class="row"><span>Agriculture &amp; Gardening</span><span class="sp"></span><span class="dim">1 store</span></div>
@@ -89,18 +89,22 @@
   </div>
 
   <div class="card mt">
-    <div class="card-h"><h2>Recent deployments</h2><span class="sp"></span>
+    <div class="card-h"><h2 data-help="ra.recentdeploy">Recent deployments</h2><span class="sp"></span>
       <a class="btn sm" href="ra-deployments.html">All deployments</a></div>
     <div id="dep"></div>
   </div>
 
   <div class="card mt">
-    <div class="card-h"><h2>Recent platform activity</h2><span class="sp"></span>
+    <div class="card-h"><h2 data-help="ra.recentaudit">Recent platform activity</h2><span class="sp"></span>
       <a class="btn sm" href="ra-admin.html#audit">Full audit trail</a></div>
     <div id="aud"></div>
   </div>
 </main>
 <script src="assets/ra.js"></script>
+<script src="assets/ra-help.js"></script>
+<script src="assets/help/glossary.js"></script>
+<script src="assets/help/shell.js"></script>
+<script src="assets/help/ra-dashboard.js"></script>
 <script>
 document.getElementById("dep").innerHTML = RA.table(
   ["Store", "Kind", "Version", "Result", "Duration", "By", "When"],

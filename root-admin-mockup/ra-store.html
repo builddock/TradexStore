@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="assets/ra.css">
 </head>
 <body>
-<div class="ra-internal">INTERNAL PROTOTYPE — <b>Configurable Root Admin</b> — not part of any client store, not linked from the client-facing demo (D-249)</div>
+<div class="ra-internal" data-help="ra.internal">INTERNAL PROTOTYPE — <b>Configurable Root Admin</b> — not part of any client store, not linked from the client-facing demo (D-249)</div>
 <main data-tabs>
   <div class="crumb"><a href="ra-stores.html">Stores</a> › Atelier Nine</div>
   <div class="ra-head">
@@ -27,22 +27,22 @@
   </div>
 
   <div class="tabs">
-    <button data-tab="t-ov">Overview</button>
-    <button data-tab="t-cat">Category &amp; structure</button>
-    <button data-tab="t-tpl">Template</button>
-    <button data-tab="t-brand">Branding</button>
-    <button data-tab="t-feat">Features</button>
-    <button data-tab="t-chan">Channels &amp; integrations</button>
-    <button data-tab="t-set">Settings</button>
-    <button data-tab="t-term">Wording</button>
-    <button data-tab="t-dom">Domains &amp; certificates</button>
-    <button data-tab="t-env">Environments &amp; hosting</button>
-    <button data-tab="t-ver">Configuration versions</button>
-    <button data-tab="t-dep">Deployments</button>
-    <button data-tab="t-users">Store users</button>
-    <button data-tab="t-sup">Support access</button>
-    <button data-tab="t-aud">Audit</button>
-    <button data-tab="t-dan">Danger zone</button>
+    <button data-tab="t-ov" data-help="ra.s.ov">Overview</button>
+    <button data-tab="t-cat" data-help="ra.s.cat">Category &amp; structure</button>
+    <button data-tab="t-tpl" data-help="ra.s.tpl">Template</button>
+    <button data-tab="t-brand" data-help="ra.s.brand">Branding</button>
+    <button data-tab="t-feat" data-help="ra.s.feat">Features</button>
+    <button data-tab="t-chan" data-help="ra.s.chan">Channels &amp; integrations</button>
+    <button data-tab="t-set" data-help="ra.s.set">Settings</button>
+    <button data-tab="t-term" data-help="ra.s.term">Wording</button>
+    <button data-tab="t-dom" data-help="ra.s.dom">Domains &amp; certificates</button>
+    <button data-tab="t-env" data-help="ra.s.env">Environments &amp; hosting</button>
+    <button data-tab="t-ver" data-help="ra.s.ver">Configuration versions</button>
+    <button data-tab="t-dep" data-help="ra.s.dep">Deployments</button>
+    <button data-tab="t-users" data-help="ra.s.users">Store users</button>
+    <button data-tab="t-sup" data-help="ra.s.sup">Support access</button>
+    <button data-tab="t-aud" data-help="ra.s.aud">Audit</button>
+    <button data-tab="t-dan" data-help="ra.s.dan">Danger zone</button>
   </div>
 
   <section class="pane" id="t-ov">
@@ -53,7 +53,7 @@
       <div class="kpi"><div class="k">Features on</div><div class="v">38</div><div class="d">of 86 available · 6 locked</div></div>
     </div>
     <div class="grid g2">
-      <div class="card"><div class="card-h"><h3>Identity</h3></div><div class="card-b"><dl class="kv">
+      <div class="card"><div class="card-h"><h3 data-help="ra.s.ov">Identity</h3></div><div class="card-b"><dl class="kv">
         <dt>Store name</dt><dd>Atelier Nine</dd>
         <dt>Key</dt><dd class="mono">atelier</dd>
         <dt>Legal entity</dt><dd>Atelier Nine Retail Pvt Ltd</dd>
@@ -63,7 +63,7 @@
         <dt>Storage</dt><dd class="mono">store/atelier/…</dd>
         <dt>Owner contact</dt><dd>hello@ateliernine.example.com</dd>
       </dl></div></div>
-      <div class="card"><div class="card-h"><h3>Applied configuration</h3></div><div class="card-b">
+      <div class="card"><div class="card-h"><h3 data-help="ra.s.ov">Applied configuration</h3></div><div class="card-b">
         <div class="pre"><span class="c">// what every runtime instance is serving right now</span>
 {
   <span class="k">"version"</span>: <span class="n">23</span>,
@@ -82,7 +82,7 @@
 
   <section class="pane" id="t-cat">
     <div class="grid g-2-1">
-      <div class="card"><div class="card-h"><h3>Fashion &amp; Apparel 1.1.0</h3><span class="sp"></span>
+      <div class="card"><div class="card-h"><h3 data-help="ra.s.cat">Fashion &amp; Apparel 1.1.0</h3><span class="sp"></span>
         <a class="btn sm" href="ra-packs.html">Open category</a>
         <button class="btn sm" data-demo="Prototype: shows exactly what would change in this store if it moved to 1.2.0, before anything happens.">Migrate to 1.2.0</button></div>
         <div class="card-b"><dl class="kv">
@@ -95,7 +95,7 @@
           <dt>Return classes</dt><dd>Standard 15 days · Exchange only · Final sale · Made to order</dd>
           <dt>Starting content applied</dt><dd>6 seed sets · 24 Sep 2026</dd>
         </dl></div></div>
-      <div class="card"><div class="card-h"><h3>Category version history</h3></div><div class="card-b small stack" style="gap:10px">
+      <div class="card"><div class="card-h"><h3 data-help="ra.s.cat">Category version history</h3></div><div class="card-b small stack" style="gap:10px">
         <div><b>1.1.0</b> <span class="tag ok">in use</span><div class="dim xs">Migrated 24 Sep 2026 · added exchange policy class</div></div>
         <div><b>1.0.2</b><div class="dim xs">Used 12 Aug – 24 Sep 2026</div></div>
         <div><b>1.0.0</b><div class="dim xs">Used from store creation</div></div>
@@ -116,7 +116,7 @@
           <dt>Compatible with</dt><dd>Fashion, Home, Beauty, Handmade, Luxury</dd>
           <dt>Accessibility</dt><dd>WCAG 2.2 AA · verified 22 Sep 2026</dd></dl>
       </div></div>
-      <div class="card"><div class="card-h"><h3>Switch template</h3></div><div class="card-b">
+      <div class="card"><div class="card-h"><h3 data-help="ra.s.tpl">Switch template</h3></div><div class="card-b">
         <p class="small muted">A template changes only how the store looks. Prices, stock, policies and checkout
           behave identically, so switching needs no data migration and can be reversed.</p>
         <div class="stack mt">
@@ -129,7 +129,7 @@
 
   <section class="pane" id="t-brand">
     <div class="grid g-2-1">
-      <div class="card"><div class="card-h"><h3>Branding</h3><span class="sp"></span>
+      <div class="card"><div class="card-h"><h3 data-help="ra.s.brand">Branding</h3><span class="sp"></span>
         <button class="btn sm" data-demo="Prototype: opens the branding editor with logo upload and colour derivation.">Edit</button></div>
         <div class="card-b">
           <div class="grid g2">
@@ -146,7 +146,7 @@
             <dt>Corners</dt><dd>Soft (10 px)</dd><dt>Density</dt><dd>Comfortable</dd>
             <dt>Motion</dt><dd>Standard · reduced-motion always respected</dd></dl>
         </div></div>
-      <div class="card"><div class="card-h"><h3>Contrast</h3></div><div class="card-b">
+      <div class="card"><div class="card-h"><h3 data-help="ra.s.brand">Contrast</h3></div><div class="card-b">
         <div class="note" style="border-color:rgba(52,211,153,.35);background:var(--ra-ok-bg);color:#bdf0d8">
           <svg data-i="check"></svg><div><b>34 of 34 pairs pass WCAG 2.2 AA.</b></div></div>
         <p class="hint mt">A palette that fails cannot be published. The report names each failing pair and the
@@ -162,7 +162,7 @@
       <button class="btn sm" data-demo="Prototype: opens the editor with dependency resolution and open-work checks.">Edit</button>
     </div></div>
 
-    <div class="card mb"><div class="card-h"><h3>Applications this store has</h3></div>
+    <div class="card mb"><div class="card-h"><h3 data-help="ra.s.feat.apps">Applications this store has</h3></div>
       <div class="card-b grid g3">
         <div class="note"><svg data-i="store"></svg><div><b>Customer website</b>
           <p class="hint">On · ateliernine.example.com</p></div></div>
@@ -176,11 +176,11 @@
           it, no sign-in page, no code is built for it, and nobody inside the store sees a trace of it.</p></div>
     </div>
 
-    <div class="card mb"><div class="card-h"><h3>Modules</h3><span class="sp"></span>
+    <div class="card mb"><div class="card-h"><h3 data-help="ra.s.feat.mods">Modules</h3><span class="sp"></span>
       <span class="tag">category modules come from Fashion &amp; Apparel</span></div>
       <div id="mods"></div></div>
 
-    <div class="card mb"><div class="card-h"><h3>Features this store's administrator may manage</h3><span class="sp"></span>
+    <div class="card mb"><div class="card-h"><h3 data-help="ra.s.feat.deleg">Features this store's administrator may manage</h3><span class="sp"></span>
       <span class="tag acc">9 delegated</span></div>
       <div id="deleg"></div>
       <div class="card-b" style="border-top:1px solid var(--ra-line)">
@@ -202,7 +202,7 @@
       on — it would look configured and silently fail to send.
     </div></div>
 
-    <div class="card mb"><div class="card-h"><h3>Messaging channels</h3><span class="sp"></span>
+    <div class="card mb"><div class="card-h"><h3 data-help="ra.s.chan.list">Messaging channels</h3><span class="sp"></span>
       <button class="btn sm" data-demo="Prototype: opens the channel editor — provider account, sender identity, verification and templates.">Edit</button></div>
       <div id="chans"></div>
       <div class="card-b" style="border-top:1px solid var(--ra-line)">
@@ -210,7 +210,7 @@
           together, so a customer cannot be messaged five times by five different features. That is enforced in
           one place, not in each channel.</p></div></div>
 
-    <div class="card mb"><div class="card-h"><h3>Automations granted to this store</h3><span class="sp"></span>
+    <div class="card mb"><div class="card-h"><h3 data-help="ra.s.chan.auto">Automations granted to this store</h3><span class="sp"></span>
       <span class="tag acc">11 of 22 granted · 4 the store can manage</span></div>
       <div id="autos"></div>
       <div class="card-b" style="border-top:1px solid var(--ra-line)">
@@ -218,9 +218,9 @@
           report or send a message. An automation that sends a message cannot be granted without its channel and
           its approved template.</p></div></div>
 
-    <div class="card mb"><div class="card-h"><h3>Integrations</h3></div><div id="integ"></div></div>
+    <div class="card mb"><div class="card-h"><h3 data-help="ra.s.chan.integ">Integrations</h3></div><div id="integ"></div></div>
 
-    <div class="card"><div class="card-h"><h3>Publish check</h3><span class="sp"></span>
+    <div class="card"><div class="card-h"><h3 data-help="ra.s.chan.check">Publish check</h3><span class="sp"></span>
       <span class="tag warn">2 items to fix</span></div>
       <div class="card-b stack">
         <div class="note warn"><svg data-i="warn"></svg><div><b>SMS is on but the sender id is not registered.</b>
@@ -241,7 +241,7 @@
   </section>
 
   <section class="pane" id="t-term">
-    <div class="card"><div class="card-h"><h3>Words this store uses</h3><span class="sp"></span>
+    <div class="card"><div class="card-h"><h3 data-help="ra.s.term">Words this store uses</h3><span class="sp"></span>
       <a class="btn sm" href="ra-terminology.html">Open wording editor</a></div>
       <div id="terms"></div></div>
     <p class="hint mt">Every screen, email, document and export uses these words. Changing one here changes it
@@ -249,10 +249,10 @@
   </section>
 
   <section class="pane" id="t-dom">
-    <div class="card"><div class="card-h"><h3>Addresses</h3><span class="sp"></span>
+    <div class="card"><div class="card-h"><h3 data-help="ra.s.dom">Addresses</h3><span class="sp"></span>
       <button class="btn sm" data-demo="Prototype: add a domain, then verify it by DNS record or file.">Add domain</button></div>
       <div id="doms"></div></div>
-    <div class="card mt"><div class="card-h"><h3>Email sending</h3></div><div id="mail"></div></div>
+    <div class="card mt"><div class="card-h"><h3 data-help="ra.s.dom">Email sending</h3></div><div id="mail"></div></div>
     <div class="note mt"><svg data-i="globe"></svg><div>
       An address that is not verified never serves the store. A request to an address the platform does not know
       returns a plain page that names nothing.
@@ -262,7 +262,7 @@
   <section class="pane" id="t-env">
     <div class="grid g-2-1">
       <div class="stack">
-        <div class="card"><div class="card-h"><h3>Hosting</h3><span class="sp"></span>
+        <div class="card"><div class="card-h"><h3 data-help="ra.s.env">Hosting</h3><span class="sp"></span>
           <button class="btn sm" data-demo="Prototype: changing hosting is a scheduled deployment, not a configuration change.">Change</button></div>
           <div class="card-b"><dl class="kv">
             <dt>Placement</dt><dd><b>Separated client on a shared server</b><div class="hint">One server runs several stores; this client's data is not mixed with anyone else's.</div></dd>
@@ -276,7 +276,7 @@
             <dt>Platform release</dt><dd>1.12.3 · current</dd>
             <dt>Database schema</dt><dd>1.12.3 · matches the fleet</dd>
           </dl></div></div>
-        <div class="card"><div class="card-h"><h3>Other placements available</h3></div>
+        <div class="card"><div class="card-h"><h3 data-help="ra.s.env">Other placements available</h3></div>
           <div class="card-b stack" style="gap:10px">
             <div class="note"><svg data-i="box"></svg><div><b>Dedicated runtime</b>
               <p class="hint">This store gets its own processes and hosts, still managed from here. For performance isolation or a separate release cadence.</p></div></div>
@@ -287,8 +287,8 @@
           </div></div>
       </div>
       <div class="stack">
-        <div class="card"><div class="card-h"><h3>Environments</h3></div><div id="envs"></div></div>
-        <div class="card"><div class="card-h"><h3>Promote staging → production</h3></div><div class="card-b">
+        <div class="card"><div class="card-h"><h3 data-help="ra.s.env">Environments</h3></div><div id="envs"></div></div>
+        <div class="card"><div class="card-h"><h3 data-help="ra.s.env">Promote staging → production</h3></div><div class="card-b">
           <p class="small muted">Copies the values of a published staging configuration into the production
             draft. It then goes through the usual checks and difference review before anything is published.</p>
           <div class="note mt"><svg data-i="info"></svg><div><b>Never copied:</b> addresses and certificates,
@@ -301,7 +301,7 @@
   </section>
 
   <section class="pane" id="t-ver">
-    <div class="card"><div class="card-h"><h3>Configuration versions</h3><span class="sp"></span>
+    <div class="card"><div class="card-h"><h3 data-help="ra.s.ver">Configuration versions</h3><span class="sp"></span>
       <button class="btn sm" data-open="dlg-diff">Compare v22 → v23</button></div>
       <div id="vers"></div></div>
     <p class="hint mt">Versions are never edited or deleted. Going back is publishing an earlier version again,
@@ -309,7 +309,7 @@
   </section>
 
   <section class="pane" id="t-dep">
-    <div class="card"><div class="card-h"><h3>Deployments</h3><span class="sp"></span>
+    <div class="card"><div class="card-h"><h3 data-help="ra.s.dep">Deployments</h3><span class="sp"></span>
       <a class="btn sm" href="ra-deployments.html">All runs</a></div><div id="deps"></div></div>
   </section>
 
@@ -322,7 +322,7 @@
   </section>
 
   <section class="pane" id="t-sup">
-    <div class="card mb"><div class="card-h"><h3>Support access</h3><span class="sp"></span>
+    <div class="card mb"><div class="card-h"><h3 data-help="ra.s.sup">Support access</h3><span class="sp"></span>
       <button class="btn sm" data-open="dlg-sup">Request access</button></div>
       <div class="card-b"><p class="small muted">Nobody on this platform can see this store's data without an
         approved, time-limited grant. The store owner is told when one starts, and every action appears in the
@@ -331,7 +331,7 @@
   </section>
 
   <section class="pane" id="t-aud">
-    <div class="card"><div class="card-h"><h3>Platform actions on this store</h3></div><div id="aud"></div></div>
+    <div class="card"><div class="card-h"><h3 data-help="ra.s.aud">Platform actions on this store</h3></div><div id="aud"></div></div>
   </section>
 
   <section class="pane" id="t-dan">
@@ -392,6 +392,10 @@
   </div>
 </main>
 <script src="assets/ra.js"></script>
+<script src="assets/ra-help.js"></script>
+<script src="assets/help/glossary.js"></script>
+<script src="assets/help/shell.js"></script>
+<script src="assets/help/ra-store.js"></script>
 <script>
 
 document.getElementById("mods").innerHTML = RA.table(

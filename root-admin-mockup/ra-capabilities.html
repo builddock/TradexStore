@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="assets/ra.css">
 </head>
 <body>
-<div class="ra-internal">INTERNAL PROTOTYPE — <b>Configurable Root Admin</b> — not part of any client store, not linked from the client-facing demo (D-249)</div>
+<div class="ra-internal" data-help="ra.internal">INTERNAL PROTOTYPE — <b>Configurable Root Admin</b> — not part of any client store, not linked from the client-facing demo (D-249)</div>
 <main data-tabs>
   <div class="ra-head">
     <div><h1>Capabilities</h1>
@@ -20,14 +20,14 @@
   </div>
 
   <div class="tabs">
-    <button data-tab="c-reg">Catalogue</button>
-    <button data-tab="c-chan">Channels &amp; automations</button>
-    <button data-tab="c-mat">Store matrix</button>
-    <button data-tab="c-rules">How enforcement works</button>
+    <button data-tab="c-reg" data-help="ra.c.reg">Catalogue</button>
+    <button data-tab="c-chan" data-help="ra.c.chan">Channels &amp; automations</button>
+    <button data-tab="c-mat" data-help="ra.c.mat">Store matrix</button>
+    <button data-tab="c-rules" data-help="ra.c.rules">How enforcement works</button>
   </div>
 
   <section class="pane" id="c-reg">
-    <div class="card"><div class="card-h"><h2>About 230 features across 18 areas</h2><span class="sp"></span>
+    <div class="card"><div class="card-h"><h2 data-help="ra.c.reg">About 230 features across 18 areas</h2><span class="sp"></span>
       <select style="width:auto"><option>All areas</option><option>Catalog</option><option>Pricing</option>
         <option>Inventory</option><option>Orders</option><option>Fulfilment</option><option>Returns</option>
         <option>Customers</option><option>Vendor</option><option>Storefront</option></select></div>
@@ -40,8 +40,8 @@
       its own switch. Granting a channel also requires a provider account, a verified sender and approved
       templates — the store configuration cannot be published until those exist.
     </div></div>
-    <div class="card mb"><div class="card-h"><h3>Communication channels</h3></div><div id="chlist"></div></div>
-    <div class="card"><div class="card-h"><h3>Automations — one switch each</h3></div><div id="autolist"></div></div>
+    <div class="card mb"><div class="card-h"><h3 data-help="ra.c.chan">Communication channels</h3></div><div id="chlist"></div></div>
+    <div class="card"><div class="card-h"><h3 data-help="ra.c.chan">Automations — one switch each</h3></div><div id="autolist"></div></div>
   </section>
 
   <section class="pane" id="c-mat">
@@ -52,7 +52,7 @@
 
   <section class="pane" id="c-rules">
     <div class="grid g2">
-      <div class="card"><div class="card-h"><h3>Six places a switched-off capability is enforced</h3></div>
+      <div class="card"><div class="card-h"><h3 data-help="ra.c.rules">Six places a switched-off capability is enforced</h3></div>
         <div class="card-b"><ol class="small muted" style="line-height:2;padding-left:18px">
           <li><b>Navigation</b> — the entry is not in the menu and the address is not routed</li>
           <li><b>Interface</b> — the endpoint answers “not found”, never “not allowed”</li>
@@ -61,7 +61,7 @@
           <li><b>Automations</b> — the job is never scheduled; queued work is parked with a reason</li>
           <li><b>Data out</b> — nothing appears in exports, search, reports or notifications</li>
         </ol></div></div>
-      <div class="card"><div class="card-h"><h3>Rules</h3></div><div class="card-b small muted stack" style="gap:12px">
+      <div class="card"><div class="card-h"><h3 data-help="ra.c.rules">Rules</h3></div><div class="card-b small muted stack" style="gap:12px">
         <div><b style="color:var(--ra-tx)">Not found, not forbidden.</b> “Not allowed” would confirm the feature
           exists. Anything a store does not have simply is not there.</div>
         <div><b style="color:var(--ra-tx)">Nothing is deleted.</b> Switching a capability off hides its data.
@@ -75,6 +75,10 @@
   </section>
 </main>
 <script src="assets/ra.js"></script>
+<script src="assets/ra-help.js"></script>
+<script src="assets/help/glossary.js"></script>
+<script src="assets/help/shell.js"></script>
+<script src="assets/help/ra-capabilities.js"></script>
 <script>
 
 document.getElementById("chlist").innerHTML = RA.table(
