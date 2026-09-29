@@ -26,8 +26,8 @@ Architecture: `19-saas-platform.md` §1–§2 (read first), `20-root-admin.md`. 
 | Channels | Granting a channel requires five layers (D-274): capability → provider binding → verified sender → approved templates → consent and caps. Publication is blocked until all five exist, so a channel can never look configured and silently fail |
 | Current phase | **0 — Discovery & proof** |
 | Current stage | 0 |
-| Current task | — (none in progress). Next eligible: **T-0-M01-03** Discovery questionnaire & next-meeting pack |
-| Last session | 2026-09-28 — SaaS architecture change (D-227, 71 tasks), production-readiness and control-model pass (D-257–D-272, 28 tasks), feature-catalogue and channel pass (D-273–D-278, 6 tasks), the feature map (D-279, `21-feature-map.md`, 1 task), **and contextual help for the root admin** (D-280, 2 tasks): ⓘ on every heading, tab and control, page guides, search and a platform glossary, built and verified in the mockup |
+| Current task | **T-0-M01-03** Discovery questionnaire & next-meeting pack — IN_PROGRESS (started 2026-09-29) |
+| Last session | 2026-09-29 — `T-0-M01-03` started: the six discovery artefacts prepared in `plan/phase0/discovery/` (questionnaire Q1–Q70, next-meeting pack, decision owners for the 47 Stage 0 decisions, vision backlog, release scope v0, change register). Waiting on the client meeting for answers, owners and dates |
 | Application code present | No (`frontend/`, `backend/`, `root-admin/`, `infra/`, `tests/` not yet created) |
 | UI prototype | Mockup v0.1 (32 screens) at repo root — **awaiting client sign-off (D-049)**. Storefront pages responsive (desktop · tablet · phone) since 2026-09-27; Phase 1 mobile scope is D-223. ERP workspace and vendor portal have contextual help (ⓘ, help panel, glossary) and 8 operational ERP pages have guided workflows since 2026-09-28 (D-224). ERP and vendor pages responsive (tablet · phone, desktop unchanged) since 2026-09-28; Phase 1 scope is D-226 |
 | UI prototype (root admin) | `root-admin-mockup/` — **13 screens P-R01–P-R13** with contextual help on every screen (ⓘ, page guide, search, 50-term glossary — D-280), own assets, `noindex`, **not linked from any client-facing page** (D-249). Verified 2026-09-28 after the second pass: 0 console errors on 14 pages, `scrollWidth == clientWidth` at 390/768/1280/1600 px, all internal links resolve, no inbound or outbound link between the two mockups |
@@ -38,10 +38,10 @@ Run `python3 plan/tools/status.py` and paste the summary here at the end of each
 
 ```
 Tradex plan status — 466 tasks
-  NOT_STARTED=158 · IN_PROGRESS=0 · BLOCKED=0 · REQUIRES_DECISION=306 · COMPLETED=1 · NOT_APPLICABLE=1
+  NOT_STARTED=159 · IN_PROGRESS=1 · BLOCKED=0 · REQUIRES_DECISION=304 · COMPLETED=1 · NOT_APPLICABLE=1
 Current (earliest unfinished) stage: 0
 Per stage:
-  0       done   1/77   in-progress 0  blocked 0  needs-decision 47
+  0       done   1/77   in-progress 1  blocked 0  needs-decision 47
   1A.1    done   0/34   in-progress 0  blocked 0  needs-decision 19
   1A.2    done   0/20   in-progress 0  blocked 0  needs-decision 12
   1A.3    done   0/19   in-progress 0  blocked 0  needs-decision 14
@@ -50,7 +50,7 @@ Per stage:
   1A.6    done   0/16   in-progress 0  blocked 0  needs-decision 11
   1A.7    done   0/12   in-progress 0  blocked 0  needs-decision 8
   1A.8    done   0/17   in-progress 0  blocked 0  needs-decision 11
-  1A.9    done   0/32   in-progress 0  blocked 0  needs-decision 24
+  1A.9    done   0/32   in-progress 0  blocked 0  needs-decision 22
   1A.10   done   0/12   in-progress 0  blocked 0  needs-decision 7
   1A.11   done   0/15   in-progress 0  blocked 0  needs-decision 9
   1A.12   done   0/13   in-progress 0  blocked 0  needs-decision 8
@@ -69,7 +69,7 @@ Per stage:
   1B.5    done   0/4    in-progress 0  blocked 0  needs-decision 2
   2       done   0/4    in-progress 0  blocked 0  needs-decision 4
   3       done   1/3    in-progress 0  blocked 0  needs-decision 2
-In progress (resume these first): none
+In progress (resume these first): T-0-M01-03
 NEXT TASK: T-0-M01-03 · Discovery questionnaire and next-meeting pack: BP §31.1 agenda, §26.1–26.7 questions Q1–Q70 issued and answers recorded; decision owners and dates assigned; vision backlog / release scope / change register lists opened
 Open decisions blocking the most tasks:
   D-004 blocks 41 — Staff ERP UI: native ERP screens or custom UI (per mockup) — per P-E screen
@@ -86,7 +86,7 @@ Open decisions blocking the most tasks:
 ## 3. In-progress tasks
 | Task ID | Started | Done so far | Remaining |
 |---|---|---|---|
-| — | | | |
+| T-0-M01-03 | 2026-09-29 | All six artefacts in `plan/phase0/discovery/` prepared from the sources and verified (see TASKS.md Evidence) | Client meeting: issue the questionnaire, record answers (role + date), due date per open question, named owner + target date per decision (BP §31.1 item 7) |
 
 ## 4. Blocked / requires-decision tasks (summary)
 | Task ID | Blocked by (task or D-id) | Note |
@@ -199,6 +199,7 @@ Open decisions blocking the most tasks:
 ## 12. Files changed (append-only, per session)
 | Date | Task ID | Files |
 |---|---|---|
+| 2026-09-29 | T-0-M01-03 | **New:** `plan/phase0/discovery/questionnaire.md`, `next-meeting-pack.md`, `decision-owners.md`, `vision-backlog.md`, `release-scope.md`, `change-register.md`. **Updated:** `plan/TASKS.md` (T-0-M01-03 → IN_PROGRESS, evidence), `plan/STATE.md`. **No client-facing mockup file and no application code changed** |
 | 2026-09-28 | (D-105 brief & decision) | **New:** `plan/phase0/decision-briefs/D-105-storefront-caching.md`. **Updated:** `plan/DECISIONS.md` (D-105 DECIDED, D-033 gains the surrogate-key constraint), `plan/TASKS.md` (T-1A.9-M09-04, T-1A.9-M09-13 → NOT_STARTED), `plan/01-tech-stack.md` (§2, §16), `plan/02-architecture.md` (§4.2), `plan/04a-frontend-storefront.md` (§1.3), `plan/STATE.md` |
 | 2026-09-27 | (plan) | `plan/*` (24 files + `tools/status.py`), `CLAUDE.md` |
 | 2026-09-27 | (mockup responsive) | `assets/tradex.css`, `assets/tradex.js`, all 13 `store-*.html`; `plan/DECISIONS.md` (D-223), `plan/STATE.md` |
@@ -229,6 +230,7 @@ Open decisions blocking the most tasks:
 | 12 | 2026-09-28 | The SaaS change is documented in the plan but **no code exists yet**, so none of the new rules (store scoping, capability gating, terminology tokens, artefact loading) has been exercised against a real operational core. `TS-PROOF-11` and `TS-PROOF-12` (Stage 0, D-252) are the first real test of D-233 and D-248. | plan | OPEN — by design; resolved when Stage 0 proof runs |
 | 13 | 2026-09-28 | Existing task blocks written before 2026-09-28 still describe electronics behaviour (serials, condition grades, compatibility) as if it were the product. Under D-251 that behaviour is now pack `VP-electronics`. The blocks were **not** rewritten — the rule is recorded once, in `19` §16 and in the per-file SaaS sections, and applies when each task is picked. | plan | OPEN (low) — apply the rule at pick time; do not mass-edit the tracker |
 | 10 | 2026-09-28 | P-E15 `#integrations` has a 36 px horizontal overflow at 1024 px (already in v0.1). Cause: screen-reader-only "Done" labels in the contract checklist are absolutely positioned without a positioned ancestor; fixed for ≤ 980 px (`.table-wrap { position: relative }`); desktop left untouched on the user's instruction (no desktop changes) | mockup | OPEN — minor, desktop |
+| 14 | 2026-09-29 | **Stage 0 waits on the client.** `T-0-M01-03` cannot be completed without the client meeting (answers, owners, dates), and every other eligible Stage 0 task depends on it. Two of those dependants need no client input: `T-0-M32-01` (vertical-pack inventory of the 31 SAAS categories) and `T-0-M34-01` (root admin operating model) are internal SaaS work and do not use any questionnaire answer. Their dependency on `T-0-M01-03` looks like sequencing, not evidence. Relaxing it would let internal work continue while the meeting is arranged, but it changes Depends on, so it needs the user's approval (TASKS.md rules; protocol step 15). | plan | OPEN — ask the user |
 
 ## 14. Session log (append-only; newest last)
 ### 2026-09-27 — plan creation
@@ -589,3 +591,78 @@ Open decisions blocking the most tasks:
 - Next: unchanged — `T-0-M01-03` (discovery questionnaire & next-meeting pack). `D-001`, `D-003`, `D-004`, `D-005`,
   `D-049` still gate Phase 1A. `D-113`, `D-103`, `D-106` are the remaining page-speed decisions and are all
   independent of `D-001`.
+
+### 2026-09-29 — T-0-M01-03 discovery questionnaire and next-meeting pack (started; waiting on the client)
+- **Reconcile:** no task was IN_PROGRESS; `T-0-M01-01` (only COMPLETED task) still holds; no application code and no untracked
+  implementation. The STATE §2 status paste was stale after the D-105 session (158/306 → 160/304); refreshed below.
+- **Task picked:** `T-0-M01-03`, the only eligible task (every other Stage 0 task depends on it or on a decision). Document task, no code.
+- **Built** in `plan/phase0/discovery/` (location per D-210), from the sources only:
+  - `questionnaire.md`: Q1–Q70 **verbatim** from BP §26.1–26.7 (script-checked). Each question has the D-IDs it informs,
+    what MEET/BP/the prototype already say (labelled "not an answer"), a suggested respondent role (= the approver of the
+    linked decision), answer/respondent/date fields and `open · owner <role> · due —`. Recording rules: roles, not names
+    (BP §26.10); nothing the owner has not approved for storage while D-115 is open; no credentials (BP §19.1).
+  - `next-meeting-pack.md`: BP §31.1 items 1–8, each with aim, questions, decisions tabled with their documented options
+    (as proposals), materials, output and follow-up tasks. Also the eight BP §1.4 questions verbatim and mapped, participants
+    by BP §22.4 role, ground rules (BP §2.2 figures are not commitments, §2.3 three lists, §25.1 no fixed price), and
+    preparation and after-meeting steps.
+  - `decision-owners.md`: the **47** decisions of the open Stage 0 decide tasks, generated from TASKS.md/DECISIONS.md.
+    Columns: approver, who decides (client / implementation team / joint), evidence needed first (dependencies + Q#),
+    decide task; named owner and target date left for the meeting. Also a table of the other open decisions the answers
+    inform.
+  - `vision-backlog.md` (VB-001…037, from R01–R20, BP §5.2, §28.5, MEET, PR1 §8, placements marked "not approved"),
+    `release-scope.md` (no approved scope; proposed baseline v0 = BP §5.1–5.3, 14 1A + 5 1B workflows mapped to T01–T36,
+    conditional items, exclusions), `change-register.md` (BP §25.5 fields aligned with `E-change_request`; empty until a
+    baseline is approved; D-191 decides its later home).
+- **Invisibility:** all six files are shareable with the client, and none contains platform content (D-229, D-249). Checked
+  by script, which found only BP's own words "capability matrix" and Q66 "capabilities".
+- **Why not COMPLETED:** AC (1) and (3) need the client: answers or due dates for open questions, and a named owner and target
+  date per decision. Nothing was invented. AC (2) and (4) are met; AC (5) holds.
+- **Known issue #14 added:** `T-0-M32-01` and `T-0-M34-01` are internal and use no questionnaire answer, but depend on
+  `T-0-M01-03`. Asking the user whether to relax that dependency so work can continue while the meeting is arranged.
+- `status.py --check`: 0 issues in 466 tasks.
+
+```
+Tradex plan status — 466 tasks
+  NOT_STARTED=159 · IN_PROGRESS=1 · BLOCKED=0 · REQUIRES_DECISION=304 · COMPLETED=1 · NOT_APPLICABLE=1
+Current (earliest unfinished) stage: 0
+Per stage:
+  0       done   1/77   in-progress 1  blocked 0  needs-decision 47
+  1A.1    done   0/34   in-progress 0  blocked 0  needs-decision 19
+  1A.2    done   0/20   in-progress 0  blocked 0  needs-decision 12
+  1A.3    done   0/19   in-progress 0  blocked 0  needs-decision 14
+  1A.4    done   0/18   in-progress 0  blocked 0  needs-decision 13
+  1A.5    done   0/10   in-progress 0  blocked 0  needs-decision 6
+  1A.6    done   0/16   in-progress 0  blocked 0  needs-decision 11
+  1A.7    done   0/12   in-progress 0  blocked 0  needs-decision 8
+  1A.8    done   0/17   in-progress 0  blocked 0  needs-decision 11
+  1A.9    done   0/32   in-progress 0  blocked 0  needs-decision 22
+  1A.10   done   0/12   in-progress 0  blocked 0  needs-decision 7
+  1A.11   done   0/15   in-progress 0  blocked 0  needs-decision 9
+  1A.12   done   0/13   in-progress 0  blocked 0  needs-decision 8
+  1A.13   done   0/15   in-progress 0  blocked 0  needs-decision 12
+  1A.14   done   0/13   in-progress 0  blocked 0  needs-decision 10
+  1A.15   done   0/13   in-progress 0  blocked 0  needs-decision 10
+  1A.16   done   0/13   in-progress 0  blocked 0  needs-decision 9
+  1A.17   done   0/21   in-progress 0  blocked 0  needs-decision 17
+  1R.1    done   0/11   in-progress 0  blocked 0  needs-decision 5
+  1R.2    done   0/15   in-progress 0  blocked 0  needs-decision 5
+  1R.3    done   0/15   in-progress 0  blocked 0  needs-decision 10
+  1B.1    done   0/18   in-progress 0  blocked 0  needs-decision 13
+  1B.2    done   0/11   in-progress 0  blocked 0  needs-decision 7
+  1B.3    done   0/8    in-progress 0  blocked 0  needs-decision 6
+  1B.4    done   0/7    in-progress 0  blocked 0  needs-decision 5
+  1B.5    done   0/4    in-progress 0  blocked 0  needs-decision 2
+  2       done   0/4    in-progress 0  blocked 0  needs-decision 4
+  3       done   1/3    in-progress 0  blocked 0  needs-decision 2
+In progress (resume these first): T-0-M01-03
+NEXT TASK: T-0-M01-03 · Discovery questionnaire and next-meeting pack: BP §31.1 agenda, §26.1–26.7 questions Q1–Q70 issued and answers recorded; decision owners and dates assigned; vision backlog / release scope / change register lists opened
+Open decisions blocking the most tasks:
+  D-004 blocks 41 — Staff ERP UI: native ERP screens or custom UI (per mockup) — per P-E screen
+  D-034 blocks 10 — Service levels & performance targets (availability, RPO, RTO, LCP/INP/CLS, API p95, stock 
+  D-053 blocks 10 — Testing tools/frameworks (unit, integration, E2E, load, accessibility, security)
+  D-101 blocks 9 — Which frontend framework builds the custom ERP staff workspace screens (`frontend/workspac
+  D-107 blocks 9 — Secrets management and TLS certificate tooling: secrets store, rotation cadence, who may r
+  D-035 blocks 8 — Support & maintenance model (hours, severities, response targets, coverage)
+  D-001 blocks 8 — Which operational core owns stock, reservations, orders, permissions and integrations?
+  D-033 blocks 8 — Object storage & CDN provider
+```
