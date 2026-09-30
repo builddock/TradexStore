@@ -6,60 +6,191 @@
   <title>Tradex — Computers, parts, cameras & certified refurbished electronics</title>
   <link rel="stylesheet" href="assets/tradex.css">
   <style>
-    .home-top { display: grid; grid-template-columns: minmax(0, 2.15fr) minmax(0, 1fr); gap: 16px; margin-top: 20px; }
-    .hero-stats { display: flex; gap: 22px; margin-top: 26px; font-size: 12.5px; color: #c8d3f5; }
-    .hero-stats b { display: block; color: #fff; font-size: 18px; font-weight: 750; }
-    .grade-card { background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); padding: 22px; display: flex; flex-direction: column; gap: 14px; }
-    .grade-row { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid var(--line-2); }
-    .grade-row:last-child { border-bottom: 0; }
-    .comp-tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
-    .comp-tile { position: relative; border-radius: var(--r-lg); overflow: hidden; min-height: 190px; color: #fff; display: flex; flex-direction: column; justify-content: flex-end; padding: 16px; text-decoration: none !important; }
-    .comp-tile .ph { position: absolute; inset: 0; border-radius: 0; aspect-ratio: auto; z-index: 0; }
-    .comp-tile::after { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(180deg, rgba(7,12,24,0) 30%, rgba(7,12,24,.85) 100%); }
-    .comp-tile > div:not(.ph) { position: relative; z-index: 2; }
-    .comp-tile b { font-size: 16px; }
-    .comp-tile span { font-size: 12.5px; color: #d5dcec; }
-    .comp-tile:hover .ph img { transform: scale(1.05); }
-    .wa-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-    .wa-step { background: rgba(255,255,255,.7); border-radius: var(--r); padding: 14px; font-size: 13px; }
-    .wa-step b { display: block; font-size: 13.5px; margin-bottom: 2px; }
-    .store-card { display: flex; gap: 14px; align-items: center; background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); padding: 14px; }
-    .store-card .ph { width: 88px; aspect-ratio: 1; flex: none; }
+    /* Hero bento: statement panel + photo tiles with caption cards */
+    .h-bento { display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr); gap: 14px; margin-top: 22px; }
+    .h-state { position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; gap: 28px; min-height: 500px; padding: 40px 44px; border-radius: 28px; background: var(--st-ink) radial-gradient(560px 300px at 100% 100%, rgba(212, 242, 90, .12), transparent 70%); color: #fff; }
+    .h-state .h-kicker { display: inline-flex; align-items: center; gap: 8px; align-self: flex-start; padding: 6px 13px; border: 1px solid rgba(255, 255, 255, .16); border-radius: 999px; color: #e8e9e4; font-size: 12px; font-weight: 600; }
+    .h-state .h-kicker .ic { color: var(--st-volt); }
+    .h-state h1 { margin-top: 18px; color: #fff; font-size: 54px; line-height: .98; letter-spacing: -0.045em; }
+    .h-state h1 em { font-style: normal; color: var(--st-volt); }
+    .h-state p { max-width: 470px; margin-top: 16px; color: #b9bcc3; font-size: 15.5px; }
+    .needs-l { font-size: 11.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #8b8f97; }
+    .needs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .needs a { display: inline-flex; align-items: center; gap: 8px; height: 38px; padding: 0 15px 0 12px; border: 1px solid rgba(255, 255, 255, .16); border-radius: 999px; color: #fff; font-size: 13px; font-weight: 600; text-decoration: none; transition: background .15s, border-color .15s, color .15s; }
+    .needs a .ic { width: 16px; height: 16px; color: var(--st-volt); }
+    .needs a:hover { background: var(--st-volt); border-color: var(--st-volt); color: var(--st-ink); }
+    .needs a:hover .ic { color: var(--st-ink); }
+    .h-cta { display: flex; flex-wrap: wrap; gap: 10px; }
+    .h-facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; padding-top: 22px; border-top: 1px solid rgba(255, 255, 255, .12); font-size: 12.5px; color: #9ea2aa; }
+    .h-facts b { display: block; color: #fff; font-family: var(--font-display); font-size: 20px; letter-spacing: -0.02em; }
+    .h-tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: 1.15fr 1fr; gap: 14px; }
+    .h-tiles .ttile:first-child { grid-column: 1 / -1; }
+    .ttile { position: relative; overflow: hidden; display: flex; align-items: flex-end; min-height: 200px; padding: 14px; border-radius: 24px; background: var(--st-paper-2); color: var(--st-ink); text-decoration: none !important; }
+    .ttile .ph { position: absolute; inset: 0; width: 100%; height: 100%; aspect-ratio: auto; border-radius: 0; }
+    .ttile:hover .ph img { transform: scale(1.04); }
+    .ttile .cap { position: relative; z-index: 1; display: flex; align-items: center; gap: 12px; max-width: 100%; padding: 12px 14px; border-radius: 16px; background: rgba(255, 255, 255, .95); box-shadow: 0 8px 24px rgba(17, 19, 23, .12); }
+    .ttile .cap b { display: block; font-family: var(--font-display); font-size: 16px; letter-spacing: -0.02em; }
+    .ttile .cap small { display: block; font-size: 12px; color: var(--tx-3); }
+    .ttile .go { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; flex: none; background: var(--st-ink); color: #fff; }
+    .ttile .tag { position: absolute; top: 14px; left: 14px; z-index: 1; }
+
+    /* The Tradex standard */
+    .standard { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .standard > div { padding: 22px 22px 20px 0; }
+    .standard > div + div { padding-left: 22px; border-left: 1px solid var(--line); }
+    .standard .n { font-family: var(--font-display); font-size: 40px; font-weight: 700; line-height: 1; letter-spacing: -0.04em; color: var(--st-ink); }
+    .standard .n small { font-size: 16px; letter-spacing: -0.01em; margin-left: 3px; color: var(--tx-3); }
+    .standard b { display: block; margin-top: 10px; font-size: 14px; }
+    .standard span { display: block; margin-top: 2px; font-size: 12.5px; color: var(--tx-3); }
+
+    /* Dealer blocks */
     .reorder-row { display: grid; grid-template-columns: 56px 1fr auto auto; gap: 14px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line-2); }
     .reorder-row:last-child { border-bottom: 0; }
+
+    /* Department mosaic */
+    .depts { display: grid; grid-template-columns: 1.25fr repeat(3, minmax(0, 1fr)); grid-template-rows: repeat(2, 214px); gap: 14px; }
+    .dept { position: relative; overflow: hidden; display: flex; flex-direction: column; gap: 12px; padding: 16px 16px 12px 18px; border-radius: 22px; background: #fff; border: 1px solid var(--line); color: var(--st-ink); text-decoration: none !important; transition: border-color .2s, box-shadow .2s; }
+    .dept:first-child { grid-row: span 2; }
+    .dept .ph { order: 2; flex: 1 1 auto; min-height: 0; width: auto; margin: 0 -4px 0 -6px; aspect-ratio: auto; border-radius: 14px; }
+    .dept:hover { border-color: var(--st-ink); box-shadow: var(--sh-2); }
+    .dept:hover .ph img { transform: scale(1.04); }
+    .dept .dn { order: 1; position: relative; z-index: 1; display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+    .dept b { font-family: var(--font-display); font-size: 17px; letter-spacing: -0.02em; }
+    .dept:first-child b { font-size: 24px; }
+    .dept small { display: block; margin-top: 2px; font-size: 12px; color: var(--tx-3); font-weight: 500; }
+    .dept .arr { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; flex: none; background: var(--st-paper); transition: background .15s; }
+    .dept:hover .arr { background: var(--st-volt); }
+
+    /* Use-case tabs */
+    .uses { display: inline-flex; gap: 4px; padding: 4px; border-radius: 999px; background: #fff; border: 1px solid var(--line); }
+    .uses button { display: inline-flex; align-items: center; gap: 7px; height: 38px; padding: 0 16px; border: 0; border-radius: 999px; background: none; color: var(--tx-2); font-size: 13.5px; font-weight: 600; }
+    .uses button .ic { width: 16px; height: 16px; }
+    .uses button.on { background: var(--st-ink); color: #fff; }
+    .uses button.on .ic { color: var(--st-volt); }
+    .use-note { display: flex; align-items: center; gap: 10px; margin: 0 0 16px; font-size: 13px; color: var(--tx-2); }
+    .use-note .ic { color: var(--st-ink); }
+
+    /* Grade scale */
+    .scale { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; padding: 22px 24px; border-radius: 22px; background: #fff; border: 1px solid var(--line); }
+    .scale > div { position: relative; padding: 20px 18px 0 0; }
+    .scale > div::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 6px; background: var(--seg); }
+    .scale > div:first-child::before { border-radius: 6px 0 0 6px; }
+    .scale > div:last-child::before { border-radius: 0 6px 6px 0; }
+    .scale > div + div::before { left: 2px; }
+    .scale .cond { margin-bottom: 8px; }
+    .scale p { font-size: 12.5px; color: var(--tx-2); }
+    .scale .lvl { font-size: 11.5px; color: var(--tx-3); margin-top: 6px; }
+
+    /* Build band */
+    .build { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); gap: 28px; align-items: center; padding: 30px; border-radius: 28px; background: var(--st-ink); color: #fff; }
+    .build h2 { color: #fff; font-size: 34px; line-height: 1.05; letter-spacing: -0.04em; }
+    .build p { margin-top: 10px; color: #b9bcc3; }
+    .build .comp { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+    .comp a { position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; min-height: 200px; padding: 12px; border-radius: 18px; background: #1d2026; color: #fff; text-decoration: none !important; }
+    .comp .ph { position: absolute; inset: 0; width: 100%; height: 100%; aspect-ratio: auto; border-radius: 0; opacity: .9; }
+    .comp a::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(17, 19, 23, 0) 38%, rgba(17, 19, 23, .88) 100%); }
+    .comp a > div:not(.ph) { position: relative; z-index: 1; }
+    .comp b { display: block; font-size: 14.5px; }
+    .comp span { font-size: 12px; color: #c9ccd2; }
+    .comp a:hover .ph img { transform: scale(1.05); }
+
+    /* WhatsApp ordering */
+    .wa-card { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .9fr); gap: 32px; align-items: center; padding: 32px; border-radius: 28px; background: #e6f4e9; }
+    .wa-steps { display: flex; flex-direction: column; gap: 12px; margin-top: 18px; counter-reset: w; }
+    .wa-step { display: grid; grid-template-columns: 30px 1fr; gap: 12px; font-size: 13.5px; color: var(--tx-2); }
+    .wa-step::before { counter-increment: w; content: counter(w); width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: #fff; color: var(--st-ink); font-weight: 700; font-size: 13px; }
+    .wa-step b { display: block; color: var(--st-ink); }
+    .wa-phone { display: flex; flex-direction: column; gap: 8px; padding: 18px; border-radius: 22px; background: #fff; box-shadow: 0 18px 40px rgba(17, 19, 23, .1); }
+    .wa-phone .wh { display: flex; align-items: center; gap: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--line-2); font-size: 13px; }
+    .wa-phone .wh .avatar { background: #1faa59; }
+    .bub { max-width: 82%; padding: 9px 12px; border-radius: 14px; font-size: 13px; line-height: 1.45; }
+    .bub.in { align-self: flex-start; background: var(--st-paper); border-top-left-radius: 4px; }
+    .bub.out { align-self: flex-end; background: #d9f7c9; border-top-right-radius: 4px; }
+    .bub small { display: block; margin-top: 3px; font-size: 10.5px; color: var(--tx-3); text-align: right; }
+    .bub .lnk { display: flex; align-items: center; gap: 8px; margin-top: 6px; padding: 8px 10px; border-radius: 10px; background: #fff; font-weight: 600; font-size: 12.5px; }
+
+    /* Brands & stores */
+    .brands { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); border: 1px solid var(--line); border-radius: 20px; background: #fff; overflow: hidden; }
+    .brands a { display: grid; place-items: center; height: 76px; border-right: 1px solid var(--line-2); color: #6b6f77; font-family: var(--font-display); font-size: 17px; font-weight: 700; letter-spacing: -0.02em; text-decoration: none !important; transition: color .15s, background .15s; }
+    .brands a:last-child { border-right: 0; }
+    .brands a:hover { color: var(--st-ink); background: var(--st-paper); }
+    .stores { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .store-c { overflow: hidden; border: 1px solid var(--line); border-radius: 22px; background: #fff; }
+    .store-c .ph { aspect-ratio: 16 / 7; border-radius: 0; }
+    .store-c > div:last-child { display: flex; flex-direction: column; gap: 4px; padding: 16px 18px 18px; }
+    .store-c b { font-family: var(--font-display); font-size: 17px; letter-spacing: -0.02em; }
+
+    @media (max-width: 1200px) {
+      .h-state h1 { font-size: 46px; }
+      .brands { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+      .brands a:nth-child(5) { border-right: 0; }
+      .brands a:nth-child(-n+5) { border-bottom: 1px solid var(--line-2); }
+      .build { grid-template-columns: minmax(0, 1fr); }
+    }
     @media (max-width: 980px) {
-      .home-top { grid-template-columns: minmax(0, 1fr); }
-      .hero-side { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .comp-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .h-bento { grid-template-columns: minmax(0, 1fr); }
+      .h-state { min-height: 0; padding: 32px; }
+      .h-tiles { grid-template-rows: 240px 200px; }
+      .standard { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .standard > div:nth-child(3) { padding-left: 0; border-left: 0; border-top: 1px solid var(--line); }
+      .standard > div:nth-child(4) { border-top: 1px solid var(--line); }
+      .depts { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: 260px repeat(2, 190px); }
+      .dept:first-child { grid-row: auto; grid-column: 1 / -1; }
+      .scale { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 0; }
+      .scale > div:nth-child(2)::before { border-radius: 0 6px 6px 0; }
+      .scale > div:nth-child(3)::before { border-radius: 6px 0 0 6px; left: 0; }
+      .wa-card { grid-template-columns: minmax(0, 1fr); }
+      .stores { grid-template-columns: minmax(0, 1fr); }
+      .store-c { display: grid; grid-template-columns: 200px minmax(0, 1fr); }
+      .store-c .ph { aspect-ratio: auto; height: 100%; }
+      .home-cam { grid-template-columns: minmax(0, 1fr) !important; }
       .home-cam .promo { min-height: 220px !important; }
-      .band.whatsapp > div:first-child { max-width: none !important; }
-      .band.whatsapp .wa-steps { width: 100%; }
     }
     @media (max-width: 760px) {
-      .home-top { margin-top: 14px; gap: 12px; }
-      .hero-side { grid-template-columns: minmax(0, 1fr); gap: 12px; }
-      .hero .row.mt-24 { flex-wrap: wrap; margin-top: 18px; }
-      .hero .btn-lg { height: 44px; padding: 0 16px; font-size: 14px; }
-      .hero-stats { flex-wrap: wrap; gap: 12px 20px; margin-top: 20px; padding-bottom: 12px; }
-      .hero-stats b { font-size: 16px; }
-      .comp-tiles { gap: 10px; }
-      .comp-tile { min-height: 132px; padding: 12px; }
-      .comp-tile b { font-size: 14.5px; }
-      .comp-tile span { font-size: 11.5px; }
-      .wa-steps { grid-template-columns: minmax(0, 1fr); }
-      .band.dealer .row.gap-20 { align-items: flex-start; gap: 14px; }
-      .band.dealer .row.gap-20 > .ti { display: none !important; }
-      .band .btn-lg { height: 44px; font-size: 14px; }
+      .h-bento { margin-top: 14px; gap: 10px; }
+      .h-state { padding: 24px 20px; border-radius: 22px; gap: 22px; }
+      .h-state h1 { font-size: 34px; }
+      .h-state p { font-size: 14px; }
+      .h-cta .btn-lg { height: 46px; padding: 0 16px; font-size: 14px; }
+      .h-facts { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+      .h-facts > div:last-child { grid-column: 1 / -1; }
+      .h-tiles { grid-template-rows: 200px 170px; gap: 10px; }
+      .ttile { min-height: 0; padding: 10px; border-radius: 18px; }
+      .ttile .cap { padding: 9px 11px; gap: 8px; border-radius: 12px; }
+      .ttile .cap b { font-size: 14px; }
+      .ttile .cap small { display: none; }
+      .ttile .go { width: 28px; height: 28px; }
+      .standard > div { padding: 16px 12px 14px 0; }
+      .standard > div + div { padding-left: 12px; }
+      .standard > div:nth-child(3) { padding-left: 0; }
+      .standard .n { font-size: 30px; }
       .reorder-row { grid-template-columns: 48px minmax(0, 1fr) auto; grid-template-areas: "th info info" "th price btn"; gap: 6px 12px; }
       .reorder-row > :nth-child(1) { grid-area: th; width: 48px; height: 48px; }
       .reorder-row > :nth-child(2) { grid-area: info; }
       .reorder-row > :nth-child(3) { grid-area: price; }
       .reorder-row > :nth-child(4) { grid-area: btn; align-self: end; }
-      .store-card { padding: 12px; }
-      .store-card .ph { width: 72px; }
-    }
-    @media (max-width: 420px) {
-      .trust-strip > div { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .depts { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: 220px repeat(3, 170px); gap: 10px; }
+      .dept { border-radius: 18px; }
+      .dept { gap: 8px; padding: 12px 12px 10px 14px; }
+      .dept .ph { border-radius: 12px; }
+      .dept b { font-size: 15px; }
+      .dept:first-child b { font-size: 20px; }
+      .dept .arr { width: 28px; height: 28px; }
+      .uses { max-width: 100%; overflow-x: auto; scrollbar-width: none; }
+      .uses::-webkit-scrollbar { display: none; }
+      .uses button { flex: none; padding: 0 13px; }
+      .scale { grid-template-columns: minmax(0, 1fr); padding: 18px; gap: 14px; }
+      .scale > div::before { border-radius: 6px !important; left: 0 !important; }
+      .build { padding: 22px 18px; border-radius: 22px; }
+      .build h2 { font-size: 27px; }
+      .build .comp { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .comp a { min-height: 140px; }
+      .wa-card { padding: 22px 18px; border-radius: 22px; }
+      .brands { display: flex; overflow-x: auto; scrollbar-width: none; }
+      .brands::-webkit-scrollbar { display: none; }
+      .brands a { flex: 0 0 116px; height: 60px; border-bottom: 0 !important; border-right: 1px solid var(--line-2) !important; }
+      .store-c { grid-template-columns: 110px minmax(0, 1fr); border-radius: 18px; }
+      .store-c > div:last-child { padding: 12px 14px; }
     }
   </style>
 </head>
@@ -67,52 +198,63 @@
 <main>
   <div class="container">
 
-    <!-- Hero + side promos -->
-    <section class="home-top">
-      <div class="hero photo" data-anno="1A · R01 Original visual identity · curated campaigns">
-        <div class="h-bg"><img src="assets/img/hero-laptop-glow.jpg" alt=""></div>
-        <div class="h-copy">
-          <span class="h-kicker"><svg class="ic ic-sm" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.48 12.89 17 22l-5-3-5 3 1.52-9.11"/></svg> Certified refurbished · up to 6-month warranty</span>
-          <h1>Business-grade laptops.<br>Honest grades. Real warranty.</h1>
-          <p>Every refurbished unit passes a 42-point inspection and ships with its own photos, grade and serial-level history.</p>
-          <div class="row mt-24">
-            <a class="btn btn-accent btn-lg" href="store-refurbished.html">Shop refurbished laptops</a>
-            <a class="btn btn-lg" style="--b-bg:rgba(255,255,255,.1);--b-fg:#fff;--b-bd:rgba(255,255,255,.25)" href="store-help.html#grades">How we grade</a>
-          </div>
-          <div class="hero-stats">
-            <div><b>From ₹24,990</b>ThinkPad, Latitude, MacBook</div>
-            <div><b>10-day</b>returns on refurbished</div>
-            <div><b>No-cost EMI</b>on cards & UPI</div>
+    <!-- Hero: statement + shop by need, with photo tiles -->
+    <section class="h-bento" data-anno="1A · R01 Original visual identity (D-281) · curated campaigns">
+      <div class="h-state">
+        <div>
+          <span class="h-kicker"><i data-icon="award" class="ic-sm"></i> Certified refurbished · up to 6-month warranty</span>
+          <h1>Honest tech.<br>Tested, graded,<br><em>guaranteed.</em></h1>
+          <p>Laptops, PC parts and cameras — new, open-box and certified refurbished. Every pre-owned unit passes a 42-point inspection and ships with its own photos, grade and serial history.</p>
+        </div>
+        <div>
+          <div class="needs-l">Shop by what you need</div>
+          <div class="needs">
+            <a href="store-listing.html?cat=laptops"><i data-icon="briefcase"></i> Work &amp; business</a>
+            <a href="store-listing.html?cat=components"><i data-icon="cpu"></i> Gaming &amp; upgrades</a>
+            <a href="store-listing.html?cat=cameras"><i data-icon="camera"></i> Photo &amp; video</a>
+            <a href="store-refurbished.html"><i data-icon="award"></i> Best value refurbished</a>
+            <a href="store-listing.html?cat=monitors"><i data-icon="monitor"></i> Home office setup</a>
           </div>
         </div>
-        <div class="h-dots"><span class="on"></span><span></span><span></span><span></span></div>
+        <div class="col gap-20">
+          <div class="h-cta">
+            <a class="btn btn-accent btn-lg" href="store-refurbished.html">Shop certified refurbished <i data-icon="arrow-right"></i></a>
+            <a class="btn btn-lg" style="--b-bg:transparent;--b-fg:#fff;--b-bd:rgba(255,255,255,.28)" href="store-help.html#grades">How we grade</a>
+          </div>
+          <div class="h-facts">
+            <div><b>From ₹24,990</b>ThinkPad, Latitude, MacBook</div>
+            <div><b>10-day</b>returns on refurbished</div>
+            <div><b>No-cost EMI</b>on cards &amp; UPI</div>
+          </div>
+        </div>
       </div>
-      <div class="hero-side">
-        <a class="promo photo" href="store-listing.html?cat=components" data-anno="1A · Curated collection">
-          <div class="p-bg"><img src="assets/img/hero-setup-rog.jpg" alt=""></div>
-          <div><span class="badge b-accent">PC components</span><h3 class="mt-8" style="color:#fff">RTX 40-series in stock</h3><p>GPUs, CPUs & DDR5 — with compatibility help.</p></div>
-          <span class="btn btn-sm btn-accent" style="align-self:flex-start">Build your rig</span>
+      <div class="h-tiles">
+        <a class="ttile" href="store-refurbished.html" data-anno="1A · R19 Refurbished collection">
+          <div data-ph="hero-laptop-glow"></div>
+          <span class="tag cond refurb">Certified refurbished</span>
+          <span class="cap"><span class="t"><b>Business laptops, graded honestly</b><small>Grade A &amp; B units with real photos</small></span><span class="go"><i data-icon="arrow-right" class="ic-sm"></i></span></span>
         </a>
-        <a class="promo photo hide-dealer" href="store-dealer.html" data-anno="1A · R03/R04 Dealer pricing & quantity tiers">
-          <div class="p-bg"><img src="assets/img/hero-desk.jpg" alt=""></div>
-          <div><span class="badge" style="background:#0e9f8a;color:#fff">For businesses</span><h3 class="mt-8" style="color:#fff">Dealer pricing & bulk tiers</h3><p>Register your shop or company. GST invoices.</p></div>
-          <span class="btn btn-sm" style="align-self:flex-start">Apply in 3 minutes</span>
+        <a class="ttile" href="store-listing.html?cat=components" data-anno="1A · Curated collection">
+          <div data-ph="hero-setup-rog"></div>
+          <span class="cap"><span class="t"><b>RTX 40-series in stock</b><small>With compatibility checks</small></span><span class="go"><i data-icon="arrow-right" class="ic-sm"></i></span></span>
         </a>
-        <a class="promo photo only-dealer" href="store-dealer.html#bulk" data-anno="1A · R03 Signed-in dealer home">
-          <div class="p-bg"><img src="assets/img/hero-desk.jpg" alt=""></div>
-          <div><span class="badge" style="background:#0e9f8a;color:#fff">Metro Computers · Dealer Gold</span><h3 class="mt-8" style="color:#fff">Quick order by SKU</h3><p>Paste SKUs & quantities. Tier prices apply automatically.</p></div>
-          <span class="btn btn-sm" style="align-self:flex-start">Open quick order</span>
+        <a class="ttile hide-dealer" href="store-dealer.html" data-anno="1A · R03/R04 Dealer pricing & quantity tiers">
+          <div data-ph="hero-desk"></div>
+          <span class="cap"><span class="t"><b>Dealer pricing</b><small>Bulk tiers &amp; GST invoices</small></span><span class="go"><i data-icon="arrow-right" class="ic-sm"></i></span></span>
+        </a>
+        <a class="ttile only-dealer" href="store-dealer.html#bulk" data-anno="1A · R03 Signed-in dealer home">
+          <div data-ph="hero-desk"></div>
+          <span class="cap"><span class="t"><b>Quick order by SKU</b><small>Metro Computers · Dealer Gold</small></span><span class="go"><i data-icon="arrow-right" class="ic-sm"></i></span></span>
         </a>
       </div>
     </section>
 
-    <!-- Trust strip -->
-    <section class="trust-strip mt-16" data-anno="1A · R19 Transparent purchase: condition, warranty, returns">
-      <div><span class="ti"><i data-icon="award"></i></span><div><b>Honest condition grades</b><span>42-point inspection report</span></div></div>
-      <div><span class="ti"><i data-icon="shield"></i></span><div><b>Warranty on everything</b><span>Brand or Tradex warranty</span></div></div>
-      <div><span class="ti"><i data-icon="undo"></i></span><div><b>Easy returns</b><span>7 days · 10 days refurbished</span></div></div>
-      <div><span class="ti"><i data-icon="lock"></i></span><div><b>Secure payments</b><span>UPI, cards, net banking, EMI</span></div></div>
-      <div><span class="ti"><i data-icon="truck"></i></span><div><b>Same-day dispatch</b><span>Order before 2 PM</span></div></div>
+    <!-- The Tradex standard -->
+    <section class="standard mt-24" data-anno="1A · R19 Transparent purchase: condition, warranty, returns">
+      <div><div class="n">42<small>point</small></div><b>Inspection on every pre-owned unit</b><span>Report and photos of the exact unit you get</span></div>
+      <div><div class="n">6<small>months</small></div><b>Warranty on everything</b><span>Brand warranty, or Tradex warranty on refurbished</span></div>
+      <div><div class="n">10<small>days</small></div><b>Easy returns</b><span>7 days on new · 10 days on refurbished</span></div>
+      <div><div class="n">2<small>PM</small></div><b>Same-day dispatch</b><span>Secure UPI, card, net banking &amp; EMI payments</span></div>
     </section>
 
     <!-- Dealer: quick reorder (only visible to approved dealers) -->
@@ -133,45 +275,62 @@
       </div>
     </section>
 
-    <!-- Categories -->
+    <!-- Departments -->
     <section class="section" data-anno="1A · R07 Configurable categories">
-      <div class="section-head"><div><h2>Shop by category</h2><p>New, open-box and certified refurbished across 12 departments</p></div><a href="store-listing.html" class="strong">View all categories →</a></div>
-      <div class="cat-tiles" id="cat-tiles"></div>
+      <div class="section-head"><div><span class="eyebrow">Departments</span><h2 class="mt-8">Shop by department</h2><p>New, open-box and certified refurbished across 12 departments</p></div><a href="store-listing.html" class="strong">All departments <i data-icon="arrow-right" class="ic-sm"></i></a></div>
+      <div class="depts" id="depts"></div>
     </section>
 
-    <!-- Deals -->
-    <section class="section" data-anno="1A · Promotions (honest discounts vs MRP)">
+    <!-- Shop by what you do -->
+    <section class="section" data-anno="1A · Curated collections by use (D-142)">
+      <div class="section-head"><div><span class="eyebrow">Curated by our specialists</span><h2 class="mt-8">Shop by what you do</h2></div>
+        <div class="uses" role="tablist" aria-label="Collections">
+          <button class="on" data-use="work" role="tab" aria-selected="true"><i data-icon="briefcase"></i> Work</button>
+          <button data-use="game" role="tab" aria-selected="false"><i data-icon="zap"></i> Gaming</button>
+          <button data-use="create" role="tab" aria-selected="false"><i data-icon="aperture"></i> Create</button>
+          <button data-use="upgrade" role="tab" aria-selected="false"><i data-icon="cpu"></i> Upgrade</button>
+        </div>
+      </div>
+      <div class="use-note" id="use-note"></div>
+      <div class="pgrid cols-4" id="use-grid" data-products="lap-01,lap-02,mon-03,hub-02"></div>
+    </section>
+
+    <!-- Weekly offers (honest end date, no countdown) -->
+    <section class="section" data-anno="1A · Promotions (honest discounts vs MRP · D-043)">
       <div class="section-head">
-        <div class="row gap-12"><h2>Deals of the day</h2><span class="deal-timer"><i data-icon="clock"></i> Ends in <span class="t" id="deal-t">05:42:18</span></span></div>
-        <a href="store-listing.html?deals=1" class="strong">See all deals →</a>
+        <div><span class="eyebrow">Offers</span><h2 class="mt-8">This week's offers</h2><p>Offer prices valid until Sun, 4 Oct · every discount is against the printed MRP</p></div>
+        <a href="store-listing.html?deals=1" class="strong">All offers <i data-icon="arrow-right" class="ic-sm"></i></a>
       </div>
       <div class="pgrid cols-5" data-products="lap-04,mon-01,hp-01,ssd-03,cam-04"></div>
     </section>
 
-    <!-- Refurbished -->
+    <!-- Refurbished: the grade scale -->
     <section class="section" data-anno="1A · R19 Refurbished trust: grade rubric + unit-level evidence">
-      <div class="section-head"><div><h2>Certified refurbished</h2><p>Every unit is inspected, graded and photographed individually</p></div><a href="store-refurbished.html" class="strong">Explore refurbished →</a></div>
-      <div class="grid stack-md" style="grid-template-columns: 300px 1fr">
-        <div class="grade-card">
-          <div class="row gap-8"><i data-icon="award" class="ic-lg text-brand"></i><h3>What our grades mean</h3></div>
-          <div class="grade-row"><span class="cond openbox">Open box</span><span class="small subtle">Unused. Packaging opened, accessories complete.</span></div>
-          <div class="grade-row"><span class="cond refurb">Grade A</span><span class="small subtle">Minimal signs of use. Battery ≥ 85% health.</span></div>
-          <div class="grade-row"><span class="cond refurb">Grade B</span><span class="small subtle">Light visible wear. Fully functional. Battery ≥ 75%.</span></div>
-          <div class="grade-row"><span class="cond used">Used · Good</span><span class="small subtle">Pre-owned. Wear described & photographed.</span></div>
-          <a class="btn btn-soft btn-sm mt-8" href="store-help.html#grades">Full grading standard</a>
-        </div>
-        <div class="pgrid cols-4" data-products="lap-01,lap-02,lap-08,pc-04"></div>
+      <div class="section-head"><div><span class="eyebrow">Certified refurbished</span><h2 class="mt-8">Know exactly what you're buying</h2><p>Every unit is inspected, graded and photographed individually — the grade is on the invoice</p></div><a href="store-refurbished.html" class="strong">Explore refurbished <i data-icon="arrow-right" class="ic-sm"></i></a></div>
+      <div class="scale">
+        <div style="--seg:var(--c-openbox)"><span class="cond openbox">Open box</span><p>Unused. Packaging opened, accessories complete, full brand warranty.</p><div class="lvl">Closest to new</div></div>
+        <div style="--seg:var(--c-refurb)"><span class="cond refurb">Grade A</span><p>Minimal signs of use. Battery ≥ 85% of design capacity.</p><div class="lvl">Looks almost new</div></div>
+        <div style="--seg:#a18cff"><span class="cond refurb">Grade B</span><p>Light visible wear. Fully functional. Battery ≥ 75%.</p><div class="lvl">Best value for work</div></div>
+        <div style="--seg:var(--c-used)"><span class="cond used">Used · Good</span><p>Pre-owned. Wear described and photographed, tested and working.</p><div class="lvl">Lowest price</div></div>
       </div>
+      <div class="pgrid cols-4 mt-16" data-products="lap-01,lap-02,lap-08,pc-04"></div>
     </section>
 
-    <!-- Components -->
+    <!-- Build or upgrade -->
     <section class="section" data-anno="1A · Category landing tiles">
-      <div class="section-head"><div><h2>Build or upgrade your PC</h2><p>Parts checked for compatibility by our build team</p></div><a href="store-listing.html?cat=components" class="strong">All components →</a></div>
-      <div class="comp-tiles">
-        <a class="comp-tile" href="store-listing.html?cat=components"><div data-ph="gpu-tuf"></div><div><b>Graphics cards</b><br><span>RTX 4070 Ti from ₹79,990</span></div></a>
-        <a class="comp-tile" href="store-listing.html?cat=components"><div data-ph="cpu-ryzen"></div><div><b>Processors</b><br><span>Ryzen 7000 & Intel 13th gen</span></div></a>
-        <a class="comp-tile" href="store-listing.html?cat=storage"><div data-ph="ram-kits"></div><div><b>Memory</b><br><span>DDR4 & DDR5 kits from ₹2,999</span></div></a>
-        <a class="comp-tile" href="store-listing.html?cat=storage"><div data-ph="ssd-t5top"></div><div><b>Storage</b><br><span>NVMe, SATA & portable SSDs</span></div></a>
+      <div class="build">
+        <div>
+          <span class="eyebrow" style="color:#8b8f97">PC components</span>
+          <h2 class="mt-8">Build or upgrade your PC — with a compatibility check</h2>
+          <p>Send us your current parts or a wish-list. Our build team confirms fit, power and clearance before you pay.</p>
+          <div class="row mt-16 wrap"><a class="btn btn-accent" href="store-listing.html?cat=components">Shop components</a><button class="btn" style="--b-bg:transparent;--b-fg:#fff;--b-bd:rgba(255,255,255,.28)" data-wa><i data-icon="whatsapp"></i> Ask for a check</button></div>
+        </div>
+        <div class="comp">
+          <a href="store-listing.html?cat=components"><div data-ph="gpu-tuf"></div><div><b>Graphics cards</b><span>RTX 4070 Ti from ₹79,990</span></div></a>
+          <a href="store-listing.html?cat=components"><div data-ph="cpu-ryzen"></div><div><b>Processors</b><span>Ryzen 7000 &amp; Intel 13th gen</span></div></a>
+          <a href="store-listing.html?cat=storage"><div data-ph="ram-kits"></div><div><b>Memory</b><span>DDR4 &amp; DDR5 from ₹2,999</span></div></a>
+          <a href="store-listing.html?cat=storage"><div data-ph="ssd-t5top"></div><div><b>Storage</b><span>NVMe, SATA &amp; portable</span></div></a>
+        </div>
       </div>
       <div class="pgrid cols-5 mt-16" data-products="gpu-01,cpu-01,mb-01,ram-01,cool-01"></div>
     </section>
@@ -179,62 +338,66 @@
     <!-- Business band (guest/consumer) -->
     <section class="section hide-dealer">
       <div class="band dealer" data-anno="1A · R03 Dealer application → approval → private price list">
-        <div class="row gap-20">
-          <span class="ti" style="width:56px;height:56px;border-radius:14px;background:rgba(255,255,255,.1);display:grid;place-items:center"><i data-icon="briefcase" class="ic-xl"></i></span>
-          <div><h2 style="color:#fff">Buying for a shop or company?</h2><p class="mt-4">Approved dealers get private price lists, quantity tiers (5+ and 10+ units), GST invoices and quick ordering by SKU.</p></div>
-        </div>
+        <div><span class="eyebrow" style="color:#8b8f97">For shops &amp; companies</span><h2 class="mt-8" style="font-size:28px">Buying for a shop or company?</h2><p class="mt-8">Approved dealers get private price lists, quantity tiers (5+ and 10+ units), GST invoices and quick ordering by SKU.</p></div>
         <div class="row"><a class="btn btn-lg btn-accent" href="store-login.html#dealer">Apply for dealer pricing</a><a class="btn btn-lg" style="--b-bg:transparent;--b-fg:#fff;--b-bd:rgba(255,255,255,.3)" href="store-dealer.html">Learn more</a></div>
       </div>
     </section>
 
     <!-- Cameras -->
     <section class="section">
-      <div class="section-head"><div><h2>Cameras & lenses</h2><p>Mirrorless, DSLR and pre-owned glass with shutter-count disclosed</p></div><a href="store-listing.html?cat=cameras" class="strong">Shop imaging →</a></div>
-      <div class="grid stack-md home-cam" style="grid-template-columns: 1fr 2.2fr">
+      <div class="section-head"><div><span class="eyebrow">Imaging</span><h2 class="mt-8">Cameras &amp; lenses</h2><p>Mirrorless, DSLR and pre-owned glass with shutter count disclosed</p></div><a href="store-listing.html?cat=cameras" class="strong">Shop imaging <i data-icon="arrow-right" class="ic-sm"></i></a></div>
+      <div class="grid home-cam" style="grid-template-columns: 1fr 2.3fr">
         <a class="promo photo" href="store-listing.html?cat=cameras" style="min-height:100%"><div class="p-bg"><img src="assets/img/banner-camera.jpg" alt=""></div><div><span class="badge b-accent">Full-frame</span><h3 class="mt-8" style="color:#fff">Sony Alpha a7 III kit</h3><p>With 28-70 mm lens. No-cost EMI from ₹13,583/mo.</p></div><span class="btn btn-sm btn-accent" style="align-self:flex-start">View offer</span></a>
-        <div class="pgrid cols-4" data-products="cam-05,cam-01,lens-01,lens-03"></div>
+        <div class="pgrid cols-3" data-products="cam-05,cam-01,lens-01"></div>
       </div>
     </section>
 
     <!-- Recently viewed / for you -->
     <section class="section only-signed">
-      <div class="section-head"><div><h2>Continue shopping</h2><p>Recently viewed and related to your searches</p></div></div>
-      <div class="pgrid cols-6" data-products="lap-03,mon-03,kb-01,hub-02,cam-web,net-01"></div>
+      <div class="section-head"><div><span class="eyebrow">For you</span><h2 class="mt-8">Continue shopping</h2><p>Recently viewed and related to your searches</p></div></div>
+      <div class="pgrid cols-5" data-products="lap-03,mon-03,kb-01,hub-02,cam-web"></div>
     </section>
 
     <!-- WhatsApp ordering -->
     <section class="section">
-      <div class="band whatsapp" data-anno="1A click-to-chat · 1B guided WhatsApp ordering (R11)">
-        <div style="max-width:420px">
-          <span class="badge b-ok">WhatsApp ordering</span>
-          <h2 class="mt-8">Prefer WhatsApp? Order in chat.</h2>
-          <p class="subtle mt-4">Send a product link or model number. We confirm the exact configuration, condition and live price, then send a secure checkout link. Same stock, same warranty.</p>
+      <div class="wa-card" data-anno="1A click-to-chat · 1B guided WhatsApp ordering (R11)">
+        <div>
+          <span class="badge b-ok"><i data-icon="whatsapp"></i> WhatsApp ordering</span>
+          <h2 class="mt-12" style="font-size:30px">Prefer to chat? Order on WhatsApp.</h2>
+          <p class="subtle mt-8">Same stock, same prices, same warranty as the website — confirmed by a person, paid through a secure checkout link.</p>
+          <div class="wa-steps">
+            <div class="wa-step"><div><b>Share what you need</b>A product link, photo or model — e.g. “T14 Gen 2, 16 GB”.</div></div>
+            <div class="wa-step"><div><b>We confirm the live price</b>Condition, stock and delivery date from the same system as the website.</div></div>
+            <div class="wa-step"><div><b>Pay securely</b>Open the checkout link. Order tracking continues in the chat.</div></div>
+          </div>
           <button class="btn btn-wa mt-16" data-wa><i data-icon="whatsapp"></i> Chat on +91 80 4000 1234</button>
         </div>
-        <div class="wa-steps grow">
-          <div class="wa-step"><b>1 · Share what you need</b>Product link, photo or model — e.g. “T14 Gen 2, 16 GB”.</div>
-          <div class="wa-step"><b>2 · We confirm live price</b>Condition, stock & delivery date from the same system as the website.</div>
-          <div class="wa-step"><b>3 · Pay securely</b>Open the checkout link. Order tracking continues in chat.</div>
+        <div class="wa-phone" aria-hidden="true">
+          <div class="wh"><span class="avatar sm"><i data-icon="whatsapp" class="ic-sm"></i></span><div><b>Tradex</b><div class="tiny muted">Typically replies in 5 min</div></div></div>
+          <div class="bub out">Hi, is the ThinkPad T14 Gen 2 with 16 GB available?<small>10:02</small></div>
+          <div class="bub in">Yes — 9 units, Grade B, ₹32,490 incl. GST. Delivery to 560034 by Tue, 29 Sep. Shall I send a checkout link?<small>10:04</small></div>
+          <div class="bub out">Yes please<small>10:05</small></div>
+          <div class="bub in">Here you go — the price is held for 30 minutes.<div class="lnk"><i data-icon="lock" class="ic-sm"></i> Secure checkout · TXO-10493</div><small>10:05</small></div>
         </div>
       </div>
     </section>
 
     <!-- Brands -->
     <section class="section">
-      <div class="section-head"><h2>Top brands</h2></div>
-      <div class="brand-row">
-        <a class="brand-chip" href="store-listing.html?brand=dell">DELL</a><a class="brand-chip" href="store-listing.html?brand=lenovo">Lenovo</a><a class="brand-chip" href="store-listing.html?brand=hp">HP</a><a class="brand-chip" href="store-listing.html?brand=apple">Apple</a><a class="brand-chip" href="store-listing.html?brand=asus">ASUS</a>
-        <a class="brand-chip" href="store-listing.html?brand=samsung">SAMSUNG</a><a class="brand-chip" href="store-listing.html?brand=canon">Canon</a><a class="brand-chip" href="store-listing.html?brand=sony">SONY</a><a class="brand-chip" href="store-listing.html?brand=logitech">logitech</a><a class="brand-chip" href="store-listing.html?brand=amd">AMD</a>
+      <div class="section-head"><div><span class="eyebrow">Brands</span><h2 class="mt-8">Top brands</h2></div></div>
+      <div class="brands">
+        <a href="store-listing.html?brand=dell">DELL</a><a href="store-listing.html?brand=lenovo">Lenovo</a><a href="store-listing.html?brand=hp">HP</a><a href="store-listing.html?brand=apple">Apple</a><a href="store-listing.html?brand=asus">ASUS</a>
+        <a href="store-listing.html?brand=samsung">SAMSUNG</a><a href="store-listing.html?brand=canon">Canon</a><a href="store-listing.html?brand=sony">SONY</a><a href="store-listing.html?brand=logitech">logitech</a><a href="store-listing.html?brand=amd">AMD</a>
       </div>
     </section>
 
     <!-- Stores -->
     <section class="section" data-anno="1A · R14 Branches share one stock authority · in-store availability">
-      <div class="section-head"><div><h2>Visit a Tradex store</h2><p>Check live availability before you visit · pick up in store (where enabled)</p></div></div>
-      <div class="grid g-3">
-        <div class="store-card"><div data-ph="pc-setup-white"></div><div><b>SP Road, Bengaluru</b><div class="small muted">Mon–Sat · 10 AM–8:30 PM</div><div class="small mt-4"><span class="status s-ok">Open now</span> · 1.2k products in stock</div></div></div>
-        <div class="store-card"><div data-ph="banner-workspace"></div><div><b>Koramangala, Bengaluru</b><div class="small muted">Mon–Sun · 11 AM–9 PM</div><div class="small mt-4"><span class="status s-ok">Open now</span> · Demo & trial zone</div></div></div>
-        <div class="store-card"><div data-ph="mon-setup"></div><div><b>Mysuru</b><div class="small muted">Mon–Sat · 10 AM–8 PM</div><div class="small mt-4"><span class="status s-warn">Closes in 45 min</span> · Service desk</div></div></div>
+      <div class="section-head"><div><span class="eyebrow">Visit us</span><h2 class="mt-8">Visit a Tradex store</h2><p>Check live availability before you visit · pick up in store (where enabled)</p></div><a href="store-help.html#stores" class="strong">Hours &amp; directions <i data-icon="arrow-right" class="ic-sm"></i></a></div>
+      <div class="stores">
+        <div class="store-c"><div data-ph="pc-setup-white"></div><div><b>SP Road, Bengaluru</b><div class="small muted">Mon–Sat · 10 AM–8:30 PM</div><div class="small mt-4"><span class="status s-ok">Open now</span> · 1.2k products in stock</div></div></div>
+        <div class="store-c"><div data-ph="banner-workspace"></div><div><b>Koramangala, Bengaluru</b><div class="small muted">Mon–Sun · 11 AM–9 PM</div><div class="small mt-4"><span class="status s-ok">Open now</span> · Demo &amp; trial zone</div></div></div>
+        <div class="store-c"><div data-ph="mon-setup"></div><div><b>Mysuru</b><div class="small muted">Mon–Sat · 10 AM–8 PM</div><div class="small mt-4"><span class="status s-warn">Closes in 45 min</span> · Service desk</div></div></div>
       </div>
     </section>
   </div>
@@ -242,12 +405,25 @@
 <script src="assets/tradex.js"></script>
 <script>
 TX.ready(() => {
-  // Category tiles from shared catalogue
-  TX.$("#cat-tiles").innerHTML = TX.categories.slice(0, 8).map(c =>
-    `<a class="cat-tile" href="store-listing.html?cat=${c.id}">${TX.ph(c.img, "", c.name)}<div>${c.name}<small>${c.count} products</small></div></a>`).join("");
-  // Deal countdown
-  let s = 5 * 3600 + 42 * 60 + 18;
-  setInterval(() => { s = Math.max(0, s - 1); const h = String(Math.floor(s / 3600)).padStart(2, "0"), m = String(Math.floor(s % 3600 / 60)).padStart(2, "0"), x = String(s % 60).padStart(2, "0"); TX.$("#deal-t").textContent = `${h}:${m}:${x}`; }, 1000);
+  const ic = TX.icon;
+  // Department mosaic from the shared catalogue (first department is the feature tile)
+  const pick = ["laptops", "desktops", "monitors", "components", "storage", "cameras", "accessories"];
+  TX.$("#depts").innerHTML = pick.map((id) => TX.categories.find((c) => c.id === id)).map((c) =>
+    `<a class="dept" href="store-listing.html?cat=${c.id}">${TX.ph(c.img, "", c.name)}<div class="dn"><div><b>${c.name}</b><small>${c.count} products</small></div><span class="arr">${ic("arrow-up-right", "ic-sm")}</span></div></a>`).join("");
+  // Collections by use: each tab swaps a curated product set (same cards, same live prices)
+  const USES = {
+    work: ["lap-01,lap-02,mon-03,hub-02", "Business laptops, a 4K USB-C monitor and one-cable docking — the setups offices order most."],
+    game: ["lap-04,gpu-01,mon-01,ms-01", "High-refresh screens, RTX graphics and low-latency peripherals, checked for compatibility."],
+    create: ["lap-06,cam-05,mon-03,ssd-03", "Colour-accurate displays, fast storage and cameras for photo and video work."],
+    upgrade: ["cpu-01,ram-01,ssd-01,cool-01", "Parts that make an existing PC faster — our build team confirms fit before you pay."],
+  };
+  const setUse = (k) => {
+    TX.$$(".uses button").forEach((b) => { const on = b.dataset.use === k; b.classList.toggle("on", on); b.setAttribute("aria-selected", on); });
+    TX.$("#use-note").innerHTML = `${ic("info")}<span>${USES[k][1]}</span>`;
+    const g = TX.$("#use-grid"); g.dataset.products = USES[k][0]; TX.renderGrids(g.parentElement);
+  };
+  setUse("work");
+  document.addEventListener("click", (e) => { const b = e.target.closest("[data-use]"); if (b) setUse(b.dataset.use); });
 });
 </script>
 </body>

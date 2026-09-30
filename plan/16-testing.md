@@ -142,6 +142,8 @@ Module behaviour and business rules referenced as `BR-M##-##` are in `05-backend
 | TS-SVC-09 | Search/cache projections: approved change invalidates projections with version/timestamp; private prices never indexed; checkout revalidates (BP §16.5; BR-M21-03, -06; BR-M04-20) | M21, M04, M09 | C, T | → stale projection detectable | SYN | D-053 | REQUIRES_DECISION (D-105, D-032) |
 | TS-SVC-10 | Report/export jobs: row limits, expiring audited downloads, restricted columns, job isolation from checkout (BP §14.4, §20.2) | M18 · API-M18-03…05 | C, T | → export audit record per download | SYN | D-053 | REQUIRES_DECISION (D-152) |
 | TS-SVC-11 | Scheduled jobs: reservation expiry (A06), challenge/invitation expiry, delegation start/end, approval deadlines, dealer approval expiry reminders | M06, M02, M17, M08 | C, T | → time-travel cases | SYN | D-053 | REQUIRES_DECISION (D-026, D-025) |
+| TS-SVC-12 | Presence derivation and work-item events: server-derived active / idle / offline from heartbeats, self-set break / away, area and work-item tags on audit events, idempotent work-item events, retention, nothing stored when the capability is off (CF1 §2; D-282) | M02 · API-M02-43 · E-staff_presence_interval, E-work_item_event, E-audit_event | C, T | Fixture idle threshold → cases 12.1–12.5 (§19) | SYN | D-053 | REQUIRES_DECISION (D-283) |
+| TS-SVC-13 | Staff alert evaluator: each rule fires exactly at its threshold and names rule, threshold, person, record and time; rule off stops new alerts and keeps history; acknowledge audited; no alert storms; staff work never blocked (T-1A.14-M17-13) | M17 · API-M24-18…20 · E-staff_alert_rule, E-staff_alert | C, T | Fixture thresholds → cases 13.1–13.5 (§19) | SYN | D-053 | REQUIRES_DECISION (D-283) |
 
 ### 5.3 Frontend / component — TS-FE (location: `frontend/*`)
 
@@ -155,6 +157,7 @@ Module behaviour and business rules referenced as `BR-M##-##` are in `05-backend
 | TS-FE-06 | API error-code rendering: every `06-api.md` §1.7 code has an accurate user state (PRICE_CHANGED explicit acceptance, STOCK_UNAVAILABLE with available qty, RESERVATION_EXPIRED, APPROVAL_REQUIRED, PROVIDER_PENDING) — no false success (BP §6.3 Confirmation) | all apps | C, T | → each code | SYN | D-053 | NOT_STARTED |
 | TS-FE-07 | Browser matrix: key flows on agreed desktop/laptop browsers (BP §6.7 step 8, §23.4) | all P-* | R | Browser list decided → all key flows | SYN | D-053 | REQUIRES_DECISION (D-206) |
 | TS-FE-08 | Double-submit & retry UX: one idempotency key per user intent reused on retries; disabled repeat submit; payment status polling shows server-verified state (BP §10.3, §17.5) | P-S07, P-S08, P-E02 | C, T | → network-retry case | SYN | D-053 | REQUIRES_DECISION (D-079, D-146) |
+| TS-FE-09 | P-E17 Team & activity and P-E18 Analytics: every section, tab, drawer tab, modal and state of `04c` §22–§23; one filter row drives every section; area rows match their own screens; table view on every chart; help keys resolve (CF1 §2, §3) | M24, M18 · API-M24-15…20, API-M18-20 · P-E17, P-E18 | C, T | Screens built → cases 09.1–09.9 (§19) | SYN | D-053, D-101 | REQUIRES_DECISION (D-004, D-283, D-286) |
 
 ### 5.4 API / contract — TS-API (location: `backend/` API tests)
 
@@ -220,17 +223,17 @@ Every adapter case set includes **timeout, duplicate event, out-of-order event, 
 
 | ID | Scope — verifies (source) | Modules · APIs · screens | When | Entry → Exit | Data | Tools | Status |
 |---|---|---|---|---|---|---|---|
-| TS-PERM-01 | Route inventory vs `07` §13 (deny by default; 492 endpoints) and matrix conformance key × role for every key in `07` §5, incl. the 16 keys added 2026-09-27 (`staff.assignable.read` … `system.alerts.manage`) | M02 · all | C, S | → zero unmapped routes | SYN | D-053 | NOT_STARTED |
-| TS-PERM-02 | BOLA — object id substitution across customer, business account, vendor, location, token, export, session, conversation, dealer order-approval objects (BP §19.1 S14; **T11**, T23) | all | C, S, R | → cases 02.1–02.11 | SYN | D-053 | NOT_STARTED |
-| TS-PERM-03 | BOPLA — protected/derived properties (price, buyer type, approval fields, refund approval, self-elevation, payout bypass, GSTIN change) (**T10**, **T13**) | M05, M10, M14, M11, M02, M08 | C, S, R | → cases 03.1–03.6 | SYN | D-053 | NOT_STARTED |
-| TS-PERM-04 | Function-level: wrong principal type, wrong role, integration scope, webhook forgery, vendor applicant limits | all | C, S | → cases 04.1–04.5 | SYN | D-053 | NOT_STARTED |
+| TS-PERM-01 | Route inventory vs `07` §13 (deny by default; 501 endpoints) and matrix conformance key × role for every key in `07` §5, incl. the 16 keys added 2026-09-27 (`staff.assignable.read` … `system.alerts.manage`) and the 7 added 2026-09-30 (`presence.self`, `public.visit`, `analytics.read`, `analytics.margin.read`, `team.monitor.read`, `team.alert.ack`, `team.alert.manage`) | M02 · all | C, S | → zero unmapped routes | SYN | D-053 | NOT_STARTED |
+| TS-PERM-02 | BOLA — object id substitution across customer, business account, vendor, location, token, export, session, conversation, dealer order-approval objects (BP §19.1 S14; **T11**, T23) | all | C, S, R | → cases 02.1–02.12 | SYN | D-053 | NOT_STARTED |
+| TS-PERM-03 | BOPLA — protected/derived properties (price, buyer type, approval fields, refund approval, self-elevation, payout bypass, GSTIN change) (**T10**, **T13**) | M05, M10, M14, M11, M02, M08 | C, S, R | → cases 03.1–03.7 | SYN | D-053 | NOT_STARTED |
+| TS-PERM-04 | Function-level: wrong principal type, wrong role, integration scope, webhook forgery, vendor applicant limits | all | C, S | → cases 04.1–04.6 | SYN | D-053 | NOT_STARTED |
 | TS-PERM-05 | Private-price isolation: public, sign-out cache, membership loss (**T02**, **T22**) | M02, M05, M09, M21, M27 | S, R | → cases 05.1–05.3 incl. CDN/shared cache | SYN | D-053 | REQUIRES_DECISION (D-105) |
 | TS-PERM-06 | Chat/WhatsApp disclosure (**T23**) | M16, M10 | S, R | → cases 06.1–06.2 | SYN | D-053 | REQUIRES_DECISION (D-021) |
 | TS-PERM-07 | Owner away: delegation in scope, out of scope, expiry (**T31**) | M17, M02 | S, R | → cases 07.1–07.3 | SYN | D-053 | REQUIRES_DECISION (D-025) |
 | TS-PERM-08 | Separation of duties and maker-checker (`07` §8) | M17, M02, M11, M08 | C, S | → cases 08.1–08.5 | SYN | D-053 | REQUIRES_DECISION (D-196) for warn rules |
-| TS-PERM-09 | Thresholds and request-only roles; stale approvals; privileged operational flags; change register & templates (`07` §9) | M17, M10, M02, M24, M19 | C, S | Fixture thresholds → cases 09.1–09.5 | SYN | D-053 | REQUIRES_DECISION (D-024) |
-| TS-PERM-10 | Sensitive fields: masking, reveal with reason, cost/margin columns, secrets (`07` §7) | M02, M08, M06, M18, M24 | C, S | → cases 10.1–10.4 | SYN | D-053 | REQUIRES_DECISION (D-153, D-197) |
-| TS-PERM-11 | Record scope: location switch, cross-branch read, branch-scoped reports/dashboard (`07` §6) | M03, M06, M12, M18, M02 | C, S | → cases 11.1–11.3 | SYN | D-053 | REQUIRES_DECISION (D-029) |
+| TS-PERM-09 | Thresholds and request-only roles; stale approvals; privileged operational flags; change register & templates (`07` §9) | M17, M10, M02, M24, M19 | C, S | Fixture thresholds → cases 09.1–09.6 | SYN | D-053 | REQUIRES_DECISION (D-024) |
+| TS-PERM-10 | Sensitive fields: masking, reveal with reason, cost/margin columns, secrets (`07` §7) | M02, M08, M06, M18, M24 | C, S | → cases 10.1–10.5 | SYN | D-053 | REQUIRES_DECISION (D-153, D-197) |
+| TS-PERM-11 | Record scope: location switch, cross-branch read, branch-scoped reports/dashboard (`07` §6) | M03, M06, M12, M18, M02 | C, S | → cases 11.1–11.4 | SYN | D-053 | REQUIRES_DECISION (D-029) |
 | TS-PERM-12 | State effects: suspension, deactivation, role removal with cache invalidation (`07` §3.13) | M02, M08, M14 | C, S | → cases 12.1–12.3 | SYN | D-053 | NOT_STARTED |
 | TS-PERM-13 | Emergency access lifecycle (`07` §10) | M17 | S | → case 13.1 | SYN | D-053 | REQUIRES_DECISION (D-025) |
 | TS-PERM-14 | Approval-type authority (designated reviewers, buyer designation) | M17, M04, M14, M07 | S | → case 14.1 | SYN | D-053 | REQUIRES_DECISION (D-081, D-222) |
@@ -306,6 +309,7 @@ Every adapter case set includes **timeout, duplicate event, out-of-order event, 
 | TS-ERP-17 | Customers & dealers admin: application decision with reason and price list, suspension/reinstatement, members on behalf, duplicate review and merge safeguards, privacy requests (BP §8.3, §13.4, §19.3) | M08 · API-M08-28…45 · P-E10 | T, S | → cases | SYN | D-053 | REQUIRES_DECISION (D-067, D-133, D-060) |
 | TS-ERP-18 | Support inbox: assignment, automation pause in a conversation, verification, templates outside window, tickets and escalation categories (BP §13.3–13.4) | M16 · API-M16-04…19 · P-E05 | T, S | D-014, D-074 → cases | SYN | D-053 | REQUIRES_DECISION (D-014, D-074) |
 | TS-ERP-19 | Reporting: launch report set definitions, event-date basis, freshness labels, branch scope, restricted columns, exports reconcile with sample transactions (BP §14.3–14.4; WP15) | M18 · API-M18-01…19 · P-E13 | T, S | Report set (D-075) → reconciled totals | SYN | D-053 | REQUIRES_DECISION (D-075) |
+| TS-ERP-20 | Analytics read models: totals reconcile to orders, returns and refunds for a seeded month; full rebuild identical; freshness per model; test transactions excluded; anonymised customers leave the cohort snapshot (CF1 §3; D-284; T-1A.15-M18-09) | M18 · API-M18-20 · E-analytics_daily_fact, E-customer_cohort_snapshot · P-E18 | T, S | Seeded month → cases 20.1–20.5 (§19) | SYN | D-053 | REQUIRES_DECISION (D-286) |
 
 ### 5.13 Admin — TS-ADM (location: `tests/acceptance/`, `backend/admin/`, `backend/identity/`)
 
@@ -370,6 +374,7 @@ Every adapter case set includes **timeout, duplicate event, out-of-order event, 
 | TS-SEC-10 | CSV/spreadsheet formula injection neutralised in every export (BP §14.4) | M18, M04, M19 · export endpoints | C | → formula cells neutralised | SYN | D-053 | NOT_STARTED |
 | TS-SEC-11 | Abuse protection under load on sign-in, OTP, order access and checkout (BP §19.1) | M02, M10 · §3.12 of `07` | R | Rate limits decided → protected under load, shoppers unaffected | SYN | D-053, D-084 | REQUIRES_DECISION (D-084) |
 | TS-SEC-12 | Independent security assessment before go-live | Whole platform on staging | G | D-208 decided → no open critical finding | MSK/SYN | D-208 | REQUIRES_DECISION (D-208) |
+| TS-SEC-13 | Staff-monitoring and visit-tracking privacy: no column, payload key or log line outside the D-282 recorded list; visit tracking stores no personal data under D-285 (b) and nothing before consent under (c) (DPDP Act 2023) | M02, M09, M17, M24 · API-M02-43, API-M24-15…17, API-M09-03 | C, R | → cases 13.1–13.4 (§19) | SYN | D-053 | REQUIRES_DECISION (D-283, D-285) |
 
 ### 5.17 Accessibility — TS-A11Y (location: `tests/a11y/`; BP §6.7; scope D-051)
 
@@ -874,28 +879,28 @@ suites of the stage's modules (§4). Changes to M02 (identity/permissions) alway
 | Module | Suites to run when touched |
 |---|---|
 | M01 | TS-DB-01, TS-SVC-02, deploy smoke; TS-BKP-01 (infra changes) |
-| M02 | TS-UNIT-03, TS-AUTH-01…10, TS-PERM-01…14, TS-SVC-03, TS-ADM-01/02/05/09 |
+| M02 | TS-UNIT-03, TS-AUTH-01…10, TS-PERM-01…14, TS-SVC-03, TS-SVC-12, TS-SEC-13, TS-ADM-01/02/05/09 |
 | M03 | TS-ADM-06, TS-PERM-11 |
 | M04 | TS-UNIT-07, TS-ERP-15, TS-ECOM-01/02, TS-SVC-09, TS-SEC-04, TS-VEN-02 (1B) |
 | M05 | TS-UNIT-01/02, TS-ECOM-03, TS-ERP-16, TS-PERM-05, TS-API-10 |
 | M06 | TS-UNIT-05, TS-ERP-01…08, TS-DB-03/07, TS-SVC-01 |
 | M07 | TS-ERP-04, TS-ERP-09, TS-INT-05 (bills export) |
 | M08 | TS-ECOM-09/10, TS-ERP-17, TS-PERM-02.3, TS-DB-06 |
-| M09 | TS-FE-02/05/06, TS-ECOM-01…05, TS-PERF-01 |
+| M09 | TS-FE-02/05/06, TS-ECOM-01…05, TS-PERF-01 (incl. 01.1 visit beacon), TS-SEC-13.3/13.4 |
 | M10 | TS-UNIT-04/06, TS-ECOM-04…07/11, TS-ERP-01, TS-ERR-01, TS-API-03 |
 | M11 | TS-INT-01, TS-ERP-13/14, TS-ERR-01, TS-DB-03 (I-05) |
 | M12 | TS-UNIT-09, TS-ERP-10/11, TS-INT-02 |
 | M13 | TS-UNIT-08, TS-ERP-12, TS-ECOM-08, TS-E2E-09 |
 | M14 | TS-VEN-01…11, TS-PERM-02.4/02.5/03.2/04.3 |
 | M16 | TS-ECOM-12, TS-ERP-18, TS-INT-03, TS-PERM-06 |
-| M17 | TS-UNIT-10, TS-SVC-02/06/07/11, TS-PERM-07/08/09/13/14, TS-ADM-03/04/10/11 |
-| M18 | TS-UNIT-11, TS-SVC-10, TS-ERP-19, TS-PERF-05, TS-SEC-10, TS-ADM-15 |
+| M17 | TS-UNIT-10, TS-SVC-02/06/07/11/13, TS-PERM-07/08/09/13/14, TS-ADM-03/04/10/11 |
+| M18 | TS-UNIT-11, TS-SVC-10, TS-ERP-19, TS-ERP-20, TS-FE-09 (P-E18), TS-PERF-05, TS-SEC-10, TS-ADM-15 |
 | M19 | TS-INT-05, TS-ERP-14, TS-DB-02 (I-09), TS-ADM-14 |
 | M20 | TS-SVC-05, TS-ECOM-15, TS-INT-04 |
 | M21 | TS-ECOM-01, TS-SVC-09, TS-PERF-06, TS-PERM-05.1 |
 | M22 | TS-SVC-08, TS-SEC-03/04 |
 | M23 | TS-INT-01…10 for the touched adapter |
-| M24 | TS-SVC-04, TS-ADM-07/12/13 |
+| M24 | TS-SVC-04, TS-ADM-07/12/13, TS-FE-09 (P-E17), TS-PERM-04.6 |
 | M25 | TS-MIG-01…08 |
 | M26 | TS-BKP-01…04, TS-PERF-07, TS-SEC-05…09 |
 | M27 | TS-ECOM-13, TS-MIG-05 |
@@ -991,3 +996,53 @@ Added to the §14 go-live checklist: **G14** the isolation suite passes with zer
 environment; **G15** every line of the `D-248` performance budget is measured and within budget; **G16** a
 single-store restore has been rehearsed without affecting another store. All three are evidenced by
 `T-1A.17-M26-08`.
+
+---
+
+## 19. Client feedback CF1 test cases (2026-09-30, P-E17 and P-E18)
+
+Source: `CF1 §2` (employee monitoring → P-E17) and `CF1 §3` (analytics → P-E18); decisions `D-282`–`D-286`;
+screens `04c` §22–§23; data `03` §13; APIs `06-api.md` §11. Cases use existing suites where one fits and add the
+suites TS-FE-09, TS-SVC-12, TS-SVC-13, TS-ERP-20 and TS-SEC-13 (§5). Thresholds, idle times and retention periods
+in fixtures are **test values**, never the mockup samples (§3.2). Every case runs with the two-store fixture
+(§18.2).
+
+| Case | Verifies | Setup | Action | Expected | Task | APIs / entities |
+|---|---|---|---|---|---|---|
+| TS-FE-09.1 | P-E17 filters | 14 staff across 3 locations and 6 teams, activity in several areas | Change period, location, team, area, person search | Board, heatmap rows, feed, alerts and performance change consistently; the area table keeps all locations and highlights the area; "Showing n of N" and "Clear filters" correct | T-1A.16-M24-12 AC 1 | API-M24-15, API-M24-17 |
+| TS-FE-09.2 | Area rows match their screens | Open items seeded in every area | Compare each area row's "Open" with the area's own queue | Equal for all rows the store has | T-1A.16-M24-12 AC 2 | API-M24-15, API-M18-15, API-M18-16 |
+| TS-FE-09.3 | Person drawer | Open a person from a board card, the feed, the heatmap (Enter), the performance table and an alert | Read all six tabs | Only that person's data; one `team.person.view` audit event per opening | T-1A.16-M24-12 AC 3 | API-M24-16, E-audit_event |
+| TS-FE-09.4 | P-E17 states | Fixtures: stale presence, empty filter result, no alerts, new starter, person on leave | Load the page | Each state of `04c` §22.12 shown; status and severity always written in text, never colour-only | T-1A.16-M24-12 | API-M24-15 |
+| TS-FE-09.5 | "What is recorded" | D-282 lists; D-283 retention and notice set in configuration (test values) | Open `#m-recorded` | Recorded and not-recorded lists match D-282; retention and notice text come from configuration, none is typed into the page | T-1A.16-M24-12 AC 4; T-1A.16-M24-13 AC 3 | API-M24-01 |
+| TS-FE-09.6 | P-E18 filter row | Seeded month | Change range, comparison, location, channel, buyer and category on each tab | Every tile, chart and table changes; store-wide cards stay and say so; the comparison period is labelled on every delta | T-1A.15-M18-10 AC 1 | API-M18-20 |
+| TS-FE-09.7 | Table view | Every chart on the five tabs and on P-E17 | Toggle "Table view" | The table shows the same numbers as the chart | T-1A.15-M18-10 AC 2 | API-M18-20, API-M24-15 |
+| TS-FE-09.8 | P-E18 states | Stale read model, empty period, role without `analytics.margin.read` | Load each view | Stale label names the model and time; empty-state texts; margin fields absent, not blank | T-1A.15-M18-10 | API-M18-20 |
+| TS-FE-09.9 | Help | Both screens | Open every ⓘ, the page guide and each glossary term | No empty entry; metric definitions equal D-286; recorded lists equal D-282 | T-1A.16-M24-13 | — |
+| TS-SVC-12.1 | Presence derivation | Test idle threshold T | Scripted session: heartbeats → no heartbeat for longer than T → self-set "On break" → heartbeats → sign-out | Intervals active → idle → on_break → active → offline, each boundary within one heartbeat interval | T-1A.2-M02-11 AC 2 | API-M02-43, E-staff_presence_interval |
+| TS-SVC-12.2 | Area and work-item tags | One action in every workspace area | Perform the actions | Every audit event carries its area and, where one exists, its work item | T-1A.2-M02-11 AC 1 | E-audit_event |
+| TS-SVC-12.3 | Work-item events | An item assigned, started, sent back, started again, completed; the writer retried | Run | Each event stored once; handling time, waiting time and sent-back share computed as `03` §13.2 | T-1A.2-M02-11 | E-work_item_event |
+| TS-SVC-12.4 | Presence capability off | `CAP-STAFF_PRESENCE` off | Scripted workspace session | No heartbeat sent; API-M02-43 answers 404; no interval stored | T-1A.2-M02-11 AC 3 | API-M02-43 |
+| TS-SVC-12.5 | Retention | Test retention period for presence and work items (D-283 d) | Advance time past it | Presence and work-item rows beyond the period removed; audit events untouched (own retention, D-036) | T-1A.2-M02-11 | E-staff_presence_interval, E-work_item_event |
+| TS-SVC-13.1 | Rule thresholds | Each of the nine rules enabled with a test threshold N | Scripted data just below, at and above N | Each rule fires exactly at its threshold; the alert names rule, threshold, person, record and time | T-1A.14-M17-13 AC 1 | E-staff_alert |
+| TS-SVC-13.2 | Rule turned off | Alerts exist for a rule | Turn it off; repeat the data | No new alert; existing alerts kept | T-1A.14-M17-13 AC 2 | API-M24-19 |
+| TS-SVC-13.3 | Acknowledge | Open alert | Acknowledge twice | One acknowledgement (who, when), audited; the second call returns the first; nothing about the person's work or access changes | T-1A.14-M17-13 AC 3 | API-M24-20 |
+| TS-SVC-13.4 | No storms, no blocking | The same condition repeats | Repeat it | One open alert per rule, subject and record; the staff action is never blocked or delayed | T-1A.14-M17-13 | E-staff_alert |
+| TS-SVC-13.5 | Seeds | Fresh store | Bootstrap | Nine rules present, all off, thresholds unconfirmed; no mockup sample value seeded | S-17 addendum | E-staff_alert_rule |
+| TS-ERP-20.1 | Reconciliation | Seeded month of orders, cancellations, returns and refunds over 3 locations, 4 channels, 2 buyer types | Sum net sales, orders, units, returns and refunds from the read model | Equal to the source ledgers under the D-286 definitions | T-1A.15-M18-09 AC 1 | E-analytics_daily_fact |
+| TS-ERP-20.2 | Rebuild | Same data | Drop and rebuild the read models | Identical rows | T-1A.15-M18-09 AC 2 | E-analytics_daily_fact, E-customer_cohort_snapshot |
+| TS-ERP-20.3 | Freshness | Refresh job stopped | Load P-E18 | Freshness recorded per model; stale state shown | T-1A.15-M18-09 AC 3 | API-M18-20 |
+| TS-ERP-20.4 | Test traffic excluded | Verification orders flagged (D-209) | Rebuild | Excluded from every measure (BP §4) | T-1A.15-M18-09 | E-analytics_daily_fact |
+| TS-ERP-20.5 | Customer anonymisation | A customer anonymised through a data request | Next rebuild | The customer is gone from E-customer_cohort_snapshot | T-1A.15-M18-09 | E-customer_cohort_snapshot |
+| TS-SEC-13.1 | Nothing outside the D-282 list — schema | DB-G1 and DB-G8 addenda and the E-audit_event columns | Compare every column and payload key with the recorded list | No screen, keystroke, camera, microphone, device-inventory, GPS or private-message field exists | T-1A.2-M02-11 AC 4 | `03` §13.1–§13.4 |
+| TS-SEC-13.2 | Nothing outside the D-282 list — traffic and logs | Full P-E17 session with heartbeats | Scan requests, stored rows and logs | Nothing outside the list sent, stored or logged | T-1A.2-M02-11 | API-M02-43 |
+| TS-SEC-13.3 | Visit tracking option (b) | D-285 (b) fixture | Browse, search, add to cart | Counters only — no identifier, cookie, IP address or personal data stored | T-1A.9-M09-14 AC 3 | API-M09-03, E-storefront_visit_counter |
+| TS-SEC-13.4 | Visit tracking option (c) | D-285 (c) fixture | Browse before consent, after consent, after declining | Nothing sent before consent or after declining | T-1A.9-M09-14 AC 3 | API-M09-03, E-storefront_visit_event |
+| TS-PERM-02.12, 03.7, 04.6, 09.6, 10.5, 11.4 | Person-activity BOLA; presence BOPLA; non-delegated staff get 403; alert-rule change authority; margin on analytics; branch scope on P-E17 / P-E18 | `07` §16 | `07` §16 | `07` §16 | T-1A.2-M02-11, T-1A.14-M17-13, T-1A.16-M24-12, T-1A.15-M18-10 | API-M02-43, API-M24-15…20, API-M18-20 |
+| TS-A11Y-02.1 | P-E17 accessibility | Screen built | Keyboard only: heatmap arrows / Home / End / Enter, drawer tabs, rules modal; screen reader on board cards | Status and severity in text; heatmap has a table view; focus returns to the opener on drawer close | T-1A.16-M24-12 | P-E17 |
+| TS-A11Y-02.2 | P-E18 accessibility | Screen built | Keyboard focus on every chart; table views; delta chips | Values readable by keyboard; every chart has a table view; direction of each change stated in text | T-1A.15-M18-10 | P-E18 |
+| TS-PERF-01.1 | Storefront budget with the visit beacon | D-285 (b) or (c) fixture | Lab test P-S01…P-S04 with the beacon on | LCP / INP / CLS within the D-268 budget; events sent after first paint, batched | T-1A.9-M09-14 AC 2 | API-M09-03 |
+| TS-PERF-04.1 | Heartbeat load | Full staff roster sending heartbeats | Add to the mixed workload | Workspace and checkout targets unchanged (D-268) | T-1A.2-M02-11 | API-M02-43 |
+| TS-PERF-05.1 | P-E18 query budget | 12-month range, all filters, representative volume | Load every view while checkout runs | Within the P-E18 query budget; reads only the read models; checkout unaffected | T-1A.15-M18-09 | API-M18-20 |
+| TS-SAAS-CAP-01.1 | CF1 capabilities off | Each of `CAP-TEAM_MONITOR`, `CAP-STAFF_PRESENCE`, `CAP-STAFF_ACTIVITY_ALERTS`, `CAP-ANALYTICS_DASHBOARD`, `CAP-CUSTOMER_ANALYTICS`, `CAP-STOREFRONT_VISIT_ANALYTICS` off in turn | Load the screens, call the endpoints, inspect bundles and the scheduler | Governed screen, navigation entry, section or card absent (not empty); endpoints 404; no heartbeat, no alert job, no visit beacon, no code shipped | T-1A.16-M24-12, T-1A.15-M18-10, T-1A.9-M09-14 | `21` §4 |
+| TS-SAAS-ISO-10.1 | No cross-store money | Two stores with sales | Run every analytics aggregation | No query sums money across stores (D-261) | T-1A.15-M18-09 AC 4 | E-analytics_daily_fact |
+| TS-SAAS-ISO-11.1 | Two-store isolation | Stores A and B with staff, presence, alerts, facts and visit counters | Read P-E17 and P-E18 in each store | Nothing of store A appears or is counted in store B | T-1A.2-M02-11, T-1A.14-M17-13, T-1A.15-M18-09 | all §13 entities |

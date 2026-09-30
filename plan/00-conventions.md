@@ -14,9 +14,10 @@ identifiers defined here. If an identifier is needed that is not defined here, a
 | **BP** | Connected ERP and E-commerce Platform — Requirements, solution design, automation and implementation blueprint v1.1 | `docs/ERP_Ecommerce_Implementation_Blueprint.md` | Primary technical source. Cite as `BP §x.y` |
 | **PR1** | Integrated Commerce & Business Management Platform — Proposal | `docs/Integrated_Commerce_Business_Platform_Proposal.pdf` | Owner-facing proposal. Cite as `PR1 §x` |
 | **PR2** | Integrated Commerce & Business Management Platform — Detailed solution proposal | `docs/Professional_Ecommerce_ERP_Implementation_Proposal_CLEAN.pdf` | Consolidates PR1 + BP. Cite as `PR2 §x` |
-| **MK** | Clickable HTML mockup v0.1 (32 screens) | repo root: `store-*.html`, `erp-*.html`, `vendor-*.html`, `assets/` | UI source. Cite as `MK:<page-file>` |
+| **MK** | Clickable HTML mockup v0.1 (34 screens since 2026-09-30) | repo root: `store-*.html`, `erp-*.html`, `vendor-*.html`, `assets/` | UI source. Cite as `MK:<page-file>` |
 | **SAAS** | SaaS architecture change request (2026-09-28, from the user) | `docs/SAAS_ARCHITECTURE_CHANGE.md` | **Authoritative for the architecture.** Cite as `SAAS §1` / `SAAS §3 S##`. Expanded in `19-saas-platform.md`, `20-root-admin.md` |
 | **MK-R** | Configurable Root Admin mockup (12 screens, internal) | `root-admin-mockup/` | UI source for P-R01–P-R12. Cite as `MK-R:<page-file>`. Not linked from the client-facing mockup (`D-249`) |
+| **CF1** | Client feedback on mockup v0.1 (2026-09-30): storefront rework, employee monitoring, analytics dashboard | `docs/CLIENT_FEEDBACK_2026-09-30.md` | Authoritative for those three change requests. Cite as `CF1 §1`–`CF1 §3`. Interpreted by `D-281`–`D-286` |
 
 To read the PDFs as text: `pdftotext -layout docs/<file>.pdf -`.
 
@@ -67,7 +68,7 @@ client-facing page (`D-249`).
 
 | Label | Meaning |
 |---|---|
-| `DOCUMENTED` | Explicitly stated in MEET/BP/PR1/PR2 as a requirement or confirmed direction |
+| `DOCUMENTED` | Explicitly stated in MEET/BP/PR1/PR2 (or the client feedback CF1) as a requirement or confirmed direction |
 | `PROPOSED` | Recommended in BP/PR2 but explicitly awaiting client approval (BP "Proposed") |
 | `MOCKUP` | Shown in the mockup and consistent with the documents |
 | `MOCKUP-ONLY` | Shown in the mockup but not mentioned in any document — build only if the linked decision approves it |
@@ -312,6 +313,20 @@ identical for all stores.
 Rules for the registry: an entity may only be added if a source (BP/PR/MEET/MK/SAAS) requires or clearly implies
 it; the entity's row in `03-database.md` must cite that source.
 
+### 7.4 Registry additions 2026-09-30 (client feedback `CF1`; detail `03-database.md` §13)
+
+| Module | Entity | Label | Source / decision |
+|---|---|---|---|
+| M02 | E-staff_presence_interval | DOCUMENTED | Workspace presence for P-E17 (`CF1 §2`, D-282); idle rule and retention D-283 |
+| M02 | E-work_item_event | DOCUMENTED | Assignment and handling times of work items for P-E17 (`CF1 §2`, D-282); retention D-283 |
+| M17 | E-staff_alert_rule | DOCUMENTED | Staff activity alert rules (`CF1 §2`, D-282); thresholds D-283 |
+| M17 | E-staff_alert | DOCUMENTED | Raised staff alerts with acknowledgement (`CF1 §2`, D-282) |
+| M18 | E-analytics_daily_fact | DOCUMENTED | Rebuildable analytics read model for P-E18 (`CF1 §3`, D-284); definitions D-286 |
+| M18 | E-customer_cohort_snapshot | DOCUMENTED | Rebuildable cohort / segment read model for P-E18 (`CF1 §3`, D-284); segment rules D-286 |
+| M09 | E-storefront_visit_counter / E-storefront_visit_event | CONDITIONAL | Store-visit metrics for P-E18 — only one, per D-285 |
+
+E-audit_event gains `area` and `work_item_ref` (D-282).
+
 ## 8. Page / screen registry (source: mockup)
 
 Routes are **not specified** by the documents; the mockup file name is the reference identifier. Production
@@ -357,6 +372,8 @@ routes follow D-003/D-004 (framework and staff-UI approach).
 | P-E15 | Settings, roles & audit | erp-admin.html |
 | (shell) | Sidebar, location switcher, global search, "New" menu, notifications, user menu, system-health card | `assets/tradex.js` (workspace shell) |
 | P-E16 | Staff sign-in, MFA, password reset, invitation acceptance (no mockup screen) | DOCUMENTED — BP §18.2 (MFA for privileged accounts), §19.1; methods D-040 |
+| P-E17 | Team & activity (employee monitoring; sidebar "Team monitor") | erp-team.html — added 2026-09-30 for `CF1 §2` (`D-282`, policy `D-283`) |
+| P-E18 | Analytics (sales, product, customer and store analytics) | erp-analytics.html — added 2026-09-30 for `CF1 §3` (`D-284`, `D-285`, `D-286`) |
 
 ### Vendor portal — `P-V`
 | ID | Screen | Mockup file |

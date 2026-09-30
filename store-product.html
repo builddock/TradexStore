@@ -6,44 +6,87 @@
   <title>Product · Tradex</title>
   <link rel="stylesheet" href="assets/tradex.css">
   <style>
-    .pd-bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 16px; }
-    .pd-top { display: grid; grid-template-columns: 460px minmax(0, 1fr) 316px; gap: 28px; margin-top: 14px; align-items: start; }
-    .gal { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 12px; position: sticky; top: 84px; }
-    .gal .thumbs { display: flex; flex-direction: column; gap: 8px; }
-    .gal .thumbs button { padding: 0; border: 2px solid var(--line); border-radius: 9px; background: #fff; overflow: hidden; }
-    .gal .thumbs button.on { border-color: var(--brand); box-shadow: var(--ring); }
-    .gal .thumbs .ph { width: 60px; height: 60px; aspect-ratio: auto; border-radius: 0; }
-    .gal .thumbs .t-lab { font-size: 10px; color: var(--tx-3); text-align: center; line-height: 1.2; margin-top: 4px; }
-    .gal .main { position: relative; }
-    .gal .main .ph { aspect-ratio: 1 / 1; border-radius: var(--r-lg); border: 1px solid var(--line); }
-    .gal .main .g-flags { position: absolute; top: 12px; left: 12px; display: flex; gap: 6px; z-index: 2; }
-    .gal .main .g-cap { position: absolute; left: 12px; bottom: 12px; right: 12px; z-index: 2; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-    .gal .main .g-cap span { background: rgba(7,12,24,.72); color: #fff; font-size: 11.5px; font-weight: 600; padding: 4px 9px; border-radius: 999px; display: inline-flex; gap: 6px; align-items: center; }
-    .gal .g-actions { display: flex; gap: 8px; margin-top: 12px; }
-    .gal .g-actions .btn { flex: 1; }
-    .pd-info h1 { font-size: 23px; line-height: 1.3; letter-spacing: -0.015em; }
-    .pd-brand { font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
-    .pd-rating { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--tx-2); flex-wrap: wrap; }
+    .pd-bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 18px; }
+    .pd-top { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr); gap: 40px; margin-top: 18px; align-items: start; }
+    .pd-left { display: flex; flex-direction: column; gap: 16px; position: sticky; top: 96px; }
+    .gal { display: flex; flex-direction: column; gap: 10px; }
+    .gal .main { position: relative; overflow: hidden; border-radius: 26px; background: #fff; border: 1px solid var(--line); }
+    .gal .main .ph { aspect-ratio: 5 / 4; border-radius: 0; }
+    .gal .main .g-flags { position: absolute; top: 16px; left: 16px; display: flex; gap: 6px; z-index: 2; }
+    .gal .main .g-cap { position: absolute; left: 16px; bottom: 16px; z-index: 2; }
+    .gal .main .g-cap span { display: inline-flex; gap: 6px; align-items: center; padding: 6px 11px; border-radius: 999px; background: rgba(17, 19, 23, .78); color: #fff; font-size: 11.5px; font-weight: 600; }
+    .gal .g-actions { position: absolute; top: 14px; right: 14px; z-index: 2; display: flex; gap: 8px; }
+    .gal .g-act { width: 40px; height: 40px; border: 0; border-radius: 50%; display: grid; place-items: center; background: rgba(255, 255, 255, .95); color: var(--st-ink); box-shadow: var(--sh-1); }
+    .gal .g-act:hover { background: #fff; }
+    .gal .g-act.on { color: #d92d4a; }
+    .gal .g-act.on .ic { fill: #d92d4a; }
+    .gal .thumbs { display: flex; align-items: center; gap: 8px; overflow-x: auto; scrollbar-width: none; padding: 2px; }
+    .gal .thumbs::-webkit-scrollbar { display: none; }
+    .gal .thumbs > div { flex: none; }
+    .gal .thumbs button { display: block; padding: 0; border: 2px solid transparent; border-radius: 14px; background: #fff; overflow: hidden; }
+    .gal .thumbs button.on { border-color: var(--st-ink); }
+    .gal .thumbs .ph { width: 72px; height: 72px; aspect-ratio: auto; border-radius: 0; }
+    .g-compare { display: inline-flex; align-items: center; gap: 7px; margin-left: auto; flex: none; height: 38px; padding: 0 14px; border: 1px solid var(--line); border-radius: 999px; background: #fff; font-size: 13px; font-weight: 600; cursor: pointer; }
+    .hl-card { padding: 20px 22px; border-radius: 22px; background: #fff; border: 1px solid var(--line); }
+    .hl-card h3 { font-size: 18px; }
+    .keyspecs { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-direction: column; gap: 9px; font-size: 13.5px; line-height: 1.5; color: var(--tx-1); }
+    .keyspecs li { display: grid; grid-template-columns: 22px 1fr; gap: 8px; align-items: start; }
+    .keyspecs li .ic { width: 22px; height: 22px; padding: 4px; border-radius: 50%; background: var(--st-volt-50); color: var(--st-volt-ink); stroke-width: 3; }
+    .pd-panel h1 { font-size: 32px; line-height: 1.12; letter-spacing: -0.03em; }
+    .pd-meta { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    .brand-pill { display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border-radius: 999px; background: var(--st-paper-2); color: var(--st-ink); font-size: 12.5px; font-weight: 700; letter-spacing: .02em; text-decoration: none !important; }
+    .brand-pill:hover { background: var(--st-volt); }
+    .pd-rating { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--tx-2); flex-wrap: wrap; }
+    .pd-rating b { color: var(--tx-1); }
     .pd-ids { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--tx-3); }
     .pd-ids b { color: var(--tx-2); font-weight: 600; }
-    .grade-box { display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; border-radius: var(--r); border: 1px solid var(--line); background: #fff; }
+    .grade-box { display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; border-radius: 16px; border: 1px solid var(--line); background: #fff; }
     .grade-box.refurb { background: #f6f3ff; border-color: #e2dafe; }
     .grade-box.used { background: #fff7ed; border-color: #fbd9b5; }
     .grade-box.openbox { background: #eef8fd; border-color: #c4e6f6; }
     .grade-box.new { background: var(--ok-50); border-color: #bde8cc; }
+    .buy-card { display: flex; flex-direction: column; gap: 18px; padding: 22px; border-radius: 24px; background: #fff; border: 1px solid var(--line); box-shadow: 0 1px 0 rgba(17, 19, 23, .02), 0 18px 40px rgba(17, 19, 23, .05); }
+    .buy-card > * + * { padding-top: 18px; border-top: 1px solid var(--line-2); }
+    .buy-card > .only-guest, .buy-card > .only-dealer { padding-top: 0; border-top: 0; }
     .offers { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
-    .offer { border: 1.5px solid var(--line); border-radius: var(--r); padding: 9px 10px; background: #fff; text-align: left; display: flex; flex-direction: column; gap: 3px; font-size: 12px; color: var(--tx-2); }
-    .offer.on { border-color: var(--brand); box-shadow: var(--ring); }
-    .offer.off { background: #fafbfc; color: var(--tx-4); border-style: dashed; }
-    .offer .cond { align-self: flex-start; height: 19px; font-size: 10.5px; }
-    .offer.off .cond { opacity: .55; }
-    .offer b { font-size: 14px; color: var(--tx-1); }
+    .offer { display: flex; flex-direction: column; gap: 4px; padding: 11px 12px; border: 1.5px solid var(--line); border-radius: 14px; background: #fff; text-align: left; font-size: 12px; color: var(--tx-2); }
+    .offer:hover { border-color: var(--tx-4); }
+    .offer.on { border-color: var(--st-ink); box-shadow: inset 0 0 0 1px var(--st-ink); }
+    .offer.off { background: var(--st-paper); color: var(--tx-4); border-style: dashed; }
+    .offer .cond { align-self: flex-start; height: 21px; font-size: 10.5px; }
+    .offer.off .cond { opacity: .6; }
+    .offer b { font-family: var(--font-display); font-size: 16px; color: var(--tx-1); }
     .offer.off b { color: var(--tx-4); text-decoration: line-through; }
-    .keyspecs { margin: 0; padding-left: 18px; font-size: 13.5px; line-height: 1.65; color: var(--tx-1); }
-    .bank-offers { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .bank-offers > div { border: 1px solid var(--line); border-radius: var(--r); padding: 10px 12px; font-size: 12px; background: #fff; color: var(--tx-2); }
-    .bank-offers b { display: flex; align-items: center; gap: 6px; color: var(--tx-1); font-size: 12.5px; margin-bottom: 2px; }
-    .bb-stock span { display: inline-flex; align-items: center; gap: 6px; font-weight: 650; }
+    .pay-offers { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
+    .pay-offers span { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--tx-2); }
+    .pay-offers .ic { flex: none; color: var(--st-ink); }
+    .tier-box h4 { font-size: 14px; }
+    .deliv { display: flex; flex-direction: column; gap: 10px; }
+    .bb-stock { font-size: 14px; }
+    .bb-stock > span:first-child { display: inline-flex; align-items: center; gap: 6px; font-weight: 650; }
+    .pin-field { display: flex; align-items: center; gap: 8px; height: 42px; padding: 0 4px 0 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--st-paper); }
+    .pin-field:focus-within { border-color: var(--st-ink); background: #fff; }
+    .pin-field .ic { color: var(--tx-3); }
+    .pin-field input { flex: 1; min-width: 0; height: 100%; border: 0; background: transparent; outline: none; font-weight: 600; letter-spacing: .04em; }
+    .pin-field .btn { height: 34px; }
+    .pin-res { margin-top: 8px; }
+    .buy-actions { display: flex; flex-direction: column; gap: 10px; }
+    .buy-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }
+    .wa-ask { --b-fg: #16803f; --b-bd: #bfe5cb; }
+    .wa-ask:hover { background: #effaf2; }
+    .assure { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .assure > div { display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: var(--tx-3); }
+    .assure > div .ic { width: 18px; height: 18px; color: var(--st-ink); }
+    .assure b { display: block; color: var(--tx-1); font-size: 12.5px; }
+    .pd-stores { padding: 4px 20px; border-radius: 20px; background: #fff; border: 1px solid var(--line); }
+    .pd-stores summary { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 0; cursor: pointer; list-style: none; font-weight: 650; font-size: 13.5px; }
+    .pd-stores summary::-webkit-details-marker { display: none; }
+    .pd-stores summary > span:first-child { display: inline-flex; align-items: center; gap: 8px; }
+    .pd-stores[open] summary { border-bottom: 1px solid var(--line-2); }
+    .pd-stores .stores { padding: 4px 0 8px; }
+    .bb-line { display: flex; gap: 9px; align-items: flex-start; font-size: 13px; color: var(--tx-2); }
+    .bb-line .ic { width: 16px; height: 16px; margin-top: 2px; flex: none; color: var(--tx-3); }
+    .bb-line b { color: var(--tx-1); }
     .spec-table { font-variant-numeric: normal; }
     .spec-table th, .spec-table td { padding: 8px 14px; }
     .pol-card .kv dd { font-weight: 500; color: var(--tx-1); }
@@ -52,11 +95,6 @@
     .tier-table td { padding: 7px 8px; border-bottom: 1px solid var(--line-2); }
     .tier-table tr.cur td { background: var(--vendor-50); font-weight: 650; }
     .tier-table td.r, .tier-table th.r { text-align: right; }
-    .buybox { position: sticky; top: 84px; }
-    .buybox .card-body { display: flex; flex-direction: column; gap: 12px; padding: 18px; }
-    .bb-line { display: flex; gap: 9px; align-items: flex-start; font-size: 13px; color: var(--tx-2); }
-    .bb-line .ic { width: 16px; height: 16px; margin-top: 2px; flex: none; color: var(--tx-3); }
-    .bb-line b { color: var(--tx-1); }
     .pin-res { font-size: 12.5px; display: flex; flex-direction: column; gap: 5px; }
     .pin-res div { display: flex; gap: 7px; align-items: flex-start; }
     .pin-res .ic { width: 14px; height: 14px; margin-top: 2px; flex: none; }
@@ -105,10 +143,9 @@
     .ph-contain img { object-fit: contain; }
     .m-buybar { display: none; }
     @media (max-width: 1200px) {
-      .pd-top { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-areas: "gal info" "buy info"; gap: 24px; }
-      .gal { grid-area: gal; position: static; }
-      .pd-info { grid-area: info; }
-      .buybox { grid-area: buy; position: static; }
+      .pd-top { gap: 28px; }
+      .assure { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+      .assure > div { flex-direction: row; align-items: flex-start; }
     }
     @media (max-width: 980px) {
       .pd-bar { flex-wrap: wrap; }
@@ -117,8 +154,12 @@
       .pd-bar .seg { flex: none; }
       .pd-bar > .crumbs { flex: 1 1 100%; min-width: 0; }
       .pd-bar > .crumbs .truncate { min-width: 0; flex: 1 1 0; }
-      .gal .g-actions { flex-wrap: wrap; }
-      .gal .g-actions .btn { flex: 1 1 auto; }
+      .pd-top { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+      /* One column: gallery → title & purchase panel → highlights */
+      .pd-left { display: contents; }
+      .gal { order: 1; }
+      .pd-panel { order: 2; }
+      .hl-card { order: 3; }
       .insp-grid { grid-template-columns: minmax(0, 1fr); }
       .insp-grid > div { border-right: 0; border-bottom: 1px solid var(--line-2); }
       .insp-grid > div:last-child { border-bottom: 0; }
@@ -126,16 +167,15 @@
     }
     @media (max-width: 760px) {
       body[data-app="store"][data-page="product"] { --s-bottom: 68px; }
-      .pd-top { grid-template-columns: minmax(0, 1fr); grid-template-areas: "gal" "info" "buy"; gap: 18px; }
-      /* Gallery: main photo first, thumbnails in a swipeable row underneath */
-      .gal { grid-template-columns: minmax(0, 1fr); gap: 10px; }
-      .gal .thumbs { order: 2; flex-direction: row; overflow-x: auto; scrollbar-width: none; padding: 3px 2px; }
-      .gal .thumbs::-webkit-scrollbar { display: none; }
-      .gal .thumbs > div { flex: none; }
+      .pd-top { gap: 16px; margin-top: 12px; }
+      .gal .main { border-radius: 18px; }
       .gal .thumbs .ph { width: 56px; height: 56px; }
       .gal .main .g-cap span { font-size: 11px; }
-      .gal .g-actions .btn { padding: 0 8px; }
-      .pd-info h1 { font-size: 19px; }
+      .g-compare { height: 34px; padding: 0 10px; }
+      .pd-panel h1 { font-size: 22px; }
+      .buy-card { padding: 16px; border-radius: 18px; gap: 14px; }
+      .buy-card > * + * { padding-top: 14px; }
+      .hl-card { padding: 16px; border-radius: 18px; }
       .offers { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: minmax(132px, 42%); overflow-x: auto; scrollbar-width: none; padding: 3px 2px; }
       .offers::-webkit-scrollbar { display: none; }
       .bank-offers { grid-template-columns: minmax(0, 1fr); }
@@ -363,27 +403,30 @@ TX.ready(() => {
   function topHTML() {
     const dealerTiers = [[1, 4, p.dealer], [5, 9, p.tiers[0].p], [10, null, p.tiers[1].p]];
     return `
-    <div class="gal">
-      <div class="thumbs">${gal.map((g, i) => `<div><button class="${i === 0 ? "on" : ""}" data-gal="${g}" aria-label="Photo ${i + 1}">${TX.ph(g)}</button></div>`).join("")}</div>
-      <div>
+    <div class="pd-left">
+      <div class="gal">
         <div class="main"><div class="g-flags">${TX.condBadge(p.cond)}${p.badge ? `<span class="badge b-accent sq">${p.badge}</span>` : ""}</div>
           <div id="gal-main">${TX.ph(gal[0], "", esc(p.title))}</div>
           <div class="g-cap">${isUnit ? `<span>${ic("camera", "ic-sm")} Actual photos of unit ${unitId} · 22 Sep</span>` : `<span>${ic("image", "ic-sm")} ${gal.length} photo${gal.length > 1 ? "s" : ""}</span>`}</div>
+          <div class="g-actions">
+            <button class="g-act" data-fav="${p.id}" aria-label="Save to wishlist" data-tip="Wishlist">${ic("heart")}</button>
+            <button class="g-act" data-toast="Link copied · tradex.in/p/${p.id}" aria-label="Copy link" data-tip="Share">${ic("link")}</button>
+          </div>
         </div>
-        <div class="g-actions">
-          <button class="btn btn-sm" data-fav="${p.id}">${ic("heart", "ic-sm")} Wishlist</button>
-          <label class="btn btn-sm"><input type="checkbox" data-compare="${p.id}" ${TX.store.get("compare", []).includes(p.id) ? "checked" : ""} style="accent-color:var(--brand)"> Compare</label>
-          <button class="btn btn-sm" data-toast="Link copied · tradex.in/p/${p.id}">${ic("link", "ic-sm")} Share</button>
-        </div>
+        <div class="thumbs">${gal.map((g, i) => `<div><button class="${i === 0 ? "on" : ""}" data-gal="${g}" aria-label="Photo ${i + 1}">${TX.ph(g)}</button></div>`).join("")}
+          <label class="g-compare"><input type="checkbox" data-compare="${p.id}" ${TX.store.get("compare", []).includes(p.id) ? "checked" : ""}> ${ic("compare", "ic-sm")} Compare</label></div>
+      </div>
+      <div class="hl-card">
+        <div class="row-between"><h3>Highlights</h3><a href="#specs" class="small strong" data-go-tab="specs">All specifications ${ic("arrow-right", "ic-sm")}</a></div>
+        <ul class="keyspecs">${keyBullets().map((b) => `<li>${ic("check", "ic-sm")}<span>${b}</span></li>`).join("")}</ul>
       </div>
     </div>
 
-    <div class="pd-info col gap-16">
+    <div class="pd-panel col gap-16">
       <div>
-        <a class="pd-brand" href="store-listing.html?brand=${encodeURIComponent(p.brand.toLowerCase())}">Visit the ${p.brand} store</a>
-        <h1 class="mt-4">${esc(p.title)}</h1>
-        <div class="pd-rating mt-8">${TX.stars(p.rating)} <b style="color:var(--tx-1)">${p.rating}</b> <a href="#reviews" data-go-tab="reviews">${TX.num(p.reviews)} verified ratings</a> <span class="muted">·</span> <a href="#qa" data-go-tab="qa">14 answered questions</a></div>
-        <div class="pd-ids mt-8"><span>SKU <b class="mono">${p.sku}</b></span><span>Model <b>${esc(model)}</b></span>${isUnit ? `<span>Unit <b class="mono">${unitId}</b></span>` : ""}</div>
+        <div class="pd-meta"><a class="brand-pill" href="store-listing.html?brand=${encodeURIComponent(p.brand.toLowerCase())}">${esc(p.brand)} ${ic("arrow-up-right", "ic-sm")}</a><div class="pd-ids"><span>SKU <b class="mono">${p.sku}</b></span><span>Model <b>${esc(model)}</b></span>${isUnit ? `<span>Unit <b class="mono">${unitId}</b></span>` : ""}</div></div>
+        <h1 class="mt-12">${esc(p.title)}</h1>
+        <div class="pd-rating mt-8">${TX.stars(p.rating)} <b>${p.rating}</b> <a href="#reviews" data-go-tab="reviews">${TX.num(p.reviews)} verified ratings</a> <span class="muted">·</span> <a href="#qa" data-go-tab="qa">14 answered questions</a></div>
       </div>
 
       <div class="grade-box ${TX.conditions[p.cond].cls}" data-anno="1A · R19 Condition = text + colour + plain-language meaning">
@@ -391,67 +434,59 @@ TX.ready(() => {
         <div class="small"><b>${GRADE[0]}.</b> ${GRADE[1]} <a href="store-help.html#grades">How we grade</a></div>
       </div>
 
-      <div data-anno="1A · R03 One price engine: consumer incl. GST / dealer excl. GST">
-        <div data-price="${p.id}" data-size="lg"></div>
-        <div class="small subtle mt-8 hide-dealer">No-cost EMI from <b>${fmt(p.price / 6)}/month</b> for 6 months on HDFC, ICICI & SBI cards. <a href="#" data-toast="EMI plans are shown at payment">EMI plans</a></div>
-      </div>
-
-      <div class="only-dealer"><div class="card" data-anno="1A · R04 Quantity tiers (all-units) · ex-GST">
-        <div class="card-head" style="padding:12px 16px"><div><h3 style="font-size:14px">Your tier prices · Dealer Gold</h3><div class="sub">Per unit, excl. GST 18% · valid to 31 Mar 2027 · all units priced at the reached tier</div></div></div>
-        <div style="padding:6px 12px 12px">
+      <div class="buy-card" data-anno="1A · R08 Availability is a projection; checkout reserves">
+        <div>
+          <div class="row-between mb-8"><h4>Choose condition</h4><span class="small muted">Each option is its own stock unit</span></div>
+          ${offersHTML()}
+        </div>
+        <div class="buy-price" data-anno="1A · R03 One price engine: consumer incl. GST / dealer excl. GST">
+          <div data-price="${p.id}" data-size="lg"></div>
+          <div class="small subtle mt-8 hide-dealer">No-cost EMI from <b>${fmt(p.price / 6)}/month</b> for 6 months on HDFC, ICICI &amp; SBI cards · <a href="#" data-toast="EMI plans are shown at payment">EMI plans</a></div>
+          <div class="pay-offers hide-dealer"><span>${ic("card", "ic-sm")} 10% instant discount up to ₹1,500 on HDFC credit cards (min ₹15,000)</span><span>${ic("zap", "ic-sm")} ₹250 off UPI payments above ₹20,000 · code TRADEXUPI</span></div>
+        </div>
+        <div class="only-dealer"><div class="tier-box" data-anno="1A · R04 Quantity tiers (all-units) · ex-GST">
+          <div class="row-between mb-8"><h4>Your tier prices · Dealer Gold</h4><span class="tiny muted">excl. GST 18% · valid to 31 Mar 2027</span></div>
           <table class="tier-table"><thead><tr><th>Quantity</th><th class="r">Unit (ex-GST)</th><th class="r">Incl. GST</th><th class="r">You save</th></tr></thead>
           <tbody>${dealerTiers.map(([a, b, u]) => `<tr data-tier="${a}"><td>${b ? `${a}–${b}` : `${a}+`} units</td><td class="r">${fmt(u)}</td><td class="r">${fmt(u * 1.18)}</td><td class="r">${a === 1 ? "—" : fmt(p.dealer - u) + "/unit"}</td></tr>`).join("")}</tbody></table>
           <div class="panel small mt-8" id="tier-now"></div>
-        </div>
-      </div></div>
-      <div class="only-guest"><div class="callout c-brand small"><i data-icon="briefcase"></i><div class="grow"><strong>Business buyer?</strong> Sign in for dealer pricing — approved dealers see private prices and 5+ / 10+ quantity tiers on this item.</div><a class="btn btn-xs btn-primary" href="store-login.html">Sign in</a></div></div>
+          <div id="bb-price" class="mt-8"></div>
+        </div></div>
+        <div class="only-guest"><div class="callout c-brand small"><i data-icon="briefcase"></i><div class="grow"><strong>Business buyer?</strong> Sign in for dealer pricing — approved dealers see private prices and 5+ / 10+ quantity tiers on this item.</div><a class="btn btn-xs btn-primary" href="store-login.html">Sign in</a></div></div>
 
-      <div>
-        <div class="row-between mb-8"><h4>Other offers for this model</h4><span class="small muted">Each offer is a separate stock position</span></div>
-        ${offersHTML()}
-      </div>
-
-      <div>
-        <h4 class="mb-8">About this item</h4>
-        <ul class="keyspecs">${keyBullets().map((b) => `<li>${b}</li>`).join("")}</ul>
-        <a href="#specs" class="small strong" data-go-tab="specs">See all specifications →</a>
-      </div>
-
-      <div class="bank-offers hide-dealer">
-        <div><b>${ic("card", "ic-sm")} Bank offer</b>10% instant discount up to ₹1,500 on HDFC Bank credit cards (min ₹15,000).</div>
-        <div><b>${ic("zap", "ic-sm")} UPI offer</b>Flat ₹250 off on UPI payments above ₹20,000 with code TRADEXUPI.</div>
-      </div>
-    </div>
-
-    <aside class="buybox" data-anno="1A · R08 Availability is a projection; checkout reserves">
-      <div class="card">
-        <div class="card-body">
-          <div id="bb-price"></div>
-          <div><div class="bb-stock" style="font-size:14px">${TX.stockHTML(p)}</div>${isUnit ? `<div class="small muted mt-4">Unit ${unitId} is at Central Warehouse, Bengaluru</div>` : ""}</div>
+        <div class="deliv">
+          <div class="bb-stock">${TX.stockHTML(p)}${isUnit ? `<span class="small muted"> · unit ${unitId} is at Central Warehouse, Bengaluru</span>` : ""}</div>
           ${partner ? `<div class="callout c-warn small" style="padding:10px 12px"><i data-icon="clock"></i><div><b>Ships from partner warehouse</b> — Tradex confirms availability within 4 h of your order. If not confirmed, you're refunded in full automatically.</div></div>` : ""}
           <div class="bb-line">${ic("truck")}<div><b id="bb-date">${p.stock === "low" || partner ? "" : "FREE "}delivery ${DATES[dIdx]}</b> to <b id="bb-pin">560034</b>${partner ? "" : `<div class="small muted">Order within <b style="color:var(--ok-tx)">3 h 12 min</b> for same-day dispatch</div>`}</div></div>
-          <form class="col gap-8" id="pin-form" data-anno="1A · PIN serviceability, date & COD before payment">
-            <label class="label" for="pin-in">Check delivery to another PIN code</label>
-            <div class="row gap-8"><input class="input" id="pin-in" inputmode="numeric" maxlength="6" value="560034" style="height:34px"><button class="btn btn-sm" type="submit" style="height:34px">Check</button></div>
+          <form class="pin-row" id="pin-form" data-anno="1A · PIN serviceability, date & COD before payment">
+            <label class="sr-only" for="pin-in">Check delivery to another PIN code</label>
+            <div class="pin-field">${ic("pin", "ic-sm")}<input id="pin-in" inputmode="numeric" maxlength="6" value="560034" placeholder="PIN code"><button class="btn btn-sm" type="submit">Check</button></div>
             <div class="pin-res" id="pin-res"></div>
           </form>
-          <hr style="margin:2px 0">
+        </div>
+
+        <div class="buy-actions">
           <div class="row-between"><label class="label" for="qty-in">Quantity</label>
             <div class="qty"><button data-step="-1" aria-label="Decrease"><i data-icon="minus"></i></button><input id="qty-in" value="1" min="1" aria-label="Quantity"><button data-step="1" aria-label="Increase"><i data-icon="plus"></i></button></div></div>
           <div class="small muted" id="qty-note">${isUnit ? "Each unit ships with its own inspection report." : p.stock === "low" ? `Only ${p.qty} available.` : ""}</div>
-          <button class="btn btn-primary btn-lg btn-block" id="add-btn" data-add="${p.id}" data-qty="1">${ic("cart")} Add to cart</button>
-          <button class="btn btn-accent btn-lg btn-block" id="buy-btn">${ic("zap")} Buy now</button>
-          <button class="btn btn-block" data-open="m-wa" style="color:#178f4a;border-color:#b7e4c7" data-anno="1A · R11 Click-to-chat with product reference">${ic("whatsapp")} Ask about this product</button>
-          <div class="bb-line small">${ic("lock")}<span>Secure checkout · card data handled by the payment provider</span></div>
-          <div class="bb-line small">${ic("store")}<span>${partner ? `Sold by <b>Tradex</b> · ships from <b>partner warehouse (Prime IT Distributors)</b> — Tradex confirms within 4 h` : `Sold & shipped by <b>Tradex</b> · GST invoice from Tradex Electronics Pvt Ltd`}</span></div>
-          <div class="bb-line small">${ic("undo")}<span><b>${returnDays}-day returns</b>${isUnit ? " for refurbished & used" : ""} · unit serial checked on return</span></div>
+          <div class="buy-row">
+            <button class="btn btn-primary btn-lg" id="add-btn" data-add="${p.id}" data-qty="1">${ic("cart")} Add to cart</button>
+            <button class="btn btn-accent btn-lg" id="buy-btn">Buy now ${ic("arrow-right")}</button>
+          </div>
+          <button class="btn btn-block wa-ask" data-open="m-wa" data-anno="1A · R11 Click-to-chat with product reference">${ic("whatsapp")} Ask a specialist on WhatsApp</button>
         </div>
-        <div class="card-foot" style="display:block;padding:14px 18px" data-anno="1A · R14 Availability by branch (one stock authority)">
-          <div class="row-between mb-8"><h4 style="font-size:13px">Availability by store</h4><span class="tiny muted">Updated 1 min ago</span></div>
-          <div class="stores">${storesHTML()}</div>
+
+        <div class="assure">
+          <div>${ic("lock")}<span><b>Secure checkout</b>Card data handled by the payment provider</span></div>
+          <div>${ic("store")}<span><b>${partner ? "Sold by Tradex" : "Sold &amp; shipped by Tradex"}</b>${partner ? "Ships from partner warehouse (Prime IT Distributors)" : "GST invoice from Tradex Electronics Pvt Ltd"}</span></div>
+          <div>${ic("undo")}<span><b>${returnDays}-day returns</b>${isUnit ? "Refurbished &amp; used · serial checked" : "Unit serial checked on return"}</span></div>
         </div>
       </div>
-    </aside>`;
+
+      <details class="pd-stores" open data-anno="1A · R14 Availability by branch (one stock authority)">
+        <summary><span>${ic("pin", "ic-sm")} Pick up or see it in a store</span><span class="tiny muted">Updated 1 min ago</span></summary>
+        <div class="stores">${storesHTML()}</div>
+      </details>
+    </div>`;
   }
   function keyBullets() {
     const b = [];
@@ -588,7 +623,7 @@ TX.ready(() => {
     const items = fbtIds.map(TX.byId);
     const on = items.filter((x) => fbtOn.has(x.id));
     const tot = on.reduce((n, x) => n + (TX.view === "dealer" ? x.dealer : x.price), 0);
-    return `<div class="section-head"><div><h2>Frequently bought together</h2><p>A bundle here is simply separate items added together — each keeps its own stock, warranty and return policy</p></div></div>
+    return `<div class="section-head"><div><span class="eyebrow">Pairs well with</span><h2 class="mt-8">Complete your setup</h2><p>Separate items added together — each keeps its own stock, warranty and return policy</p></div></div>
     <div class="card card-pad fbt" data-anno="1A · Bundles consume each component's stock explicitly (§7.5)">
       <div class="fbt-items">${items.map((x, i) => `${i ? `<span class="fbt-plus">+</span>` : ""}<label class="fbt-item ${fbtOn.has(x.id) ? "" : "off"}">${TX.ph(x.img)}<span class="row gap-6"><input type="checkbox" data-fbt="${x.id}" ${fbtOn.has(x.id) ? "checked" : ""} ${i === 0 ? "disabled" : ""}> ${TX.condBadge(x.cond).replace('class="cond', 'style="height:18px;font-size:10px" class="cond')}</span><span class="clamp-2 strong">${i === 0 ? "This item: " : ""}${esc(x.title)}</span><span><b>${fmt(TX.view === "dealer" ? x.dealer : x.price)}</b>${TX.view === "dealer" ? " + GST" : ""} · <span class="muted">${x.warranty}</span></span></label>`).join("")}</div>
       <div class="col gap-8">
@@ -605,7 +640,7 @@ TX.ready(() => {
   const dist = p.rating >= 4.6 ? [72, 18, 6, 2, 2] : p.rating >= 4.4 ? [61, 24, 8, 3, 4] : p.rating >= 4.2 ? [52, 27, 11, 4, 6] : [44, 28, 14, 6, 8];
   function tabsHTML() {
     const groups = specGroups();
-    const specRows = groups.map(([g, rows]) => `<tr><th colspan="2" style="background:#f4f6fa;color:var(--tx-1);font-weight:700;width:auto">${g}</th></tr>` + rows.map(([k, v]) => `<tr><th>${k}</th><td>${v == null ? `<span class="spec-missing" data-tip="Missing from manufacturer data — our catalog team is verifying">${ic("info", "ic-sm")} Not specified by manufacturer</span>` : v}</td></tr>`).join("")).join("");
+    const specRows = groups.map(([g, rows]) => `<tr><th colspan="2" style="background:var(--st-paper);color:var(--tx-1);font-weight:700;width:auto">${g}</th></tr>` + rows.map(([k, v]) => `<tr><th>${k}</th><td>${v == null ? `<span class="spec-missing" data-tip="Missing from manufacturer data — our catalog team is verifying">${ic("info", "ic-sm")} Not specified by manufacturer</span>` : v}</td></tr>`).join("")).join("");
     const insp = !hasReport ? `<div class="empty"><i data-icon="package"></i><h4>Not applicable for new sealed items</h4><p>New products are covered by the manufacturer's QC. They are sold factory-sealed with ${p.warranty.toLowerCase()} from ${p.brand}.</p></div>`
       : `<div class="row-between mb-12"><div><h3>Full checklist · unit ${unitId}</h3><div class="small muted">Standard QC-STD-42 v4 · inspected 22 Sep 2026 by Naveen K. · re-verified at packing</div></div><button class="btn btn-sm" data-toast="Downloading inspection report IR-${unitId}.pdf">${ic("download", "ic-sm")} Download PDF</button></div>
         <div class="grid g-3">${CHECK.map(([g, items], gi) => `<div class="panel" style="background:#fff"><div class="row-between mb-8"><b>${g}</b><span class="small ${gi === advisoryGroup && advisoryCount ? "text-warn" : "text-ok"}">${items.length - (gi === advisoryGroup ? advisoryCount : 0)}/${items.length}</span></div>
@@ -676,7 +711,7 @@ TX.ready(() => {
             </div>
             <div>
               <div class="row gap-8 mb-8 wrap"><span class="small muted">Filter:</span><button class="chip active">All</button><button class="chip">5 ★</button><button class="chip">Critical</button><button class="chip">With photos</button><button class="chip">${TX.conditions[p.cond].label}</button><select class="select input-sm ml-auto" style="width:auto" aria-label="Sort reviews"><option>Most helpful</option><option>Most recent</option></select></div>
-              ${reviews.map(([n, city, r, d, t, body, h, reply]) => `<div class="review"><div class="row gap-8"><span class="avatar sm" style="background:${["#2e5bff", "#7c3aed", "#0e9f8a"][r % 3]}">${n.split(" ").map((w) => w[0]).join("")}</span><b>${n}</b><span class="small muted">${city} · ${d}</span></div>
+              ${reviews.map(([n, city, r, d, t, body, h, reply]) => `<div class="review"><div class="row gap-8"><span class="avatar sm" style="background:${["#111317", "#7c3aed", "#0e9f8a"][r % 3]}">${n.split(" ").map((w) => w[0]).join("")}</span><b>${n}</b><span class="small muted">${city} · ${d}</span></div>
                 <div class="row gap-8 mt-8">${TX.stars(r)}<b>${t}</b></div>
                 <div class="row gap-6 mt-4"><span class="badge b-ok">${ic("check")} Verified purchase</span><span class="badge b-outline">${TX.conditions[p.cond].label}</span></div>
                 <p class="mt-8" style="font-size:13.5px;color:var(--tx-2)">${body}</p>
@@ -711,7 +746,7 @@ TX.ready(() => {
   function accHTML() {
     const list = ACC[p.cat] || [["hub-02", "verified", "Universal USB-C accessory"], ["chg-01", "verified", "65 W GaN charger with USB-C PD"], ["ssd-01", "verified", "Portable storage for any USB-C / USB-A device"]];
     const note = LAP[p.id] && /soldered|unified/.test(LAP[p.id][2]) ? `<div class="acc-row" style="grid-template-columns:auto 1fr;background:#fafbfc">${ic("info")}<span class="small subtle">Memory on ${esc(model)} is soldered to the board and can't be upgraded — choose the configuration you need at purchase.</span></div>` : "";
-    return `<div class="section-head"><div><h2>Compatible accessories & upgrades</h2><p>Curated by our specialists for this exact model · compatibility is checked, not guessed</p></div></div>
+    return `<div class="section-head"><div><span class="eyebrow">Checked by specialists</span><h2 class="mt-8">Compatible accessories & upgrades</h2><p>Curated by our specialists for this exact model · compatibility is checked, not guessed</p></div></div>
     <div class="card" data-anno="§7.5 Curated compatibility table (reduces returns)">${note}${list.map(([aid, st, note]) => { const a = TX.byId(aid); return `<div class="acc-row">${TX.ph(a.img)}<div class="grow"><a href="store-product.html?id=${a.id}" class="strong" style="color:var(--tx-1)">${esc(a.title)}</a><div class="small row gap-8 mt-4">${st === "verified" ? `<span class="badge b-ok">${ic("check")} Verified compatible</span>` : `<span class="badge b-warn">${ic("alert")} Check before buying</span>`}<span class="muted">${note}</span></div></div><div data-price="${a.id}"></div><button class="btn btn-sm btn-soft" data-add="${a.id}">${ic("plus", "ic-sm")} Add</button></div>`; }).join("")}</div>`;
   }
 
@@ -720,7 +755,7 @@ TX.ready(() => {
     let sim = TX.byCat(p.cat).filter((x) => x.id !== p.id);
     if (sim.length < 5) sim = sim.concat(TX.products.filter((x) => x.cat !== p.cat && x.id !== p.id).slice(0, 5 - sim.length));
     sim.sort((a, b) => Math.abs(a.price - p.price) - Math.abs(b.price - p.price));
-    return `<div class="section-head"><div><h2>Similar products</h2><p>Same category, closest in price · compare condition and warranty side by side</p></div><a class="strong" href="store-compare.html">Open compare →</a></div><div class="pgrid cols-5">${sim.slice(0, 5).map(TX.cardHTML).join("")}</div>`;
+    return `<div class="section-head"><div><span class="eyebrow">Alternatives</span><h2 class="mt-8">Similar products</h2><p>Same category, closest in price · compare condition and warranty side by side</p></div><a class="strong" href="store-compare.html">Open compare →</a></div><div class="pgrid cols-5">${sim.slice(0, 5).map(TX.cardHTML).join("")}</div>`;
   }
 
   /* ---------------- State banner ---------------- */

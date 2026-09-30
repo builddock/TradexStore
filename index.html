@@ -11,6 +11,7 @@
     .hub-hero .facts b { display: block; color: #fff; font-size: 22px; font-weight: 750; }
     .hub-shot { border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,.15); box-shadow: 0 30px 60px rgba(0,0,0,.4); }
     .hub-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 40px; align-items: center; }
+    @media (max-width: 980px) { .hub-grid { grid-template-columns: minmax(0, 1fr); gap: 28px; } .hub-hero .facts { flex-wrap: wrap; gap: 16px 28px; } }
     .app-card .ac-photo { border-radius: 12px; overflow: hidden; aspect-ratio: 16/8; }
     .app-card .ac-photo img { width: 100%; height: 100%; object-fit: cover; }
     .journey { display: grid; grid-template-columns: 34px 1fr; gap: 14px; padding: 16px 20px; border-bottom: 1px solid var(--line-2); }
@@ -29,7 +30,7 @@
   <section class="hub-hero">
     <div class="container hub-grid">
       <div>
-        <span class="kick"><i data-icon="layers" class="ic-sm"></i> Clickable prototype · v0.1 for client review · 27 Sep 2026</span>
+        <span class="kick"><i data-icon="layers" class="ic-sm"></i> Clickable prototype · v0.2 · updated after client review · 30 Sep 2026</span>
         <h1>Tradex — one connected platform for commerce, stock and operations</h1>
         <p>A premium e-commerce storefront for computers, parts, cameras and certified refurbished electronics, connected to an ERP web workspace and a controlled vendor portal. One stock authority, consumer and dealer pricing, exception-driven owner control and measured automation.</p>
         <div class="row mt-24 wrap">
@@ -38,7 +39,7 @@
           <a class="btn btn-lg" style="--b-bg:transparent;--b-fg:#fff;--b-bd:rgba(255,255,255,.35)" href="vendor-dashboard.html"><i data-icon="building"></i> Vendor portal</a>
         </div>
         <div class="facts">
-          <div><b>32</b>screens</div>
+          <div><b>34</b>screens</div>
           <div><b>3</b>applications</div>
           <div><b>60</b>sample products</div>
           <div><b>R01–R20</b>requirements mapped</div>
@@ -50,6 +51,14 @@
 
   <div class="container">
     <section class="hub-apps" id="apps"></section>
+    <section class="section card card-pad" data-anno="Client review 30 Sep 2026 (CF1)">
+      <div class="row-between wrap"><div><span class="badge b-brand">Updated 30 Sep 2026</span><h2 class="mt-8">What changed after the client review</h2><p class="subtle mt-4">Three change requests from the review of v0.1, applied without removing any existing feature.</p></div></div>
+      <div class="grid g-3 mt-16">
+        <div class="panel"><b>1 · Original storefront design</b><p class="small subtle mt-4">A new “Studio” identity replaces the marketplace look: new header and department rail, bento home page, redesigned product cards, a two-column product page with one purchase panel, and an editorial footer.</p><a class="small strong" href="store-home.html">Open the storefront →</a></div>
+        <div class="panel"><b>2 · Team &amp; activity monitor</b><p class="small subtle mt-4">For the owner: each employee's live status and current work, their activity and sensitive actions, and how every area of the workspace is being handled. Work activity only — no screen, keystroke or location tracking.</p><a class="small strong" href="erp-team.html">Open Team monitor →</a></div>
+        <div class="panel"><b>3 · Analytics dashboard</b><p class="small subtle mt-4">Sales, product, customer and store analytics with one filter row: trends, channels, locations, top products, margins, cohorts, segments, the store funnel and operations measures.</p><a class="small strong" href="erp-analytics.html">Open Analytics →</a></div>
+      </div>
+    </section>
 
     <section class="section">
       <div class="section-head"><div><h2>How to review this prototype</h2><p>The dark toolbar at the top of every screen is part of the prototype, not the product.</p></div></div>
@@ -57,7 +66,7 @@
         <div class="card card-pad tip"><span class="ti"><i data-icon="users"></i></span><div><b>View as Guest / Consumer / Dealer</b><p class="small subtle mt-4">On storefront screens, switch buyer context to see public prices, GST-inclusive consumer prices, or a dealer's private ex-GST price list with 5+ and 10+ quantity tiers.</p></div></div>
         <div class="card card-pad tip"><span class="ti" style="background:#7a5410;color:#ffcf70"><i data-icon="flag"></i></span><div><b>Phase notes</b><p class="small subtle mt-4">Turn on to label each feature with its delivery phase (1A, 1B, 2, 3) and requirement ID (R01–R20) from the requirements blueprint.</p></div></div>
         <div class="card card-pad tip"><span class="ti"><i data-icon="help"></i></span><div><b>ⓘ Help &amp; guides</b><p class="small subtle mt-4">In the ERP workspace and vendor portal, click any ⓘ or the ? button for a plain-language explanation; dotted-underlined short names explain themselves. Key ERP pages open with a “How it works” guide.</p></div></div>
-        <div class="card card-pad tip"><span class="ti"><i data-icon="layers"></i></span><div><b>All screens</b><p class="small subtle mt-4">Jump to any of the 32 screens across the three applications. Tabs, drawers, modals, cart, compare and chat are interactive.</p></div></div>
+        <div class="card card-pad tip"><span class="ti"><i data-icon="layers"></i></span><div><b>All screens</b><p class="small subtle mt-4">Jump to any of the 34 screens across the three applications. Tabs, drawers, modals, cart, compare and chat are interactive.</p></div></div>
         <div class="card card-pad tip"><span class="ti"><i data-icon="info"></i></span><div><b>Sample data only</b><p class="small subtle mt-4">Products, prices, people, orders and vendors are illustrative. Product photos are free-licence stock images (see <a href="credits.html">credits</a>). Real catalogue and brand assets come from discovery.</p></div></div>
       </div>
     </section>
@@ -104,15 +113,15 @@
       </table></div>
     </section>
 
-    <p class="small muted mt-24" style="text-align:center">Tradex prototype v0.1 · prepared from the client meeting summary, requirements blueprint and proposals · <a href="credits.html">Photo credits</a></p>
+    <p class="small muted mt-24" style="text-align:center">Tradex prototype v0.2 (v0.1 + client review changes of 30 Sep 2026) · prepared from the client meeting summary, requirements blueprint and proposals · <a href="credits.html">Photo credits</a></p>
   </div>
 </main>
 <script src="assets/tradex.js"></script>
 <script>
 TX.ready(() => {
   const apps = [
-    ["Storefront", "store-home.html", "hero-laptop-glow", "var(--accent)", "store", "Customer web shop: search, categories, product details with refurbished inspection reports, compare, cart, checkout, tracking, returns, dealer zone and help."],
-    ["ERP workspace", "erp-dashboard.html", "hero-setup-rog", "var(--brand)", "dashboard", "Staff and owner workspace: control centre, orders, fulfilment, returns, support inbox, catalog, pricing, inventory, purchasing, partners, finance, reports, automation and admin."],
+    ["Storefront", "store-home.html", "hero-laptop-glow", "#111317", "store", "Customer web shop: search, categories, product details with refurbished inspection reports, compare, cart, checkout, tracking, returns, dealer zone and help."],
+    ["ERP workspace", "erp-dashboard.html", "hero-setup-rog", "var(--brand)", "dashboard", "Staff and owner workspace: control centre, analytics, team monitor, orders, fulfilment, returns, support inbox, catalog, pricing, inventory, purchasing, partners, finance, reports, automation and admin."],
     ["Vendor portal", "vendor-dashboard.html", "pc-setup-white", "var(--vendor)", "building", "Approved suppliers submit products and stock for review, update their availability feeds, confirm purchase orders and see statements. They only see their own data."],
   ];
   TX.$("#apps").innerHTML = apps.map(([name, href, img, color, icon, desc]) => `
@@ -131,18 +140,19 @@ TX.ready(() => {
     ["Customer returns a serialised unit", "Serial match, quarantine, inspection, then separate refund and resale decisions.", [["store-returns.html", "Return request"], ["erp-returns.html", "RMA inspection"], ["erp-finance.html#refunds", "Refund"], ["erp-inventory.html#serials", "Unit history"]]],
     ["WhatsApp customer orders in chat", "Guided flow, agent handoff, draft basket and secure checkout link, using the same pricing and stock.", [["erp-support.html", "Support inbox"], ["store-checkout.html", "Secure checkout"], ["erp-orders.html", "Order created"]]],
     ["Owner is away for a day", "Delegation, thresholds and a daily digest. Only material exceptions reach the owner.", [["erp-dashboard.html", "Control centre"], ["erp-automation.html#exceptions", "Exception queue"], ["erp-admin.html#delegation", "Delegation"], ["erp-admin.html#thresholds", "Thresholds"]]],
+    ["Owner reviews the team and the numbers", "Who is working on what, how each workspace area is being handled, and sales, product and customer analytics.", [["erp-team.html", "Team monitor"], ["erp-team.html", "Area handling"], ["erp-analytics.html", "Analytics overview"], ["erp-analytics.html#customers", "Customers"], ["erp-dashboard.html", "Control centre"]]],
     ["Goods arrive from a supplier", "PO, GRN with serial scan, QC to sellable or quarantine, and 3-way bill match.", [["erp-purchasing.html#suggestions", "Reorder suggestion"], ["erp-purchasing.html#receive", "Receive & QC"], ["erp-purchasing.html#bills", "Bill match"], ["erp-fulfilment.html", "Pick, pack, dispatch"]]],
   ];
   TX.$("#journeys").innerHTML = J.map(([t, d, steps], i) => `<div class="journey"><span class="jn">${i + 1}</span><div><b>${t}</b><div class="small muted">${d}</div>
     <div class="steps">${steps.map(([h, l], k) => `${k ? TX.icon("chevron-right") : ""}<a href="${h}">${l}</a>`).join("")}</div></div></div>`).join("");
 
   const R = [
-    ["R01", "Strong UI with familiar marketplace patterns", "1A", "Storefront (all screens)"],
+    ["R01", "Strong UI with familiar marketplace patterns", "1A", "Storefront (all screens) · original “Studio” design since 30 Sep"],
     ["R02", "High-quality, responsive web interactions", "1A / 2", "Desktop web in Phase 1; mobile-specific work in Phase 2"],
     ["R03", "Consumer and dealer prices", "1A", "View as → Dealer · Dealer zone · ERP Pricing"],
     ["R04", "Quantity discounts", "1A", "Product tiers · Cart tier hints · Pricing tier editor"],
     ["R05", "Vendors log in and add products & stock", "1B", "Vendor portal · ERP Vendors"],
-    ["R06", "Owner/team retain control", "1A", "Control centre · Approvals · Settings & access"],
+    ["R06", "Owner/team retain control", "1A", "Control centre · Team monitor · Approvals · Settings & access"],
     ["R07", "Generic catalog for new product types", "1A", "Catalog → Category templates"],
     ["R08", "Inventory reflected on website", "1A", "Stock badges · Checkout reservation · Inventory ATP"],
     ["R09", "Automate repetitive staff work", "1A / 1B", "Automation rules & run log"],
@@ -150,7 +160,7 @@ TX.ready(() => {
     ["R11", "Website chatbot & WhatsApp ordering", "1A / 1B", "Help widget · WhatsApp band · Support inbox"],
     ["R12", "Mobile-friendly e-commerce & mobile app", "2", "Out of Phase 1 scope (noted)"],
     ["R13", "Future AI / custom LLM", "3", "Out of Phase 1 scope (guided flows only)"],
-    ["R14", "Multi-branch & warehouse reporting", "1A", "Location filters · Inventory by location · Reports"],
+    ["R14", "Multi-branch & warehouse reporting", "1A", "Location filters · Inventory by location · Reports · Analytics"],
     ["R15", "Separate businesses/domains later", "Later", "Not modelled beyond the company switcher"],
     ["R16", "Requirements before cost & timeline", "0", "This prototype is a Phase 0 deliverable"],
     ["R17", "Support & maintenance", "1A", "Settings → System (backups, monitoring owners)"],

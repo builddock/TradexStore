@@ -55,7 +55,8 @@
     .refurb-strip .rs-g span.cond { height: 18px; font-size: 10.5px; margin-right: 4px; }
     .pgrid.as-list { grid-template-columns: 1fr; }
     .pgrid.as-list .pcard { flex-direction: row; }
-    .pgrid.as-list .pcard > .ph { width: 230px; flex: none; aspect-ratio: 1 / 1; }
+    .pgrid.as-list .pcard > .p-media { width: 230px; flex: none; margin: 8px 0 8px 8px; }
+    .pgrid.as-list .pcard > .p-media .ph { aspect-ratio: 1 / 1; height: 100%; }
     .pgrid.as-list .p-body { padding: 18px 20px; flex-direction: row; gap: 28px; }
     .pgrid.as-list .p-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
     .pgrid.as-list .p-side { width: 250px; flex: none; display: flex; flex-direction: column; gap: 8px; padding-left: 20px; border-left: 1px solid var(--line-2); }
@@ -117,7 +118,7 @@
       .exact > .btn { grid-column: 1 / -1; }
       .pager { justify-content: center; }
       /* List view: photo left, details stacked */
-      .pgrid.as-list .pcard > .ph { width: 116px; }
+      .pgrid.as-list .pcard > .p-media { width: 116px; margin: 6px 0 6px 6px; }
       .pgrid.as-list .p-body { flex-direction: column; gap: 10px; padding: 12px; }
       .pgrid.as-list .p-side { width: auto; padding: 10px 0 0; border-left: 0; border-top: 1px solid var(--line-2); }
       .pgrid.as-list .p-title { font-size: 14px; }
@@ -136,7 +137,7 @@
         <a href="store-listing.html?q=ssd">Search “ssd”</a>·
         <a href="store-listing.html?q=thinkpda">Misspelling</a>·
         <a href="store-listing.html?q=zzz">No results</a>·
-        <a href="store-listing.html?deals=1">Deals</a>
+        <a href="store-listing.html?deals=1">Offers</a>
       </div>
     </div>
 
@@ -375,12 +376,12 @@ TX.ready(() => {
   let title, sub;
   if (mode === "category") { crumbs.push(`<span>${catObj.name}</span>`); title = catObj.name; }
   else if (mode === "search") { crumbs.push(`<span>Search results</span>`); title = `Results for “${esc(corrected || qRaw)}”`; }
-  else if (mode === "deals") { crumbs.push(`<span>Deals</span>`); title = "Today's deals"; }
+  else if (mode === "deals") { crumbs.push(`<span>Offers</span>`); title = "This week's offers"; }
   else { crumbs.push(`<a href="store-listing.html">Brands</a>`, `<span>${esc(brandName)}</span>`); title = `${esc(brandName)} products`; }
   $("#crumbs").innerHTML = crumbs.join(ic("chevron-right"));
   $("#lst-title").innerHTML = title;
   if (mode === "search") $("#lst-title").classList.add("hidden");
-  document.title = (mode === "category" ? catObj.name : mode === "search" ? `“${qRaw}” search` : mode === "deals" ? "Deals" : brandName) + " · Tradex";
+  document.title = (mode === "category" ? catObj.name : mode === "search" ? `“${qRaw}” search` : mode === "deals" ? "Offers" : brandName) + " · Tradex";
 
   const QUICK = {
     laptops: [["cond", "refurb-a", "Refurbished · Grade A"], ["cond", "openbox", "Open box"], ["brand", "Apple", "MacBook"], ["ram", "16 GB", "16 GB RAM"], ["stor", "1 TB", "1 TB SSD"], ["price", 40000, "Under ₹40,000"], ["avail", "pickup", "Pick up today"]],

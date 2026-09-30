@@ -249,7 +249,7 @@ TX.ready(() => {
   [[1, [52, 55, 51, 58, 60, 57, 63, 61, 66, 64, 69, 71]], [2, [38, 40, 37, 42, 41, 44, 43, 47, 45, 48, 47, 50]], [3, [13, 13.2, 13.6, 13.1, 13.9, 14, 13.8, 14.1, 14.4, 14.2, 14.5, 14.3]],
    [4, [31, 29, 26, 24, 21, 18, 15, 12, 10, 8.4, 7.1, 6.2]], [5, [96.1, 96.8, 97, 97.4, 97.2, 97.9, 98.1, 98, 98.4, 98.3, 98.6, 98.7]], [6, [8.9, 8.4, 8.1, 7.6, 7.4, 7, 6.8, 6.5, 6.3, 6.1, 6, 5.8]]]
     .forEach(([i, v]) => TX.charts.spark(TX.$("#sp" + i), v));
-  const top = [["lap-01", 142, 0.18, 2.1], ["ssd-01", 386, 0.14, 0.8], ["lap-04", 61, 0.11, 1.6], ["mon-01", 88, 0.13, 2.3], ["cpu-01", 74, 0.09, 0.4], ["hp-01", 57, 0.21, 3.5]];
+  const top = [["lap-01", 52, 0.18, 2.1], ["lap-04", 17, 0.11, 1.6], ["mon-01", 28, 0.13, 2.3], ["cpu-01", 22, 0.09, 0.4], ["ssd-01", 58, 0.14, 0.8], ["hp-01", 19, 0.21, 3.5]];  // same units as Analytics → Products (net sales ordered)
   TX.$("#top-products").innerHTML = top.map(([id, u, gm, rr]) => { const p = TX.byId(id); return `<tr data-href="erp-catalog.html">
     <td><div class="row">${TX.ph(p.img, "thumb")}<div><div class="cell-main">${p.title}</div><div class="cell-sub mono">${p.sku}</div></div></div></td>
     <td>${TX.condBadge(p.cond)}</td><td class="r">${u}</td><td class="r">${TX.fmt(u * p.price / 1.18)}</td><td class="r">${(gm * 100).toFixed(1)}%</td>

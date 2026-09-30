@@ -295,6 +295,9 @@ shell) consistent with BP §6.2 information architecture. Status: `REQUIRES_DECI
 
 ### 2.1 Shell elements
 
+> **Look reworked 2026-09-30 (`D-281`).** The rows below keep their content, behaviour, APIs and decisions; the
+> visual anatomy (utility bar, header, PIN chip, account label, department rail, footer) is now §13.2.
+
 | Element | Content and behaviour | API | Visibility by context | Evidence · decisions |
 |---|---|---|---|---|
 | Top strip | Service message (mockup: free-delivery threshold and dispatch cut-off — samples); links: Dealer / business pricing (hidden for dealers) → P-S11; Sell with Tradex → P-S12#vendor; Track order → P-S08; Help → P-S13; WhatsApp number (click-to-chat) | — (content) | All; dealer link hidden for R-dealer | MOCKUP · message values D-162; content source D-142; vendor link 1B (D-047, D-048); number D-014 |
@@ -395,6 +398,9 @@ acceptance criteria; if it moves mobile web into Phase 1, they are the specifica
 | Not product components: prototype toolbar (`.protobar`), annotation pins (`data-anno`), hub page styles | 00-conventions §1.1 |
 
 ### 3.2 Design tokens (from `assets/tradex.css :root`; values pending D-049)
+
+> The storefront re-points these tokens to the Studio values of §13.1 (`D-281`); the workspace and vendor portal
+> keep the values below.
 
 | Group | Tokens | Used for |
 |---|---|---|
@@ -511,6 +517,9 @@ Layer: **DS** = `frontend/design-system/` (shared); **App** = `frontend/storefro
 ## 4. Page specifications
 
 ### 4.1 P-S01 — Home
+
+> **Layout reworked 2026-09-30 (`D-281`)** — see §13.4 for the new section order and design; the content,
+> evidence and decisions of each section below still apply.
 
 | Field | Value |
 |---|---|
@@ -702,6 +711,9 @@ native/database search first).
 ---
 
 ### 4.3 P-S03 — Product detail (incl. unit inspection report)
+
+> **Layout reworked 2026-09-30 (`D-281`)** — two columns with one purchase card instead of gallery · info · buy box;
+> see §13.4. Fields, actions, states and APIs below are unchanged.
 
 | Field | Value |
 |---|---|
@@ -2167,3 +2179,74 @@ Everything specified in §1–§11 remains the specification of the storefront *
 electronics concept (serial, condition grade, compatibility, refurbished inspection), read it as: *the pack
 supplies this structure; the page renders whatever the profile declares*. The responsive specification of §2.5
 applies to every template; a template that breaks it fails its own acceptance.
+
+---
+
+## 13. Storefront visual identity rework — "Studio" (`D-281`, client feedback `CF1 §1`, 2026-09-30)
+
+The client reviewed mockup v0.1 and found the storefront "similar to the old Amazon website design" (`CF1 §1`).
+The mockup storefront was redesigned the same day with an original identity. **This section overrides the visual
+and layout details of §2, §3.2 and §4.1–§4.3 wherever they describe the v0.1 look** (dark navy header,
+"Deliver to" block, "Hello, sign in / Account & lists", "Returns & Orders", orange search button, category text
+strip, carousel hero, "Deals of the day" countdown, green rating badges, three-column product page with a buy
+box, "About this item", "Frequently bought together"). Everything else in §1–§12 — fields, actions, API calls,
+states, permissions, validation, business rules and decisions — is unchanged: the rework is presentation only
+(`D-238`: a template may change layout, order, density, imagery and typography, never behaviour).
+
+The ERP workspace and vendor portal were not part of the request and keep their v0.1 look; the Studio block in
+`assets/tradex.css` is scoped to `body[data-app="store"]`.
+
+### 13.1 Design tokens (template `TPL-forge` v2)
+
+| Group | Token (MK `assets/tradex.css`, "STOREFRONT — Studio") | Value in the mockup | Use |
+|---|---|---|---|
+| Surfaces | `--st-paper`, `--st-paper-2`, `--st-paper-3`, `--surface` | #f4f4f0, #eaeae3, #dfdfd6, #ffffff | Page, tiles and utility bar, pressed states, cards |
+| Ink | `--st-ink`, `--st-ink-2`, `--tx-1…4` | #111317, #2a2e36, #111317 / #3c4048 / #5c6068 / #8a8e95 | Text, primary buttons, active chips, header cart pill, footer |
+| Signature accent | `--st-volt`, `--st-volt-2`, `--st-volt-50`, `--st-volt-ink` | #d4f25a, #c3e449, #f3fad6, #3a4606 | Secondary CTA ("Buy now", "Subscribe"), discount pill, cart count, Offers chip, highlights. **Always with ink text** — volt is never a text colour on white (contrast) |
+| Shared tokens re-pointed | `--brand*`, `--accent*`, `--bg*`, `--line*`, `--ring`, `--r-*`, `--sh-*` | brand = ink; accent = volt; radius 8/12/16/24 px | Keeps every shared component (buttons, tabs, steppers, switches, meters, callouts) on the new palette without per-page changes |
+| Semantic and condition colours | `--ok/warn/bad/info`, `--c-new/openbox/refurb/used` | unchanged | Status and condition meaning stays identical |
+| Type | `--font-display` + `--font` | Space Grotesk 400–700 (SIL OFL, self-hosted `assets/fonts/`) for h1–h3, prices, wordmark; Inter for body | Distinct display voice; tabular numerals kept for money |
+
+In production these become the `TPL-forge` token set compiled by `D-240` (brand colours from `CFG-theme.color.*`,
+WCAG 2.2 AA gate). The volt-with-ink pairing rule is part of the template's contrast contract.
+
+### 13.2 Shell anatomy (replaces the look of §2.1; behaviour and APIs unchanged)
+
+| Element | Studio design | Replaces (v0.1) |
+|---|---|---|
+| Utility bar | Light paper bar: service message (dispatch cut-off, free-delivery threshold — samples) + links Track an order · Our stores · Help centre · Business pricing (hidden for dealers) · Sell on Tradex · WhatsApp | Dark top strip |
+| Header | White, translucent on scroll. Logo (ink tile with volt mark, Space Grotesk wordmark) · **store search** (rounded field, search icon inside, placeholder with model/part examples, "All departments" scope select at the right, ink round submit) · **PIN chip** (city + PIN; opens `m-pin`) · account (avatar initials + first name, "Sign in" for guests) · orders icon (signed-in) · wishlist icon · **cart pill** (ink, volt count) | Navy bar, "Deliver to" two-line block, "All" select on the left of search with orange button, "Hello, sign in / Account & lists", "Returns & Orders" |
+| Department rail | White rail: ink "All departments" pill (opens the mega menu; drawer on touch layouts) · department links (priority-hidden at narrower widths) · right-hand chips **Certified refurbished** (violet dot) · **Offers** (volt) · **Dealer zone** | Text category strip with "Deals" |
+| Mega menu | Departments list with counts · merchandised columns · "Not sure what fits?" help note · promo tile | Same content, new layout |
+| Tablet / phone | Header: menu · logo · account · cart; search on its own row (phone). Rail becomes swipeable chips and gains a **delivery chip** ("Deliver to Priya · 560034") as its second item. Bottom bar: Home · Categories · **Offers** (Dealer for dealers) · Account · Cart | Slim "Deliver to" strip under the header |
+| Footer | Graphite footer with a statement row ("Tested. Graded. Guaranteed."), newsletter field with volt Subscribe, brand column, four link columns, legal row and payment marks | Navy footer |
+| Help and WhatsApp | Ink "Help" pill with volt icon, green WhatsApp button; chat header in ink | Navy/blue |
+
+### 13.3 Components
+
+| Component | Studio design |
+|---|---|
+| Product card (`TX.cardHTML`) | White card, 20 px radius; **photo inset** on a paper tile; condition as a white pill with a coloured dot (+ merchandising badge in volt); wishlist round button; brand (small caps) with **monochrome rating** "★ 4.5 (214)" on one line; two-line title; spec line; price (Space Grotesk) with struck MRP and a volt "46% off" pill; stock · delivery · warranty lines; footer with Compare checkbox and ink "Add to cart" (label shortens to "Add" in narrow cards via a container query) |
+| Condition badge | White pill + coloured dot + full text (text and colour, never colour alone — §3.1 rule kept) |
+| Ratings | Ink stars / ink star glyph; no coloured rating boxes |
+| Buttons | Primary = ink; accent = volt with ink text; soft = paper; 8/12 px radius |
+| Hero (`.hero.photo`, used on P-S04 and P-S11) | Text on graphite at the left, photograph in its own rounded frame at the right (no dark wash over the photo); stacks photo-first on tablet/phone |
+| Section heads | Eyebrow label with rule, Space Grotesk heading, "View all" as an outlined pill |
+
+### 13.4 Page layouts changed
+
+| Page | Studio layout (sections keep the §4 content, evidence and decisions) |
+|---|---|
+| P-S01 Home (§4.1) | 1 **Hero bento**: graphite statement panel (headline, copy, **"Shop by what you need"** shortcuts, CTAs, three facts) + three photo tiles with caption cards (refurbished laptops · RTX in stock · dealer pricing, or quick order for dealers) — replaces the carousel hero and side promos · 2 **The Tradex standard** row (42-point inspection, 6-month warranty, 10-day returns, 2 PM dispatch) — replaces the trust strip · 3–4 dealer reorder and account (unchanged) · 5 **Department mosaic** (feature tile + six tiles with photo, count and arrow) — replaces uniform category tiles · 6 **Shop by what you do** (Work · Gaming · Create · Upgrade tabs over curated product sets, `D-142`) · 7 **This week's offers** with an honest end date instead of a countdown timer (`D-043`; BP §6.1 no fabricated urgency) · 8 **Grade scale** (Open box → Grade A → Grade B → Used · Good) above the refurbished products · 9 **Build or upgrade** graphite band with component tiles and "Ask for a check" on WhatsApp · 10 dealer application band · 11 cameras & lenses · 12 continue shopping · 13 **WhatsApp ordering** with a chat preview · 14 brands as a wordmark strip · 15 store cards with photos |
+| P-S02 Listing (§4.2) | Same structure; new cards and chips; list view keeps the inset photo; deals mode is titled **"This week's offers"** |
+| P-S03 Product (§4.3) | **Two columns** instead of gallery · info · buy box: left = large framed gallery (condition and badge on the photo, wishlist/share buttons on the photo, thumbnails and Compare below) + **Highlights** card (was "About this item"); right = brand pill (was "Visit the {brand} store"), title, rating line, grade box, then **one purchase card**: *Choose condition* offer tiles → price, EMI and payment offers → dealer tier table (dealers) → stock, delivery date and PIN check → quantity, ink **Add to cart** + volt **Buy now** side by side, **Ask a specialist on WhatsApp** → assurance row (secure checkout · sold by · returns) → collapsible *Pick up or see it in a store*. Below: inspection report, policies, **"Complete your setup"** (was "Frequently bought together"), tabs, compatible accessories, similar products. Phone: gallery → panel → highlights, sticky buy bar unchanged |
+| P-S06 Cart (§4.6) | Title "Your cart · n items"; primary action "Checkout securely" |
+| Other pages | Inherit the shell, tokens and components; hard-coded v0.1 blues replaced by Studio tokens (help centre hero, dealer header) |
+
+### 13.5 Verification (mockup, 2026-09-30)
+
+All 13 storefront pages (plus listing list view and a second product) at 390, 768 and 1280 px, and at 1440 px:
+0 console errors, 0 page-level horizontal overflow. Every v0.1 interaction still works (search suggestions, scope,
+mega menu, drawer, PIN modal, view-as guest/consumer/dealer, wishlist, compare tray, cart, chat, WhatsApp,
+product state switcher, PIN check, quantity tiers, listing filters and list view). Screenshots were reviewed at
+desktop, tablet and phone widths.
