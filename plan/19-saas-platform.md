@@ -401,6 +401,14 @@ in a report and cannot send a message (`§5.2` point 5).
 `CAP-ACCOUNTING_API` [`D-011`] · `CAP-DAY_CLOSE` [on] · `CAP-TAX_INVOICES` [on, `D-037`] ·
 `CAP-EINVOICING` [`D-037`] · `CAP-EWAY_BILL` [`D-037`] — 1A and CANDIDATE.
 
+Added 2026-09-30 for the client feedback `CF1 §3`:
+
+| Capability | What the store gets | Build |
+|---|---|---|
+| `CAP-ANALYTICS_DASHBOARD` [on] | The Analytics screen P-E18 (Overview, Sales, Products views) over the store's own orders, stock and returns | 1A (`D-284`; definitions `D-286`) |
+| `CAP-CUSTOMER_ANALYTICS` [on] | The Customers view of P-E18: new vs returning, cohort retention, segments, lifetime value, regions | 1A (`D-284`; segment rules `D-286`) |
+| `CAP-STOREFRONT_VISIT_ANALYTICS` [off] | Store-visit metrics in P-E18: sessions, conversion funnel, traffic sources, devices, landing pages, product views, on-site search | CANDIDATE (`D-285`) |
+
 #### P. Integrations and extensibility (M23)
 
 | Capability | What the store gets | Build |
@@ -418,6 +426,15 @@ in a report and cannot send a message (`§5.2` point 5).
 `CAP-MFA_STAFF` [on] · `CAP-MFA_CUSTOMERS` [off] · `CAP-ACCESS_REVIEWS` [on] · `CAP-AUDIT_VIEWER` [on] ·
 `CAP-DATA_RETENTION_RULES` [on, `D-036`] · `CAP-PRIVACY_REQUESTS` [on, `D-060`] · `CAP-IP_ALLOWLIST_STAFF` [off] —
 1A and CANDIDATE.
+
+Added 2026-09-30 for the client feedback `CF1 §2` — work activity only, never screen, keystroke, camera or
+location capture (`D-282`):
+
+| Capability | What the store gets | Build |
+|---|---|---|
+| `CAP-TEAM_MONITOR` [on] | The Team & activity screen P-E17: status board, per-area handling, activity feed, person detail | 1A (`D-282`; policy `D-283`) |
+| `CAP-STAFF_PRESENCE` [on] | Live presence (active, idle, on break, away, offline) worked out from activity inside the workspace | 1A (`D-282`; idle rule and retention `D-283`) |
+| `CAP-STAFF_ACTIVITY_ALERTS` [on] | Rule-based alerts on unusual staff activity (after-hours sign-in, overrides above limit, bulk exports, self-approval) | 1A (`D-283` thresholds) |
 
 #### R. Platform and presentation (M30–M33)
 
@@ -498,9 +515,9 @@ The sixteen platform modules:
 | `MOD-vendor` | workspace, vendor | vendor onboarding, submissions, availability, statements, performance | M14 |
 | `MOD-support` | storefront, workspace | help centre, WhatsApp, shared inbox, tickets | M16, M20 |
 | `MOD-automation` | workspace | rules, exception queues, approvals, delegation, owner digest | M17 |
-| `MOD-reporting` | workspace | report catalogue, exports, scheduled reports | M18 |
+| `MOD-reporting` | workspace | report catalogue, exports, scheduled reports, analytics dashboard (P-E18) | M18 |
 | `MOD-finance` | workspace | invoice references, accounting export, day close | M19 |
-| `MOD-administration` | workspace | store users, roles, store-owned settings, audit viewer | M02, M24 |
+| `MOD-administration` | workspace | store users, roles, store-owned settings, audit viewer, team & activity monitor (P-E17) | M02, M24 |
 
 Category modules seen in the packs of `§6.2`, all composed from existing capabilities:
 
@@ -852,7 +869,7 @@ only provable with more than one:
 
 | Template | Character | Default for |
 |---|---|---|
-| `TPL-forge` | Dense, specification-led, comparison-first, technical imagery — the current mockup direction | `VP-electronics` |
+| `TPL-forge` | Specification-led and comparison-first, in the **"Studio" identity** since the client review of 30 Sep 2026 (`D-281`): paper surfaces, graphite actions, one volt accent, display type, inset product photography — the current mockup direction (`04a` §13) | `VP-electronics` |
 | `TPL-aurora` | Editorial, image-led, generous whitespace, lookbook and collection sections | `VP-fashion_apparel`, general retail |
 
 Both consume the same token contract, so a store may use either with either pack where compatibility allows.

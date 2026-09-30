@@ -1282,6 +1282,24 @@ proof, estimate and exit-gate work; they do not replace any of it. See `19-saas-
 - **Acceptance criteria:** (1) Both screens are measured on every candidate at the agreed volumes with two stores. (2) Query count per render is recorded, not estimated, and any N+1 pattern is named. (3) The `19` §25.2 budgets are stated as met or missed per candidate, with the gap quantified. (4) The work a candidate would need to meet the budget is described and costed at option level. (5) No recommendation is made here; the result feeds the scorecard (T-0-M01-06) and the SaaS scorecard update (T-0-M01-30). (6) TASKS.md and STATE.md updated per the continuation protocol.
 - **Evidence:** —
 
+### Stage 0 additions — client feedback CF1 (2026-09-30, D-281–D-286)
+
+#### T-0-M09-07 · Client review of the reworked storefront (D-281) and the new owner screens P-E17 Team & activity and P-E18 Analytics; decide D-283, D-285 and D-286 (brief + record answers)
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 0 / M09
+- **Depends on:** —
+- **Decisions:** D-283, D-285, D-286
+- **References:** CF1 §1–§3; DEC D-049, D-281–D-286; 04a §13; 04c §22–§23; 21 §4; MK store-*.html, erp-team.html, erp-analytics.html
+- **Description:** Walk the client through mockup v0.2: the Studio storefront identity (D-281) on desktop, tablet and phone, P-E17 Team & activity and P-E18 Analytics. Write one decision brief covering D-283 (staff monitoring policy: meaning of "REP section", who may see P-E17, idle rule, retention, staff notice, alert thresholds, legal review), D-285 (storefront visit tracking: none / cookieless aggregate / consent-gated events / third-party via D-277) and D-286 (analytics definitions, margin source and visibility, targets, refresh, segment rules, branch scope), with the documented options and the tasks each blocks. Record the client's feedback on the Studio direction as input to D-049 (the sign-off itself stays T-0-M09-04). Ask the user and record the answers per DECISIONS.md.
+- **Files/components:** `plan/phase0/decision-briefs/D-283-D-285-D-286.md`, `plan/DECISIONS.md`, `plan/STATE.md`, `plan/TASKS.md`
+- **Database impact:** None
+- **API impact:** None
+- **Frontend impact:** None
+- **Backend impact:** None
+- **Testing requirements:** `python3 plan/tools/status.py --check` passes; dependent tasks re-evaluated (T-1A.2-M02-11, T-1A.14-M17-13, T-1A.16-M24-12, T-1A.16-M24-13, T-1A.15-M18-09, T-1A.15-M18-10, T-1A.9-M09-14).
+- **Acceptance criteria:** (1) The brief states each question with its documented options, sources and blocked tasks, and makes no recommendation. (2) D-283, D-285 and D-286 are DECIDED with value · approver · date, or left OPEN with the client's stated reason, and STATE.md §6 has matching entries. (3) The client's comments on the Studio storefront are recorded as input to D-049. (4) Dependent task statuses updated. (5) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
 ## Stage 1A.1 — Foundation
 
 #### T-1A.1-M01-01 · Repository scaffolding per 00 §11: frontend/{design-system,storefront,workspace,vendor-portal}, backend/, infra/, tests/{acceptance,e2e,load,a11y,security,restore,migration,uat}; ignore rules keeping secrets out; publication handling of the Pages site
@@ -2108,7 +2126,7 @@ retrofitted (`12-phases.md` §10.2). References: `19-saas-platform.md` §3–§6
 #### T-1A.2-M02-09 · Stage 1A.2 verification and seed S-04 (owner/admin/finance accounts through invitations with MFA; integration accounts)
 - **Status:** NOT_STARTED
 - **Stage / Module:** 1A.2 / M02
-- **Depends on:** T-1A.2-M02-05, T-1A.2-M02-06, T-1A.2-M02-07, T-1A.2-M02-08, T-1A.2-M03-02, T-1A.2-M17-02, T-1A.2-M24-02, T-1A.2-M02-10, T-1A.2-M30-01, T-1A.2-M24-03
+- **Depends on:** T-1A.2-M02-05, T-1A.2-M02-06, T-1A.2-M02-07, T-1A.2-M02-08, T-1A.2-M03-02, T-1A.2-M17-02, T-1A.2-M24-02, T-1A.2-M02-10, T-1A.2-M30-01, T-1A.2-M24-03, T-1A.2-M02-11
 - **Decisions:** —
 - **References:** 03 §6 S-04; 16 §4 (S), TS-AUTH-01…10, TS-PERM-01, TS-PERM-04, TS-PERM-08, TS-ADM-01, TS-ADM-02, TS-ADM-05, TS-ADM-06, TS-ADM-09, TS-SVC-03, TS-SVC-04; T10 (identity part)
 - **Description:** Verify stage 1A.2 and execute seed S-04: create the owner, operations-admin and finance accounts through the invitation flow with MFA enrolled and the privileged roles second-approved — no direct inserts and no shared accounts (BP §18.2) — and the integration accounts with narrow credentials if D-083 stores them (03 §6 S-04; account ownership per BP §24.2); personal details are entered at run time in each environment, not committed. Run the 16 §4 stage-exit suites for M02, M03, M17, M23 and M24 — TS-AUTH-01…10 (cases for this stage's endpoints; guest order access TS-AUTH-07 and customer/vendor invitation cases run when their endpoints exist), TS-PERM-01, TS-PERM-04, TS-PERM-08, TS-ADM-01, TS-ADM-02, TS-ADM-05, TS-ADM-06, TS-ADM-09, TS-SVC-03, TS-SVC-04, TS-API-01/TS-API-02 for the stage endpoints and TS-REG-01 — plus the identity part of T10 (client-sent role and permission flags ignored). Confirm the 12-phases §6.3 completion criteria and verify the second-approver paths whose ApprovalService dependency is missing from the skeleton (API-M02-22, API-M02-24, API-M02-36, API-M02-37, API-M03-09).
@@ -2170,6 +2188,24 @@ retrofitted (`12-phases.md` §10.2). References: `19-saas-platform.md` §3–§6
 - **Backend impact:** Key filtering inside the configuration service; no bypass path
 - **Testing requirements:** TS-SAAS-ISO-04 (locked and root-only keys absent from every store-reachable surface), TS-ADM (versioning and approval unchanged for owned keys)
 - **Acceptance criteria:** (1) Listing, reading, searching or exporting configuration from inside a store returns only editable, unlocked keys. (2) A locked key produces the same result as a non-existent key on every endpoint. (3) Versioning, approval and audit still work for store-owned keys. (4) There is no code path that lets a store write a root-only key, including bulk import and restore. (5) The two-store fixture shows the boundary holding for both stores independently. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+### Stage 1A.2 additions — client feedback CF1 (2026-09-30, D-281–D-286)
+
+#### T-1A.2-M02-11 · Staff activity capture for P-E17: workspace-area and work-item tags on audit events, presence from workspace activity (active · idle · away · on break · offline), self-set break/away, work-item assignment and handling-time events
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1A.2 / M02
+- **Depends on:** T-1A.2-M02-03, T-1A.2-M02-04, T-1A.2-M02-10
+- **Decisions:** D-282, D-283
+- **References:** CF1 §2; DEC D-282, D-283; 19 §5.3 Q (CAP-TEAM_MONITOR, CAP-STAFF_PRESENCE); 21 §4 P-E17; 04c §22; 03 E-audit_event, E-staff_presence_interval, E-work_item_event; 06 API-M02-43
+- **Description:** Add what P-E17 needs to the identity and audit layer, and nothing more (D-282 scope: work activity inside the store system only). (a) Every E-audit_event carries the workspace area (the ERP sidebar module) and, where relevant, the work item it touched (order, RMA, ticket, GRN, PO, transfer…). (b) Presence: the workspace sends a lightweight activity heartbeat (API-M02-43) while a signed-in staff user is actually using it; the server derives active / idle (threshold per D-283) / offline and stores presence intervals; staff can set "On break" or "Away" themselves. (c) Work-item events: assigned, started, completed, sent back — so handling time and waiting time per area can be computed. (d) Retention of presence and work-item events per D-283 (audit events keep their own retention, D-036). Never captured: screen contents, keystrokes, camera/microphone, device inventory, location beyond the sign-in network/branch label, private messages. Gated by CAP-TEAM_MONITOR / CAP-STAFF_PRESENCE: when off, no heartbeat is sent and no presence is stored.
+- **Files/components:** `backend/` identity & audit module (presence service, work-item event writer, audit enrichment); `frontend/workspace/` heartbeat client in the shell (finer structure per D-101)
+- **Database impact:** E-audit_event (+ area, work_item_ref), new E-staff_presence_interval, new E-work_item_event; migration group DB-G1 addendum; `store_id` on every new row
+- **API impact:** Implements API-M02-43 (presence heartbeat and self-set status)
+- **Frontend impact:** Workspace shell heartbeat and "On break / Away" control in the user menu (P-E shell)
+- **Backend impact:** Presence derivation job; BR-M02 rules for idle threshold and retention (per D-283); capability checks CAP-STAFF_PRESENCE, CAP-TEAM_MONITOR
+- **Testing requirements:** TS-PERM (a staff user cannot read another user's presence without the P-E17 permission), TS-SAAS (two stores: presence and events never cross stores), privacy test (no field outside the D-282 recorded list is stored), heartbeat load test within the D-268 budget
+- **Acceptance criteria:** (1) Every audit event written by a workspace action carries its area and work item where one exists. (2) Presence intervals match a scripted session (active → idle → break → active → sign-out) within one heartbeat interval. (3) With CAP-STAFF_PRESENCE off no heartbeat is sent and no interval is stored. (4) A schema review shows no field outside the D-282 recorded list. (5) TASKS.md and STATE.md updated per the continuation protocol.
 - **Evidence:** —
 
 ## Stage 1A.3 — Design system & app shells
@@ -2493,9 +2529,9 @@ retrofitted (`12-phases.md` §10.2). References: `19-saas-platform.md` §3–§6
 - **Status:** REQUIRES_DECISION
 - **Stage / Module:** 1A.3 / M33
 - **Depends on:** T-1A.3-M33-02, T-1A.3-M09-02
-- **Decisions:** D-049
-- **References:** SAAS §3 S19; 19 §7.3; DEC D-242, D-049; 04a; MK all store pages; input from T-0-M33-01
-- **Description:** Implement the mockup's visual direction as the template `TPL-forge`: dense, specification-led, comparison-first layouts for the storefront pages, expressed entirely through the token contract and the layout/variant contracts of T-1A.3-M33-02. This is the default template for `VP-electronics` and therefore for the Tradex store. Nothing about electronics may be hard-coded into it: the specification tables, condition badges and comparison affordances render from the pack profile and capabilities, so the same template also works for any other pack that declares it compatible.
+- **Decisions:** D-049, D-281
+- **References:** SAAS §3 S19; 19 §7.3; DEC D-242, D-049, D-281; CF1 §1; 04a, 04a §13 (Studio identity); MK all store pages; input from T-0-M33-01
+- **Description:** Implement the mockup's visual direction as the template `TPL-forge` — since the client review of 30 Sep 2026 the **"Studio" identity** of 04a §13 (D-281: paper surfaces, graphite actions, volt accent with ink text, Space Grotesk display type, inset product photography, the new shell, home, card and product-page layouts): specification-led, comparison-first layouts for the storefront pages, expressed entirely through the token contract and the layout/variant contracts of T-1A.3-M33-02. This is the default template for `VP-electronics` and therefore for the Tradex store. Nothing about electronics may be hard-coded into it: the specification tables, condition badges and comparison affordances render from the pack profile and capabilities, so the same template also works for any other pack that declares it compatible.
 - **Files/components:** `frontend/storefront/templates/forge/` (layouts, variants, assets, preview images, accessibility statement)
 - **Database impact:** None
 - **API impact:** None
@@ -4856,7 +4892,7 @@ retrofitted (`12-phases.md` §10.2). References: `19-saas-platform.md` §3–§6
 #### T-1A.9-M10-09 · Stage 1A.9 verification: T04, T06 (order part), T10, T22, T33 (order snapshot), T36 end to end, T01, T02, T03; storefront and order suites; TS-E2E-02, TS-E2E-08, TS-E2E-10
 - **Status:** NOT_STARTED
 - **Stage / Module:** 1A.9 / M10
-- **Depends on:** T-1A.9-M06-02, T-1A.9-M10-08, T-1A.9-M09-02, T-1A.9-M09-04, T-1A.9-M09-07, T-1A.9-M09-08, T-1A.9-M27-01, T-1A.9-M33-01, T-1A.9-M09-13
+- **Depends on:** T-1A.9-M06-02, T-1A.9-M10-08, T-1A.9-M09-02, T-1A.9-M09-04, T-1A.9-M09-07, T-1A.9-M09-08, T-1A.9-M27-01, T-1A.9-M33-01, T-1A.9-M09-13, T-1A.9-M09-14
 - **Decisions:** —
 - **References:** 16 §4 (S), TS-API-01 (stage endpoints), §6, TS-ERP-01, TS-ECOM-01…07, TS-FE-02, TS-FE-05, TS-FE-06, TS-FE-08, TS-API-03, TS-API-07, TS-API-09, TS-API-10, TS-PERM-03, TS-PERM-05, TS-PERF-01, TS-E2E-02, TS-E2E-08, TS-E2E-10; T01, T02, T03, T04, T06, T10, T22, T33, T36; WP07, WP09
 - **Description:** Stage 1A.9 exit gate (16 §4 cadence S): run all suites of the stage's modules and the acceptance tests that become runnable (16 §6; 12 §7), record the results in `STATE.md` §11 and confirm the completion criteria of 12 §6.10 — the order part of T04–T10 (05 §5.10), home modules served without private-data leakage (05 §5.9), WP09 "Core customer tasks complete" and the BP §30.2 Checkout/Dealer commerce stories for the order part. T01, T02, T03, T04, T10, T22 and T36 pass here; T06 (order part), T33 (order snapshot) and T32 (P-S15 wiring) are recorded as partial. Journey suites run as far as their steps exist: TS-E2E-02 steps 1–5 (payment and assisted-order steps later), TS-E2E-08 steps 1–3 and purchase up to the pending order, TS-E2E-10 steps 1–4 and the reservation of step 5 (dispatch in 1A.11); PS-4 web part (TS-PROOF-04) re-run on the chosen core. Conditional tasks are included only if their decision approved them. Also checks the stage documentation: storefront route map (D-163) and cache policy (D-105) recorded in `frontend/storefront/`.
@@ -4912,6 +4948,24 @@ retrofitted (`12-phases.md` §10.2). References: `19-saas-platform.md` §3–§6
 - **Backend impact:** ProjectionBuilder, CacheKey composition, stampede protection
 - **Testing requirements:** TS-SAAS-ISO-20 (no cache key without a store; dealer price never served from a public cache entry), TS-PERF-01 (route budgets), TS-SAAS-PERF-09 (query count per route), TS-CACHE (invalidation on publish and on write, stampede protection)
 - **Acceptance criteria:** (1) Home, category and product pages are served from projections and meet the 19 §25.2 storefront budgets at realistic volumes. (2) Every cache key contains the store and the buyer-context class; a test proves a dealer price is never returned from a guest cache entry. (3) Publishing catalog, price or configuration changes invalidates exactly the affected entries, verified. (4) Each storefront route has a declared maximum query count asserted in its test. (5) A simulated stampede rebuilds once, not once per request. (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+### Stage 1A.9 additions — client feedback CF1 (2026-09-30, D-281–D-286)
+
+#### T-1A.9-M09-14 · Storefront visit tracking for P-E18 store metrics (sessions, funnel, traffic sources, devices, landing pages, product views, on-site search) — CONDITIONAL on D-285
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1A.9 / M09
+- **Depends on:** T-1A.3-M09-03, T-1A.9-M09-13
+- **Decisions:** D-285, D-277
+- **References:** CF1 §3; DEC D-285, D-277; 19 §5.3 O (CAP-STOREFRONT_VISIT_ANALYTICS), §25.2; 21 §4 P-E18; 04c §23; 06 API-M09-03
+- **Description:** Only if D-285 chooses first-party tracking (options b or c); otherwise `NOT_APPLICABLE` (D-213) and the P-E18 cards marked "Needs visit tracking" are absent. Option (b): cookieless aggregate counters (page views by template, searches and no-result searches, add-to-cart and checkout-start counts, referrer class, device class) with no personal data. Option (c): consent-gated session events with the retention D-285 sets. Events are sent after first paint and batched so they cannot affect the storefront performance budget; nothing is sent for a capability that is off.
+- **Files/components:** `frontend/storefront/` visit beacon; `backend/` visit-event intake and aggregation (finer structure per D-101)
+- **Database impact:** New E-storefront_visit_event (option c) or E-storefront_visit_counter (option b); DB-G5 addendum; `store_id` on every row
+- **API impact:** Implements API-M09-03
+- **Frontend impact:** Storefront (all P-S pages) — beacon only, no visible UI; consent banner only under option (c)
+- **Backend impact:** Aggregation into the analytics read models of T-1A.15-M18-09
+- **Testing requirements:** TS-PERF storefront budget unchanged with the beacon on; privacy test (no personal data under option b; no event before consent under option c); TS-SAAS two stores
+- **Acceptance criteria:** (1) The chosen D-285 option is implemented and no other. (2) LCP/INP/CLS budgets (D-268) still pass with tracking on. (3) Under option (b) no identifier or personal data is stored; under option (c) nothing is sent before consent. (4) TASKS.md and STATE.md updated per the continuation protocol.
 - **Evidence:** —
 
 ## Stage 1A.10 — Payments & reconciliation
@@ -6386,7 +6440,7 @@ retrofitted (`12-phases.md` §10.2). References: `19-saas-platform.md` §3–§6
 #### T-1A.14-M17-12 · Stage 1A.14 verification: T21 end to end, T31 owner-away day, T09 exception visible; M17 suites; TS-E2E-07, TS-PROOF-08
 - **Status:** NOT_STARTED
 - **Stage / Module:** 1A.14 / M17
-- **Depends on:** T-1A.14-M17-02, T-1A.14-M17-07, T-1A.14-M17-08, T-1A.14-M17-10, T-1A.14-M17-11
+- **Depends on:** T-1A.14-M17-02, T-1A.14-M17-07, T-1A.14-M17-08, T-1A.14-M17-10, T-1A.14-M17-11, T-1A.14-M17-13
 - **Decisions:** —
 - **References:** 16 §4 (S), TS-API-01 (stage endpoints), TS-UNIT-10, TS-SVC-02, TS-SVC-06, TS-SVC-07, TS-SVC-11, TS-PERM-07, TS-PERM-08, TS-PERM-09, TS-PERM-13, TS-PERM-14, TS-ADM-03, TS-ADM-04, TS-ADM-10, TS-ADM-11, TS-ERR-05, TS-ERR-06, TS-E2E-07, TS-PROOF-08; T09, T21, T31; WP12
 - **Description:** Stage 1A.14 exit gate (16 §4 cadence S; 12 §6.15): run all M17/M18 suites of the stage and the acceptance tests that became runnable, and confirm the completion criteria — failure recovery and measured run logs (WP12; 10 §14.8) and a simulated owner-away day in which the owner sees only material exceptions (BP §29.7; T31; 10 §16.7 script: activate a delegation, run a representative day of receipts, orders, dispatches, returns and one late capture, verify no routine case reaches the owner queue, overdue tasks escalate once, the digest lists only owner-level items with freshness labels, P-E01 shows unresolved items, exposure and responsible people). T21 end to end (worker stops after order commit → work recovered and visible in P-E14 `#runs`), T09 exception visible in P-E14/P-E01, TS-PROOF-08 rerun on the chosen core (recover a failed stock-update job and reconcile the channel view). No new functionality; T-1A.14-M17-06 is included only if D-192 kept it in 1A.
@@ -6406,6 +6460,24 @@ retrofitted (`12-phases.md` §10.2). References: `19-saas-platform.md` §3–§6
   7. TASKS.md and STATE.md updated per the continuation protocol.
 - **Evidence:** —
 
+
+### Stage 1A.14 additions — client feedback CF1 (2026-09-30, D-281–D-286)
+
+#### T-1A.14-M17-13 · Staff activity alert rules for P-E17 (after-hours sign-in, overrides above limit, bulk export, repeated failed sign-ins, adjustment without evidence, assigned work waiting while the assignee is idle, self-approval) with acknowledge and owner notification
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1A.14 / M17
+- **Depends on:** T-1A.14-M17-05, T-1A.2-M02-11
+- **Decisions:** D-283
+- **References:** CF1 §2; DEC D-282, D-283; 19 §5.3 Q (CAP-STAFF_ACTIVITY_ALERTS); 21 §4 P-E17; 04c §22; 06 API-M24-18…20; 03 E-staff_alert_rule, E-staff_alert
+- **Description:** Rule-based, not AI: each rule reads audit, presence and work-item events and raises a staff alert with severity, the rule and threshold that fired, the person, the record and the time. Rules and thresholds come from D-283 (mockup values are samples); each rule is its own switch under CAP-STAFF_ACTIVITY_ALERTS. Alerts appear on P-E17 and, for serious ones, in the owner's exception view and digest; acknowledge records who and when. Alerts never block the staff member's work.
+- **Files/components:** `backend/` automation module (staff alert evaluator); P-E17 alert list and rules modal consume it
+- **Database impact:** New E-staff_alert_rule, E-staff_alert; DB-G8 addendum; seed S-17 addendum (rules off until D-283 sets thresholds)
+- **API impact:** Implements API-M24-18, API-M24-19, API-M24-20
+- **Frontend impact:** P-E17 `#alerts` list and `m-rules` modal (built in T-1A.16-M24-12)
+- **Backend impact:** Evaluator job; BR-M17 staff-alert rules; owner digest entry (A19)
+- **Testing requirements:** Unit tests per rule with boundary thresholds; TS-SAAS two stores; TS-PERM (only P-E17 viewers see alerts)
+- **Acceptance criteria:** (1) Each rule fires exactly at its threshold on scripted data and names the rule, threshold, person, record and time. (2) Turning a rule off stops new alerts without deleting history. (3) Acknowledge is audited. (4) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
 
 ## Stage 1A.15 — Reporting & finance export
 
@@ -6673,7 +6745,7 @@ retrofitted (`12-phases.md` §10.2). References: `19-saas-platform.md` §3–§6
 #### T-1A.15-M18-08 · Stage 1A.15 verification: T27 accountant test day, T18 accounting effect, T35 export during checkout, TS-PROOF-10, WP15 totals reconcile
 - **Status:** NOT_STARTED
 - **Stage / Module:** 1A.15 / M18
-- **Depends on:** T-1A.15-M18-05, T-1A.15-M18-07, T-1A.15-M19-02, T-1A.15-M11-01, T-1A.15-M09-01, T-1A.15-M10-01
+- **Depends on:** T-1A.15-M18-05, T-1A.15-M18-07, T-1A.15-M19-02, T-1A.15-M11-01, T-1A.15-M09-01, T-1A.15-M10-01, T-1A.15-M18-10
 - **Decisions:** —
 - **References:** 16 §4 (S), TS-API-01 (stage endpoints), TS-ERP-14, TS-ERP-19, TS-INT-05, TS-SVC-10, TS-SEC-10, TS-UNIT-11, TS-PERF-05, TS-PROOF-10; T18, T27, T35; WP15
 - **Description:** Stage 1A.15 exit gate (16 §4 cadence S; 12 §6.16): run the stage suites and acceptance tests and confirm the completion criteria — the launch report set (D-075) reconciles with sample transactions (WP15; 05 §5.18) and finance confirms the export and reconciliation process (BP §23.4; 05 §5.19). T27: the accountant reconciles a test trading day (payments, refunds, invoices and export on one day: daily close, accounting export control totals, report totals); T18 accounting effect (a duplicated refund command yields one provider refund and one accounting effect); T35 export during checkout verified on staging as heavy-job isolation (the formal load measurement against D-034/D-207 targets is T-1A.17-M26-04); TS-PROOF-10 rerun on the chosen core (export an invoice/credit once and reconcile with finance records). Conditional/scope-decision tasks (T-1A.15-M18-06) are included only if enabled. No new functionality.
@@ -6693,6 +6765,40 @@ retrofitted (`12-phases.md` §10.2). References: `19-saas-platform.md` §3–§6
   7. TASKS.md and STATE.md updated per the continuation protocol.
 - **Evidence:** —
 
+
+### Stage 1A.15 additions — client feedback CF1 (2026-09-30, D-281–D-286)
+
+#### T-1A.15-M18-09 · Analytics read models for P-E18: daily facts by location, channel, buyer type, category, product and condition; customer first-purchase cohorts and segments; fulfilment, returns and support measures; freshness labels
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1A.15 / M18
+- **Depends on:** T-1A.15-M18-01
+- **Decisions:** D-284, D-286
+- **References:** CF1 §3; DEC D-284, D-286, D-261 (no cross-store money aggregation); BP §14.1, §14.4; 19 §5.3 O; 21 §4 P-E18; 04c §23; 03 E-analytics_daily_fact, E-customer_cohort_snapshot
+- **Description:** Pre-aggregated, store-scoped read models so P-E18 never scans transactional tables on request (D-268): net sales, orders, units, discounts, gross margin (source per D-286), returns and refunds per day × location × channel × buyer type × category × product × condition; customer first-purchase month, repeat purchases and segment (rules per D-286); paid→dispatched time, on-time delivery, delivery exceptions, RTO; return reasons; support first-response and resolution times. Refresh cadence and freshness label per D-286 and BP §14.4. Money stays in minor units with its currency; no cross-store aggregation (D-261).
+- **Files/components:** `backend/` reporting module (analytics aggregation jobs); read-model tables
+- **Database impact:** New E-analytics_daily_fact, E-customer_cohort_snapshot (read models, rebuildable); DB-G10 addendum; `store_id` on every row
+- **API impact:** Feeds API-M18-20
+- **Frontend impact:** None directly (P-E18 in T-1A.15-M18-10)
+- **Backend impact:** Aggregation jobs, rebuild command, freshness tracking; BR-M18 definitions per D-286
+- **Testing requirements:** Reconciliation test: read-model totals equal the source ledgers for a seeded month; TS-SAAS two stores; rebuild-from-scratch test; TS-PERF query budget for P-E18
+- **Acceptance criteria:** (1) Read-model totals reconcile to orders, returns and refunds for a seeded month. (2) A full rebuild produces identical results. (3) Freshness is recorded per model and shown by P-E18. (4) No query sums money across stores. (5) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1A.15-M18-10 · P-E18 Analytics: filter row, Overview, Sales, Products, Customers and Store & operations views, table view on every chart, save view, export
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1A.15 / M18
+- **Depends on:** T-1A.15-M18-09, T-1A.3-M24-01, T-1A.15-M18-03, T-1A.15-M18-05
+- **Decisions:** D-004, D-284, D-286
+- **References:** CF1 §3; DEC D-284, D-285, D-286, D-004; 04c §23; 04b §2.19 (data-visualisation rules); 21 §4 P-E18; 06 API-M18-20; MK erp-analytics.html; 16 TS-FE, TS-A11Y
+- **Description:** Build P-E18 per 04c §23 and MK erp-analytics.html: one filter row (period, comparison, location, channel, buyer type, category) scoping every tile and chart; views Overview (headline measures with deltas and sparklines, trend vs comparison, channel mix, top categories, rule-based highlights, targets per D-286), Sales, Products, Customers (gated by CAP-CUSTOMER_ANALYTICS) and Store & operations. Cards that need visit tracking (funnel, traffic sources, devices, landing pages, product views, no-result searches) render only when CAP-STOREFRONT_VISIT_ANALYTICS is on (D-285) — otherwise absent, not empty. Every chart follows 04b §2.19 (fixed categorical order, one axis, sequential single-hue ramps, tooltip, table view). Save view uses T-1A.15-M18-05; export uses T-1A.15-M18-03. Built only if D-004 decides P-E18 custom.
+- **Files/components:** `frontend/workspace/` (P-E18 page and chart components; charts via `frontend/design-system/`)
+- **Database impact:** None
+- **API impact:** Implements API-M18-20; consumes API-M18-03, API-M18-13, API-M18-14, API-M03-02
+- **Frontend impact:** P-E18 all views and states (normal, stale data, empty period, restricted margin per D-286)
+- **Backend impact:** None
+- **Testing requirements:** TS-FE (every view and state), TS-A11Y-02 (table view, keyboard on charts), TS-PERM (margin columns restricted per D-286), TS-SAAS (capability-gated cards absent when off)
+- **Acceptance criteria:** (1) One filter row drives every tile and chart and the comparison period is labelled on every delta. (2) Every chart has a table view with the same numbers. (3) Cards behind a disabled capability are absent. (4) Margin figures are visible only to the roles D-286 allows. (5) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
 
 ## Stage 1A.16 — Administration completion
 
@@ -6869,7 +6975,7 @@ retrofitted (`12-phases.md` §10.2). References: `19-saas-platform.md` §3–§6
 #### T-1A.16-M24-05 · Stage 1A.16 verification: TS-ADM-01…12 complete, AccessPolicy coverage on every admin endpoint, TS-PERM-10/11/12, TS-SEC-05
 - **Status:** NOT_STARTED
 - **Stage / Module:** 1A.16 / M24
-- **Depends on:** T-1A.16-M24-01, T-1A.16-M24-02, T-1A.16-M24-03, T-1A.16-M26-01, T-1A.16-M26-02, T-1A.16-M24-08, T-1A.16-M24-09, T-1A.16-M24-10, T-1A.16-M24-11
+- **Depends on:** T-1A.16-M24-01, T-1A.16-M24-02, T-1A.16-M24-03, T-1A.16-M26-01, T-1A.16-M26-02, T-1A.16-M24-08, T-1A.16-M24-09, T-1A.16-M24-10, T-1A.16-M24-11, T-1A.16-M24-12, T-1A.16-M24-13
 - **Decisions:** —
 - **References:** 16 §4 (S), TS-API-01 (stage endpoints), TS-ADM-01…12, TS-SVC-04, TS-PERM-10, TS-PERM-11, TS-PERM-12, TS-SEC-05; 11 §15
 - **Description:** Stage 1A.16 exit gate (16 §4 cadence S; 12 §6.17; 11 §15): run the administration suites and confirm the completion criteria — 11 §15 rows for configuration, integrations, audit and system controls; AccessPolicy coverage on every admin endpoint (no admin endpoint reachable without its permission key, privileged role and MFA); all decision-driven values stored as versioned configuration (no code defaults for decision values). Covers TS-ADM-01…12 complete across 1A (users, roles, thresholds, delegation, audit reconstruction, locations, integrations, system, access review, owner control centre, automation admin, configuration) plus the stage's TS-ADM-13 and TS-ADM-15, TS-SVC-04, TS-PERM-10/11/12, TS-SEC-05 and TS-DB-06. No new functionality; defects return to their owning tasks. T-1A.16-M24-04 is included only for items its decisions approved.
@@ -6963,6 +7069,40 @@ retrofitted (`12-phases.md` §10.2). References: `19-saas-platform.md` §3–§6
 - **Backend impact:** None new
 - **Testing requirements:** TS-SAAS-CAP-09 (delegation invariants through the UI), TS-SAAS-ISO-04 (non-delegated channels and automations absent from the page and its data), TS-SAAS-CHAN-01 (verification report shown to the store), TS-A11Y, TS-AUDIT
 - **Acceptance criteria:** (1) Only delegated channels and automations appear; the rest are absent from the page and from the data it loads. (2) A store enabling a delegated channel sees the same verification requirements and the same clear report as an operator would. (3) Template edits are versioned, and where the provider requires approval the state is shown honestly. (4) Automation enable, preview, pause and run log work for delegated rules only. (5) Every change is audited in the store's own trail. (6) The page contains no platform vocabulary and no identifiers. (7) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+### Stage 1A.16 additions — client feedback CF1 (2026-09-30, D-281–D-286)
+
+#### T-1A.16-M24-12 · P-E17 Team & activity: status board, per-area handling table and people × areas heatmap, activity feed, alerts, 7-day performance, person drawer, "What is recorded" and "Alert rules" modals
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1A.16 / M24
+- **Depends on:** T-1A.2-M02-11, T-1A.14-M17-13, T-1A.3-M24-01, T-1A.15-M18-05
+- **Decisions:** D-004, D-282, D-283
+- **References:** CF1 §2; DEC D-282, D-283, D-004; 04c §22; 21 §4 P-E17; 06 API-M24-15…20; MK erp-team.html; 16 TS-FE, TS-PERM
+- **Description:** Build P-E17 per 04c §22 and MK erp-team.html: filter row (period, location, team, area, person) that filters the board, feed and performance table; KPI tiles; live status board (status with dot and label, current activity, today's counters, open-item load, device/branch); "How each area is being handled" table linking to each P-E screen plus the people × areas heatmap with table view; activity feed with sensitive-action chips; alerts (from T-1A.14-M17-13) with acknowledge; 7-day performance with same-role median and the compare-within-role caution; person drawer tabs Today, Areas, Performance, Sessions & access, Sensitive actions, Access (link to P-E15 #users); modals "What is recorded" (D-282 lists, retention and notice from D-283) and "Alert rules". Visible to R-owner and to roles the owner delegates per D-283; nothing on the page reveals platform concepts. Built only if D-004 decides P-E17 custom.
+- **Files/components:** `frontend/workspace/` (P-E17 page, person drawer, modals); charts via `frontend/design-system/`
+- **Database impact:** None
+- **API impact:** Implements API-M24-15, API-M24-16, API-M24-17; consumes API-M24-18…20, API-M02-30, API-M03-02
+- **Frontend impact:** P-E17 all sections and states (live, stale presence, empty filter result, no alerts)
+- **Backend impact:** Read endpoints assemble from audit, presence, work-item and alert data (no new writes except acknowledge and rule changes)
+- **Testing requirements:** TS-FE (every section and state), TS-PERM (a non-delegated role has no navigation entry and gets 403 for P-E17 and its endpoints; a person outside the caller's scope gets 404), TS-SAAS (two stores, capability off → screen and navigation entry absent), TS-A11Y-02 (status never colour-only; heatmap table view)
+- **Acceptance criteria:** (1) Filters change the board, feed and performance table consistently. (2) Each area row matches the open-item counts of its own screen. (3) The person drawer shows only that person's data. (4) "What is recorded" matches D-282 and the D-283 retention and notice. (5) With CAP-TEAM_MONITOR off the navigation entry and the route are absent (404). (6) TASKS.md and STATE.md updated per the continuation protocol.
+- **Evidence:** —
+
+#### T-1A.16-M24-13 · Help content for P-E17 and P-E18: page guides, section/tab/column/control explanations and glossary terms (D-224 pattern)
+- **Status:** REQUIRES_DECISION
+- **Stage / Module:** 1A.16 / M24
+- **Depends on:** T-1A.3-M24-02, T-1A.16-M24-12, T-1A.15-M18-10
+- **Decisions:** D-224, D-225
+- **References:** DEC D-224, D-225, D-282, D-284; MK assets/help/erp-team.js, assets/help/erp-analytics.js; 04b §2.21
+- **Description:** Wire the contextual help of T-1A.3-M24-02 into P-E17 and P-E18 using the mockup help files as the starting content: a page guide per screen, an ⓘ on every heading, tab, key column and control, metric definitions in plain language (AOV, gross margin, cohort retention, conversion, sell-through, stock cover, idle, handling time, presence) and the "what is and is not recorded" explanation on P-E17. Content ownership and review follow D-225; configured values (thresholds, retention, targets) are inserted from live configuration, never typed into help text.
+- **Files/components:** `frontend/workspace/` help content for P-E17 and P-E18
+- **Database impact:** None
+- **API impact:** None
+- **Frontend impact:** P-E17, P-E18 help
+- **Backend impact:** None
+- **Testing requirements:** Every data-help key on both screens resolves; glossary terms resolve; TS-A11Y (help panel keyboard and focus)
+- **Acceptance criteria:** (1) No ⓘ on either screen opens an empty entry. (2) Metric definitions match D-286. (3) The P-E17 recorded / not-recorded lists match D-282. (4) TASKS.md and STATE.md updated per the continuation protocol.
 - **Evidence:** —
 
 ## Stage 1A.17 — Migration, UAT & launch readiness

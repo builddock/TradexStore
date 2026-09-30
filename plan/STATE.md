@@ -27,9 +27,9 @@ Architecture: `19-saas-platform.md` §1–§2 (read first), `20-root-admin.md`. 
 | Current phase | **0 — Discovery & proof** |
 | Current stage | 0 |
 | Current task | — (none in progress). Next eligible: **T-0-M01-03** Discovery questionnaire & next-meeting pack |
-| Last session | 2026-09-28 — SaaS architecture change (D-227, 71 tasks), production-readiness and control-model pass (D-257–D-272, 28 tasks), feature-catalogue and channel pass (D-273–D-278, 6 tasks), the feature map (D-279, `21-feature-map.md`, 1 task), **and contextual help for the root admin** (D-280, 2 tasks): ⓘ on every heading, tab and control, page guides, search and a platform glossary, built and verified in the mockup |
+| Last session | 2026-09-30 — **client feedback on mockup v0.1 (`CF1`) implemented**: original "Studio" storefront identity (D-281), new owner screens **P-E17 Team & activity** (D-282, policy D-283 OPEN) and **P-E18 Analytics** (D-284; D-285, D-286 OPEN); plan updated (8 new tasks, 6 capabilities, 9 endpoints, 7 entities). Earlier: 2026-09-28 SaaS architecture change and its passes; D-105 decided |
 | Application code present | No (`frontend/`, `backend/`, `root-admin/`, `infra/`, `tests/` not yet created) |
-| UI prototype | Mockup v0.1 (32 screens) at repo root — **awaiting client sign-off (D-049)**. Storefront pages responsive (desktop · tablet · phone) since 2026-09-27; Phase 1 mobile scope is D-223. ERP workspace and vendor portal have contextual help (ⓘ, help panel, glossary) and 8 operational ERP pages have guided workflows since 2026-09-28 (D-224). ERP and vendor pages responsive (tablet · phone, desktop unchanged) since 2026-09-28; Phase 1 scope is D-226 |
+| UI prototype | **Mockup v0.2 (34 screens)** at repo root = v0.1 + the client-review changes of 2026-09-30 (`CF1`, `docs/CLIENT_FEEDBACK_2026-09-30.md`): storefront redesigned to the original **"Studio" identity** (D-281, `04a` §13 — Amazon/Flipkart-like patterns removed, every function kept), new ERP screens `erp-team.html` (P-E17) and `erp-analytics.html` (P-E18) with contextual help. **Awaiting client sign-off (D-049)**. Storefront responsive since 2026-09-27 (Phase 1 scope D-223); ERP/vendor help and guided workflows since 2026-09-28 (D-224); ERP/vendor responsive since 2026-09-28 (D-226) |
 | UI prototype (root admin) | `root-admin-mockup/` — **13 screens P-R01–P-R13** with contextual help on every screen (ⓘ, page guide, search, 50-term glossary — D-280), own assets, `noindex`, **not linked from any client-facing page** (D-249). Verified 2026-09-28 after the second pass: 0 console errors on 14 pages, `scrollWidth == clientWidth` at 390/768/1280/1600 px, all internal links resolve, no inbound or outbound link between the two mockups |
 | Blocking decisions for Phase 1A start | D-001 (operational core), D-003 (storefront framework), D-004 (staff UI), D-005 (hosting), D-049 (UI sign-off) — see `DECISIONS.md`. The SaaS decisions D-227–D-253 are DECIDED and block nothing |
 
@@ -37,27 +37,27 @@ Architecture: `19-saas-platform.md` §1–§2 (read first), `20-root-admin.md`. 
 Run `python3 plan/tools/status.py` and paste the summary here at the end of each session.
 
 ```
-Tradex plan status — 466 tasks
-  NOT_STARTED=158 · IN_PROGRESS=0 · BLOCKED=0 · REQUIRES_DECISION=306 · COMPLETED=1 · NOT_APPLICABLE=1
+Tradex plan status — 474 tasks
+  NOT_STARTED=160 · IN_PROGRESS=0 · BLOCKED=0 · REQUIRES_DECISION=312 · COMPLETED=1 · NOT_APPLICABLE=1
 Current (earliest unfinished) stage: 0
 Per stage:
-  0       done   1/77   in-progress 0  blocked 0  needs-decision 47
+  0       done   1/78   in-progress 0  blocked 0  needs-decision 48
   1A.1    done   0/34   in-progress 0  blocked 0  needs-decision 19
-  1A.2    done   0/20   in-progress 0  blocked 0  needs-decision 12
+  1A.2    done   0/21   in-progress 0  blocked 0  needs-decision 13
   1A.3    done   0/19   in-progress 0  blocked 0  needs-decision 14
   1A.4    done   0/18   in-progress 0  blocked 0  needs-decision 13
   1A.5    done   0/10   in-progress 0  blocked 0  needs-decision 6
   1A.6    done   0/16   in-progress 0  blocked 0  needs-decision 11
   1A.7    done   0/12   in-progress 0  blocked 0  needs-decision 8
   1A.8    done   0/17   in-progress 0  blocked 0  needs-decision 11
-  1A.9    done   0/32   in-progress 0  blocked 0  needs-decision 24
+  1A.9    done   0/33   in-progress 0  blocked 0  needs-decision 23
   1A.10   done   0/12   in-progress 0  blocked 0  needs-decision 7
   1A.11   done   0/15   in-progress 0  blocked 0  needs-decision 9
   1A.12   done   0/13   in-progress 0  blocked 0  needs-decision 8
   1A.13   done   0/15   in-progress 0  blocked 0  needs-decision 12
-  1A.14   done   0/13   in-progress 0  blocked 0  needs-decision 10
-  1A.15   done   0/13   in-progress 0  blocked 0  needs-decision 10
-  1A.16   done   0/13   in-progress 0  blocked 0  needs-decision 9
+  1A.14   done   0/14   in-progress 0  blocked 0  needs-decision 11
+  1A.15   done   0/15   in-progress 0  blocked 0  needs-decision 12
+  1A.16   done   0/15   in-progress 0  blocked 0  needs-decision 11
   1A.17   done   0/21   in-progress 0  blocked 0  needs-decision 17
   1R.1    done   0/11   in-progress 0  blocked 0  needs-decision 5
   1R.2    done   0/15   in-progress 0  blocked 0  needs-decision 5
@@ -72,7 +72,7 @@ Per stage:
 In progress (resume these first): none
 NEXT TASK: T-0-M01-03 · Discovery questionnaire and next-meeting pack: BP §31.1 agenda, §26.1–26.7 questions Q1–Q70 issued and answers recorded; decision owners and dates assigned; vision backlog / release scope / change register lists opened
 Open decisions blocking the most tasks:
-  D-004 blocks 41 — Staff ERP UI: native ERP screens or custom UI (per mockup) — per P-E screen
+  D-004 blocks 43 — Staff ERP UI: native ERP screens or custom UI (per mockup) — per P-E screen
   D-034 blocks 10 — Service levels & performance targets (availability, RPO, RTO, LCP/INP/CLS, API p95, stock 
   D-053 blocks 10 — Testing tools/frameworks (unit, integration, E2E, load, accessibility, security)
   D-101 blocks 9 — Which frontend framework builds the custom ERP staff workspace screens (`frontend/workspac
@@ -81,7 +81,7 @@ Open decisions blocking the most tasks:
   D-001 blocks 8 — Which operational core owns stock, reservations, orders, permissions and integrations?
   D-033 blocks 8 — Object storage & CDN provider
 ```
-`status.py --check`: 0 issues in 466 tasks.
+`status.py --check`: 0 issues in 474 tasks.
 
 ## 3. In-progress tasks
 | Task ID | Started | Done so far | Remaining |
@@ -104,6 +104,10 @@ Open decisions blocking the most tasks:
 | 2026-09-28 | (mockup, user request) | ERP workspace + vendor portal responsive for tablets and phones (slide-in menu, compact top bar, stacked panes, scrolling tables, per-page layouts); desktop/laptop unchanged; plan documented (04a §2.5, 04b §2.24, 04c X16, D-226, conditional tasks) | — | see session log 2026-09-28 (responsive) |
 | 2026-09-28 | (plan, user request) | **SaaS architecture change (D-227)** applied across the plan: `docs/SAAS_ARCHITECTURE_CHANGE.md`, `19-saas-platform.md`, `20-root-admin.md`, 30 decisions D-227–D-256, modules M30–M35, 71 new tasks in 3 new stages plus 8 existing stages, `status.py` extended for phase 1R | — | `status.py --check` 0 issues in 438 tasks |
 | 2026-09-28 | (mockup, user request) | Configurable Root Admin mockup: 12 screens P-R01–P-R12 in `root-admin-mockup/` with its own `assets/ra.css` + `assets/ra.js`, deliberately unlinked from the client-facing mockup (D-249) | — | 13 pages × 4 widths headless: 0 console errors, 0 page-level horizontal overflow, all internal links resolve, 0 links in either direction between the two mockups |
+| 2026-09-30 | (mockup, client feedback CF1 §1) | **Storefront reworked to an original "Studio" identity (D-281)**: new tokens (paper, graphite ink, volt accent, Space Grotesk display type — SIL OFL, self-hosted, credited), new shell (utility bar, header with store search / PIN chip / account / cart pill, department rail, editorial footer), new product card, bento home page, two-column product page with one purchase card, "Offers" instead of "Deals", no countdown timers; all 13 storefront pages re-skinned; every v0.1 interaction kept | — | 13 store pages (+ list view, 2nd product) at 390/768/1280/1440 px: 0 console errors, 0 page overflow; screenshots reviewed at desktop, tablet, phone |
+| 2026-09-30 | (mockup, client feedback CF1 §2) | **P-E17 Team & activity** (`erp-team.html`, sidebar "Team monitor"): status board (14 people), per-area handling table for every ERP area + people × areas heatmap, activity feed with flags, rule-based alerts, 7-day performance, person drawer (6 tabs), "What is recorded" and "Alert rules" modals; help file (73 entries) | — | 390/768/1280/1440/1600 px: 0 errors, 0 overflow; drawer tabs, modals and filters exercised; 84 help keys resolve |
+| 2026-09-30 | (mockup, client feedback CF1 §3) | **P-E18 Analytics** (`erp-analytics.html`, sidebar "Analytics"): filter row + Overview, Sales, Products, Customers, Store & operations tabs; charts with table views (line, bars, stacks, weekday × hour heatmap, cohort grid, funnel, price-band columns); "Needs visit tracking" cards (D-285); help file (99 entries). Control centre top-products units aligned with it | — | 5 tabs × 390/768/1440 px and 4 date ranges: 0 errors, 0 overflow; 103 help keys resolve |
+| 2026-09-30 | (plan, client feedback CF1) | `docs/CLIENT_FEEDBACK_2026-09-30.md` (source CF1); D-281–D-286; P-E17/P-E18 registered; 6 capabilities; 8 tasks (T-0-M09-07, T-1A.2-M02-11, T-1A.9-M09-14, T-1A.14-M17-13, T-1A.15-M18-09, T-1A.15-M18-10, T-1A.16-M24-12, T-1A.16-M24-13); `04a` §13; `04c` §22–§23; `21`, `06`, `03`, `07`, `16` entries; two Business Walkthrough guides | — | `status.py --check` 0 issues in 474 tasks |
 
 ## 6. Decisions log (append-only; details in `DECISIONS.md`)
 | Date | D-ID | Decision | Approved by |
@@ -165,6 +169,12 @@ Open decisions blocking the most tasks:
 | 2026-09-28 | D-279 | The client-facing mockup is **the reference store**: a store with every Phase-1 feature enabled, deliberately not feature-gated. `21-feature-map.md` is the authority for which capability governs which element | User |
 | 2026-09-28 | D-280 | The Configurable Root Admin carries the same contextual help as the ERP and vendor portals (D-224): ⓘ on every heading, tab and control with a six-part explanation, a page guide behind the ?, search, a platform glossary reachable from dotted-underlined words, and a help-icons toggle. Help content is part of the definition of done for every P-R screen | User |
 | 2026-09-28 | D-045 | **Superseded by D-227** — multiple businesses on one configurable platform are Phase 1 architecture, not a Phase 3 assessment | User |
+| 2026-09-30 | D-281 | Storefront visual identity after client review: the original **"Studio"** identity for `TPL-forge` v2 (paper surfaces, graphite ink, volt accent with ink text, Space Grotesk display type, new shell, home, card and product-page layouts); presentation only; ERP/vendor unchanged; sign-off still D-049 | Client (via user) |
+| 2026-09-30 | D-282 | Employee monitoring: new owner screen P-E17 Team & activity; records work activity inside the store system only (actions, sign-ins, presence from workspace activity, work-item handling) — never screen, keystrokes, camera/mic, personal devices, location beyond the sign-in branch label, private messages; "REP section" read as the ERP section pending D-283 | Client (via user) |
+| 2026-09-30 | D-283 | Staff monitoring policy details (REP meaning, who may see P-E17, idle rule, retention, staff notice, alert thresholds, legal review) — **OPEN** | Owner / HR / legal |
+| 2026-09-30 | D-284 | Analytics: new owner screen P-E18 with Overview, Sales, Products, Customers and Store & operations views on read models of the store's own data; no AI; table view on every chart | Client (via user) |
+| 2026-09-30 | D-285 | Storefront visit tracking for store metrics (none / cookieless aggregate / consent-gated events / third-party via D-277) — **OPEN** | Owner / privacy adviser |
+| 2026-09-30 | D-286 | Analytics definitions, margin source and visibility, targets, refresh, segment rules, branch scope — **OPEN** | Owner / finance |
 
 ## 7. Database migrations
 | Migration ID / file | Entities | Environment(s) applied | Date | Task ID |
@@ -181,6 +191,7 @@ Open decisions blocking the most tasks:
 |---|---|---|---|---|
 | P-S01–P-S13 | Storefront | NOT_STARTED | | Mockup exists (reference) |
 | P-E01–P-E15 | ERP workspace | NOT_STARTED | | Native vs custom per D-004 |
+| P-E17–P-E18 | Team & activity · Analytics (client feedback CF1) | NOT_STARTED | T-1A.16-M24-12, T-1A.15-M18-10 | Mockup exists (`erp-team.html`, `erp-analytics.html`); D-004, D-283, D-286 |
 | P-V01–P-V04 | Vendor portal | NOT_STARTED | | Phase 1B |
 | P-R01–P-R12 | Configurable Root Admin portal | NOT_STARTED | 1R.1–1R.3 | Mockup exists in `root-admin-mockup/` (D-249, D-253); separate codebase `root-admin/` |
 
@@ -212,6 +223,7 @@ Open decisions blocking the most tasks:
 | 2026-09-28 | (root admin mockup, second pass) | `root-admin-mockup/`: new `ra-bundles.html` (P-R13); `ra-store.html` gains Environments & hosting, surfaces, modules, delegated features, email sender verification and client export; `ra-store-new.html` gains hosting/separation and the three control levels; `ra-settings.html` gains per-client separation, secret scopes and signing keys, configuration retention, DNS/certificate provider, release and schema state; `ra-admin.html` gains MFA method and sessions; `ra-stores.html` gains a hosting column; `assets/ra.css` + `assets/ra.js` top-bar fix and narrow-width layout. **No client-facing file changed** |
 | 2026-09-28 | (root admin mockup, D-249) | **New:** `root-admin-mockup/` — `index.html`, `ra-login.html`, `ra-dashboard.html`, `ra-stores.html`, `ra-store-new.html`, `ra-store.html`, `ra-packs.html`, `ra-templates.html`, `ra-capabilities.html`, `ra-terminology.html`, `ra-deployments.html`, `ra-admin.html`, `ra-settings.html`, `README.md`, `assets/ra.css`, `assets/ra.js`. **No client-facing file was changed** (`index.html`, `credits.html`, `store-*`, `erp-*`, `vendor-*`, `assets/tradex.*` are untouched) |
 | 2026-09-28 | (mockup responsive ERP/vendor) | `assets/tradex.css`, `assets/tradex.js`, all 15 `erp-*.html`, all 4 `vendor-*.html` (page `<style>` media queries; one script value in `erp-reports.html`); `plan/DECISIONS.md` (D-226; D-223 cross-refs), `plan/04a-frontend-storefront.md` (rule 7, §2.5), `plan/04b-frontend-workspace-1.md` (rule 15, §2.24, §3.2 #1), `plan/04c-frontend-workspace-2-vendor.md` (X16), `plan/TASKS.md` (T-1A.9-M09-12, T-1A.16-M24-07, T-1B.1-M14-17), `plan/12-phases.md`, `plan/18-master-checklist.md`, `plan/STATE.md` |
+| 2026-09-30 | (client feedback CF1) | **New:** `docs/CLIENT_FEEDBACK_2026-09-30.md`, `erp-team.html`, `erp-analytics.html`, `assets/help/erp-team.js`, `assets/help/erp-analytics.js`, `assets/fonts/spacegrotesk-latin.woff2`, `assets/fonts/spacegrotesk-latin-ext.woff2`, `Business Walkthrough/team-monitor-guide.md`, `Business Walkthrough/analytics-guide.md`. **Updated:** `assets/tradex.css` (old storefront block replaced by the Studio block, scoped to the storefront; price block kept), `assets/tradex.js` (store shell, account label, product card, ERP navigation + screen list, v0.2 label, line-chart date-label spacing), `store-home.html` (rewritten), `store-product.html` (top section), `store-listing.html`, `store-cart.html`, `store-help.html`, `store-dealer.html`, `store-compare.html`, `store-returns.html`, `store-checkout.html`, `erp-dashboard.html` (top-products units), `index.html`, `credits.html` (fonts); `plan/00-conventions.md`, `plan/DECISIONS.md`, `plan/TASKS.md`, `plan/STATE.md`, `plan/19-saas-platform.md`, `plan/04a-frontend-storefront.md`, `plan/04c-frontend-workspace-2-vendor.md`, `plan/21-feature-map.md`, `plan/06-api.md`, `plan/03-database.md`, `plan/07-auth-roles-permissions.md`, `plan/16-testing.md`, `Business Walkthrough/README.md` |
 
 ## 13. Known issues
 | # | Date | Issue | Affects | Status |
@@ -229,6 +241,8 @@ Open decisions blocking the most tasks:
 | 12 | 2026-09-28 | The SaaS change is documented in the plan but **no code exists yet**, so none of the new rules (store scoping, capability gating, terminology tokens, artefact loading) has been exercised against a real operational core. `TS-PROOF-11` and `TS-PROOF-12` (Stage 0, D-252) are the first real test of D-233 and D-248. | plan | OPEN — by design; resolved when Stage 0 proof runs |
 | 13 | 2026-09-28 | Existing task blocks written before 2026-09-28 still describe electronics behaviour (serials, condition grades, compatibility) as if it were the product. Under D-251 that behaviour is now pack `VP-electronics`. The blocks were **not** rewritten — the rule is recorded once, in `19` §16 and in the per-file SaaS sections, and applies when each task is picked. | plan | OPEN (low) — apply the rule at pick time; do not mass-edit the tracker |
 | 10 | 2026-09-28 | P-E15 `#integrations` has a 36 px horizontal overflow at 1024 px (already in v0.1). Cause: screen-reader-only "Done" labels in the contract checklist are absolutely positioned without a positioned ancestor; fixed for ≤ 980 px (`.table-wrap { position: relative }`); desktop left untouched on the user's instruction (no desktop changes) | mockup | OPEN — minor, desktop |
+| 14 | 2026-09-30 | **"REP section"** in the client's feedback (`CF1 §2`) occurs in no source; it is read as the ERP section, and P-E17 shows every workspace area so other readings (returns/repairs, reports) are also covered. Confirm with the client under D-283 (a) | P-E17 | OPEN |
+| 15 | 2026-09-30 | **Mockup sample-data differences found while building P-E18** (samples only, left as they are): P-E10 "Active · 90 d 3,914" vs P-E18 2,610 active customers in 90 days; P-E01 "₹6.2 L older than 90 days, mostly Grade B monitors" vs 7 Grade B monitor units in the catalogue (P-E18 shows ₹2.1 L); P-E15 "18 active accounts" vs 14 people on today's P-E17 roster (labelled "3 more on their weekly day off"). P-E01 top-products units were aligned with P-E18 (they could not fit within ₹1.84 Cr) | mockup | OPEN (samples) |
 
 ## 14. Session log (append-only; newest last)
 ### 2026-09-27 — plan creation
@@ -589,3 +603,55 @@ Open decisions blocking the most tasks:
 - Next: unchanged — `T-0-M01-03` (discovery questionnaire & next-meeting pack). `D-001`, `D-003`, `D-004`, `D-005`,
   `D-049` still gate Phase 1A. `D-113`, `D-103`, `D-106` are the remaining page-speed decisions and are all
   independent of `D-001`.
+
+### 2026-09-30 — client feedback on mockup v0.1 implemented (CF1: storefront rework, employee monitoring, analytics)
+- **Input:** the client reviewed v0.1 and asked for (1) a storefront that does not look like Amazon — unique,
+  professional, original (the user added "not a copy of Amazon or Flipkart"), (2) an owner section to monitor each
+  employee, their activities, current status and "how employees are handling the REP section", (3) a good analytics
+  dashboard (sales, product, store and customer analytics), keeping all existing functionality. Recorded verbatim
+  as source `CF1` (`docs/CLIENT_FEEDBACK_2026-09-30.md`).
+- **Storefront (D-281):** audit found Amazon patterns (navy header, "Deliver to" block, "All" scope + orange search
+  button, "Hello, sign in / Account & lists", "Returns & Orders", category text strip, carousel hero, "Deals of the
+  day" countdown, 3-column product page with buy box, "Visit the X store", "About this item", "Frequently bought
+  together") and Flipkart's green rating boxes. Replaced by the **Studio** identity (spec `04a` §13): paper surfaces,
+  graphite actions, one volt accent always with ink text, Space Grotesk display type (self-hosted, credited), inset
+  product photography, white condition pills with coloured dots, monochrome ratings; new utility bar, header, PIN
+  chip, department rail, editorial footer; bento home with "shop by what you need", Tradex-standard row, department
+  mosaic, use-case tabs, honest weekly offers (end date, no timer), grade scale, PC-build band, WhatsApp chat
+  preview; two-column product page with one purchase card. Scoped to `body[data-app="store"]`; ERP and vendor
+  unchanged. Listing's out-of-stock card rewrite relies on the Add button's exact markup — kept.
+- **Employee monitoring (D-282, D-283 OPEN):** P-E17 `erp-team.html` built with the lead's brief by a subagent (no
+  browser), then verified by the lead. Fixed while verifying: the person drawer rendered in page flow because a
+  `data-anno` attribute on `.drawer` applied the annotation rule's `position: relative` (moved to the drawer head);
+  the area table clipped its last columns (headers now wrap); KPI captions squeezed beside sparklines.
+- **Analytics (D-284; D-285, D-286 OPEN):** P-E18 `erp-analytics.html` built the same way and verified. Fixed:
+  two compact tables overflowing their cards, stretched cards leaving empty space, the slow-movers row stacking
+  below 1,700 px, "Compare to" on phones, and — in the shared `TX.charts.line` — date labels overlapping on narrow
+  charts (label spacing now follows the chart width; unchanged on the control centre at desktop width).
+- **Existing tasks changed (recorded here per TASKS.md rules):** `T-1A.3-M33-03` (TPL-forge) now also cites
+  D-281 / `04a` §13 / CF1 and its description names the Studio identity; stage verification tasks gained the new
+  tasks as dependencies — `T-1A.2-M02-09` (+M02-11), `T-1A.9-M10-09` (+M09-14), `T-1A.14-M17-12` (+M17-13),
+  `T-1A.15-M18-08` (+M18-10), `T-1A.16-M24-05` (+M24-12, +M24-13).
+- **Verification:** all 36 pages at 390 and 1440 px — 0 console errors, 0 page overflow (the overview page's
+  pre-existing 22 px phone overflow was fixed); all internal links resolve; no client-facing page links to the root
+  admin mockup; storefront pages also at 768 and 1280 px; new ERP pages also at 768 and 1600 px; help keys on both
+  new screens all resolve. One headless Chrome at a time, `nice -n 19`.
+- **Documentation pass (subagent, reviewed):** `04c` §22 (P-E17) and §23 (P-E18) with screen ↔ API and role
+  matrices; `21` rows and reverse index; `06` nine endpoints (API-M02-43, API-M09-03, API-M18-20, API-M24-15…20)
+  and §11; `03` §13 entities and migration addenda; `07` permission keys (`presence.self`, `team.monitor.read`,
+  `team.alert.ack`, `team.alert.manage`, `analytics.read`, `analytics.margin.read`, `public.visit`); `16` suites
+  TS-FE-09, TS-SVC-12/13, TS-ERP-20, TS-SEC-13 and §19; Business Walkthrough guides 17–18. The lead registered the
+  entities in `00-conventions.md` §7.4.
+- **Corrections after review:** P-E17 now follows the standard response order (capability off → 404, missing
+  permission → **403** with no navigation entry, person outside scope → 404) — the first task text had asked for
+  404, which would also have hidden the screen the staff notice tells staff about; `T-1A.16-M24-12` testing text,
+  `06` §11 rule 1, `07` and `04c` aligned. D-283 gained questions (h)–(k) (roster/shift/leave source, area
+  targets and per-person capacity, team grouping, Message/Reassign), D-286 gained (g)–(j) (highlight and
+  suggested-action rules, price bands, one return-rate definition, satisfaction score and footfall), D-285 now
+  cites BP §4/§14.3 as asking for the measures (only the collection method is unsourced) and notes that recovered
+  carts also need D-275. Mockup: one idle rule on P-E17 (status key and tile both 10+ min; the 20-min alert is a
+  separate threshold), "Deals" → "Offers" in P-E18 samples, a Phase-2 phone-app sign-in sample replaced.
+- **Tracker:** 466 → **474 tasks**, 0 issues. No application code written.
+- **Next:** show mockup v0.2 to the client (`T-0-M09-07`) and get answers to D-283, D-285, D-286 and the D-049
+  sign-off. "Continue implementation" still starts at `T-0-M01-03`.
+

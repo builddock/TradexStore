@@ -1,0 +1,1529 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Analytics · Tradex ERP</title>
+  <link rel="stylesheet" href="assets/tradex.css">
+  <style>
+    /* ---------- Layout ---------- */
+    .an-tabs > .tabs { margin-bottom: 16px; }
+    .an-grid { display: grid; gap: 16px; }
+    .an-top { align-items: start; }
+    .an-slow { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); }
+    @media (max-width: 1700px) { .an-slow { grid-template-columns: minmax(0, 1fr); } }
+    /* Headers wrap so wide tables fit their card; only very narrow screens scroll */
+    .ws-main .table th { white-space: normal; vertical-align: bottom; line-height: 1.3; }
+    .ws-main .table :is(th, td) { padding-left: 10px; padding-right: 10px; }
+    .ws-main .table :is(th, td):first-child { padding-left: 16px; }
+    .an-2 { grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); }
+    .an-2e { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .an-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .an-col { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+    .an-tabs .card { min-width: 0; }
+    .card-head .ch-tools { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+    .card-head .ch-title { min-width: 0; }
+    .card-head .ch-title > .row { flex-wrap: wrap; row-gap: 4px; }
+    .card > .stats:last-child, .card > .table-wrap:last-child { border-radius: 0 0 var(--r-lg) var(--r-lg); }
+    .card > .stats:last-child { overflow: hidden; }
+    .note { display: flex; gap: 6px; align-items: flex-start; font-size: 12px; color: var(--tx-3); margin-top: 12px; }
+    .note .ic { width: 14px; height: 14px; margin-top: 1px; flex: none; }
+
+    /* ---------- Filter row ---------- */
+    .filterbar .fb-item { display: inline-flex; align-items: center; gap: 6px; min-width: 0; }
+    .filterbar .fb-lab { font-size: 12.5px; font-weight: 600; color: var(--tx-3); white-space: nowrap; }
+    #f-note { text-align: right; }
+
+    /* ---------- KPI tiles ---------- */
+    .an-tabs .kpi .k-foot { margin-top: auto; }
+    .an-tabs .kpi .k-sub { margin-top: -2px; }
+    .an-tabs .kpi .k-value.na { color: var(--tx-4); }
+    .badge.vt { height: 20px; padding: 0 7px; font-size: 11px; background: var(--bg-2); color: var(--tx-2); border: 1px solid var(--line); }
+    .badge.vt .ic { width: 11px; height: 11px; }
+
+    /* ---------- Highlights & targets ---------- */
+    .hl-list .list-row { align-items: flex-start; padding: 11px 20px; }
+    .hl-list .li-icon { width: 32px; height: 32px; }
+    .hl-list .hl-t { font-weight: 600; font-size: 13.5px; }
+    .hl-list .hl-s { font-size: 12.5px; color: var(--tx-2); margin-top: 1px; }
+    .hl-list .hl-rule { font-size: 11.5px; color: var(--tx-3); margin-top: 3px; }
+    .hl-list .hl-act { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex: none; }
+    .tgt { padding: 12px 20px; border-bottom: 1px solid var(--line-2); }
+    .tgt:last-child { border-bottom: 0; }
+    .tgt-top { display: flex; align-items: baseline; justify-content: space-between; gap: 6px 10px; font-size: 13px; margin-bottom: 7px; flex-wrap: wrap; }
+    .tgt-top b { font-weight: 650; }
+    .tgt-meter { position: relative; }
+    .tgt-meter .pace { position: absolute; top: -3px; width: 2px; height: 14px; margin-left: -1px; background: var(--tx-2); border-radius: 1px; }
+    .tgt-foot { display: flex; justify-content: space-between; gap: 2px 8px; font-size: 11.5px; color: var(--tx-3); margin-top: 6px; flex-wrap: wrap; }
+    .tgt-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); }
+    .tgt-grid .tgt { border-bottom: 0; border-right: 1px solid var(--line-2); padding: 14px 18px; }
+    .tgt-grid .tgt:last-child { border-right: 0; }
+
+    /* ---------- Stat blocks ---------- */
+    .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--line-2); }
+    .stats.s2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .stats.s4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .stats > div { background: #fff; padding: 14px 18px; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+    .stats .s-l { font-size: 12px; color: var(--tx-3); font-weight: 550; }
+    .stats .s-n { font-size: 20px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.2; }
+    .stats .s-n small { font-size: 12.5px; font-weight: 600; color: var(--tx-3); }
+    .stats .s-f { display: flex; align-items: flex-end; justify-content: space-between; gap: 8px; font-size: 12px; color: var(--tx-3); margin-top: auto; padding-top: 4px; flex-wrap: wrap; }
+
+    /* ---------- Page chart helpers (stack, columns, heat grid, funnel) ---------- */
+    .stk { display: flex; gap: 2px; height: 16px; border-radius: 4px; overflow: hidden; background: #fff; }
+    .stk > span { display: block; min-width: 4px; outline: none; transition: opacity .12s; cursor: default; }
+    .stk > span:hover, .stk > span:focus-visible { opacity: .72; }
+    .hm-scroll { overflow-x: auto; overflow-y: hidden; padding: 2px 0 4px; }
+    .chart svg.hm-svg { max-width: none; outline: none; }
+    .chart svg.hm-svg:focus-visible { outline: 2px solid var(--brand); outline-offset: 1px; }
+    .chart .hm-val { font-size: 11px; font-weight: 650; }
+    .chart .hm-row { fill: var(--tx-2); font-size: 11.5px; }
+    .chart .fn-step { fill: var(--tx-3); font-size: 11.5px; }
+    .chart .hit:focus-visible { outline: none; }
+    .hm-legend { display: flex; align-items: flex-end; gap: 6px 12px; flex-wrap: wrap; margin-top: 10px; font-size: 11.5px; color: var(--tx-3); }
+    .hm-scale { display: inline-flex; gap: 2px; }
+    .hm-scale > span { display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 10.5px; color: var(--tx-3); white-space: nowrap; }
+    .hm-scale i { display: block; width: 34px; height: 10px; border-radius: 2px; }
+
+    /* ---------- Tables ---------- */
+    .table th.sortable { cursor: pointer; user-select: none; }
+    .table th.sortable:hover { color: var(--tx-1); }
+    .table th .sort-ic .ic { width: 11px; height: 11px; vertical-align: -1px; }
+    .share-bar { display: inline-block; width: 56px; height: 6px; border-radius: 999px; background: var(--brand-100); vertical-align: middle; margin-right: 6px; overflow: hidden; }
+    .share-bar > i { display: block; height: 100%; background: var(--series-1); border-radius: 999px; }
+    .prod { display: flex; align-items: center; gap: 10px; min-width: 200px; }
+    .prod .cell-main { max-width: 300px; }
+    .an-tabs tr[data-href] { cursor: pointer; }
+    .sw { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 7px; vertical-align: -1px; }
+    .term { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; background: var(--bg); border: 1px solid var(--line-2); border-radius: 4px; padding: 1px 6px; white-space: nowrap; }
+    .mini-list { list-style: none; margin: 0; padding: 0; }
+    .mini-list li { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--line-2); font-size: 13px; }
+    .mini-list li:last-child { border-bottom: 0; }
+
+    /* Tablet and phone (≤ 980 px) — desktop layout above is unchanged */
+    @media (max-width: 980px) {
+      .an-2, .an-2e, .an-3 { grid-template-columns: minmax(0, 1fr); }
+      .an-tabs .card-head { flex-wrap: wrap; row-gap: 10px; }
+      .an-tabs .card-head > .ch-title { flex: 1 1 260px; }
+      .stats.s4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .filterbar #f-note { flex: 1 1 100%; margin-left: 0; text-align: left; }
+      /* Five customer tiles: 2 + 2 + 1 full-width */
+      #cu-kpis > .kpi:last-child { grid-column: 1 / -1; }
+      /* Wide tables keep readable columns and scroll inside their card */
+      .an-wide { min-width: 720px; }
+      /* Targets strip: two per row */
+      .tgt-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .tgt-grid .tgt { border-right: 0; border-bottom: 1px solid var(--line-2); }
+    }
+
+    /* Phone (≤ 760 px) */
+    @media (max-width: 760px) {
+      /* "Compare to" gets its own full-width row so the select stays readable */
+      .filterbar .fb-item:has(#f-cmp) { flex: 1 1 100%; }
+      .filterbar #f-cmp { flex: 1 1 auto; min-width: 0; }
+      .filterbar .seg { flex: 1 1 100%; }
+      .filterbar .seg > button { flex: 1 1 auto; }
+      .filterbar .fb-item { flex: 1 1 150px; }
+      .filterbar .fb-item .select { flex: 1 1 auto; width: 100%; min-width: 0; }
+      .page-head .actions { width: 100%; }
+      .an-tabs .kpi .k-value { font-size: 22px; }
+      .stats, .stats.s4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .stats > div { padding: 12px 14px; }
+      .stats .s-n { font-size: 18px; }
+      .tgt, .tgt-grid .tgt, .hl-list .list-row { padding-left: 16px; padding-right: 16px; }
+      .tgt-grid { grid-template-columns: minmax(0, 1fr); }
+      .hl-list .hl-act { flex-direction: row; margin-left: 44px; }
+      .hm-scale i { width: 26px; }
+      /* Narrow line charts: keep the first, middle and last date on the axis so labels never overlap */
+      :is(#ch-trend, #ch-sales-t, #ch-orders-t, #ch-newret) svg text.ax-label[text-anchor="middle"]:not(:nth-child(4 of text.ax-label[text-anchor="middle"])) { display: none; }
+    }
+  </style>
+</head>
+<body data-app="erp" data-page="analytics">
+<main>
+  <div class="page-head">
+    <div>
+      <div class="crumbs"><span>Overview</span><i data-icon="chevron-right"></i><span>Analytics</span></div>
+      <h1 data-help="page">Analytics</h1>
+      <p class="sub">Saturday, 26 September 2026 · <span data-help="data-fresh">data as of 10:42 · figures exclude GST unless stated</span></p>
+    </div>
+    <div class="actions">
+      <button class="btn" id="act-save" data-toast="View saved · Analytics · 30 days · all locations" data-help="act-save"><i data-icon="check"></i> Save view</button>
+      <a class="btn" href="erp-reports.html#schedules" data-help="act-schedule"><i data-icon="calendar"></i> Schedule email</a>
+      <button class="btn btn-primary" id="act-export" data-toast="Export ready · Analytics · 30 days · one CSV per card · link expires in 24 h" data-toast-icon="download" data-help="act-export"><i data-icon="download"></i> Export</button>
+    </div>
+  </div>
+
+  <!-- One filter row scopes every tile, chart and table below -->
+  <div class="filterbar" data-anno="Filters scope every tile, chart and table on this page">
+    <div class="seg" id="f-range" role="group" aria-label="Date range"><button data-r="7d">7 days</button><button class="active" data-r="30d">30 days</button><button data-r="90d">90 days</button><button data-r="12m">12 months</button></div>
+    <span data-help="f-range" data-help-pos="in" class="hi-host"></span>
+    <span class="fb-item"><span class="fb-lab">Compare to</span><select class="select" id="f-cmp" aria-label="Compare to" data-help="f-compare"><option value="prev">Previous period</option><option value="ly">Same period last year</option></select></span>
+    <span class="fb-item"><select class="select" id="f-loc" aria-label="Location" data-help="f-location"><option value="">All locations</option></select></span>
+    <span class="fb-item"><select class="select" id="f-ch" aria-label="Channel" data-help="f-channel"><option value="">All channels</option></select></span>
+    <span class="fb-item"><select class="select" id="f-buyer" aria-label="Buyer type" data-help="f-buyer"><option value="">All buyers</option></select></span>
+    <span class="fb-item"><select class="select" id="f-cat" aria-label="Category" data-help="f-category"><option value="">All categories</option></select></span>
+    <button class="btn btn-ghost btn-sm btn-icon" id="f-reset" aria-label="Reset filters" data-tip="Reset filters"><i data-icon="refresh" class="ic-sm"></i></button>
+    <span class="muted small ml-auto" id="f-note">vs 29 Jul – 27 Aug 2026 · ₹ excl. GST</span>
+  </div>
+
+  <div data-tabset class="an-tabs" data-anno="1A · CF1 Analytics dashboard (D-284)">
+    <div class="tabs">
+      <button class="tab active" data-tab="overview" data-help="tab-overview"><i data-icon="dashboard"></i> Overview</button>
+      <button class="tab" data-tab="sales" data-help="tab-sales"><i data-icon="rupee"></i> Sales</button>
+      <button class="tab" data-tab="products" data-help="tab-products"><i data-icon="tag"></i> Products</button>
+      <button class="tab" data-tab="customers" data-help="tab-customers"><i data-icon="users"></i> Customers</button>
+      <button class="tab" data-tab="store" data-help="tab-store"><i data-icon="store"></i> Store &amp; operations</button>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- OVERVIEW                                                            -->
+    <!-- ================================================================== -->
+    <div class="tab-panel active" data-panel="overview">
+      <section class="grid g-4" id="ov-kpis" data-anno="1A · CF1 Headline measures · change vs comparison period"></section>
+
+      <section class="an-grid an-top an-2 mt-16">
+        <div class="card" data-anno="1A · CF1 Sales trend vs comparison period">
+          <div class="card-head">
+            <div class="ch-title"><h3 data-help="ch-trend">Net sales trend</h3><div class="sub" id="trend-sub"></div></div>
+            <div class="ch-tools"><button class="btn btn-sm btn-ghost" data-table-toggle="ch-trend"><i data-icon="list"></i> Table view</button></div>
+          </div>
+          <div class="card-body"><div id="ch-trend"></div></div>
+        </div>
+        <div class="card hl-list" data-anno="1A · CF1 Rule-based highlights (fixed thresholds)">
+          <div class="card-head">
+            <div class="ch-title"><h3 data-help="highlights">Highlights</h3><div class="sub" id="hl-sub">Rule-based checks · compared with the previous period</div></div>
+          </div>
+          <div id="hl-rows"></div>
+          <div class="card-foot"><span class="small muted" id="hl-foot"></span></div>
+        </div>
+      </section>
+
+      <section class="an-grid an-2 mt-16">
+        <div class="card">
+          <div class="card-head">
+            <div class="ch-title"><h3 data-help="ch-top-cat">Top categories by net sales</h3><div class="sub" id="topcat-sub">₹ excl. GST</div></div>
+            <div class="ch-tools"><button class="btn btn-sm btn-ghost" data-table-toggle="ch-topcat"><i data-icon="list"></i> Table view</button></div>
+          </div>
+          <div class="card-body"><div id="ch-topcat"></div></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div class="ch-title"><h3 data-help="ch-channel-mix">Sales by channel</h3><div class="sub">Share of net sales · change vs comparison period</div></div>
+            <div class="ch-tools"><button class="btn btn-sm btn-ghost" data-table-toggle="ch-chmix"><i data-icon="list"></i> Table view</button></div>
+          </div>
+          <div class="card-body"><div id="ch-chmix"></div>
+            <ul class="mini-list mt-12" id="chmix-list"></ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="card mt-16" data-anno="1A · CF1 Monthly targets (sample values · TBC)">
+        <div class="card-head">
+          <div class="ch-title"><div class="row gap-8"><h3 data-help="targets">September targets</h3><span class="badge b-warn">Sample targets · TBC</span></div><div class="sub">Month to date, 1–26 Sep · store-wide · the dark tick marks how much of the month has passed</div></div>
+        </div>
+        <div class="tgt-grid" id="tgt-rows"></div>
+      </section>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- SALES                                                               -->
+    <!-- ================================================================== -->
+    <div class="tab-panel" data-panel="sales">
+      <section class="card" data-anno="1A · CF1 Sales analytics — two charts, one axis each">
+        <div class="card-head">
+          <div class="ch-title"><h3 data-help="ch-time">Net sales and orders over time</h3><div class="sub" id="time-sub"></div></div>
+          <div class="ch-tools">
+            <div class="seg" id="gran" role="group" aria-label="Time grouping"><button data-g="daily">Daily</button><button data-g="weekly">Weekly</button><button data-g="monthly">Monthly</button></div>
+            <span data-help="gran" data-help-pos="in" class="hi-host"></span>
+            <button class="btn btn-sm btn-ghost" data-table-toggle="ch-sales-t ch-orders-t"><i data-icon="list"></i> Table view</button>
+          </div>
+        </div>
+        <div class="card-body an-grid an-2e">
+          <div><h4 class="mb-8">Net sales <span class="muted small" style="font-weight:500">· ₹ excl. GST</span></h4><div id="ch-sales-t"></div></div>
+          <div><h4 class="mb-8">Orders <span class="muted small" style="font-weight:500">· count</span></h4><div id="ch-orders-t"></div></div>
+        </div>
+      </section>
+
+      <section class="an-grid an-2 mt-16">
+        <div class="card">
+          <div class="table-toolbar"><b data-help="channel-table">Sales by channel</b><span class="small muted" id="chtab-sub"></span></div>
+          <div class="table-wrap"><table class="table an-wide">
+            <thead><tr><th>Channel</th><th class="r">Net sales</th><th class="r">Orders</th><th class="r" data-help="g.aov">AOV</th><th data-help="col-share">Share of net sales</th><th class="r" data-help="col-growth" id="chtab-g">Growth</th></tr></thead>
+            <tbody id="chtab-body"></tbody><tfoot id="chtab-foot"></tfoot>
+          </table></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div class="ch-title"><h3 data-help="ch-location">Sales by location</h3><div class="sub">Site that fulfilled the order · ₹ excl. GST</div></div>
+            <div class="ch-tools"><button class="btn btn-sm btn-ghost" data-table-toggle="ch-loc"><i data-icon="list"></i> Table view</button></div>
+          </div>
+          <div class="card-body"><div id="ch-loc"></div></div>
+        </div>
+      </section>
+
+      <section class="an-grid an-top an-2 mt-16">
+        <div class="card" data-anno="1A · CF1 Orders by weekday and hour (sequential scale)">
+          <div class="card-head">
+            <div class="ch-title"><h3 data-help="heatmap">Orders by weekday and hour</h3><div class="sub" id="hm-sub">All channels · hour the order was placed (IST)</div></div>
+            <div class="ch-tools"><button class="btn btn-sm btn-ghost" data-table-toggle="ch-heat"><i data-icon="list"></i> Table view</button></div>
+          </div>
+          <div class="card-body"><div id="ch-heat"></div><div class="note" id="hm-note"></div></div>
+        </div>
+        <div class="an-col">
+          <div class="card">
+            <div class="card-head">
+              <div class="ch-title"><h3 data-help="ch-payments">Payment methods</h3><div class="sub">Share of paid value · website, WhatsApp and assisted orders</div></div>
+              <div class="ch-tools"><button class="btn btn-sm btn-ghost" data-table-toggle="ch-pay"><i data-icon="list"></i> Table view</button></div>
+            </div>
+            <div class="card-body"><div id="ch-pay"></div><div class="note"><i data-icon="info"></i><span>Branch counter payments (cash, card, UPI at the till) are reconciled on the Payments page.</span></div></div>
+          </div>
+          <div class="card">
+            <div class="card-head">
+              <div class="ch-title"><h3 data-help="buyer-split">Consumers and dealers</h3><div class="sub">Share of net sales</div></div>
+              <div class="ch-tools"><button class="btn btn-sm btn-ghost" data-table-toggle="ch-buyer"><i data-icon="list"></i> Table view</button></div>
+            </div>
+            <div class="card-body"><div id="ch-buyer"></div></div>
+            <div class="stats s2" id="buyer-stats"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card mt-16" data-anno="1A · CF1 Discounts &amp; promotions impact">
+        <div class="table-toolbar"><b data-help="promos">Discounts and promotions</b><span class="small muted" id="promo-sub"></span><a class="small strong ml-auto" href="erp-pricing.html">Pricing &amp; promotions →</a></div>
+        <div class="table-wrap"><table class="table an-wide">
+          <thead><tr><th>Promotion</th><th>Type</th><th>Window</th><th class="r">Orders</th><th class="r">Net sales</th><th class="r" data-help="col-discount">Discount given</th><th class="r" data-help="col-incr">Extra margin (est.)</th><th>Result</th></tr></thead>
+          <tbody id="promo-body"></tbody><tfoot id="promo-foot"></tfoot>
+        </table></div>
+      </section>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- PRODUCTS                                                            -->
+    <!-- ================================================================== -->
+    <div class="tab-panel" data-panel="products">
+      <section class="card" data-anno="1A · CF1 Product analytics — top products">
+        <div class="table-toolbar"><b data-help="top-products">Top products</b><span class="small muted" id="tp-sub"></span><a class="small strong ml-auto" href="erp-catalog.html">Catalog →</a></div>
+        <div class="table-wrap"><table class="table an-wide" id="tp-table">
+          <thead><tr>
+            <th class="sortable" data-sort="name" tabindex="0">Product <span class="sort-ic"></span></th>
+            <th data-help="g.condition">Condition</th>
+            <th class="sortable r" data-sort="units" tabindex="0" data-help="col-units">Units <span class="sort-ic"></span></th>
+            <th class="sortable r" data-sort="net" tabindex="0" data-help="g.net-sales">Net sales <span class="sort-ic"></span></th>
+            <th class="sortable r" data-sort="gm" tabindex="0" data-help="col-gm">Gross margin <span class="sort-ic"></span></th>
+            <th class="sortable r" data-sort="rr" tabindex="0" data-help="col-rr">Return rate <span class="sort-ic"></span></th>
+            <th class="sortable r" data-sort="cover" tabindex="0" data-help="col-cover">Stock cover <span class="sort-ic"></span></th>
+            <th class="sortable r" data-sort="st" tabindex="0" data-help="col-st">Sell-through <span class="sort-ic"></span></th>
+          </tr></thead>
+          <tbody id="tp-body"></tbody>
+        </table></div>
+        <div class="card-foot"><span class="small muted">Click a column heading to sort · click a row to open the product in the catalog · stock cover uses the last 30 days’ sales rate</span></div>
+      </section>
+
+      <section class="an-grid an-2e mt-16">
+        <div class="card">
+          <div class="card-head">
+            <div class="ch-title"><h3 data-help="ch-category">Category performance</h3><div class="sub" id="cat-sub"></div></div>
+            <div class="ch-tools">
+              <div class="seg" id="cat-measure" role="group" aria-label="Measure"><button class="active" data-m="net">Net sales</button><button data-m="gm">Gross margin</button></div>
+              <span data-help="cat-measure" data-help-pos="in" class="hi-host"></span>
+              <button class="btn btn-sm btn-ghost" data-table-toggle="ch-cat"><i data-icon="list"></i> Table view</button>
+            </div>
+          </div>
+          <div class="card-body"><div id="ch-cat"></div></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div class="ch-title"><h3 data-help="ch-price-bands">Sales by price band</h3><div class="sub" id="band-sub"></div></div>
+            <div class="ch-tools">
+              <div class="seg" id="band-measure" role="group" aria-label="Measure"><button class="active" data-m="units">Units</button><button data-m="net">Net sales</button></div>
+              <span data-help="band-measure" data-help-pos="in" class="hi-host"></span>
+              <button class="btn btn-sm btn-ghost" data-table-toggle="ch-bands"><i data-icon="list"></i> Table view</button>
+            </div>
+          </div>
+          <div class="card-body"><div id="ch-bands"></div></div>
+        </div>
+      </section>
+
+      <section class="an-grid an-slow mt-16">
+        <div class="card" data-anno="1A · CF1 Slow movers &amp; stock ageing">
+          <div class="table-toolbar"><b data-help="slow-movers">Slow movers and ageing stock</b><span class="small muted">As of today · stock value at landed cost</span><a class="small strong ml-auto" href="erp-reports.html">Stock ageing report →</a></div>
+          <div class="table-wrap"><table class="table an-wide">
+            <thead><tr><th>Product</th><th>Location</th><th class="r" data-help="col-age">Oldest unit</th><th class="r" data-help="col-last-sale">Last sale</th><th class="r">Units</th><th class="r">Stock value</th><th data-help="col-action">Suggested action</th></tr></thead>
+            <tbody id="slow-body"></tbody>
+          </table></div>
+          <div class="card-foot"><span class="small muted" id="slow-foot"></span></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div class="ch-title"><h3 data-help="ch-condition">Condition mix and margin</h3><div class="sub" id="cond-sub">Share of net sales · margin and returns by condition</div></div>
+            <div class="ch-tools"><button class="btn btn-sm btn-ghost" data-table-toggle="ch-cond"><i data-icon="list"></i> Table view</button></div>
+          </div>
+          <div class="card-body"><div id="ch-cond"></div>
+            <div class="table-wrap mt-16"><table class="table compact" aria-label="Margin and returns by condition">
+              <thead><tr><th>Condition</th><th class="r">Net sales</th><th class="r">Share</th><th class="r" data-help="col-gm">Margin</th><th class="r" data-help="col-rr">Returns</th></tr></thead>
+              <tbody id="cond-body"></tbody>
+            </table></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="an-grid an-2 mt-16">
+        <div class="card" data-anno="1A · CF1 Store metrics — needs storefront visit tracking (D-285)">
+          <div class="table-toolbar"><b data-help="viewed-not-bought">Viewed often, bought rarely</b><span class="badge vt" data-help="vt" data-help-pos="after"><i data-icon="eye"></i> Needs visit tracking</span><span class="small muted ml-auto" id="vnb-sub"></span></div>
+          <div class="table-wrap"><table class="table an-wide">
+            <thead><tr><th>Product</th><th class="r">Views</th><th class="r" data-help="col-atc">Added to cart</th><th class="r" data-help="col-view-conv">Bought</th><th>Rule-based check</th></tr></thead>
+            <tbody id="vnb-body"></tbody>
+          </table></div>
+        </div>
+        <div class="card" data-anno="1A · CF1 Store metrics — needs storefront visit tracking (D-285)">
+          <div class="table-toolbar"><b data-help="no-results">Searches with no results</b><span class="badge vt" data-help="vt" data-help-pos="after"><i data-icon="eye"></i> Needs visit tracking</span><span class="small muted ml-auto" id="nr-sub"></span></div>
+          <div class="table-wrap"><table class="table">
+            <thead><tr><th>Search term</th><th class="r">Searches</th><th>Suggested fix</th></tr></thead>
+            <tbody id="nr-body"></tbody>
+          </table></div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- CUSTOMERS                                                           -->
+    <!-- ================================================================== -->
+    <div class="tab-panel" data-panel="customers">
+      <section class="grid g-5" id="cu-kpis" data-anno="1A · CF1 Customer analytics"></section>
+
+      <section class="an-grid an-2e mt-16">
+        <div class="card">
+          <div class="card-head">
+            <div class="ch-title"><h3 data-help="ch-newret">New and returning customers</h3><div class="sub" id="newret-sub"></div></div>
+            <div class="ch-tools"><button class="btn btn-sm btn-ghost" data-table-toggle="ch-newret"><i data-icon="list"></i> Table view</button></div>
+          </div>
+          <div class="card-body"><div id="ch-newret"></div></div>
+        </div>
+        <div class="card" data-anno="1A · CF1 Monthly cohort retention">
+          <div class="card-head">
+            <div class="ch-title"><h3 data-help="cohort">Monthly cohort retention</h3><div class="sub">Customers grouped by first-purchase month · share who bought again in each later month</div></div>
+            <div class="ch-tools"><button class="btn btn-sm btn-ghost" data-table-toggle="ch-cohort"><i data-icon="list"></i> Table view</button></div>
+          </div>
+          <div class="card-body"><div id="ch-cohort"></div><div class="note"><i data-icon="info"></i><span>Read across a row to follow one group of new customers. Later months are blank until they have happened. Store-wide · not affected by the date range.</span></div></div>
+        </div>
+      </section>
+
+      <section class="card mt-16" data-anno="1A · CF1 Rule-based customer segments (recency · frequency · spend)">
+        <div class="table-toolbar"><b data-help="segments">Customer segments</b><span class="small muted">As of today · rules run nightly · each customer is placed in the first segment whose rule matches</span><a class="small strong ml-auto" href="erp-customers.html">Customers &amp; dealers →</a></div>
+        <div class="table-wrap"><table class="table an-wide">
+          <thead><tr><th>Segment</th><th data-help="col-seg-rule">Rule</th><th class="r">Customers</th><th class="r">Share of customers</th><th class="r">Share of sales · 24 months</th><th class="r" data-help="g.aov">AOV</th><th>Suggested action</th></tr></thead>
+          <tbody id="seg-body"></tbody><tfoot id="seg-foot"></tfoot>
+        </table></div>
+      </section>
+
+      <section class="an-grid an-2e mt-16">
+        <div class="card">
+          <div class="card-head">
+            <div class="ch-title"><h3 data-help="ch-cities">Top cities and regions</h3><div class="sub" id="city-sub"></div></div>
+            <div class="ch-tools"><button class="btn btn-sm btn-ghost" data-table-toggle="ch-cities"><i data-icon="list"></i> Table view</button></div>
+          </div>
+          <div class="card-body"><div id="ch-cities"></div></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div class="ch-title"><h3 data-help="ch-return-reasons">Why customers return items</h3><div class="sub" id="reason-sub"></div></div>
+            <div class="ch-tools"><button class="btn btn-sm btn-ghost" data-table-toggle="ch-reasons"><i data-icon="list"></i> Table view</button></div>
+          </div>
+          <div class="card-body"><div id="ch-reasons"></div><div class="note"><i data-icon="info"></i><span>Refurbished items are 27 % of net sales but 37 % of returns value — see the Returns &amp; warranty report.</span></div></div>
+        </div>
+      </section>
+
+      <section class="an-grid an-2 mt-16">
+        <div class="card" data-anno="1A · CF1 Top dealer accounts">
+          <div class="table-toolbar"><b data-help="top-dealers">Top dealer accounts</b><span class="small muted" id="dl-sub"></span><a class="small strong ml-auto" href="erp-customers.html#business">Business accounts →</a></div>
+          <div class="table-wrap"><table class="table an-wide">
+            <thead><tr><th>Dealer</th><th>Price list</th><th class="r">Orders</th><th class="r">Net sales</th><th class="r" data-help="g.aov">AOV</th><th>Last order</th><th class="r" data-help="col-growth">Growth</th></tr></thead>
+            <tbody id="dl-body"></tbody>
+          </table></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div class="ch-title"><h3 data-help="support">Support satisfaction</h3><div class="sub" id="sup-sub"></div></div>
+            <a class="small strong" href="erp-support.html">Support inbox →</a>
+          </div>
+          <div class="stats" id="sup-stats" style="grid-template-columns:minmax(0,1fr)"></div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- STORE & OPERATIONS                                                  -->
+    <!-- ================================================================== -->
+    <div class="tab-panel" data-panel="store">
+      <div class="callout c-info mb-16" data-anno="1A · CF1 Store metrics — needs storefront visit tracking (D-285)"><i data-icon="eye"></i><div><strong data-help="vt">Some store figures need visit tracking.</strong> Sessions, the conversion funnel, traffic sources, devices, landing pages and on-site search come from the store’s own visit tracking, which is not approved yet. Cards marked <b>Needs visit tracking</b> show sample values until it is approved and running, with visitor consent. Orders, stock, fulfilment and returns are real order-system figures.</div></div>
+
+      <section class="an-grid an-top an-2">
+        <div class="card" data-anno="1A · CF1 Store metrics — needs storefront visit tracking (D-285)">
+          <div class="card-head">
+            <div class="ch-title"><div class="row gap-8"><h3 data-help="funnel">Store conversion funnel</h3><span class="badge vt" data-help="vt" data-help-pos="after"><i data-icon="eye"></i> Needs visit tracking</span></div><div class="sub" id="fn-sub"></div></div>
+            <div class="ch-tools"><button class="btn btn-sm btn-ghost" data-table-toggle="ch-funnel"><i data-icon="list"></i> Table view</button></div>
+          </div>
+          <div class="card-body"><div id="ch-funnel"></div><div class="note" id="fn-note"></div></div>
+        </div>
+        <div class="card" data-anno="1A · CF1 Store metrics — needs storefront visit tracking (D-285)">
+          <div class="card-head">
+            <div class="ch-title"><div class="row gap-8"><h3 data-help="cart">Cart abandonment and recovery</h3><span class="badge vt" data-help="vt" data-help-pos="after"><i data-icon="eye"></i> Needs visit tracking</span></div><div class="sub" id="cart-sub"></div></div>
+          </div>
+          <div class="stats s2" id="cart-stats"></div>
+          <div class="card-body"><div class="upper muted mb-8">Where shoppers leave a filled cart</div><ul class="mini-list" id="cart-where"></ul></div>
+        </div>
+      </section>
+
+      <section class="an-grid an-2e mt-16">
+        <div class="card" data-anno="1A · CF1 Store metrics — needs storefront visit tracking (D-285)">
+          <div class="card-head">
+            <div class="ch-title"><div class="row gap-8"><h3 data-help="ch-traffic">Traffic sources</h3><span class="badge vt" data-help="vt" data-help-pos="after"><i data-icon="eye"></i> Needs visit tracking</span></div><div class="sub" id="tr-sub"></div></div>
+            <div class="ch-tools"><button class="btn btn-sm btn-ghost" data-table-toggle="ch-traffic"><i data-icon="list"></i> Table view</button></div>
+          </div>
+          <div class="card-body"><div id="ch-traffic"></div></div>
+        </div>
+        <div class="card" data-anno="1A · CF1 Store metrics — needs storefront visit tracking (D-285)">
+          <div class="card-head">
+            <div class="ch-title"><div class="row gap-8"><h3 data-help="ch-devices">Devices</h3><span class="badge vt" data-help="vt" data-help-pos="after"><i data-icon="eye"></i> Needs visit tracking</span></div><div class="sub">Share of website sessions</div></div>
+            <div class="ch-tools"><button class="btn btn-sm btn-ghost" data-table-toggle="ch-devices"><i data-icon="list"></i> Table view</button></div>
+          </div>
+          <div class="card-body"><div id="ch-devices"></div>
+            <div class="table-wrap mt-16"><table class="table compact" aria-label="Conversion by device"><thead><tr><th>Device</th><th class="r">Sessions</th><th class="r" data-help="g.conversion">Conversion</th></tr></thead><tbody id="dev-body"></tbody></table></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="an-grid an-2 mt-16">
+        <div class="card" data-anno="1A · CF1 Store metrics — needs storefront visit tracking (D-285)">
+          <div class="table-toolbar"><b data-help="landing-pages">Top landing pages</b><span class="badge vt" data-help="vt" data-help-pos="after"><i data-icon="eye"></i> Needs visit tracking</span><span class="small muted ml-auto" id="lp-sub"></span></div>
+          <div class="table-wrap"><table class="table an-wide">
+            <thead><tr><th>Landing page</th><th class="r">Sessions</th><th class="r" data-help="col-single-page">Left after one page</th><th class="r" data-help="g.conversion">Conversion</th></tr></thead>
+            <tbody id="lp-body"></tbody>
+          </table></div>
+        </div>
+        <div class="card" data-anno="1A · CF1 Store metrics — needs storefront visit tracking (D-285)">
+          <div class="card-head">
+            <div class="ch-title"><div class="row gap-8"><h3 data-help="site-search">Site search</h3><span class="badge vt" data-help="vt" data-help-pos="after"><i data-icon="eye"></i> Needs visit tracking</span></div><div class="sub" id="ss-sub"></div></div>
+          </div>
+          <div class="stats s2" id="ss-stats"></div>
+          <div class="card-foot"><span class="small muted">Terms that found nothing are listed on the Products tab.</span><a class="small strong" href="#products" data-go-tab="products">No-result searches →</a></div>
+        </div>
+      </section>
+
+      <section class="an-grid an-2 mt-16">
+        <div class="card" data-anno="1A · CF1 Fulfilment metrics">
+          <div class="card-head">
+            <div class="ch-title"><h3 data-help="fulfilment">Fulfilment</h3><div class="sub" id="ful-sub"></div></div>
+            <a class="small strong" href="erp-fulfilment.html">Pick · pack · dispatch →</a>
+          </div>
+          <div class="stats s4" id="ful-stats"></div>
+        </div>
+        <div class="card" data-anno="1A · CF1 Stock accuracy &amp; stock-outs">
+          <div class="card-head">
+            <div class="ch-title"><h3 data-help="stock">Stock accuracy and stock-outs</h3><div class="sub" id="stk-sub"></div></div>
+            <a class="small strong" href="erp-inventory.html">Inventory →</a>
+          </div>
+          <div class="stats s2" id="stk-stats"></div>
+          <div class="card-body"><div class="upper muted mb-8">Longest stock-outs · last 30 days</div><ul class="mini-list" id="stk-list"></ul></div>
+        </div>
+      </section>
+
+      <section class="an-grid an-2 mt-16">
+        <div class="card" data-anno="1A · CF1 Branch comparison">
+          <div class="table-toolbar"><b data-help="branch-compare">Branch comparison</b><span class="small muted" id="br-sub"></span></div>
+          <div class="table-wrap"><table class="table an-wide">
+            <thead><tr><th>Location</th><th class="r">Net sales</th><th class="r">Orders</th><th class="r" data-help="g.aov">AOV</th><th class="r" data-help="col-footfall">Footfall → sale</th><th class="r" data-help="col-rr">Return rate</th><th class="r">Paid → dispatched</th><th class="r" data-help="col-growth">Growth</th></tr></thead>
+            <tbody id="br-body"></tbody><tfoot id="br-foot"></tfoot>
+          </table></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div class="ch-title"><h3 data-help="ch-returns-cat">Return rate by category</h3><div class="sub" id="rc-sub"></div></div>
+            <div class="ch-tools"><button class="btn btn-sm btn-ghost" data-table-toggle="ch-retcat"><i data-icon="list"></i> Table view</button></div>
+          </div>
+          <div class="card-body"><div id="ch-retcat"></div></div>
+        </div>
+      </section>
+    </div>
+  </div>
+</main>
+<script src="assets/tradex.js"></script>
+<script>
+TX.ready(() => {
+  const $ = TX.$, $$ = TX.$$, ic = TX.icon;
+
+  /* ======================================================================
+     Small utilities
+     ====================================================================== */
+  const sum = (a) => a.reduce((x, y) => x + y, 0);
+  const sumR = (a, i, j) => sum(a.slice(i, j + 1));
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const narrow = () => window.matchMedia("(max-width: 760px)").matches;
+  const L = (v) => TX.fmtK(Math.round(v));                           // ₹1.84 Cr · ₹6.2 L · ₹14.3K
+  const N = (v) => TX.num(v);
+  const P = (v, dp = 1) => (+v).toFixed(dp) + "%";                     // value already in per cent
+  const axL = (v) => (v <= 0 ? "₹0" : v >= 1e7 ? "₹" + +(v / 1e7).toFixed(2) + "Cr" : v >= 1e5 ? "₹" + +(v / 1e5).toFixed(1) + "L" : "₹" + +(v / 1e3).toFixed(0) + "K");
+  const signed = (v, dp, unit) => (v >= 0 ? "+" : "−") + Math.abs(v).toFixed(dp) + unit;
+  // Deterministic wobble in [-0.5, 0.5) — no random numbers anywhere on this page
+  const wobble = (i, s) => (((i * 7919 + s * 104729) % 17) / 17 - 0.5);
+  // Integer allocation that always adds up to the total (largest remainder)
+  const alloc = (total, w) => {
+    total = Math.round(total); const s = sum(w) || 1;
+    const ex = w.map((x) => (x / s) * total), fl = ex.map(Math.floor);
+    const rem = total - sum(fl);
+    ex.map((x, i) => [x - fl[i], i]).sort((a, b) => b[0] - a[0] || a[1] - b[1]).slice(0, Math.max(0, rem)).forEach(([, i]) => fl[i]++);
+    return fl;
+  };
+  // Delta chip: up/down arrow + signed value; colour says whether the move is good (text colours only)
+  const delta = (d, unit, lowerBetter, dp = 1) => {
+    const up = d >= 0, good = lowerBetter ? !up : up;
+    return `<span class="delta ${up ? "up" : "down"}-${good ? "good" : "bad"}">${ic(up ? "trending-up" : "trending-down")} ${signed(d, dp, unit)}</span>`;
+  };
+  const pctChange = (a, b) => (b ? (a / b - 1) * 100 : 0);
+
+  /* ======================================================================
+     Page chart helpers — same conventions as TX.charts (thin marks, hairline
+     grid, .chart-tip tooltip, table-view twin, redraw on width change,
+     render once visible when drawn inside a hidden tab)
+     ====================================================================== */
+  const NS = "http://www.w3.org/2000/svg";
+  const svgEl = (tag, attrs = {}, parent) => { const n = document.createElementNS(NS, tag); for (const k in attrs) n.setAttribute(k, attrs[k]); if (parent) parent.appendChild(n); return n; };
+  const niceStep = (v) => { const p = Math.pow(10, Math.floor(Math.log10(v))); const m = v / p; return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 2.5 ? 2.5 : m <= 5 ? 5 : 10) * p; };
+  const whenVisible = (host, render) => {
+    if (host.clientWidth > 0 || typeof ResizeObserver === "undefined") return false;
+    const ro = new ResizeObserver(() => { if (host.clientWidth > 0) { ro.disconnect(); render(); } });
+    ro.observe(host); return true;
+  };
+  const followWidth = (host, render) => {
+    host.__cw = host.clientWidth; host.__redraw = render;
+    if (host.__ro || typeof ResizeObserver === "undefined") return;
+    let t = 0;
+    host.__ro = new ResizeObserver(() => { const w = host.clientWidth; if (!w || Math.abs(w - host.__cw) < 8) return; clearTimeout(t); t = setTimeout(() => host.__redraw(), 150); });
+    host.__ro.observe(host);
+  };
+  const tipBox = (box) => { let t = box.querySelector(":scope > .chart-tip"); if (!t) { t = document.createElement("div"); t.className = "chart-tip"; box.appendChild(t); } return t; };
+  const fillTip = (tip, head, rows) => {
+    tip.innerHTML = ""; const h = document.createElement("div"); h.className = "tt-h"; h.textContent = head; tip.appendChild(h);
+    rows.forEach((r) => { const row = document.createElement("div"); row.className = "tt-r"; const k = document.createElement("span"); k.className = "key"; k.style.background = r.color || "var(--series-1)"; const b = document.createElement("b"); b.textContent = r.value; const s = document.createElement("span"); s.textContent = r.name; row.append(k, b, s); tip.appendChild(row); });
+  };
+  const placeTip = (tip, box, rect) => {
+    tip.style.display = "block";
+    const b = box.getBoundingClientRect(), tw = tip.offsetWidth, th = tip.offsetHeight;
+    const x = clamp(rect.left - b.left + rect.width / 2 - tw / 2, 0, Math.max(0, box.clientWidth - tw));
+    let y = rect.top - b.top - th - 8; if (y < 0) y = rect.bottom - b.top + 8;
+    tip.style.left = x + "px"; tip.style.top = y + "px";
+  };
+  const tableTwin = (host, head, rows) => {
+    const d = document.createElement("div"); d.className = "chart-table table-wrap";
+    const t = document.createElement("table"); t.className = "table compact";
+    const hr = t.createTHead().insertRow();
+    head.forEach((h, i) => { const th = document.createElement("th"); th.textContent = h; if (i) th.className = "r"; hr.appendChild(th); });
+    const tb = t.createTBody();
+    rows.forEach((r) => { const tr = tb.insertRow(); r.forEach((c, i) => { const td = tr.insertCell(); td.textContent = c; if (i) td.className = "r"; }); });
+    d.appendChild(t); host.appendChild(d);
+  };
+  const box = (host) => { host.innerHTML = ""; host.classList.add("chart-wrap"); const b = document.createElement("div"); b.className = "chart"; host.appendChild(b); return b; };
+  const A = {};
+
+  /** 100 % stacked bar, 2 px surface gaps, per-segment hover/focus tooltip, legend with shares, table twin.
+      cfg: { title, parts: [{ name, value, color }], format, seriesName, labelHeader, dp } */
+  A.stack = (host, cfg) => {
+    const b = box(host), fmt = cfg.format || N, parts = cfg.parts.filter((p) => p.value > 0), total = sum(parts.map((p) => p.value)) || 1;
+    const share = (v) => ((v / total) * 100).toFixed(cfg.dp || 0) + "%";
+    const bar = document.createElement("div"); bar.className = "stk"; bar.setAttribute("role", "group"); bar.setAttribute("aria-label", cfg.title);
+    const tip = tipBox(b);
+    parts.forEach((p) => {
+      const s = document.createElement("span"); s.style.flex = `${p.value} 0 0`; s.style.background = p.color; s.tabIndex = 0;
+      s.setAttribute("aria-label", `${p.name}: ${fmt(p.value)}, ${share(p.value)}`);
+      const on = () => { fillTip(tip, p.name, [{ name: cfg.seriesName || "", value: `${fmt(p.value)} · ${share(p.value)}`, color: p.color }]); placeTip(tip, b, s.getBoundingClientRect()); };
+      const off = () => { tip.style.display = "none"; };
+      s.addEventListener("pointerenter", on); s.addEventListener("pointerleave", off); s.addEventListener("focus", on); s.addEventListener("blur", off);
+      bar.appendChild(s);
+    });
+    const leg = document.createElement("div"); leg.className = "legend mt-12";
+    parts.forEach((p) => { const sp = document.createElement("span"); const k = document.createElement("span"); k.className = "lk rect"; k.style.background = p.color; const v = document.createElement("b"); v.style.color = "var(--tx-1)"; v.textContent = share(p.value); sp.append(k, document.createTextNode(p.name + " "), v); leg.appendChild(sp); });
+    b.append(bar, leg);
+    tableTwin(host, [cfg.labelHeader || "Item", cfg.seriesName || "Value", "Share"], parts.map((p) => [p.name, fmt(p.value), share(p.value)]));
+  };
+
+  /** Column chart, one series (slot 1), columns ≤ 24 px with 4 px rounded tops, only the tallest labelled.
+      cfg: { title, labels, fullLabels (tooltip + table), values, format, axisFormat, height, seriesName, labelHeader } */
+  A.columns = (host, cfg) => {
+    const redraw = () => A.columns(host, cfg);
+    if (whenVisible(host, redraw)) return; followWidth(host, redraw);
+    const b = box(host), fmt = cfg.format || N, afmt = cfg.axisFormat || fmt;
+    const W = Math.max(host.clientWidth || 480, 280), H = cfg.height || 220, m = { l: 50, r: 6, t: 22, b: 26 };
+    const iw = W - m.l - m.r, ih = H - m.t - m.b, n = cfg.values.length;
+    const vmax = Math.max(...cfg.values, 1) * 1.08, step = niceStep(vmax / 4), ticks = Math.ceil(vmax / step), max = step * ticks;
+    const slot = iw / n, bw = Math.min(24, slot * 0.62), y = (v) => m.t + ih - (v / max) * ih;
+    const svg = svgEl("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": cfg.title }, b);
+    for (let i = 0; i <= ticks; i++) {
+      const v = step * i; svgEl("line", { x1: m.l, x2: m.l + iw, y1: y(v), y2: y(v), class: i ? "gridline" : "baseline" }, svg);
+      const t = svgEl("text", { x: m.l - 8, y: y(v) + 4, "text-anchor": "end", class: "ax-label" }, svg); t.textContent = afmt(v);
+    }
+    const tip = tipBox(b), top = cfg.values.indexOf(Math.max(...cfg.values)), full = cfg.fullLabels || cfg.labels;
+    cfg.values.forEach((v, i) => {
+      const cx = m.l + slot * i + slot / 2, x0 = cx - bw / 2, yb = y(0), yt = y(v), r = Math.min(4, (yb - yt) / 2, bw / 2);
+      const bar = svgEl("path", { d: `M${x0},${yb} V${yt + r} a${r},${r} 0 0 1 ${r},${-r} h${bw - 2 * r} a${r},${r} 0 0 1 ${r},${r} V${yb} Z`, class: "bar", style: "fill:var(--series-1)" }, svg);
+      const lab = svgEl("text", { x: cx, y: H - 7, "text-anchor": "middle", class: "ax-label" }, svg); lab.textContent = cfg.labels[i];
+      if (i === top) { const t = svgEl("text", { x: cx, y: yt - 7, "text-anchor": "middle", class: "end-label" }, svg); t.textContent = fmt(v); }
+      const hit = svgEl("rect", { x: m.l + slot * i, y: m.t, width: slot, height: ih, fill: "transparent", tabindex: 0, class: "hit", "aria-label": `${full[i]}: ${fmt(v)}` }, svg);
+      const on = () => { bar.classList.add("hover"); fillTip(tip, full[i], [{ name: cfg.seriesName || "", value: fmt(v) }]); placeTip(tip, b, bar.getBoundingClientRect()); };
+      const off = () => { bar.classList.remove("hover"); tip.style.display = "none"; };
+      hit.addEventListener("pointerenter", on); hit.addEventListener("pointerleave", off); hit.addEventListener("focus", on); hit.addEventListener("blur", off);
+    });
+    tableTwin(host, [cfg.labelHeader || "Item", cfg.seriesName || "Value"], full.map((l, i) => [l, fmt(cfg.values[i])]));
+  };
+
+  /** Heat grid (weekday × hour heatmap, cohort retention). One sequential blue ramp, 2 px surface gaps,
+      scale legend, hover tooltip, keyboard (focus the grid, arrow keys move), sideways scroll when narrow.
+      cfg: { title, rows, cols, values[r][c] (null = no data yet), style(v,r,c) → {fill,text}, cellText(v,r,c),
+             colLabel(c), rowLabelW, cellH, minCellW, maxCellW, tipHead(r,c), tipRows(r,c), start:[r,c],
+             legend: html, tableHead, tableRows } */
+  A.heat = (host, cfg) => {
+    const redraw = () => A.heat(host, cfg);
+    if (whenVisible(host, redraw)) return; followWidth(host, redraw);
+    const b = box(host), sc = document.createElement("div"); sc.className = "hm-scroll"; b.appendChild(sc);
+    const nR = cfg.rows.length, nC = cfg.cols.length, lw = cfg.rowLabelW || 44, top = 20, ch = cfg.cellH || 24;
+    const avail = Math.max((host.clientWidth || 600) - 2, 240);
+    const cw = Math.max(cfg.minCellW || 20, Math.min(cfg.maxCellW || 80, (avail - lw) / nC));
+    const W = Math.ceil(lw + cw * nC), H = top + ch * nR + 2;
+    const svg = svgEl("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": cfg.title + " — focus and use the arrow keys to read each cell", tabindex: 0, class: "hm-svg" }, sc);
+    svg.style.width = W + "px";
+    cfg.cols.forEach((c, j) => { const lab = cfg.colLabel ? cfg.colLabel(j) : c; if (lab == null) return; const t = svgEl("text", { x: lw + cw * j + cw / 2, y: top - 7, "text-anchor": "middle", class: "ax-label" }, svg); t.textContent = lab; });
+    cfg.rows.forEach((r, i) => { const t = svgEl("text", { x: lw - 8, y: top + ch * i + ch / 2 + 4, "text-anchor": "end", class: "ax-label hm-row" }, svg); t.textContent = r; });
+    cfg.values.forEach((row, i) => row.forEach((v, j) => {
+      if (v == null) return;
+      const st = cfg.style(v, i, j);
+      svgEl("rect", { x: lw + cw * j + 1, y: top + ch * i + 1, width: cw - 2, height: ch - 2, rx: 2, fill: st.fill }, svg);
+      if (cfg.cellText) { const t = svgEl("text", { x: lw + cw * j + cw / 2, y: top + ch * i + ch / 2 + 4, "text-anchor": "middle", class: "hm-val", fill: st.text }, svg); t.textContent = cfg.cellText(v, i, j); }
+    }));
+    const hl = svgEl("rect", { width: cw - 2, height: ch - 2, rx: 2, fill: "none", "stroke-width": 2, style: "display:none;pointer-events:none;stroke:var(--tx-1)" }, svg);
+    const tip = tipBox(b); let cur = cfg.start || [0, 0];
+    const show = (i, j) => {
+      hl.setAttribute("x", lw + cw * j + 1); hl.setAttribute("y", top + ch * i + 1); hl.style.display = "";
+      fillTip(tip, cfg.tipHead(i, j), cfg.tipRows(i, j)); placeTip(tip, b, hl.getBoundingClientRect());
+    };
+    const hide = () => { hl.style.display = "none"; tip.style.display = "none"; };
+    svg.addEventListener("pointermove", (e) => {
+      const r = svg.getBoundingClientRect(), k = W / r.width, x = (e.clientX - r.left) * k, y = (e.clientY - r.top) * k;
+      const j = Math.floor((x - lw) / cw), i = Math.floor((y - top) / ch);
+      if (i >= 0 && i < nR && j >= 0 && j < nC && cfg.values[i][j] != null) { cur = [i, j]; show(i, j); } else hide();
+    });
+    svg.addEventListener("pointerleave", hide);
+    svg.addEventListener("focus", () => show(cur[0], cur[1]));
+    svg.addEventListener("blur", hide);
+    svg.addEventListener("keydown", (e) => {
+      const mv = { ArrowLeft: [0, -1], ArrowRight: [0, 1], ArrowUp: [-1, 0], ArrowDown: [1, 0] }[e.key]; if (!mv) return;
+      e.preventDefault();
+      const i = clamp(cur[0] + mv[0], 0, nR - 1), j = clamp(cur[1] + mv[1], 0, nC - 1);
+      if (cfg.values[i][j] == null) return;
+      cur = [i, j];
+      const x = lw + cw * j; if (x < sc.scrollLeft + lw || x + cw > sc.scrollLeft + sc.clientWidth) sc.scrollLeft = Math.max(0, x - sc.clientWidth / 2);
+      show(i, j);
+    });
+    if (cfg.legend) { const lg = document.createElement("div"); lg.className = "hm-legend"; lg.innerHTML = cfg.legend; b.appendChild(lg); }
+    tableTwin(host, cfg.tableHead, cfg.tableRows);
+  };
+  // Scale legend markup for a heat grid: [{ color, label }]
+  const scaleLegend = (title, bins, extra = "") => `<span>${title}</span><span class="hm-scale">${bins.map((x) => `<span><i style="background:${x.color}"></i>${x.label}</span>`).join("")}</span>${extra}`;
+  const RAMP7 = ["#cde2fb", "#9ec5f4", "#6da7ec", "#3987e5", "#256abf", "#184f95", "#0d366b"];
+
+  /** Funnel: horizontal bars per stage (ordinal blue ramp from #86b6ef), stage-to-stage conversion and drop-off between rows.
+      cfg: { title, stages: [{ name, value }], colors } */
+  A.funnel = (host, cfg) => {
+    const redraw = () => A.funnel(host, cfg);
+    if (whenVisible(host, redraw)) return; followWidth(host, redraw);
+    const b = box(host), st = cfg.stages, n = st.length, W = Math.max(host.clientWidth || 520, 280);
+    const nar = W < 470, lw = nar ? 104 : 128, vr = nar ? 104 : 128, bh = 22, gap = 26, H = n * bh + (n - 1) * gap + 4;
+    const iw = W - lw - vr, max = st[0].value || 1, pc = (a, z) => ((a / (z || 1)) * 100).toFixed(1) + "%";
+    const svg = svgEl("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": cfg.title }, b);
+    svgEl("line", { x1: lw, x2: lw, y1: 0, y2: H, class: "baseline" }, svg);
+    const tip = tipBox(b);
+    st.forEach((s, k) => {
+      const y0 = k * (bh + gap) + 2, w = Math.max(6, (s.value / max) * iw), r = 4;
+      const lab = svgEl("text", { x: lw - 10, y: y0 + 15, "text-anchor": "end", class: "ax-label", style: "fill:#475467;font-size:12px" }, svg); lab.textContent = s.name;
+      const bar = svgEl("path", { d: `M${lw},${y0} h${w - r} a${r},${r} 0 0 1 ${r},${r} v${bh - 2 * r} a${r},${r} 0 0 1 ${-r},${r} h${-(w - r)} Z`, fill: cfg.colors[k], class: "bar" }, svg);
+      const val = svgEl("text", { x: lw + w + 8, y: y0 + 15, class: "end-label" }, svg); val.textContent = N(s.value) + (k ? ` · ${pc(s.value, max)}` : "");
+      if (k < n - 1) {
+        const nx = st[k + 1].value;
+        const t = svgEl("text", { x: lw + 8, y: y0 + bh + 17, class: "fn-step" }, svg);
+        t.textContent = `↓ ${pc(nx, s.value)} continue · ${N(s.value - nx)} drop off (${pc(s.value - nx, s.value)})`;
+      }
+      const hit = svgEl("rect", { x: 0, y: y0 - 4, width: W, height: bh + 8, fill: "transparent", tabindex: 0, class: "hit", "aria-label": `${s.name}: ${N(s.value)}` }, svg);
+      const on = () => {
+        bar.classList.add("hover");
+        const rows = [{ name: "count", value: N(s.value), color: cfg.colors[k] }];
+        if (k) rows.push({ name: "of sessions", value: pc(s.value, max), color: cfg.colors[k] }, { name: "of the previous step", value: pc(s.value, st[k - 1].value), color: cfg.colors[k] });
+        fillTip(tip, s.name, rows); placeTip(tip, b, bar.getBoundingClientRect());
+      };
+      const off = () => { bar.classList.remove("hover"); tip.style.display = "none"; };
+      hit.addEventListener("pointerenter", on); hit.addEventListener("pointerleave", off); hit.addEventListener("focus", on); hit.addEventListener("blur", off);
+    });
+    tableTwin(host, ["Stage", "Count", "% of sessions", "From previous step", "Drop-off"],
+      st.map((s, k) => [s.name, N(s.value), pc(s.value, max), k ? pc(s.value, st[k - 1].value) : "—", k ? N(st[k - 1].value - s.value) : "—"]));
+  };
+
+  /* ======================================================================
+     Sample data — deterministic. "Now" = Sat 26 Sep 2026, 10:42 IST.
+     Daily series cover 28 Jun – 26 Sep 2026 (index 0 … 90). ₹ excl. GST.
+     ====================================================================== */
+  const day = (i) => new Date(2026, 5, 28 + i);
+  const dLab = (d) => d.toLocaleDateString("en-IN", { day: "numeric", month: "short" });
+  const WD = [0.10, -0.06, -0.04, 0, 0.02, 0.05, 0.18];                       // Sun … Sat
+  const rawW = [...Array(91)].map((_, i) => 1 + 0.09 * Math.sin(i / 4.3) + WD[day(i).getDay()] + wobble(i, 1) * 0.14);
+  const blocks = (spec, w) => { const out = Array(91).fill(0); spec.forEach(([a, z, t]) => alloc(t, w.slice(a, z + 1)).forEach((v, k) => (out[a + k] = v))); return out; };
+  // Block totals tie the series to the headline figures: last 30 days = ₹1.84 Cr and 1,284 orders (Control centre)
+  const NET_D = blocks([[0, 0, 520000], [1, 30, 15600000], [31, 60, 16370000], [61, 76, 9810000], [77, 83, 4210000], [84, 90, 4380000]], rawW);
+  const ORD_D = blocks([[0, 0, 36], [1, 30, 1143], [31, 60, 1188], [61, 76, 683], [77, 83, 296], [84, 90, 305]], NET_D.map((v, i) => v * (1 + wobble(i, 3) * 0.12)));
+  const MONTHS = ["Oct ’25", "Nov ’25", "Dec ’25", "Jan ’26", "Feb ’26", "Mar ’26", "Apr ’26", "May ’26", "Jun ’26", "Jul ’26", "Aug ’26", "Sep ’26"];
+  const NET_M = [19800000, 17200000, 15100000, 14200000, 13600000, 16400000, 13900000, 15800000, 15300000, sumR(NET_D, 3, 33), sumR(NET_D, 34, 64), sumR(NET_D, 65, 90)];
+  const ORD_M = [14120, 13650, 13380, 13210, 13160, 13540, 13260, 13420, 13510].map((a, i) => Math.round(NET_M[i] / a)).concat([sumR(ORD_D, 3, 33), sumR(ORD_D, 34, 64), sumR(ORD_D, 65, 90)]);
+
+  const RANGES = {
+    "7d": { label: "7 days", days: 7, cur: "20 – 26 Sep 2026", prev: "13 – 19 Sep 2026", ly: "20 – 26 Sep 2025" },
+    "30d": { label: "30 days", days: 30, cur: "28 Aug – 26 Sep 2026", prev: "29 Jul – 27 Aug 2026", ly: "28 Aug – 26 Sep 2025" },
+    "90d": { label: "90 days", days: 90, cur: "29 Jun – 26 Sep 2026", prev: "31 Mar – 28 Jun 2026", ly: "29 Jun – 26 Sep 2025" },
+    "12m": { label: "12 months", days: 361, cur: "1 Oct 2025 – 26 Sep 2026", prev: "1 Oct 2024 – 26 Sep 2025", ly: "1 Oct 2024 – 26 Sep 2025" },
+  };
+  // Headline measures per range: [this period, previous period, same period last year]
+  const KP = {
+    "7d": { net: [4380000, 4210000, 3608000], orders: [305, 296, 272], units: [712, 688, 610], gm: [18.4, 18.1, 17.2], conv: [1.43, 1.39, 1.21], ret: [69.1, 68.4, 63.0], rr: [4.4, 4.7, 5.3] },
+    "30d": { net: [18400000, 16370000, 15370000], orders: [1284, 1188, 1124], units: [2961, 2702, 2520], gm: [18.2, 17.5, 16.9], conv: [1.40, 1.28, 1.19], ret: [67.5, 65.7, 62.2], rr: [4.6, 4.9, 5.4] },
+    "90d": { net: [50370000, 45460000, 42720000], orders: [3615, 3387, 3199], units: [8420, 7810, 7240], gm: [17.9, 17.3, 16.6], conv: [1.36, 1.27, 1.15], ret: [64.7, 63.1, 60.4], rr: [4.8, 5.0, 5.5] },
+  };
+  { const n = sum(NET_M), o = sum(ORD_M), np = Math.round(n / 1.186), op = Math.round(o / 1.108);
+    KP["12m"] = { net: [n, np, np], orders: [o, op, op], units: [32480, 28050, 28050], gm: [17.4, 16.5, 16.5], conv: [1.31, 1.12, 1.12], ret: [56.6, 54.2, 54.2], rr: [5.0, 5.4, 5.4] }; }
+
+  // Breakdown dimensions (last 30 days; other ranges re-scale). n = net sales ₹, o = orders
+  const T30 = { n: 18400000, o: 1284 };
+  const LOC = [
+    { k: "WH-BLR", name: "Central Warehouse", short: "Central WH", n: 7920000, o: 552, g: [14.6, 21.4], rr: 5.1, disp: 5.4, foot: null, bills: null, note: "Web & dealer orders · no walk-in counter" },
+    { k: "BR-SPR", name: "SP Road Branch", short: "SP Road", n: 5410000, o: 372, g: [12.2, 18.8], rr: 4.2, disp: 4.9, foot: 1960, bills: 204 },
+    { k: "BR-KRM", name: "Koramangala Branch", short: "Koramangala", n: 3380000, o: 238, g: [10.4, 16.2], rr: 4.6, disp: 6.3, foot: 1480, bills: 162 },
+    { k: "BR-MYS", name: "Mysuru Branch", short: "Mysuru", n: 1690000, o: 122, g: [7.5, 12.1], rr: 3.8, disp: 9.1, foot: null, bills: 86, note: "Door counter not installed" },
+  ];
+  const CH = [
+    { k: "web", name: "Website", n: 8860000, o: 604, gm: 18.9, color: "var(--series-1)" },
+    { k: "pos", name: "Branch POS", n: 6420000, o: 452, gm: 17.6, color: "var(--series-2)" },
+    { k: "wa", name: "WhatsApp", n: 1980000, o: 168, gm: 18.4, color: "var(--series-3)" },
+    { k: "assisted", name: "Assisted (staff)", n: 1140000, o: 60, gm: 15.8, color: "#eda100" },
+  ];
+  const CH_SHARE = { "7d": [0.487, 0.341, 0.113, 0.059], "30d": CH.map((c) => c.n / T30.n), "90d": [0.476, 0.356, 0.101, 0.067], "12m": [0.462, 0.371, 0.089, 0.078] };
+  const CH_G = { "7d": [[5.1, 1.2, 12.4, -3.8], [26.2, 11.8, 61.2, 9.4]], "30d": [[15.2, 4.9, 31.8, 8.4], [23.1, 10.4, 58.8, 12.1]], "90d": [[13.8, 5.6, 27.5, 6.1], [21.4, 9.7, 54.1, 10.8]], "12m": [[22.4, 9.8, 46.2, 12.5], [22.4, 9.8, 46.2, 12.5]] };
+  const BUY = [
+    { k: "consumer", name: "Consumers", n: 11410000, o: 1043, g: [7.2, 14.8], gm: 22.1, rr: 5.6, ret: 60.8, color: "var(--series-1)" },
+    { k: "dealer", name: "Approved dealers", n: 6990000, o: 241, g: [22.0, 31.2], gm: 11.8, rr: 1.9, ret: 97.2, color: "var(--series-2)" },
+  ];
+  const CAT = [
+    { k: "laptops", name: "Laptops", n: 5920000, gm: 20.6, rr: 6.4, g: 21.4 },
+    { k: "components", name: "Components", n: 2520000, gm: 11.4, rr: 3.9, g: 8.8 },
+    { k: "desktops", name: "Desktops & builds", n: 2070000, gm: 17.4, rr: 2.4, g: 16.2 },
+    { k: "cameras", name: "Cameras", n: 1800000, gm: 19.2, rr: 3.6, g: 7.1 },
+    { k: "monitors", name: "Monitors", n: 1560000, gm: 15.0, rr: 6.6, g: 4.3 },
+    { k: "storage", name: "Storage & memory", n: 1300000, gm: 15.1, rr: 1.8, g: 9.6 },
+    { k: "mobile", name: "Tablets & wearables", n: 960000, gm: 18.9, rr: 4.4, g: 18.7 },
+    { k: "audio", name: "Audio", n: 660000, gm: 23.1, rr: 4.7, g: 5.2 },
+    { k: "accessories", name: "Keyboards & mice", n: 620000, gm: 28.2, rr: 2.9, g: 11.8 },
+    { k: "lenses", name: "Lenses", n: 480000, gm: 24.6, rr: 3.1, g: -3.4 },
+    { k: "networking", name: "Networking", n: 290000, gm: 17.2, rr: 3.6, g: 6.1 },
+    { k: "printers", name: "Printers", n: 220000, gm: 12.4, rr: 5.2, g: -8.2 },
+  ];
+  const DIM = { loc: LOC, ch: CH, buyer: BUY, cat: CAT };
+
+  /* ======================================================================
+     State + scope. Filters other than the date range re-scale values
+     deterministically by the selected member's share of net sales / orders.
+     ====================================================================== */
+  const S = { range: "30d", cmp: "prev", loc: "", ch: "", buyer: "", cat: "", gran: null, catMeasure: "net", bandMeasure: "units", sort: { k: "net", dir: -1 } };
+  const ci = () => (S.cmp === "prev" ? 1 : 2);
+  const member = (dim) => DIM[dim].find((x) => x.k === S[dim]);
+  const shareOf = (dim, it) => ({ n: it.n / T30.n, o: (it.o != null ? it.o : it.n / T30.n * T30.o) / T30.o });
+  const scope = (except) => ["loc", "ch", "buyer", "cat"].reduce((f, dim) => {
+    if (dim === except || !S[dim]) return f; const s = shareOf(dim, member(dim)); return { n: f.n * s.n, o: f.o * s.o };
+  }, { n: 1, o: 1 });
+  const rf = () => ({ n: KP[S.range].net[0] / T30.n, o: KP[S.range].orders[0] / T30.o });
+  const cmpWord = () => (S.cmp === "prev" ? "previous period" : "same period last year");
+  const filterText = () => [member("loc"), member("ch"), member("buyer"), member("cat")].filter(Boolean).map((m) => m.name).join(" · ");
+
+  // Percentage measures under a filter: take the filtered member's level, keep the store-wide change
+  const pctMeasure = (key) => {
+    const K = KP[S.range][key], d = K[0] - K[ci()];
+    const pick = (lvl) => [lvl, lvl - d];
+    if (key === "gm") { const m = member("cat") || member("buyer") || member("ch"); return m && m.gm ? pick(m.gm) : [K[0], K[ci()]]; }
+    if (key === "rr") { const m = member("cat") || member("buyer") || member("loc"); return m && m.rr ? pick(m.rr) : [K[0], K[ci()]]; }
+    if (key === "ret") { const m = member("buyer"); return m ? pick(m.ret) : [K[0], K[ci()]]; }
+    if (key === "conv") return S.ch && S.ch !== "web" ? null : [K[0], K[ci()]];
+    return [K[0], K[ci()]];
+  };
+
+  /* Series for the headline trend: daily for 7 / 30 / 90 days, monthly for 12 months */
+  const IDX = { "7d": [84, 90], "30d": [61, 90], "90d": [1, 90] };
+  const trendData = (r) => {
+    if (r === "12m") return { unit: "Monthly", labels: MONTHS.slice(), net: NET_M.slice(), orders: ORD_M.slice() };
+    const [a, z] = IDX[r], labels = [], net = [], orders = [];
+    for (let i = a; i <= z; i++) { labels.push(dLab(day(i))); net.push(NET_D[i]); orders.push(ORD_D[i]); }
+    return { unit: "Daily", labels, net, orders };
+  };
+  // Comparison series: the real previous days where the daily history covers them, otherwise modelled on this period's shape
+  const cmpSeries = (r, which, cur) => {
+    if (which === "prev" && r === "7d") return NET_D.slice(77, 84);
+    if (which === "prev" && r === "30d") return NET_D.slice(31, 61);
+    return alloc(KP[r].net[which === "prev" ? 1 : 2], cur.map((v, i) => v * (1 + wobble(i, which === "prev" ? 5 : 9) * 0.18)));
+  };
+  const chunk = (a, k) => { const out = []; for (let i = 0; i < a.length; i += k) out.push(sum(a.slice(i, i + k))); return out; };
+  const sparkSeries = (r, arr) => chunk(arr, { "7d": 1, "30d": 3, "90d": 6, "12m": 1 }[r]);
+  const sparkModel = (from, to, n, seed) => [...Array(n)].map((_, i) => (i === n - 1 ? to : from + (to - from) * (i / (n - 1)) + wobble(i, seed) * Math.abs(to - from) * 0.7));
+
+  /* ======================================================================
+     OVERVIEW
+     ====================================================================== */
+  const KPIS = [
+    { id: "net", label: "Net sales", icon: "rupee", help: "kpi-sales" },
+    { id: "orders", label: "Orders", icon: "receipt", help: "kpi-orders" },
+    { id: "aov", label: "Average order value", icon: "tag", help: "kpi-aov" },
+    { id: "gm", label: "Gross margin", icon: "percent", help: "kpi-gm" },
+    { id: "units", label: "Units sold", icon: "package", help: "kpi-units" },
+    { id: "conv", label: "Store conversion rate", icon: "filter", help: "kpi-conv", vt: true },
+    { id: "ret", label: "Returning-customer share", icon: "users", help: "kpi-returning" },
+    { id: "rr", label: "Return rate", icon: "undo", help: "kpi-rr" },
+  ];
+  $("#ov-kpis").innerHTML = KPIS.map((k) => `<div class="kpi"${k.vt ? ' data-anno="1A · CF1 Store metrics — needs storefront visit tracking (D-285)"' : ""}>
+      <div class="k-label" data-help="${k.help}">${ic(k.icon)} <span>${k.label}</span></div>
+      <div class="k-value" id="kv-${k.id}"></div>
+      <div class="k-sub" id="kc-${k.id}"></div>
+      ${k.vt ? `<div class="row gap-4"><span class="badge vt" data-help="vt" data-help-pos="after">${ic("eye")} Needs visit tracking</span></div>` : ""}
+      <div class="k-foot"><span id="kd-${k.id}"></span><span id="ks-${k.id}"></span></div>
+    </div>`).join("");
+
+  function renderKPIs() {
+    const r = S.range, K = KP[r], c = ci(), f = scope(), t = trendData(r), cw = S.cmp === "prev" ? "Previous" : "Last year";
+    const net = [K.net[0] * f.n, K.net[c] * f.n], ord = [K.orders[0] * f.o, K.orders[c] * f.o], units = [K.units[0] * f.o, K.units[c] * f.o];
+    const aov = [net[0] / ord[0], net[1] / ord[1]];
+    const sn = sparkSeries(r, t.net), so = sparkSeries(r, t.orders);
+    const set = (id, value, sub, d, spark) => { $("#kv-" + id).textContent = value; $("#kv-" + id).classList.toggle("na", value === "—"); $("#kc-" + id).textContent = sub; $("#kd-" + id).innerHTML = d; if (spark) TX.charts.spark($("#ks-" + id), spark); else $("#ks-" + id).innerHTML = ""; };
+    set("net", L(net[0]), `${cw}: ${L(net[1])}`, delta(pctChange(net[0], net[1]), "%"), sn);
+    set("orders", N(ord[0]), `${cw}: ${N(ord[1])}`, delta(pctChange(ord[0], ord[1]), "%"), so);
+    set("aov", TX.fmt(aov[0]), `net sales ÷ orders · ${cw.toLowerCase()} ${TX.fmt(aov[1])}`, delta(pctChange(aov[0], aov[1]), "%"), sn.map((v, i) => v / (so[i] || 1)));
+    const pm = (id, key, lowerBetter, dp = 1, note = "") => {
+      const v = pctMeasure(key);
+      if (!v) { set(id, "—", "Website only — choose All channels or Website", "", null); return; }
+      set(id, P(v[0], dp), `${cw}: ${P(v[1], dp)}${note}`, delta(v[0] - v[1], " pt", lowerBetter, dp), sparkModel(v[1], v[0], 12, id.length));
+    };
+    pm("gm", "gm", false);
+    set("units", N(units[0]), `${cw}: ${N(units[1])}`, delta(pctChange(units[0], units[1]), "%"), sparkModel(units[1], units[0], 12, 4));
+    pm("conv", "conv", false, 2, " · website");
+    pm("ret", "ret", false);
+    pm("rr", "rr", true);
+  }
+
+  function renderTrend() {
+    const r = S.range, f = scope(), t = trendData(r), R = RANGES[r];
+    const cur = t.net.map((v) => v * f.n), cmp = cmpSeries(r, S.cmp, t.net).map((v) => v * f.n);
+    $("#trend-sub").textContent = `${t.unit} · ${R.cur} vs ${R[S.cmp]} · ₹ excl. GST`;
+    TX.charts.line($("#ch-trend"), {
+      title: `Net sales, ${R.cur}, compared with the ${cmpWord()} (${R[S.cmp]})`, labels: t.labels, height: 250,
+      series: [{ name: "This period", color: "var(--series-1)", values: cur }, { name: S.cmp === "prev" ? "Previous period" : "Same period last year", color: "var(--series-2)", values: cmp }],
+      format: L, axisFormat: axL,
+    });
+  }
+
+  // Rule-based highlights: each rule has a threshold; only rules that fire for the chosen range are listed (max 6)
+  const HL = [
+    { id: "refurb", good: true, tab: "products", link: "Products", v: { "7d": [18, 710000], "30d": [32, 2960000], "90d": [27, 7940000], "12m": [41, 28600000] }, fire: (x) => x[0] >= 25,
+      t: (x) => `Refurbished laptops ${signed(x[0], 0, "%")} vs the previous ${RANGES[S.range].label}`, s: (x) => `${L(x[1])} net sales · Grade A units drove most of the growth`, rule: "Rule: a category or condition grows by more than 25 %" },
+    { id: "wa", good: true, tab: "sales", link: "Sales", v: { "7d": [12.4], "30d": [31.8], "90d": [27.5], "12m": [46.2] }, fire: (x) => x[0] >= 25,
+      t: (x) => `WhatsApp orders ${signed(x[0], 1, "%")} — fastest-growing channel`, s: () => "Guided chats converted to paid orders through secure checkout links", rule: "Rule: a sales channel grows by more than 25 %" },
+    { id: "gradeb", good: false, tab: "products", link: "Products", v: { "7d": [6.9, 4.4], "30d": [7.2, 4.6], "90d": [7.3, 4.8], "12m": [7.6, 5.0] }, fire: (x) => x[0] >= 1.5 * x[1],
+      t: (x) => `Grade B refurbished return rate ${P(x[0])} — store average ${P(x[1])}`, s: () => "Top reason: condition not as described · review grading photos", rule: "Rule: a condition’s return rate is 1.5× the store average or more" },
+    { id: "mysuru", good: false, tab: "store", link: "Store & operations", v: { "7d": [8.7, 5.6], "30d": [9.1, 5.8], "90d": [8.8, 6.1], "12m": [8.2, 6.6] }, fire: (x) => x[0] >= 1.4 * x[1],
+      t: (x) => `Mysuru Branch: paid → dispatched ${x[0].toFixed(1)} h vs ${x[1].toFixed(1)} h average`, s: () => "Most delays are orders paid after the 16:00 courier pickup", rule: "Rule: a site is 1.4× slower than the average to dispatch" },
+    { id: "dealer", good: true, tab: "customers", link: "Customers", v: { "7d": [16.4], "30d": [22.0], "90d": [19.3], "12m": [28.7] }, fire: (x) => x[0] >= 15,
+      t: (x) => `Dealer sales ${signed(x[0], 1, "%")} · dealers are 38 % of net sales`, s: () => "Growth led by two Dealer Gold accounts in Bengaluru", rule: "Rule: dealer sales grow by more than 15 %" },
+    { id: "cover", good: false, tab: "products", link: "Products", v: { "7d": [6.9], "30d": [6.9], "90d": [6.9], "12m": [6.9] }, fire: (x) => x[0] < 10,
+      t: (x) => `Best seller Dell Latitude 5420 has ${x[0].toFixed(1)} days of stock left`, s: () => "12 units on hand · a purchase suggestion is waiting in Purchasing", rule: "Rule: a top-10 product has less than 10 days of stock cover" },
+    { id: "ageing", good: false, tab: "products", link: "Products", v: { "7d": [620000], "30d": [620000], "90d": [620000], "12m": [620000] }, fire: (x) => x[0] >= 500000,
+      t: (x) => `${L(x[0])} of stock older than 90 days`, s: () => "Refurbished Grade B monitors are the largest group · see slow movers", rule: "Rule: stock older than 90 days is worth more than ₹5 L (checked today)" },
+    { id: "repeat", good: true, tab: "customers", link: "Customers", v: { "7d": [0.7], "30d": [1.8], "90d": [1.6], "12m": [2.4] }, fire: (x) => x[0] >= 1.5,
+      t: (x) => `Returning-customer share up ${x[0].toFixed(1)} pt`, s: () => "More customers from the last three months bought again", rule: "Rule: returning-customer share rises by 1.5 points or more" },
+    { id: "conv", good: true, tab: "store", link: "Store & operations", v: { "7d": [0.04], "30d": [0.12], "90d": [0.09], "12m": [0.19] }, fire: (x) => x[0] >= 0.1,
+      t: (x) => `Store conversion rate up ${x[0].toFixed(2)} pt`, s: () => "Fewer shoppers leave at the delivery-date step of checkout", rule: "Rule: conversion rises by 0.1 point or more (needs visit tracking)" },
+    { id: "printers", good: false, tab: "products", link: "Products", v: { "7d": [-11.5], "30d": [-8.2], "90d": [-6.1], "12m": [-3.4] }, fire: (x) => x[0] <= -5,
+      t: (x) => `Printers ${signed(x[0], 1, "%")} — the steepest category decline`, s: () => "Two popular laser models were out of stock for 9 days", rule: "Rule: a category falls by more than 5 %" },
+  ];
+  function renderHighlights() {
+    const fired = HL.filter((h) => h.fire(h.v[S.range]));
+    const shown = fired.slice(0, 6);
+    $("#hl-sub").textContent = `Rule-based checks · ${RANGES[S.range].label} vs the previous ${RANGES[S.range].label}`;
+    $("#hl-rows").innerHTML = shown.map((h) => { const x = h.v[S.range]; return `<div class="list-row">
+        <span class="li-icon ${h.good ? "ok" : "warn"}">${ic(h.id === "ageing" || h.id === "cover" ? "alert" : h.good ? "trending-up" : "trending-down")}</span>
+        <div class="grow"><div class="hl-t">${h.t(x)}</div><div class="hl-s">${h.s(x)}</div><div class="hl-rule">${h.rule}</div></div>
+        <div class="hl-act"><span class="status ${h.good ? "s-ok" : "s-warn"}">${h.good ? "Good" : "Watch"}</span><a class="btn btn-xs" href="#${h.tab}" data-go-tab="${h.tab}">${h.link} ${ic("arrow-right", "ic-sm")}</a></div>
+      </div>`; }).join("");
+    $("#hl-foot").textContent = `${shown.length} of ${fired.length} checks fired · ${HL.length} rules run nightly and at 10:42 · store-wide (not narrowed by location, channel, buyer or category) · thresholds are samples`;
+  }
+
+  function renderChannelMix() {
+    const r = S.range, f = scope("ch"), tot = KP[r].net[0] * f.n, g = CH_G[r][ci() - 1];
+    const rows = CH.map((c, i) => ({ ...c, v: tot * CH_SHARE[r][i], d: g[i] })).filter((c) => !S.ch || c.k === S.ch);
+    A.stack($("#ch-chmix"), { title: "Share of net sales by channel", parts: rows.map((c) => ({ name: c.name, value: c.v, color: c.color })), format: L, seriesName: "Net sales", labelHeader: "Channel" });
+    $("#chmix-list").innerHTML = rows.map((c) => `<li><span><span class="sw" style="background:${c.color}"></span>${c.name}</span><span class="row gap-8"><b>${L(c.v)}</b>${delta(c.d, "%")}</span></li>`).join("");
+  }
+
+  function renderTopCats() {
+    const f = scope("cat"), k = rf().n * f.n;
+    let items = CAT.map((c) => ({ label: c.name, value: c.n * k })).filter((c, i) => !S.cat || CAT[i].k === S.cat);
+    if (!S.cat) { const top = items.slice(0, 6), rest = items.slice(6); items = top.concat([{ label: `Other (${rest.length} categories)`, value: sum(rest.map((x) => x.value)) }]); }
+    $("#topcat-sub").textContent = `${RANGES[S.range].label} · ₹ excl. GST`;
+    TX.charts.hbar($("#ch-topcat"), { title: "Top categories by net sales", items, seriesName: "Net sales", labelHeader: "Category", format: L, labelWidth: narrow() ? 132 : 148 });
+  }
+
+  // September targets — month to date (1–26 Sep), store-wide; the targets are sample values to be confirmed
+  function renderTargets() {
+    const pace = 26 / 30;
+    const T = [
+      { name: "Net sales", val: sumR(NET_D, 65, 90), tgt: 19500000, fmt: L },
+      { name: "Orders", val: sumR(ORD_D, 65, 90), tgt: 1400, fmt: N },
+      { name: "Gross margin", val: 18.3, tgt: 18.0, fmt: (v) => P(v), level: true },
+      { name: "New customers", val: 281, tgt: 330, fmt: N },
+      { name: "Dealer sales", val: 6040000, tgt: 7000000, fmt: L },
+    ];
+    $("#tgt-rows").innerHTML = T.map((t) => {
+      const p = t.val / t.tgt, ok = t.level ? p >= 1 : p >= pace - 0.03;
+      return `<div class="tgt"><div class="tgt-top"><span><b>${t.name}</b> · ${t.fmt(t.val)} <span class="muted">of ${t.fmt(t.tgt)}</span></span>
+          <span class="status ${ok ? "s-ok" : "s-warn"}">${ok ? (t.level ? "Above target" : "On track") : "Behind pace"}</span></div>
+        <div class="tgt-meter" role="img" aria-label="${t.name}: ${Math.round(p * 100)}% of target${t.level ? "" : `, month ${Math.round(pace * 100)}% elapsed`}"><div class="meter ${ok ? "m-ok" : "m-warn"}"><span style="width:${Math.min(100, p * 100).toFixed(1)}%"></span></div>${t.level ? "" : `<span class="pace" style="left:${(pace * 100).toFixed(1)}%"></span>`}</div>
+        <div class="tgt-foot"><span>${Math.round(p * 100)}% of target</span><span>${t.level ? "level target, not cumulative" : `pace marker: ${Math.round(pace * 100)}% of the month gone`}</span></div></div>`;
+    }).join("");
+  }
+
+  function renderOverview() { renderKPIs(); renderTrend(); renderHighlights(); renderChannelMix(); renderTopCats(); renderTargets(); }
+
+  /* ======================================================================
+     SALES
+     ====================================================================== */
+  const GRAN_DEFAULT = { "7d": "daily", "30d": "daily", "90d": "weekly", "12m": "monthly" };
+  const timeData = (g) => {
+    if (g === "monthly") return { labels: MONTHS, net: NET_M, orders: ORD_M, sub: "Monthly · Oct 2025 – Sep 2026 (September to the 26th)" };
+    if (g === "weekly") {
+      const labels = [], net = [], orders = [];
+      for (let w = 0; w < 13; w++) { const a = w * 7; labels.push(dLab(day(a))); net.push(sumR(NET_D, a, a + 6)); orders.push(sumR(ORD_D, a, a + 6)); }
+      return { labels, net, orders, sub: "Weekly, Sunday to Saturday (labelled with the first day) · 13 weeks, 28 Jun – 26 Sep 2026" };
+    }
+    const days = Math.min(RANGES[S.range].days, 90), a = 91 - days, labels = [], net = [], orders = [];
+    for (let i = a; i <= 90; i++) { labels.push(dLab(day(i))); net.push(NET_D[i]); orders.push(ORD_D[i]); }
+    return { labels, net, orders, sub: `Daily · ${dLab(day(a))} – 26 Sep 2026${S.range === "12m" ? " · the daily view shows at most the last 90 days" : ""}` };
+  };
+  function renderTime() {
+    const g = S.gran || GRAN_DEFAULT[S.range], f = scope(), d = timeData(g);
+    $$("#gran button").forEach((b) => b.classList.toggle("active", b.dataset.g === g));
+    $("#time-sub").textContent = d.sub;
+    TX.charts.line($("#ch-sales-t"), { title: `Net sales over time, ${g}`, labels: d.labels, height: 220, series: [{ name: "Net sales", color: "var(--series-1)", values: d.net.map((v) => v * f.n) }], format: L, axisFormat: axL });
+    TX.charts.line($("#ch-orders-t"), { title: `Orders over time, ${g}`, labels: d.labels, height: 220, series: [{ name: "Orders", color: "var(--series-1)", values: d.orders.map((v) => Math.round(v * f.o)) }], format: N });
+  }
+
+  function renderChannelTable() {
+    const r = S.range, K = KP[r], f = scope("ch"), g = CH_G[r][ci() - 1];
+    const nets = CH.map((c, i) => K.net[0] * f.n * CH_SHARE[r][i]), ords = alloc(K.orders[0] * f.o, CH.map((c) => c.o));
+    const tot = sum(nets), totO = sum(ords);
+    const rows = CH.map((c, i) => ({ c, net: nets[i], o: ords[i], g: g[i] })).filter((x) => !S.ch || x.c.k === S.ch);
+    const th = $("#chtab-g"); if (th && th.firstChild) th.firstChild.nodeValue = S.cmp === "prev" ? "Growth vs previous" : "Growth vs last year";
+    $("#chtab-sub").textContent = `${RANGES[r].cur} · ₹ excl. GST${S.ch ? " · share is of all channels" : ""}`;
+    $("#chtab-body").innerHTML = rows.map((x) => `<tr>
+        <td class="nowrap"><span class="sw" style="background:${x.c.color}"></span><b>${x.c.name}</b></td>
+        <td class="r">${L(x.net)}</td><td class="r">${N(x.o)}</td><td class="r">${TX.fmt(x.net / (x.o || 1))}</td>
+        <td class="nowrap"><span class="share-bar"><i style="width:${((x.net / tot) * 100).toFixed(1)}%"></i></span><span class="small">${P((x.net / tot) * 100)}</span></td>
+        <td class="r">${delta(x.g, "%")}</td></tr>`).join("");
+    $("#chtab-foot").innerHTML = S.ch ? "" : `<tr><td>All channels</td><td class="r">${L(tot)}</td><td class="r">${N(totO)}</td><td class="r">${TX.fmt(tot / (totO || 1))}</td><td class="small">100%</td><td class="r">${delta(pctChange(K.net[0], K.net[ci()]), "%")}</td></tr>`;
+  }
+
+  function renderLocations() {
+    const k = rf().n * scope("loc").n;
+    const items = LOC.filter((l) => !S.loc || l.k === S.loc).map((l) => ({ label: narrow() ? l.short : l.name, value: l.n * k }));
+    TX.charts.hbar($("#ch-loc"), { title: "Net sales by location", items, seriesName: "Net sales", labelHeader: "Location", format: L, labelWidth: narrow() ? 104 : 140 });
+  }
+
+  // Orders by weekday × hour — shape from an hourly profile and a weekday profile, allocated to the period's order count
+  const HOURS = [0.18, 0.10, 0.06, 0.04, 0.04, 0.06, 0.12, 0.25, 0.45, 0.70, 1.00, 1.20, 1.30, 1.25, 1.05, 0.95, 1.00, 1.10, 1.25, 1.45, 1.50, 1.30, 0.85, 0.40];
+  const DOW = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"], DOW_FULL = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+  const DOWF = [0.90, 0.88, 0.95, 0.97, 1.05, 1.30, 1.18];
+  const HM_W = DOW.map((_, d) => HOURS.map((h, j) => h * DOWF[d] * (1 + wobble(d * 24 + j, 7) * 0.3)));
+  const STEPS = [1, 2, 3, 4, 5, 10, 15, 20, 25, 50, 75, 100, 150, 200, 250, 500, 1000];
+  const hh = (j) => String(j % 24).padStart(2, "0") + ":00";
+  function renderHeat() {
+    const total = Math.round(KP[S.range].orders[0] * scope().o), flat = alloc(total, HM_W.flat());
+    const V = DOW.map((_, d) => flat.slice(d * 24, d * 24 + 24));
+    const max = Math.max(...flat, 1), step = STEPS.find((s) => s >= max / 7) || 1000;
+    const bin = (v) => (v <= 0 ? 0 : Math.min(6, Math.ceil(v / step) - 1));
+    const lab = (k) => (k === 6 ? `${6 * step + 1}+` : k === 0 ? `0–${step}` : step === 1 ? `${k + 1}` : `${k * step + 1}–${(k + 1) * step}`);
+    let bi = 0, bj = 0; V.forEach((row, i) => row.forEach((v, j) => { if (v > V[bi][bj]) { bi = i; bj = j; } }));
+    A.heat($("#ch-heat"), {
+      title: `Orders by weekday and hour of day, ${RANGES[S.range].cur}`, rows: DOW, cols: HOURS.map((_, j) => j), values: V,
+      style: (v) => ({ fill: RAMP7[bin(v)] }), colLabel: (j) => (j % 3 === 0 ? String(j).padStart(2, "0") : null),
+      rowLabelW: 40, cellH: 24, minCellW: 20, maxCellW: 40, start: [bi, bj],
+      tipHead: (i, j) => `${DOW_FULL[i]} · ${hh(j)}–${hh(j + 1)}`,
+      tipRows: (i, j) => [{ name: V[i][j] === 1 ? "order" : "orders", value: N(V[i][j]), color: RAMP7[bin(V[i][j])] }, { name: "of the period’s orders", value: P((V[i][j] / (total || 1)) * 100), color: RAMP7[bin(V[i][j])] }],
+      legend: scaleLegend("Orders in the hour slot", RAMP7.map((c, k) => ({ color: c, label: lab(k) })), `<span>Darker = more orders · hours in IST</span>`),
+      tableHead: ["Day", ...HOURS.map((_, j) => String(j).padStart(2, "0"))], tableRows: V.map((row, i) => [DOW_FULL[i], ...row.map(N)]),
+    });
+    $("#hm-note").innerHTML = `${ic("info")}<span>Busiest slot: <b>${DOW_FULL[bi]} ${hh(bj)}–${hh(bj + 1)}</b> (${N(V[bi][bj])} orders). Branch counters are open 10:00–21:00; website and WhatsApp orders arrive round the clock — plan staff for the evening peak.</span>`;
+  }
+
+  const PAY = [["UPI", 41, "var(--series-1)"], ["Cards", 22, "var(--series-2)"], ["Net banking & bank transfer", 17, "var(--series-3)"], ["EMI", 12, "#eda100"], ["Cash on delivery", 8, "#e87ba4"]];
+  function renderPayments() {
+    const host = $("#ch-pay");
+    if (S.ch === "pos") { host.innerHTML = `<div class="empty" style="padding:18px 8px">${ic("store")}<h4>Branch counter payments are not in this chart</h4><p>Choose another channel, or see Payments &amp; reconciliation.</p></div>`; return; }
+    const base = KP[S.range].net[0] * scope().n * (S.ch ? 1 : 1 - CH_SHARE[S.range][1]);
+    A.stack(host, { title: "Payment methods by share of paid value", parts: PAY.map(([n, s, c]) => ({ name: n, value: (base * s) / 100, color: c })), format: L, seriesName: "Paid value", labelHeader: "Method" });
+  }
+
+  function renderBuyers() {
+    const f = scope("buyer"), k = rf(), g = ci() - 1;
+    const rows = BUY.filter((b) => !S.buyer || b.k === S.buyer).map((b) => ({ ...b, v: b.n * k.n * f.n, ord: Math.round(b.o * k.o * f.o) }));
+    A.stack($("#ch-buyer"), { title: "Net sales by buyer type", parts: rows.map((b) => ({ name: b.name, value: b.v, color: b.color })), format: L, seriesName: "Net sales", labelHeader: "Buyer type" });
+    $("#buyer-stats").innerHTML = rows.map((b) => `<div><span class="s-l"><span><span class="sw" style="background:${b.color}"></span>${b.name}</span></span><span class="s-n">${L(b.v)}</span>
+      <span class="s-f"><span>${N(b.ord)} orders · AOV ${TX.fmt(b.v / (b.ord || 1))}</span>${delta(b.g[g], "%")}</span></div>`).join("");
+  }
+
+  // Promotions: totals over each promotion's window, pro-rated to the days that fall inside the selected period
+  const PROMOS = [
+    { name: "Festive laptop week", type: "Automatic discount", from: [2026, 8, 7], to: [2026, 8, 13], v: [84, 1460000, 92000, 118000] },
+    { name: "Refurbished Grade A · 5% off", type: "Automatic discount", from: [2026, 8, 1], to: [2026, 8, 26], running: true, v: [57, 840000, 44000, 71000] },
+    { name: "Dealer quantity tiers (5+ / 10+)", type: "Tier pricing", from: [2026, 3, 1], to: [2026, 8, 26], running: true, v: [214, 6300000, 350000, 300000] },
+    { name: "Card EMI cashback", type: "Bank-funded offer", from: [2026, 7, 15], to: [2026, 8, 26], running: true, v: [66, 990000, 0, 94000] },
+    { name: "WHATSAPP10 first-order coupon", type: "Coupon", from: [2026, 7, 1], to: [2026, 8, 26], running: true, v: [55, 400000, 40000, 27000] },
+    { name: "Accessory bundle (mouse + laptop bag)", type: "Bundle", from: [2026, 8, 1], to: [2026, 8, 26], running: true, v: [64, 380000, 27000, -5000] },
+    { name: "Independence Day sale", type: "Automatic discount", from: [2026, 7, 13], to: [2026, 7, 17], v: [118, 1720000, 146000, 88000] },
+    { name: "Back-to-college laptops", type: "Coupon", from: [2026, 5, 15], to: [2026, 6, 31], v: [96, 3140000, 188000, 162000] },
+    { name: "Diwali festive sale", type: "Automatic discount", from: [2025, 9, 10], to: [2025, 9, 26], v: [402, 7480000, 590000, 410000] },
+  ];
+  const RSTART = { "7d": [2026, 8, 20], "30d": [2026, 7, 28], "90d": [2026, 5, 29], "12m": [2025, 9, 1] };
+  const dd = (a) => new Date(a[0], a[1], a[2]);
+  const daysBetween = (a, b) => Math.round((b - a) / 864e5) + 1;
+  const dFmt = (d, y) => d.toLocaleDateString("en-IN", { day: "numeric", month: "short", ...(y ? { year: "numeric" } : {}) });
+  function renderPromos() {
+    const start = dd(RSTART[S.range]), end = new Date(2026, 8, 26), f = scope();
+    const rows = PROMOS.map((p) => {
+      const a = dd(p.from), z = dd(p.to), ov = daysBetween(a > start ? a : start, z < end ? z : end), k = Math.max(0, ov) / daysBetween(a, z);
+      return { ...p, a, z, o: Math.round(p.v[0] * k * f.o), net: p.v[1] * k * f.n, disc: p.v[2] * k * f.n, inc: p.v[3] * k * f.n, on: ov > 0 };
+    }).filter((p) => p.on && p.net > 0).sort((x, y) => y.net - x.net);
+    const net = KP[S.range].net[0] * f.n, td = sum(rows.map((p) => p.disc)), ti = sum(rows.map((p) => p.inc));
+    $("#promo-sub").textContent = `${RANGES[S.range].cur} · ${rows.length} promotions · discount given ${L(td)} = ${P((td / (net || 1)) * 100)} of net sales`;
+    $("#promo-body").innerHTML = rows.map((p) => `<tr>
+        <td><div class="cell-main">${TX.esc(p.name)}</div></td><td class="small">${p.type}</td>
+        <td class="small nowrap">${p.running ? `since ${dFmt(p.a, p.a.getFullYear() !== 2026)} · running` : `${dFmt(p.a)} – ${dFmt(p.z, true)}`}</td>
+        <td class="r">${N(p.o)}</td><td class="r">${L(p.net)}</td>
+        <td class="r">${p.disc ? L(p.disc) : `<span class="muted">₹0 · bank pays</span>`}</td>
+        <td class="r strong">${p.inc >= 0 ? "+" : "−"}${L(Math.abs(p.inc))}</td>
+        <td>${p.inc >= 0 ? `<span class="sev good">${ic("check-circle")} Adds margin</span>` : `<span class="sev serious">${ic("alert")} Loses margin</span>`}</td></tr>`).join("") ||
+      `<tr><td colspan="8" class="muted">No promotions ran in this period.</td></tr>`;
+    $("#promo-foot").innerHTML = rows.length ? `<tr><td colspan="3">All promotions in the period</td><td class="r">${N(sum(rows.map((p) => p.o)))}</td><td class="r">${L(sum(rows.map((p) => p.net)))}</td><td class="r">${L(td)}</td><td class="r">${ti >= 0 ? "+" : "−"}${L(Math.abs(ti))}</td><td></td></tr>` : "";
+  }
+
+  function renderSales() { renderTime(); renderChannelTable(); renderLocations(); renderHeat(); renderPayments(); renderBuyers(); renderPromos(); }
+  $("#gran").addEventListener("click", (e) => { const b = e.target.closest("button[data-g]"); if (!b) return; S.gran = b.dataset.g; try { renderTime(); } catch (err) { console.error(err); } });
+
+  /* ======================================================================
+     PRODUCTS
+     ====================================================================== */
+  // [product id, units in the last 30 days, gross margin %, return rate %] — margin and returns match the Control centre
+  const TOP = [["lap-01", 52, 18.0, 2.1], ["lap-04", 17, 11.0, 1.6], ["lap-02", 31, 22.4, 5.8], ["lap-05", 16, 12.6, 1.9], ["mon-01", 28, 13.0, 2.3],
+    ["cpu-01", 22, 9.0, 0.4], ["lap-03", 7, 16.8, 0.0], ["cam-04", 14, 10.4, 1.2], ["ssd-01", 58, 14.0, 0.8], ["hp-01", 19, 21.0, 3.5]];
+  function renderTopProducts() {
+    const k = rf().o * scope("cat").o, { k: sk, dir } = S.sort;
+    const rows = TOP.map(([id, u30, gm, rr]) => {
+      const p = TX.byId(id), u = Math.max(0, Math.round(u30 * k));
+      return { p, name: p.title, units: u, net: (u * p.price) / 1.18, gm, rr, cover: p.qty / (u30 / 30), st: u + p.qty ? (u / (u + p.qty)) * 100 : 0 };
+    }).filter((x) => !S.cat || x.p.cat === S.cat)
+      .sort((a, b) => (typeof a[sk] === "string" ? a[sk].localeCompare(b[sk]) : a[sk] - b[sk]) * dir);
+    $("#tp-sub").textContent = `${RANGES[S.range].cur} · units and net sales after returns · ₹ excl. GST`;
+    $$("#tp-table th[data-sort]").forEach((th) => {
+      const on = th.dataset.sort === sk; th.querySelector(".sort-ic").innerHTML = on ? ic(dir < 0 ? "chevron-down" : "chevron-up") : "";
+      th.setAttribute("aria-sort", on ? (dir < 0 ? "descending" : "ascending") : "none");
+    });
+    $("#tp-body").innerHTML = rows.map((x) => `<tr data-href="erp-catalog.html">
+        <td><div class="prod">${TX.ph(x.p.img, "thumb", "")}<div><div class="cell-main">${TX.esc(x.p.title)}</div><div class="cell-sub mono">${x.p.sku}</div></div></div></td>
+        <td>${TX.condBadge(x.p.cond)}</td>
+        <td class="r">${N(x.units)}</td><td class="r strong">${L(x.net)}</td><td class="r">${P(x.gm)}</td>
+        <td class="r">${x.rr >= 5 ? `<span class="sev warning">${ic("alert")} ${P(x.rr)} · high</span>` : P(x.rr)}</td>
+        <td class="r">${x.cover < 10 ? `<span class="sev warning">${ic("alert")} ${x.cover.toFixed(1)} days · low</span>` : `${x.cover.toFixed(0)} days`}</td>
+        <td class="r">${P(x.st, 0)}</td></tr>`).join("") ||
+      `<tr><td colspan="8"><div class="empty" style="padding:24px">${ic("tag")}<h4>No top-10 products in this category</h4><p>Choose another category, or open the catalog for the full list.</p></div></td></tr>`;
+  }
+  const sortBy = (th) => { const k = th.dataset.sort; S.sort = { k, dir: S.sort.k === k ? -S.sort.dir : k === "name" ? 1 : -1 }; renderTopProducts(); };
+  $("#tp-table thead").addEventListener("click", (e) => { const th = e.target.closest("th[data-sort]"); if (th) sortBy(th); });
+  $("#tp-table thead").addEventListener("keydown", (e) => { const th = e.target.closest("th[data-sort]"); if (th && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); sortBy(th); } });
+
+  function renderCategories() {
+    const k = rf().n * scope("cat").n, m = S.catMeasure;
+    const items = CAT.filter((c) => !S.cat || c.k === S.cat).map((c) => ({ label: c.name, value: m === "net" ? c.n * k : c.gm })).sort((a, b) => b.value - a.value);
+    $$("#cat-measure button").forEach((b) => b.classList.toggle("active", b.dataset.m === m));
+    $("#cat-sub").textContent = m === "net" ? `${RANGES[S.range].cur} · ₹ excl. GST` : `Gross margin as % of net sales · store average ${P(KP[S.range].gm[0])}`;
+    TX.charts.hbar($("#ch-cat"), { title: m === "net" ? "Net sales by category" : "Gross margin by category", items, seriesName: m === "net" ? "Net sales" : "Gross margin",
+      labelHeader: "Category", format: m === "net" ? L : (v) => P(v), labelWidth: narrow() ? 132 : 148 });
+  }
+  $("#cat-measure").addEventListener("click", (e) => { const b = e.target.closest("button[data-m]"); if (!b) return; S.catMeasure = b.dataset.m; try { renderCategories(); } catch (err) { console.error(err); } });
+
+  // Same condition → colour mapping as the Control centre's sales-mix bar
+  const COND = [
+    { name: "New", n: 10670000, gm: 13.2, rr: 3.6, color: "var(--series-1)" },
+    { name: "Refurbished", n: 4970000, gm: 26.4, rr: 6.3, color: "var(--series-2)", note: "Grade A 5.8 % · Grade B 7.2 %" },
+    { name: "Open box", n: 1660000, gm: 18.1, rr: 4.9, color: "var(--series-3)" },
+    { name: "Used", n: 1100000, gm: 29.5, rr: 6.6, color: "#eda100" },
+  ];
+  function renderCondition() {
+    const k = rf().n * scope().n, tot = sum(COND.map((c) => c.n * k));
+    A.stack($("#ch-cond"), { title: "Net sales by condition", parts: COND.map((c) => ({ name: c.name, value: c.n * k, color: c.color })), format: L, seriesName: "Net sales", labelHeader: "Condition" });
+    $("#cond-body").innerHTML = COND.map((c) => `<tr><td class="nowrap"><span class="sw" style="background:${c.color}"></span>${c.name}</td><td class="r">${L(c.n * k)}</td><td class="r">${P(((c.n * k) / (tot || 1)) * 100, 0)}</td><td class="r strong">${P(c.gm)}</td>
+      <td class="r">${c.rr >= 6 ? `<span class="sev warning">${ic("alert")} ${P(c.rr)}</span>` : P(c.rr)}${c.note ? `<div class="cell-sub">${c.note}</div>` : ""}</td></tr>`).join("");
+  }
+
+  // [product id, location, days the oldest unit has been in stock, days since last sale, units, value at landed cost ₹, rule-based suggestion]
+  const SLOW = [["mon-04", "WH-BLR", 132, 41, 5, 60500, "Reduce price 8% — stays above the margin floor"], ["lap-07", "WH-BLR", 94, 52, 1, 101200, "Feature in this week's Offers; review the price"],
+    ["lens-02", "BR-SPR", 121, 48, 2, 82400, "Add to the dealer price list"], ["tab-02", "BR-MYS", 101, 22, 4, 72800, "Transfer 2 units to Koramangala — sells faster there"],
+    ["mon-02", "BR-KRM", 104, 26, 2, 44600, "Transfer to SP Road — sells 3× faster there"], ["gpu-03", "BR-SPR", 143, 57, 1, 22500, "Offer inside a Tradex custom build"],
+    ["spk-02", "BR-MYS", 96, 34, 3, 19800, "Clearance price −10%"]];
+  function renderSlow() {
+    const rows = SLOW.map(([id, loc, age, last, u, val, act]) => ({ p: TX.byId(id), loc: LOC.find((l) => l.k === loc), age, last, u, val, act }))
+      .filter((x) => (!S.loc || x.loc.k === S.loc) && (!S.cat || x.p.cat === S.cat)).sort((a, b) => b.val - a.val);
+    $("#slow-body").innerHTML = rows.map((x) => `<tr data-href="erp-inventory.html">
+        <td><div class="prod">${TX.ph(x.p.img, "thumb", "")}<div><div class="cell-main">${TX.esc(x.p.title)}</div><div class="cell-sub">${TX.conditions[x.p.cond].label}</div></div></div></td>
+        <td class="small nowrap">${x.loc.short}<div class="cell-sub mono">${x.loc.k}</div></td>
+        <td class="r nowrap">${x.age} days</td><td class="r nowrap">${x.last} days ago</td><td class="r">${x.u}</td><td class="r strong">${TX.fmt(x.val)}</td>
+        <td class="small">${x.act}</td></tr>`).join("") ||
+      `<tr><td colspan="7" class="muted">No slow movers match these filters.</td></tr>`;
+    $("#slow-foot").textContent = `₹6.2 L of stock is older than 90 days across 38 SKUs — the ${rows.length} largest items in this view are shown · refurbished Grade B monitors are the biggest group (₹2.1 L)`;
+  }
+
+  // Price bands by selling price incl. GST: [axis label, full label, units (30 days), net sales ₹ excl. GST]
+  const BANDS = [["<1k", "Under ₹1,000", 1021, 430000], ["1–5k", "₹1,000 – ₹5,000", 1020, 1670000], ["5–15k", "₹5,000 – ₹15,000", 430, 2580000], ["15–30k", "₹15,000 – ₹30,000", 250, 3410000],
+    ["30–50k", "₹30,000 – ₹50,000", 170, 5070000], ["50k–1L", "₹50,000 – ₹1 lakh", 52, 3220000], [">1L", "Over ₹1 lakh", 18, 2020000]];
+  function renderBands() {
+    const k = rf(), f = scope(), m = S.bandMeasure;
+    const vals = BANDS.map((b) => (m === "units" ? Math.round(b[2] * k.o * f.o) : b[3] * k.n * f.n));
+    $$("#band-measure button").forEach((b) => b.classList.toggle("active", b.dataset.m === m));
+    $("#band-sub").textContent = `Selling price incl. GST (₹) · ${m === "units" ? "units sold" : "net sales, ₹ excl. GST"} · ${RANGES[S.range].label}`;
+    A.columns($("#ch-bands"), { title: `${m === "units" ? "Units sold" : "Net sales"} by price band`, labels: BANDS.map((b) => b[0]), fullLabels: BANDS.map((b) => b[1]), values: vals, height: 230,
+      format: m === "units" ? N : L, axisFormat: m === "units" ? N : axL, seriesName: m === "units" ? "units sold" : "net sales", labelHeader: "Price band (incl. GST)" });
+  }
+  $("#band-measure").addEventListener("click", (e) => { const b = e.target.closest("button[data-m]"); if (!b) return; S.bandMeasure = b.dataset.m; try { renderBands(); } catch (err) { console.error(err); } });
+
+  // Store behaviour (needs visit tracking) — sessions per range, website only
+  const SESS = { "7d": 10020, "30d": 43180, "90d": 125000, "12m": 503000 };
+  const sessF = () => (SESS[S.range] / SESS["30d"]) * scope("ch").o;
+  const webOnly = () => S.ch && S.ch !== "web";
+  // [product id, product views (30 days), add-to-cart % of views, bought % of views, rule-based check]
+  const VNB = [["phn-01", 4960, 2.6, 0.12, "Shoppers ask about battery health — add it to the listing"], ["lap-08", 3420, 2.1, 0.09, "Priced close to a new model — review the price"],
+    ["cam-02", 2860, 1.4, 0.07, "Show the EMI option on the product page"], ["lap-06", 2210, 1.8, 0.05, "Partner stock (4–6 days) — show the delivery date earlier"],
+    ["pc-01", 1980, 0.9, 0.10, "Offer a build consultation on WhatsApp"], ["mon-02", 1740, 3.1, 0.17, "Add real photos of the open-box unit"]];
+  const NORES = [["rtx 5060", 184, "Not stocked yet — add a ‘notify me’ page"], ["thinkpad x1 carbon", 142, "Source refurbished stock; suggest the ThinkPad T14 meanwhile"],
+    ["macbook charger", 118, "Add accessory SKUs · search synonym ‘MagSafe’"], ["ddr5 laptop ram", 96, "Add search synonym ‘DDR5 SODIMM’"],
+    ["i5 12th gen laptop", 77, "Make processor generation searchable"], ["type c hub", 64, "Add search synonym ‘USB-C hub’ (6 products match)"], ["gopro", 51, "Category not stocked — review demand"]];
+  function renderBehaviour() {
+    const off = `<div class="empty" style="padding:24px">${ic("globe")}<h4>Visit tracking covers the website only</h4><p>Choose All channels or Website to see this card.</p></div>`;
+    if (webOnly()) { $("#vnb-body").innerHTML = `<tr><td colspan="5">${off}</td></tr>`; $("#nr-body").innerHTML = `<tr><td colspan="3">${off}</td></tr>`; $("#vnb-sub").textContent = $("#nr-sub").textContent = ""; return; }
+    const k = sessF();
+    $("#vnb-sub").textContent = $("#nr-sub").textContent = `${RANGES[S.range].label} · website`;
+    $("#vnb-body").innerHTML = VNB.filter(([id]) => !S.cat || TX.byId(id).cat === S.cat).map(([id, v, atc, cv, why]) => { const p = TX.byId(id), views = Math.round(v * k);
+      return `<tr data-href="erp-catalog.html"><td><div class="prod">${TX.ph(p.img, "thumb", "")}<div><div class="cell-main">${TX.esc(p.title)}</div><div class="cell-sub">${TX.conditions[p.cond].label}</div></div></div></td>
+        <td class="r">${N(views)}</td><td class="r">${P(atc)}</td><td class="r">${P(cv, 2)}<div class="cell-sub">${N(Math.round((views * cv) / 100))} orders</div></td><td class="small">${why}</td></tr>`; }).join("") ||
+      `<tr><td colspan="5" class="muted">No products in this category are flagged.</td></tr>`;
+    $("#nr-body").innerHTML = NORES.map(([t, n, fix]) => `<tr><td><span class="term">${TX.esc(t)}</span></td><td class="r">${N(Math.round(n * k))}</td><td class="small">${fix}</td></tr>`).join("");
+  }
+
+  function renderProducts() { renderTopProducts(); renderCategories(); renderCondition(); renderSlow(); renderBands(); renderBehaviour(); }
+
+  /* ======================================================================
+     CUSTOMERS
+     ====================================================================== */
+  // [this period, previous period, same period last year]
+  const CUS = {
+    "7d": { active: [262, 251, 214], fresh: [81, 78, 66], dealers: [17, 16, 14] },
+    "30d": { active: [961, 900, 812], fresh: [312, 297, 259], dealers: [29, 27, 23] },
+    "90d": { active: [2610, 2398, 2212], fresh: [921, 866, 774], dealers: [36, 35, 30] },
+    "12m": { active: [8020, 6930, 6930], fresh: [3480, 3120, 3120], dealers: [41, 38, 38] },
+  };
+  const REPEAT = [31.0, 29.1, 27.6], LTV = [24600, 23700, 22100];                 // 12-month window / all customers — not tied to the date range
+  const CU_KPIS = [
+    { id: "active", label: "Active customers", icon: "users", help: "kpi-active" },
+    { id: "new", label: "New customers", icon: "user", help: "kpi-new" },
+    { id: "repeat", label: "Repeat-purchase rate", icon: "refresh", help: "kpi-repeat" },
+    { id: "ltv", label: "Average lifetime value", icon: "award", help: "kpi-ltv" },
+    { id: "dealers", label: "Dealer accounts active", icon: "briefcase", help: "kpi-dealers" },
+  ];
+  $("#cu-kpis").innerHTML = CU_KPIS.map((k) => `<div class="kpi">
+      <div class="k-label" data-help="${k.help}">${ic(k.icon)} <span>${k.label}</span></div>
+      <div class="k-value" id="cv-${k.id}"></div><div class="k-sub" id="cc-${k.id}"></div>
+      <div class="k-foot"><span id="cd-${k.id}"></span><span id="cs-${k.id}"></span></div></div>`).join("");
+  function renderCuKPIs() {
+    const r = S.range, C = CUS[r], c = ci(), k = scope("buyer").o, cw = S.cmp === "prev" ? "Previous" : "Last year", b = S.buyer;
+    const set = (id, value, sub, d, spark) => { $("#cv-" + id).textContent = value; $("#cv-" + id).classList.toggle("na", value === "—"); $("#cc-" + id).textContent = sub; $("#cd-" + id).innerHTML = d || ""; if (spark) TX.charts.spark($("#cs-" + id), spark); else $("#cs-" + id).innerHTML = ""; };
+    const count = (id, arr, note, seed) => { const v = [Math.round(arr[0] * k), Math.round(arr[c] * k)]; set(id, N(v[0]), `${cw}: ${N(v[1])}${note}`, delta(pctChange(v[0], v[1]), "%"), sparkModel(v[1], v[0], 12, seed)); };
+    const act = b === "dealer" ? C.dealers : b === "consumer" ? C.active.map((v, i) => v - C.dealers[i]) : C.active;
+    count("active", act, " · bought in the period", 21);
+    if (b === "dealer") set("new", "—", "Dealer sign-ups are on Customers & dealers", "", null); else count("new", C.fresh, " · first purchase", 22);
+    const lvl = (id, base, level, fmt, unit, dp, sub) => { const d = base[0] - base[c], v = level != null ? [level, level - d] : [base[0], base[c]]; set(id, fmt(v[0]), `${cw}: ${fmt(v[1])}${sub}`, unit === "%" ? delta(pctChange(v[0], v[1]), "%") : delta(v[0] - v[1], unit, false, dp), sparkModel(v[1], v[0], 12, id.length + 3)); };
+    lvl("repeat", REPEAT, b === "dealer" ? 92.9 : b === "consumer" ? 29.4 : null, (v) => P(v), " pt", 1, " · 2+ orders in 12 months");
+    lvl("ltv", LTV, b === "dealer" ? 840000 : b === "consumer" ? 21900 : null, (v) => TX.fmt(v), "%", 1, " · all customers");
+    if (b === "consumer") set("dealers", "—", "Buyer filter is set to Consumers", "", null);
+    else { const v = [C.dealers[0], C.dealers[c]]; set("dealers", `${v[0]} of 42`, `${cw}: ${v[1]} · approved accounts that ordered`, delta(v[0] - v[1], "", false, 0), sparkModel(v[1], v[0], 12, 9)); }
+  }
+
+  function renderNewRet() {
+    const r = S.range, C = CUS[r], k = scope("buyer").o;
+    let labels, nw, rt;
+    if (r === "12m") {
+      labels = MONTHS.slice(); nw = [342, 318, 262, 248, 236, 309, 268, 301, 284, 309, 322, 281]; rt = [780, 742, 690, 655, 640, 758, 662, 705, 698, 731, 758, 692];
+    } else {
+      const [a, z] = IDX[r], w = ORD_D.slice(a, z + 1); labels = [];
+      for (let i = a; i <= z; i++) labels.push(dLab(day(i)));
+      nw = alloc(C.fresh[0], w.map((v, i) => v * (1 + wobble(i, 11) * 0.3)));
+      rt = alloc(C.active[0] - C.fresh[0], w.map((v, i) => v * (1 + wobble(i, 13) * 0.3)));
+    }
+    const dealerShare = C.dealers[0] / (C.active[0] - C.fresh[0]);
+    const kn = S.buyer === "dealer" ? 0 : k, kr = k * (S.buyer === "dealer" ? dealerShare : S.buyer === "consumer" ? 1 - dealerShare : 1);
+    $("#newret-sub").textContent = `${r === "12m" ? "Customers per month" : "Customers per day, by the day of their first order in the period"} · ${RANGES[r].cur}`;
+    TX.charts.line($("#ch-newret"), { title: `New and returning customers, ${RANGES[r].cur}`, labels, height: 230,
+      series: [{ name: "Returning", color: "var(--series-1)", values: rt.map((v) => Math.round(v * kr)) }, { name: "New", color: "var(--series-2)", values: nw.map((v) => Math.round(v * kn)) }], format: N });
+  }
+
+  // Cohorts: [first-purchase month, customers, % who bought again in month 0 … 5]
+  const COH = [["Apr ’26", 268, [100, 13.8, 10.1, 8.6, 7.8, 7.1]], ["May ’26", 301, [100, 14.6, 10.6, 9.3, 8.0]], ["Jun ’26", 284, [100, 15.1, 11.3, 9.5]],
+    ["Jul ’26", 309, [100, 16.2, 11.7]], ["Aug ’26", 322, [100, 17.4]], ["Sep ’26", 281, [100]]];
+  const COH_BINS = [[5, "#cde2fb", "0–5%"], [8, "#9ec5f4", "5–8%"], [11, "#6da7ec", "8–11%"], [14, "#3987e5", "11–14%"], [17, "#256abf", "14–17%"], [Infinity, "#184f95", "17%+"]];
+  function renderCohort() {
+    const vals = COH.map(([, , v]) => [...Array(6)].map((_, j) => (j < v.length ? v[j] : null)));
+    const avg = [...Array(6)].map((_, j) => { const rs = COH.filter(([, , v]) => v.length > j), w = sum(rs.map(([, n]) => n)); return rs.length ? Math.round((sum(rs.map(([, n, v]) => n * v[j])) / w) * 10) / 10 : null; });
+    vals.push(avg);
+    const binOf = (v) => COH_BINS.findIndex(([mx]) => v < mx);
+    const rows = COH.map(([m, n]) => `${m} · ${n}`).concat(["All · weighted"]);
+    A.heat($("#ch-cohort"), {
+      title: "Monthly cohort retention, first purchases April to September 2026", rows, cols: [0, 1, 2, 3, 4, 5], values: vals,
+      colLabel: (j) => `Month ${j}`, rowLabelW: 100, cellH: 30, minCellW: 50, maxCellW: 76, start: [0, 1],
+      style: (v, i, j) => (j === 0 ? { fill: "#eef2f7", text: "#475467" } : { fill: COH_BINS[binOf(v)][1], text: binOf(v) >= 4 ? "#ffffff" : "#101828" }),
+      cellText: (v, i, j) => (j === 0 ? "100%" : v.toFixed(1) + "%"),
+      tipHead: (i, j) => (i < COH.length ? `${COH[i][0]} first-time buyers · month ${j}` : `All cohorts · month ${j}`),
+      tipRows: (i, j) => {
+        const v = vals[i][j], col = j === 0 ? "#98a2b3" : COH_BINS[binOf(v)][1];
+        if (j === 0) return [{ name: "first purchase month (always 100%)", value: i < COH.length ? N(COH[i][1]) + " customers" : "—", color: col }];
+        return i < COH.length ? [{ name: "bought again", value: P(v), color: col }, { name: "customers", value: `${N(Math.round((COH[i][1] * v) / 100))} of ${N(COH[i][1])}`, color: col }] : [{ name: "weighted average", value: P(v), color: col }];
+      },
+      legend: scaleLegend("Bought again in that month", COH_BINS.map(([, c, l]) => ({ color: c, label: l })), `<span>Month 0 = month of first purchase</span>`),
+      tableHead: ["First purchase · customers", "Month 0", "Month 1", "Month 2", "Month 3", "Month 4", "Month 5"],
+      tableRows: vals.map((row, i) => [rows[i], ...row.map((v) => (v == null ? "—" : P(v, v === 100 ? 0 : 1)))]),
+    });
+  }
+
+  // Rule-based segments (recency · frequency · spend); rules apply in this order, first match wins
+  const SEG = [
+    ["Champions", "Last order ≤ 30 days · 4+ orders · top 20 % by spend", 214, 22.4, 19800, "Early access to new stock; ask for a review"],
+    ["Loyal", "Last order ≤ 90 days · 3+ orders", 506, 19.8, 16400, "Accessory and extended-warranty offers"],
+    ["New", "First order in the last 30 days", 312, 3.2, 12900, "Welcome message and setup help"],
+    ["Promising", "Last order ≤ 90 days · 1–2 orders", 742, 10.6, 14100, "Follow up on setup; suggest matching accessories"],
+    ["Needs attention", "Last order 91–180 days ago", 2118, 15.9, 13200, "Service reminder or trade-in offer"],
+    ["At risk", "Last order 181–365 days ago · 2+ orders or above-average spend", 684, 13.1, 17600, "Personal call from their branch"],
+    ["Hibernating", "Everyone else — mostly one small order over a year ago", 6384, 15.0, 12100, "Occasional newsletter only, to customers who agreed"],
+  ];
+  function renderSegments() {
+    const tot = sum(SEG.map((s) => s[2]));
+    $("#seg-body").innerHTML = SEG.map(([name, rule, n, share, aov, act]) => `<tr><td class="nowrap"><b>${name}</b></td><td class="small">${rule}</td><td class="r">${N(n)}</td>
+      <td class="r nowrap"><span class="share-bar"><i style="width:${((n / tot) * 100).toFixed(1)}%"></i></span>${P((n / tot) * 100)}</td>
+      <td class="r nowrap"><span class="share-bar"><i style="width:${share}%"></i></span>${P(share)}</td><td class="r">${TX.fmt(aov)}</td><td class="small">${act}</td></tr>`).join("");
+    $("#seg-foot").innerHTML = `<tr><td colspan="2">Customers with an order in the last 24 months</td><td class="r">${N(tot)}</td><td class="r">100%</td><td class="r">100%</td><td></td><td class="small muted">Messages go only to customers who agreed to receive them</td></tr>`;
+  }
+
+  const CITIES = [["Bengaluru", 10710000], ["Mysuru", 2100000], ["Mangaluru", 750000], ["Hubballi–Dharwad", 660000], ["Chennai", 570000], ["Hyderabad", 520000], ["Tumakuru", 420000], ["Rest of Karnataka", 1270000], ["Rest of India", 1400000]];
+  function renderCities() {
+    const k = rf().n * scope().n;
+    $("#city-sub").textContent = `Delivery address, or the branch for counter sales · ${RANGES[S.range].label} · ₹ excl. GST`;
+    TX.charts.hbar($("#ch-cities"), { title: "Net sales by city and region", items: CITIES.map(([c, v]) => ({ label: c, value: v * k })), seriesName: "Net sales", labelHeader: "City / region", format: L, labelWidth: narrow() ? 124 : 140 });
+  }
+
+  const REASONS = [["Changed mind", 31], ["Defective on arrival", 24], ["Not as described", 18], ["Wrong or incompatible", 15], ["Delivery damage, other", 12]];
+  function renderReasons() {
+    const net = KP[S.range].net[0] * scope().n, rr = pctMeasure("rr")[0] / 100, retVal = (net * rr) / (1 - rr);
+    $("#reason-sub").textContent = `Share of returns value · ${L(retVal)} returned in ${RANGES[S.range].label}`;
+    TX.charts.hbar($("#ch-reasons"), { title: "Return reasons by share of returns value", items: REASONS.map(([l, v]) => ({ label: l, value: v })), seriesName: "Share of returns value", labelHeader: "Reason", format: (v) => v + "%", labelWidth: narrow() ? 140 : 150 });
+  }
+
+  // Top dealers (last 30 days): [name, city, price list, orders, net ₹, last order, growth vs previous %]
+  const DEALERS = [["PixelCare Solutions", "Bengaluru", "Dealer Gold", 21, 1180000, "26 Sep", 31], ["Nexa Infosystems", "Bengaluru", "Dealer Gold", 18, 960000, "25 Sep", 18],
+    ["Kaveri Systems", "Mandya", "Dealer Standard", 12, 520000, "24 Sep", 12], ["Hubli Computer House", "Hubballi", "Dealer Standard", 9, 410000, "23 Sep", 9],
+    [TX.dealers[2].name, TX.dealers[2].city, TX.dealers[2].list + " + contract", 5, 260000, "26 Sep", 6], [TX.dealers[0].name, TX.dealers[0].city, TX.dealers[0].list, 4, 200000, "25 Sep", -4],
+    [TX.dealers[1].name, TX.dealers[1].city, TX.dealers[1].list, 2, 76000, "22 Sep", -11]];
+  function renderDealers() {
+    if (S.buyer === "consumer") { $("#dl-sub").textContent = ""; $("#dl-body").innerHTML = `<tr><td colspan="7"><div class="empty" style="padding:24px">${ic("briefcase")}<h4>The buyer filter is set to Consumers</h4><p>Choose All buyers or Approved dealers to see dealer accounts.</p></div></td></tr>`; return; }
+    const k = rf(), f = scope("buyer");
+    const rows = DEALERS.map(([n, city, list, o, v, last, g]) => ({ n, city, list, o: Math.round(o * k.o * f.o), v: v * k.n * f.n, last, g })).filter((d) => d.o > 0);
+    $("#dl-sub").textContent = `${RANGES[S.range].label} · 29 of 42 approved accounts ordered in the last 30 days · dealers are 38 % of net sales`;
+    $("#dl-body").innerHTML = rows.map((d) => `<tr data-href="erp-customers.html#business"><td><div class="cell-main">${TX.esc(d.n)}</div><div class="cell-sub">${d.city}</div></td><td class="small">${d.list}</td>
+      <td class="r">${N(d.o)}</td><td class="r strong">${L(d.v)}</td><td class="r">${TX.fmt(d.v / d.o)}</td><td class="small nowrap">${d.last}</td><td class="r">${delta(d.g, "%", false, 0)}</td></tr>`).join("") ||
+      `<tr><td colspan="7" class="muted">No dealer orders in this view.</td></tr>`;
+  }
+
+  // Support: [this period, previous period, same period last year]
+  const SUP = { frt: { "7d": [5, 8, 11], "30d": [6, 9, 12], "90d": [7, 10, 13], "12m": [8, 11, 11] }, res: { "7d": [5.1, 5.6, 7.2], "30d": [5.4, 6.1, 7.6], "90d": [5.7, 6.3, 7.9], "12m": [6.2, 6.9, 6.9] },
+    csat: { "7d": [4.6, 4.5, 4.2], "30d": [4.5, 4.4, 4.2], "90d": [4.5, 4.4, 4.1], "12m": [4.4, 4.3, 4.3] }, n: { "7d": 96, "30d": 412, "90d": 1180, "12m": 4650 } };
+  function renderSupport() {
+    const r = S.range, c = ci(), f = SUP.frt[r], rs = SUP.res[r], cs = SUP.csat[r];
+    $("#sup-sub").textContent = `${RANGES[r].label} · WhatsApp, chat, email and phone · ${N(SUP.n[r])} ratings`;
+    const st = (label, val, d, spark) => `<div><span class="s-l">${label}</span><span class="s-n">${val}</span><span class="s-f">${d}<span class="sp"></span></span></div>`;
+    $("#sup-stats").innerHTML = st("First response time · median", `${f[0]} <small>min</small>`, delta(f[0] - f[c], " min", true, 0)) +
+      st("Resolution time · median", `${rs[0].toFixed(1)} <small>h</small>`, delta(rs[0] - rs[c], " h", true)) +
+      st("Satisfaction score", `${cs[0].toFixed(1)} <small>/ 5</small>`, delta(cs[0] - cs[c], "", false));
+    $$("#sup-stats .sp").forEach((el, i) => TX.charts.spark(el, sparkModel([f, rs, cs][i][c], [f, rs, cs][i][0], 12, 30 + i)));
+  }
+
+  function renderCustomers() { renderCuKPIs(); renderNewRet(); renderCohort(); renderSegments(); renderCities(); renderReasons(); renderDealers(); renderSupport(); }
+
+  /* ======================================================================
+     STORE & OPERATIONS
+     ====================================================================== */
+  const FUNNEL = [["Sessions", 43180], ["Product views", 24610], ["Added to cart", 3520], ["Reached checkout", 1610], ["Paid", 604]];   // last 30 days, website
+  const FUNNEL_COLORS = ["#86b6ef", "#5598e7", "#2a78d6", "#1c5cab", "#104281"];                                                      // ordinal ramp, no lighter than #86b6ef
+  const funnelNow = () => { const k = sessF(), paid = Math.round(604 * rf().o * scope("ch").o); return FUNNEL.map(([n, v], i) => ({ name: n, value: i === 4 ? paid : Math.round(v * k) })); };
+  const offWeb = () => `<div class="empty" style="padding:24px">${ic("globe")}<h4>Visit tracking covers the website only</h4><p>Choose All channels or Website in the filter row.</p></div>`;
+  function renderFunnel() {
+    const R = RANGES[S.range];
+    if (webOnly()) { $("#ch-funnel").innerHTML = offWeb(); $("#fn-note").innerHTML = ""; $("#fn-sub").textContent = ""; return; }
+    const st = funnelNow(), conv = (st[4].value / st[0].value) * 100;
+    $("#fn-sub").textContent = `Website sessions → paid orders · ${R.cur}`;
+    A.funnel($("#ch-funnel"), { title: `Store conversion funnel, ${R.cur}`, stages: st, colors: FUNNEL_COLORS });
+    $("#fn-note").innerHTML = `${ic("info")}<span>Overall conversion <b>${P(conv, 2)}</b> of sessions. The biggest loss is between viewing a product and adding it to the cart — compare prices, photos and delivery dates on the most-viewed products.</span>`;
+  }
+  const ABAND_D = { "7d": [0.6, 2.5], "30d": [1.6, 2.9], "90d": [1.2, 3.1], "12m": [2.4, 2.4] };                                     // how much higher abandonment was in the comparison period (pt)
+  function renderCart() {
+    if (webOnly()) { $("#cart-stats").innerHTML = `<div style="grid-column:1/-1">${offWeb()}</div>`; $("#cart-where").innerHTML = ""; $("#cart-sub").textContent = ""; return; }
+    const st = funnelNow(), cart = st[2].value, paid = st[4].value, ab = (1 - paid / (cart || 1)) * 100, k = st[0].value / 43180;
+    const rec = Math.round(68 * k), recV = 960000 * k, prevAb = ab + ABAND_D[S.range][ci() - 1];
+    $("#cart-sub").textContent = `${RANGES[S.range].cur} · reminders go only to shoppers who agreed to receive them`;
+    const s = (l, v, f) => `<div><span class="s-l">${l}</span><span class="s-n">${v}</span><span class="s-f">${f}</span></div>`;
+    $("#cart-stats").innerHTML = s("Abandonment rate", P(ab), delta(ab - prevAb, " pt", true)) + s("Carts left without paying", N(cart - paid), `<span>of ${N(cart)} carts</span>`) +
+      s("Recovered carts", N(rec), `<span>${P((rec / (cart - paid || 1)) * 100)} of abandoned</span>`) + s("Recovered value", L(recV), `<span>by WhatsApp or email reminder</span>`);
+    $("#cart-where").innerHTML = [["Before starting checkout", 55], ["At the delivery details step", 26], ["At payment", 19]].map(([w, p]) => `<li><span>${w}</span><span class="row gap-8"><span class="share-bar"><i style="width:${p}%"></i></span><b>${p}%</b></span></li>`).join("");
+  }
+
+  const TRAFFIC = [["Search engines", 38], ["Direct", 28], ["WhatsApp links", 13], ["Social", 10], ["Referral & partners", 6], ["Email", 5]];
+  const DEV = [["Mobile", 68, 1.05, "var(--series-1)"], ["Desktop", 27, 2.31, "var(--series-2)"], ["Tablet", 5, 1.38, "var(--series-3)"]];
+  const LAND = [["Home", "/", 9840, 41, 1.2], ["Certified refurbished", "/refurbished", 5210, 34, 1.9], ["Laptops", "/laptops", 4860, 38, 1.6],
+    ["Dell Latitude 5420 · Refurbished A", "/product/lap-01", 2310, 46, 2.4], ["Offers", "/offers", 2180, 44, 1.1], ["Dealer zone", "/dealer", 1270, 29, 3.8]];
+  function renderTraffic() {
+    const off = webOnly(), sess = off ? 0 : funnelNow()[0].value, lbl = `${RANGES[S.range].label} · ${N(sess)} website sessions`;
+    ["#tr-sub", "#ss-sub", "#lp-sub"].forEach((id) => ($(id).textContent = off ? "" : lbl));
+    if (off) {
+      ["#ch-traffic", "#ch-devices"].forEach((id) => { $(id).innerHTML = offWeb(); });
+      $("#dev-body").innerHTML = ""; $("#ss-stats").innerHTML = `<div style="grid-column:1/-1">${offWeb()}</div>`; $("#lp-body").innerHTML = `<tr><td colspan="4">${offWeb()}</td></tr>`; return;
+    }
+    const sp = alloc(sess, TRAFFIC.map((t) => t[1]));
+    TX.charts.hbar($("#ch-traffic"), { title: "Website sessions by traffic source", items: TRAFFIC.map(([n], i) => ({ label: n, value: sp[i] })), seriesName: "Sessions", labelHeader: "Source", format: N, labelWidth: narrow() ? 128 : 132 });
+    const ds = alloc(sess, DEV.map((d) => d[1]));
+    A.stack($("#ch-devices"), { title: "Website sessions by device", parts: DEV.map(([n], i) => ({ name: n, value: ds[i], color: DEV[i][3] })), format: N, seriesName: "Sessions", labelHeader: "Device" });
+    $("#dev-body").innerHTML = DEV.map(([n, , cv, col], i) => `<tr><td><span class="sw" style="background:${col}"></span>${n}</td><td class="r">${N(ds[i])}</td><td class="r">${P(cv, 2)}</td></tr>`).join("");
+    const searches = Math.round(sess * 0.4386), s = (l, v, f) => `<div><span class="s-l">${l}</span><span class="s-n">${v}</span><span class="s-f">${f}</span></div>`;
+    $("#ss-stats").innerHTML = s("Searches", N(searches), `<span>${(searches / (sess || 1)).toFixed(2)} per session</span>`) + s("Sessions using search", P(21.4), delta(1.3, " pt", false)) +
+      s("Search → purchase", P(3.2), `<span>vs ${P((funnelNow()[4].value / (sess || 1)) * 100, 2)} for all sessions</span>`) + s("Searches with no results", P(4.6), delta(-0.8, " pt", true));
+    const k = sess / 43180;
+    $("#lp-body").innerHTML = LAND.map(([n, path, v, single, cv]) => `<tr><td><div class="cell-main">${n}</div><div class="cell-sub mono">${path}</div></td><td class="r">${N(Math.round(v * k))}</td><td class="r">${P(single, 0)}</td><td class="r">${P(cv)}</td></tr>`).join("");
+  }
+
+  const ACC = { "7d": [98.9, 98.6, 97.1], "30d": [98.7, 97.8, 96.4], "90d": [98.3, 97.2, 96.0], "12m": [97.6, 96.1, 96.1] };
+  const OOS = { days: { "7d": 44, "30d": 186, "90d": 572, "12m": 2310 }, lost: { "7d": 90000, "30d": 380000, "90d": 1160000, "12m": 4420000 } };
+  function renderStock() {
+    const r = S.range, a = ACC[r], c = ci(), f = scope().n;
+    $("#stk-sub").textContent = `${RANGES[r].label} · counted units that matched the system`;
+    const s = (l, v, ft) => `<div><span class="s-l">${l}</span><span class="s-n">${v}</span><span class="s-f">${ft}</span></div>`;
+    $("#stk-stats").innerHTML = s("Stock accuracy", P(a[0]), delta(a[0] - a[c], " pt", false)) + s("SKUs out of stock now", "23", `<span>of 2,610 active SKUs</span>`) +
+      s("Stock-out days in period", N(Math.round(OOS.days[r] * scope("loc").o)), `<span>SKU × days with nothing to sell</span>`) +
+      s("Lost sales · estimate", L(OOS.lost[r] * f), `<span>average daily sales × days out</span>`);
+    $("#stk-list").innerHTML = [["lap-03", 6, 110000], ["cpu-02", 4, 62000], ["ram-01", 3, 31000]].map(([id, d, v]) => { const p = TX.byId(id);
+      return `<li><div class="row gap-8" style="min-width:0">${TX.ph(p.img, "thumb", "")}<div style="min-width:0"><div class="strong">${TX.esc(p.title)}</div><div class="small muted">${d} days out of stock</div></div></div><span class="small nowrap">est. ${L(v)}</span></li>`; }).join("");
+  }
+
+  // Fulfilment: [this period, previous period, same period last year]
+  const FUL = { disp: { "7d": [5.6, 5.9, 6.8], "30d": [5.8, 7.2, 7.9], "90d": [6.1, 6.9, 8.2], "12m": [6.6, 7.4, 7.4] }, ontime: { "7d": [94.8, 94.0, 91.2], "30d": [94.2, 93.1, 90.6], "90d": [93.6, 92.4, 90.1], "12m": [92.1, 90.8, 90.8] },
+    exc: { "7d": [1.9, 2.2, 2.8], "30d": [2.1, 2.4, 2.9], "90d": [2.3, 2.5, 3.0], "12m": [2.6, 2.9, 2.9] }, rto: { "7d": [1.6, 1.7, 2.3], "30d": [1.8, 2.1, 2.4], "90d": [1.9, 2.2, 2.5], "12m": [2.2, 2.5, 2.5] } };
+  function renderFulfilment() {
+    const r = S.range, c = ci(), ship = Math.round(742 * rf().o * scope().o), loc = member("loc");
+    $("#ful-sub").textContent = `${RANGES[r].cur} · ${N(ship)} shipments${loc ? " from " + loc.name : ""} · branch counter sales are not shipped`;
+    const items = [
+      ["Paid → dispatched · median", "h", FUL.disp[r], loc ? loc.disp : null, true, (v) => `${v.toFixed(1)} <small>h</small>`],
+      ["On-time delivery", "pt", FUL.ontime[r], null, false, (v) => P(v)],
+      ["Delivery exceptions", "pt", FUL.exc[r], null, true, (v) => `${P(v)} <small>· ${N(Math.round((ship * v) / 100))}</small>`],
+      ["Returned to origin (RTO)", "pt", FUL.rto[r], null, true, (v) => `${P(v)} <small>· ${N(Math.round((ship * v) / 100))}</small>`],
+    ];
+    $("#ful-stats").innerHTML = items.map(([l, u, arr, lvl, low, fmt], i) => { const d = arr[0] - arr[c], v0 = lvl != null ? lvl : arr[0];
+      return `<div><span class="s-l">${l}</span><span class="s-n">${fmt(v0)}</span><span class="s-f">${delta(d, u === "h" ? " h" : " pt", low)}<span class="sp" data-i="${i}"></span></span></div>`; }).join("");
+    $$("#ful-stats .sp").forEach((el) => { const it = items[+el.dataset.i], v0 = it[3] != null ? it[3] : it[2][0]; TX.charts.spark(el, sparkModel(v0 - (it[2][0] - it[2][c]), v0, 12, 40 + +el.dataset.i)); });
+  }
+
+  function renderBranches() {
+    const k = rf(), f = scope("loc"), g = ci() - 1, days = RANGES[S.range].days;
+    const rows = LOC.filter((l) => !S.loc || l.k === S.loc).map((l) => ({ ...l, v: l.n * k.n * f.n, ord: Math.round(l.o * k.o * f.o), vis: l.foot ? Math.round((l.foot * days) / 30 * f.o) : null, bil: l.bills ? Math.round(l.bills * k.o * f.o) : null }));
+    $("#br-sub").textContent = `${RANGES[S.range].cur} · location = site that fulfilled the order`;
+    $("#br-body").innerHTML = rows.map((l) => `<tr><td><div class="cell-main">${l.name}</div><div class="cell-sub mono">${l.k}</div></td>
+      <td class="r strong">${L(l.v)}</td><td class="r">${N(l.ord)}</td><td class="r">${TX.fmt(l.v / (l.ord || 1))}</td>
+      <td class="r">${l.vis ? `${P((l.bil / (l.vis || 1)) * 100)}<div class="cell-sub">${N(l.bil)} of ${N(l.vis)} visitors</div>` : `<span class="muted">—</span><div class="cell-sub">${l.note}</div>`}</td>
+      <td class="r">${P(l.rr)}</td>
+      <td class="r">${l.disp >= 8 ? `<span class="sev warning">${ic("alert")} ${l.disp.toFixed(1)} h · slowest</span>` : l.disp.toFixed(1) + " h"}</td>
+      <td class="r">${delta(l.g[g], "%")}</td></tr>`).join("");
+    const tv = sum(rows.map((l) => l.v)), to = sum(rows.map((l) => l.ord));
+    $("#br-foot").innerHTML = S.loc ? "" : `<tr><td>All locations</td><td class="r">${L(tv)}</td><td class="r">${N(to)}</td><td class="r">${TX.fmt(tv / (to || 1))}</td><td></td><td class="r">${P(pctMeasure("rr")[0])}</td><td class="r">${FUL.disp[S.range][0].toFixed(1)} h</td><td class="r">${delta(pctChange(KP[S.range].net[0], KP[S.range].net[ci()]), "%")}</td></tr>`;
+  }
+
+  function renderReturnsByCat() {
+    const items = CAT.filter((c) => !S.cat || c.k === S.cat).map((c) => ({ label: c.name, value: c.rr })).sort((a, b) => b.value - a.value);
+    $("#rc-sub").textContent = `Returns value as % of gross sales · store average ${P(KP[S.range].rr[0])}`;
+    TX.charts.hbar($("#ch-retcat"), { title: "Return rate by category", items, seriesName: "Return rate", labelHeader: "Category", format: (v) => P(v), labelWidth: narrow() ? 132 : 148 });
+  }
+
+  function renderStore() { renderFunnel(); renderCart(); renderTraffic(); renderStock(); renderFulfilment(); renderBranches(); renderReturnsByCat(); }
+
+  /* ======================================================================
+     Wiring: filters, tabs (render when first shown), table toggles
+     ====================================================================== */
+  const RENDER = { overview: renderOverview, sales: renderSales, products: renderProducts, customers: renderCustomers, store: renderStore };
+  const dirty = new Set(Object.keys(RENDER));
+  const activeTab = () => { const p = $(".an-tabs > .tab-panel.active"); return p ? p.dataset.panel : "overview"; };
+  const renderActive = () => {
+    const t = activeTab(); if (!dirty.has(t) || !RENDER[t]) return; dirty.delete(t);
+    try { RENDER[t](); } catch (err) { console.error("Analytics: could not render " + t, err); }
+  };
+  const renderHeader = () => {
+    const R = RANGES[S.range], ft = filterText();
+    $("#f-note").textContent = `${R.cur} vs ${R[S.cmp]} · ₹ excl. GST`;
+    $("#act-save").dataset.toast = `View saved · Analytics · ${R.label} · ${ft || "all locations, channels and buyers"}`;
+    $("#act-export").dataset.toast = `Export ready · Analytics · ${R.label}${ft ? " · " + ft : ""} · one CSV per card · link expires in 24 h`;
+  };
+  const invalidate = () => { renderHeader(); Object.keys(RENDER).forEach((k) => dirty.add(k)); renderActive(); };
+  const mo = new MutationObserver(renderActive);
+  $$(".an-tabs > .tab-panel").forEach((p) => mo.observe(p, { attributes: true, attributeFilter: ["class"] }));
+
+  // Filter options come from the shared reference data
+  const opts = (sel, list) => { $(sel).insertAdjacentHTML("beforeend", list.map((x) => `<option value="${x.k}">${x.name}</option>`).join("")); };
+  opts("#f-loc", LOC); opts("#f-ch", CH); opts("#f-buyer", BUY); opts("#f-cat", CAT);
+
+  $("#f-range").addEventListener("click", (e) => { const b = e.target.closest("button[data-r]"); if (!b || b.dataset.r === S.range) return; S.range = b.dataset.r; S.gran = null; invalidate(); });
+  $("#f-cmp").addEventListener("change", (e) => { S.cmp = e.target.value; invalidate(); TX.toast(`Comparing with the ${cmpWord()} · ${RANGES[S.range][S.cmp]}`, "calendar"); });
+  [["#f-loc", "loc"], ["#f-ch", "ch"], ["#f-buyer", "buyer"], ["#f-cat", "cat"]].forEach(([sel, key]) => $(sel).addEventListener("change", (e) => {
+    S[key] = e.target.value; invalidate(); const ft = filterText(); TX.toast(ft ? `Filtered: ${ft}` : "Filters cleared · whole store", "filter");
+  }));
+  $("#f-reset").addEventListener("click", () => {
+    Object.assign(S, { range: "30d", cmp: "prev", loc: "", ch: "", buyer: "", cat: "", gran: null });
+    $$("#f-range button").forEach((b) => b.classList.toggle("active", b.dataset.r === "30d"));
+    ["#f-cmp", "#f-loc", "#f-ch", "#f-buyer", "#f-cat"].forEach((s, i) => ($(s).value = i ? "" : "prev"));
+    invalidate(); TX.toast("Filters reset · last 30 days, whole store", "refresh");
+  });
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-table-toggle]"); if (!b) return;
+    const hosts = b.dataset.tableToggle.split(" ").map((id) => document.getElementById(id)).filter(Boolean);
+    hosts.forEach((h) => TX.charts.toggleTable(h));
+    const on = hosts.length && hosts[0].classList.contains("show-table");
+    b.innerHTML = `${ic(on ? "chart" : "list")} ${on ? "Chart view" : "Table view"}`; b.setAttribute("aria-pressed", String(on));
+  });
+
+  invalidate();
+});
+</script>
+</body>
+</html>

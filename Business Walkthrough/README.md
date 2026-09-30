@@ -28,6 +28,8 @@ for every screen and module of the Tradex ERP system.
 | 14 | automation-guide.md | Automation & Exceptions | Finance & Insight |
 | 15 | settings-access-guide.md | Settings & Access | Administration |
 | 16 | user-onboarding-guide.md | User Onboarding | (Supplement) |
+| 17 | team-monitor-guide.md | Team Monitor (Team & Activity) | Overview |
+| 18 | analytics-guide.md | Analytics | Overview |
 
 ---
 

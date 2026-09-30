@@ -354,7 +354,7 @@ MK:erp-admin.html#roles adds three rows "for review" (MOCKUP; build per decision
 
 | Key | Action | GST | CON | DLR (member sub-role D-066) | Source · label |
 |---|---|---|---|---|---|
-| `public.*` (catalog, content, help, seo, auth, registration, order_access, invitation, feedback, vendor_application) | Unauthenticated operations | Y (rate-limited) | Y | Y | BP §3.1 Guest · DOCUMENTED |
+| `public.*` (catalog, content, help, seo, auth, registration, order_access, invitation, feedback, vendor_application, visit) | Unauthenticated operations; `public.visit` (storefront visit-event beacon, API-M09-03) exists only if D-285 chooses first-party tracking — CONDITIONAL | Y (rate-limited) | Y | Y | BP §3.1 Guest · DOCUMENTED |
 | `pricing.quote` | Quote a basket in own context | Y (public context) | Y | Y (dealer context only as verified member) | BP §8.1, §6.5 · DOCUMENTED |
 | `cart.own` | Own cart | Y (cart token) | Own | Own | BP §6.5 · D-129 |
 | `order.place` | Place pending order | D:D-021 | Own | Org — ordering sub-role, per-order limit (D-066) | BP §6.5, §17.5 |
@@ -428,6 +428,11 @@ R-owner holds **read** access to operational queues for oversight and drill-down
 | `integration.read` / `integration.manage` | Integration status, logs, tests | — | — | — | — | R payment/accounting | Y | Y | BP §16.4 |
 | `integration.secret.rotate` | Rotate provider secret | — | — | — | — | — | Y + 2nd | Y + 2nd | BR-M24-02; MK |
 | `system.status.read` / `system.restore_test` | Health summary / restore rehearsal | R summary | R summary | R summary | R summary | R summary | Y / Y | Y / Y | BP §20.1; MK |
+| **Team & activity — P-E17 (M02, M17, M24; added 2026-09-30, `CF1 §2`)** | | | | | | | | | |
+| `presence.self` | Send own workspace presence heartbeat; set own "On break" / "In a meeting / away" (only if D-283 c allows self-set status) | Y | Y | Y | Y | Y | Y | Y | CF1 §2; MK:erp-team.html · D-282, D-283 · API-M02-43 · `CAP-STAFF_PRESENCE` |
+| `team.monitor.read` | Open P-E17: overview, status board, area handling, heatmap, activity feed, person detail, alert list and rules (read) | — | — | — | D:D-283 own branch only (Loc) | — | D:D-283 | Y | CF1 §2; D-282 ("visible to R-owner; others only if the owner delegates") · API-M24-15…18 · `CAP-TEAM_MONITOR` |
+| `team.alert.ack` | Acknowledge a staff alert (records who and when) | — | — | — | D:D-283 own branch | — | D:D-283 | Y | MK:erp-team.html · API-M24-20 · `CAP-STAFF_ACTIVITY_ALERTS` |
+| `team.alert.manage` | Change staff alert rules: on/off, threshold, who is notified, level | — | — | — | — | — | D:D-283 | Y (MFA) | MK:erp-team.html m-rules · D-283 (f) · API-M24-19 · `CAP-STAFF_ACTIVITY_ALERTS` |
 | `staff.assignable.read` | Assignee/owner picker: staff eligible for a task type (names and roles only) | — | As (lead, D-222) | Y | Loc | As (finance queues) | Y | Y | BP §12.5 "assigned role/person", §13.4 owner · API-M02-34 |
 | `workspace.counts` | Sidebar queue counts — only for queues the user can read | Y | Y | Y | Y | Y | Y | Y | MK:assets/tradex.js nav counts · MOCKUP · D-172 · API-M18-15 |
 | `system.alerts.manage` | Change an alert's condition, route (page vs daily review) or owner | — | — | — | — | — | Y | Y | BP §20.3 "Assign an owner to every alert" · D-195, D-052 · API-M24-14 |
@@ -547,6 +552,8 @@ R-owner holds **read** access to operational queues for oversight and drill-down
 | `report.schedule` | Schedules | — | — | — | — | Y | Y | Y | D-075 |
 | `report.definition.manage` | Propose a new report definition version (finance approval via API-M17-03; proposer ≠ approver) | — | — | — | — | Y | Y | Y | BP §14.4, §22.5 "definitions and reconciled totals" · D-075 · API-M18-18 |
 | `dashboard.owner` | Owner control centre | — | — | — | Loc | finance tiles | Y | Y | BP §12.5 |
+| `analytics.read` | Open P-E18 Analytics — the views the store has (Overview, Sales, Products, Customers, Store & operations) | — | — | — | D:D-286 own branch (Loc, D-286 f) | D:D-286 | D:D-286 | Y | CF1 §3; D-284 (owner screen); visibility D-286 · API-M18-20 · `CAP-ANALYTICS_DASHBOARD` (added 2026-09-30) |
+| `analytics.margin.read` | See gross margin, landed cost, stock value at cost and promotion "extra margin" on P-E18 and in its exports; without it those fields are omitted, not blanked | — | — | — | D:D-286 | D:D-286 | D:D-286 | Y | BP §14.4 "Restrict supplier cost, personal data, and margin reports to authorised roles"; D-286 (b); D-197 · API-M18-20, API-M18-03 (added 2026-09-30) |
 | **Invoices (M19)** | | | | | | | | | |
 | `invoice.read` (staff) | Invoices & credit notes | — | — | R | — | Y | — | R | BP §14.2 · D-055 |
 | `template.document.read` / `template.document.manage` | Document templates (invoice, credit note, packing slip, label, inspection sheet, PO, warranty card): read / new version → approval → activation; fiscal templates FIN | — | — | — | — | Y / Y | Y / Y (non-fiscal) | Y / Y | BP §30.1 Administration "templates", A12 "approved invoice/packing templates" · D-055, D-111 · API-M19-11/12 |
@@ -685,7 +692,8 @@ approval/delegation id, client context) **in the same transaction** as the chang
 | Authentication | Sign-in success/failure, lockout, MFA enrol/reset/backup-code regeneration, password change/reset, session revocation, force sign-out | — |
 | Access administration | Invite, role/scope/expiry change, deactivate/reactivate, role create/change, access-review decisions, SoD conflict acceptance | Yes (changes) |
 | Authority | Threshold changes, delegation create/extend/end, emergency access request/grant/actions/review, approval decisions (each item in bulk) | Yes |
-| Sensitive data | Field reveals, KYC/identity document views, customer data exports and downloads, audit-log searches/exports (MK "viewing the log is itself logged"), "view as dealer" (D-149), privacy request processing, customer merge | Yes |
+| Sensitive data | Field reveals, KYC/identity document views, customer data exports and downloads, audit-log searches/exports (MK "viewing the log is itself logged"), "view as dealer" (D-149), privacy request processing, customer merge; opening a person's detail on P-E17 (`team.person.view`, MK:erp-team.html m-recorded) and team-activity exports | Yes (except `team.person.view`) |
+| Staff monitoring (P-E17) | Staff alert rule changes, alert acknowledgements, self-set presence status changes | Yes (rule changes) |
 | Configuration & integrations | Configuration versions, secret rotation, integration settings, automation enable/stop/incident pause, company/location changes | Yes |
 | Material business changes | Stock adjustments/write-offs, price-list activation, margin overrides, refunds and overrides, payout-account changes, catalog publication/suspension, vendor/dealer approval & suspension | Yes for overrides |
 
@@ -738,6 +746,8 @@ rule 3).
 | P-E13 Reports | Per report permission; BM branch-scoped | Restricted reports locked for roles without cost/PII permission (MK) | BP §14.3–14.4 |
 | P-E14 Automation & exceptions | OPS, OWN, rule owners; approvals tab: approvers by type; exceptions: team scope | Kill switch: named reviewer | BP §12 |
 | P-E15 Settings, roles & audit | OWN, OPS; BM (roles read, team scope if delegated); FIN (thresholds read/propose, finance integrations read) | Users/roles/secrets need MFA; privileged changes need second approver | BP §18; MK |
+| P-E17 Team & activity | OWN; OPS and BM (own branch only) only if the owner delegates (`team.monitor.read`, D-283 b) | Every other staff member has no navigation entry and gets 403 for the route and the endpoints (standard rule; T-1A.16-M24-12); alert rules: OWN (MFA), OPS if delegated; opening a person is audited; the owner is not on the board | CF1 §2; D-282, D-283; MK:erp-team.html |
+| P-E18 Analytics | OWN; OPS, FIN, BM (own branch) per D-286 (`analytics.read`) | Margin and cost figures only with `analytics.margin.read` (D-286 b, D-197); Customers view needs `CAP-CUSTOMER_ANALYTICS`; visit-tracking cards need `CAP-STOREFRONT_VISIT_ANALYTICS` | CF1 §3; D-284, D-286; MK:erp-analytics.html |
 | Workspace shell | All staff | Location switcher lists assigned locations only; "New" menu filtered by keys; notifications own; delegation menu for delegators | `assets/tradex.js` |
 
 ### 12.3 Vendor portal (P-V) — require a vendor session (`VEN`) of an approved, non-suspended supplier for writes
@@ -764,10 +774,10 @@ rule 3).
 
 ## 13. Protected APIs (every endpoint of `06-api.md`)
 
-Auth classes per `06-api.md` §1.2 (`PUB`, `CUS`, `GAT`, `LNK`, `STF`, `VEN`, `INT`, `SIG`). Roles holding each key: §5. Scope: §6. Guards: `RL` rate-limited (D-084) · `Idem` idempotency key required (D-079) · `MFA` privileged session with MFA · `StepUp` recent re-authentication (D-202) · `2nd` second approver / maker-checker · `SoD` requester ≠ approver · `Ver` expected_version · `Rsn` reason mandatory and audited · `NoEnum` no account/order enumeration · `Aud` audited · `Sig` signature verified on raw body · `Dec (D-xxx)` endpoint only active when the decision enables the feature. Endpoints serving several audiences (e.g. API-M10-07) apply the customer key for `CUS`/`GAT` callers and the staff key named in the key or guard cell for `STF` callers (`06-api.md` §1.1 rule 4). All 492 endpoints are listed (65 added by `06-api.md` §8 on 2026-09-27); coverage check: §13.24.
+Auth classes per `06-api.md` §1.2 (`PUB`, `CUS`, `GAT`, `LNK`, `STF`, `VEN`, `INT`, `SIG`). Roles holding each key: §5. Scope: §6. Guards: `RL` rate-limited (D-084) · `Idem` idempotency key required (D-079) · `MFA` privileged session with MFA · `StepUp` recent re-authentication (D-202) · `2nd` second approver / maker-checker · `SoD` requester ≠ approver · `Ver` expected_version · `Rsn` reason mandatory and audited · `NoEnum` no account/order enumeration · `Aud` audited · `Sig` signature verified on raw body · `Dec (D-xxx)` endpoint only active when the decision enables the feature. Endpoints serving several audiences (e.g. API-M10-07) apply the customer key for `CUS`/`GAT` callers and the staff key named in the key or guard cell for `STF` callers (`06-api.md` §1.1 rule 4). All 501 endpoints are listed (65 added by `06-api.md` §8 on 2026-09-27; 9 added by `06-api.md` §11 on 2026-09-30 for `CF1`); coverage check: §13.24.
 
 
-### 13.1 M02 — Identity, access & audit (42 endpoints)
+### 13.1 M02 — Identity, access & audit (43 endpoints)
 
 | Endpoint(s) | Auth | Permission key | Scope | Guards / notes |
 |---|---|---|---|---|
@@ -804,6 +814,7 @@ Auth classes per `06-api.md` §1.2 (`PUB`, `CUS`, `GAT`, `LNK`, `STF`, `VEN`, `I
 | API-M02-39 | STF | `admin.roles.change` | company | MFA; Rsn; named post-reviewer and cadence required; Dec (D-196) |
 | API-M02-40 | STF | `admin.roles.change` / named post-reviewer | assigned | R-owner or the named post-reviewer (As); Rsn; Dec (D-196) |
 | API-M02-41…42 | STF | `admin.access_review.start` / `admin.access_review.decide` (own items) | assigned | Reviewers (`admin.access_review.decide`) see only their assigned items |
+| API-M02-43 | STF | `presence.self` | own | Own presence only (user from the session, never from the body); server derives active/idle/offline; self-set status per D-283 (c); only D-282-listed fields accepted; RL; `CAP-STAFF_PRESENCE` + `CAP-TEAM_MONITOR` off → 404; Dec (D-283) |
 
 ### 13.2 M03 — Organisation & locations (11 endpoints)
 
@@ -981,12 +992,13 @@ Auth classes per `06-api.md` §1.2 (`PUB`, `CUS`, `GAT`, `LNK`, `STF`, `VEN`, `I
 | API-M08-49 | CUS | `customer.self` | own | RL; linking only after verification, never by name match (BP §13.4); Dec (D-168) |
 | API-M08-50 | CUS | `business.account.change_request` | org | Owner sub-role; dealer pricing paused until re-verified; staff on behalf via `dealer.application.review`; Dec (D-066, D-067) |
 
-### 13.8 M09 — Storefront content (2 endpoints)
+### 13.8 M09 — Storefront content (3 endpoints)
 
 | Endpoint(s) | Auth | Permission key | Scope | Guards / notes |
 |---|---|---|---|---|
 | API-M09-01 | PUB/CUS | `public.content` | public | Dealer modules only for verified members; `private` when personalised; Dec (D-142) |
 | API-M09-02 | PUB/CUS | `public.catalog` | public | No private price unless verified member (`private, no-store`); Dec (D-164, D-142) |
+| API-M09-03 | PUB/CUS | `public.visit` | public | RL; no personal data under D-285 (b), nothing before consent under (c); route absent (404) when `CAP-STOREFRONT_VISIT_ANALYTICS` is off; Dec (D-285) |
 
 ### 13.9 M10 — Cart, checkout & orders (26 endpoints)
 
@@ -1175,7 +1187,7 @@ Auth classes per `06-api.md` §1.2 (`PUB`, `CUS`, `GAT`, `LNK`, `STF`, `VEN`, `I
 | API-M17-25 | STF | `digest.read` | assigned | Digest recipients; Dec (D-063) |
 | API-M17-26 | STF | `digest.manage` | company | Dec (D-063) |
 
-### 13.16 M18 — Reporting & exports (19 endpoints)
+### 13.16 M18 — Reporting & exports (20 endpoints)
 
 | Endpoint(s) | Auth | Permission key | Scope | Guards / notes |
 |---|---|---|---|---|
@@ -1194,6 +1206,7 @@ Auth classes per `06-api.md` §1.2 (`PUB`, `CUS`, `GAT`, `LNK`, `STF`, `VEN`, `I
 | API-M18-17 | STF | `report.run` | company | Per report; Dec (D-075) |
 | API-M18-18 | STF | `report.definition.manage` | company | Proposal only; finance approval via API-M17-03 (proposer ≠ approver); Dec (D-075) |
 | API-M18-19 | STF | `saved_view.self` | own | Owner of the view; team sharing within team scope |
+| API-M18-20 | STF | `analytics.read` (+ `analytics.margin.read` for margin/cost fields) | loc | Capability per view/card (`CAP-ANALYTICS_DASHBOARD`, `CAP-CUSTOMER_ANALYTICS`, `CAP-STOREFRONT_VISIT_ANALYTICS`) → absent/404 when off; restricted fields omitted and listed; BM own branch per D-286 (f); Dec (D-286) |
 
 ### 13.17 M19 — Finance boundary & accounting export (12 endpoints)
 
@@ -1248,7 +1261,7 @@ Auth classes per `06-api.md` §1.2 (`PUB`, `CUS`, `GAT`, `LNK`, `STF`, `VEN`, `I
 |---|---|---|---|---|
 | API-M23-01 | INT | `integration.legacy_events` | provider | INT legacy POS credential; Idem; Dec (D-009, D-030) |
 
-### 13.22 M24 — Administration & settings (14 endpoints)
+### 13.22 M24 — Administration & settings (20 endpoints)
 
 | Endpoint(s) | Auth | Permission key | Scope | Guards / notes |
 |---|---|---|---|---|
@@ -1266,6 +1279,10 @@ Auth classes per `06-api.md` §1.2 (`PUB`, `CUS`, `GAT`, `LNK`, `STF`, `VEN`, `I
 | API-M24-12 | STF | `change.read` | company | Requesters see own requests (Own); Dec (D-191) |
 | API-M24-13 | STF | `change.decide` | company | Rsn; Aud; Dec (D-191) |
 | API-M24-14 | STF | `system.alerts.manage` | company | Every alert keeps an owner (BP §20.3); Rsn; Aud; Dec (D-195, D-052) |
+| API-M24-15…17 | STF | `team.monitor.read` | company / loc (BM own branch if delegated) | Callers without the key get **403** (standard rule, `06-api.md` §11 rule 1); `CAP-TEAM_MONITOR` off → 404; API-M24-16 writes `team.person.view` (Aud); only that person's data; Dec (D-283) |
+| API-M24-18 | STF | `team.monitor.read` | company | Read-only rule list; unconfirmed thresholds flagged; `CAP-STAFF_ACTIVITY_ALERTS`; Dec (D-283) |
+| API-M24-19 | STF | `team.alert.manage` | company | MFA; Ver; Rsn; Aud; history kept when a rule is turned off; Dec (D-283) |
+| API-M24-20 | STF | `team.alert.ack` | company / loc | Idem; Aud; changes nothing about the person's work or access; Dec (D-283) |
 
 ### 13.23 M27 — SEO & discoverability (2 endpoints)
 
@@ -1275,7 +1292,7 @@ Auth classes per `06-api.md` §1.2 (`PUB`, `CUS`, `GAT`, `LNK`, `STF`, `VEN`, `I
 
 ### 13.24 Coverage check
 
-Endpoints mapped: **492 / 492** (M02 42 · M03 11 · M04 41 · M05 24 · M06 32 · M07 23 · M08 50 · M09 2 · M10 26 · M11 22 · M12 21 · M13 18 · M14 69 · M16 20 · M17 26 · M18 19 · M19 12 · M20 9 · M21 4 · M22 4 · M23 1 · M24 14 · M27 2 — equal to the `06-api.md` endpoint index after the 2026-09-27 gap resolution, which added 65 endpoints; the 427 earlier endpoints keep their keys — a script comparison of every `06-api.md` Auth·Authz cell with this section found no key differences). Any endpoint added to `06-api.md` must be added here with a key from §5 before it is implemented; an endpoint without a key is denied by default (§15 rule E1).
+Endpoints mapped: **501 / 501** (M02 43 · M03 11 · M04 41 · M05 24 · M06 32 · M07 23 · M08 50 · M09 3 · M10 26 · M11 22 · M12 21 · M13 18 · M14 69 · M16 20 · M17 26 · M18 20 · M19 12 · M20 9 · M21 4 · M22 4 · M23 1 · M24 20 · M27 2 — equal to the `06-api.md` endpoint index after the 2026-09-27 gap resolution, which added 65 endpoints, and the 2026-09-30 `CF1` additions (`06-api.md` §11), which added 9 with the keys `presence.self`, `public.visit`, `analytics.read`, `analytics.margin.read`, `team.monitor.read`, `team.alert.ack`, `team.alert.manage`; the 427 earlier endpoints keep their keys — a script comparison of every `06-api.md` Auth·Authz cell with this section found no key differences). Any endpoint added to `06-api.md` must be added here with a key from §5 before it is implemented; an endpoint without a key is denied by default (§15 rule E1).
 
 ---
 
@@ -1378,6 +1395,12 @@ columns of §5 that is denied (negative) and at least one role that is allowed (
 | TS-PERM-09.4 | Privileged operational flags | SS, FIN, OPS without MFA, OPS with MFA | Flag an order as verification/test transaction; issue an inbound integration credential | Only OPS/OWN with MFA; credential issuance needs second approver (`202`) | — | API-M10-26, API-M02-36 |
 | TS-PERM-09.5 | Change register & templates | Requester (any staff), OPS, OWN, FIN | Read change requests; decide one; publish a fiscal template version | Requester sees own only; only OWN decides; template activates only after approval | — | API-M24-12/13, API-M19-12 |
 | TS-PERM-11.3 | Assignee picker scope | BM of L1 | List assignable staff | Only staff within L1 scope, names/roles only (no contact data) | — | API-M02-34 |
+| TS-PERM-02.12 | BOLA — person activity (P-E17) | BM of L1 holding a delegated `team.monitor.read` (D-283 b); staff user U2 based at L2 | Open U2's activity, acknowledge an alert about U2, filter the feed by U2 | `404`; nothing about U2 disclosed; no `team.person.view` event for U2 | — | API-M24-16, API-M24-17, API-M24-20 |
+| TS-PERM-03.7 | BOPLA — presence | Staff session | Send `status` = active / idle / offline, another user's id, or extra fields (screen, keystrokes, device list, GPS) to the presence endpoint | Server-derived states rejected `422 STATUS_NOT_ALLOWED`; user taken from the session only; extra fields rejected and nothing stored (D-282) | — | API-M02-43 |
+| TS-PERM-04.6 | Function level — monitoring not delegated | R-ops_admin, R-branch_manager, R-finance, R-sales_support, R-warehouse_staff without `team.monitor.read` | Call API-M24-15…20; open the P-E17 route | `403` on every call and on the route; no navigation entry | — | API-M24-15…20 |
+| TS-PERM-09.6 | Staff alert rule change | R-owner with and without a fresh MFA session; R-ops_admin without delegation | Turn a rule off, change a threshold | Owner with MFA → `200`, audited with reason, history kept; without MFA → step-up; non-delegated OPS → `403` | — | API-M24-19 |
+| TS-PERM-10.5 | Margin on analytics (P-E18) | Role holding `analytics.read` without `analytics.margin.read` | Load every view; export `analytics.<view>` | Gross margin, landed cost, stock value at cost and promotion extra-margin fields absent (not blanked) and listed in `restricted[]`; export has no margin columns (D-286 b) | — | API-M18-20, API-M18-03 |
+| TS-PERM-11.4 | Branch scope on P-E17 / P-E18 | BM of L1 with delegated `team.monitor.read` (D-283 b) and `analytics.read` (D-286 f) | Load team overview, feed and every analytics view, passing `location_id` of L2 | Only L1 people, areas and figures; the L2 filter is ignored or `404` | — | API-M24-15, API-M24-17, API-M18-20 |
 
 Authentication-side cases (sign-in, MFA, lockout, sessions, CSRF/CORS, logging) are in `16-testing.md` suites
 TS-AUTH-01…10.
@@ -1396,6 +1419,8 @@ TS-AUTH-01…10.
 | 6 | MK:store-dealer.html#team: buyer above order limit → owner approval request; `06-api.md` originally returned only `403 ORDER_LIMIT_EXCEEDED` | Resolved in `06-api.md` §8 (API-M08-46…48; key `dealer.order.approve`); entity gap E-01 remains (D-066) |
 | 7 | `06-api.md` uses "buyer roles", "pricing roles", "catalog roles", "returns desk", "lead" — not registry roles | Mapped to R-* + designations (§4.3); D-222 |
 | 8 | Other plan sections raised the same questions as this file: SoD rule set (D-196, `10-erp.md`), cost/margin visibility (D-197, `10-erp.md`), self-approval tier (D-175), buyer mapping (D-222 per `00-conventions.md` §7.2) | This file cites those IDs; B5 IDs D-201, D-203, D-204 are therefore **not used** |
+| 9 | T-1A.16-M24-12 first asked for **404** when a staff member lacks the P-E17 permission, while "SaaS additions" §B step 4 answers a missing permission with 403 | **Resolved 2026-10-01:** P-E17 follows the standard order — capability off 404, missing permission 403 (no navigation entry), person outside scope 404 (`06-api.md` §11 rule 1). The task text was corrected; hiding the screen from staff would contradict the staff notice of D-282/D-283 |
+| 10 | MK:erp-team.html m-rules offers "Who is notified" values "Team lead" and "Warehouse lead + Operations admin"; neither is a registered role | Job titles, mapped under D-222; notify targets must hold `team.monitor.read` (API-M24-19) |
 
 ---
 

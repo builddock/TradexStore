@@ -91,7 +91,7 @@
   <div class="container">
     <nav class="crumbs mt-16" aria-label="Breadcrumb"><a href="store-home.html">Home</a><i data-icon="chevron-right"></i><span>Cart</span></nav>
     <div class="cart-head">
-      <div><h1 id="cart-title">Shopping cart</h1><p class="muted mt-4" id="cart-sub">Prices and stock re-checked against live inventory at 10:42</p></div>
+      <div><h1 id="cart-title">Your cart</h1><p class="muted mt-4" id="cart-sub">Prices and stock re-checked against live inventory at 10:42</p></div>
       <div class="row gap-8" data-anno="Prototype: cart states (§6.3)">
         <span class="small muted">View</span>
         <div class="seg" id="view-seg"><button data-v="cart" class="active">Your cart</button><button data-v="empty">Empty cart</button></div>
@@ -250,7 +250,7 @@ TX.ready(() => {
             </div>
           </div>
 
-          <a class="btn btn-accent btn-lg btn-block" href="store-checkout.html" data-anno="1A · R08 Checkout revalidates & reserves stock">${ic("lock")} Proceed to secure checkout</a>
+          <a class="btn btn-accent btn-lg btn-block" href="store-checkout.html" data-anno="1A · R08 Checkout revalidates & reserves stock">${ic("lock")} Checkout securely</a>
           <div class="only-guest"><div class="col gap-8"><div class="small subtle" style="text-align:center">No account needed — <b>checkout as a guest</b> with phone OTP.</div><a class="btn btn-block btn-sm" href="store-login.html">Sign in for saved addresses</a></div></div>
           <div class="hide-guest"><div class="small muted" style="text-align:center">Signed in as ${d ? "Arun Kumar · Metro Computers (Dealer Gold) · prepaid terms" : "Priya Nair · guest checkout also available"}</div></div>
           <div class="callout small" style="padding:10px 12px">${ic("clock")}<div>Items in your cart aren't held. Stock is <b>reserved for 15 minutes</b> when you start checkout, then re-checked before payment.</div></div>
@@ -286,12 +286,12 @@ TX.ready(() => {
     const empty = view === "empty" || !L.length;
     $$("#view-seg button").forEach((b) => b.classList.toggle("active", b.dataset.v === (empty ? "empty" : "cart")));
     const n = L.reduce((a, l) => a + l.q, 0);
-    $("#cart-title").textContent = empty ? "Shopping cart" : `Shopping cart (${n} item${n > 1 ? "s" : ""})`;
+    $("#cart-title").textContent = empty ? "Your cart" : `Your cart · ${n} item${n > 1 ? "s" : ""}`;
     $("#cart-sub").innerHTML = empty ? "Your cart is saved on this device" : `Prices and stock re-checked against live inventory at 10:42 · ${dealer() ? "Dealer Gold prices excl. GST" : "Prices include GST"}`;
     if (empty) {
       $("#cart-body").innerHTML = `<div class="cart-grid"><div>
         <div class="card" data-anno="§6.3 Empty cart state"><div class="empty" style="padding:56px 24px"><i data-icon="cart"></i><h4 style="font-size:18px">Your cart is empty</h4><p>Items you add stay in your cart on this device for 30 days.${TX.view === "guest" ? " Sign in to see items added on another device." : ""}</p>
-          <div class="row wrap mt-16" style="justify-content:center"><a class="btn btn-primary" href="store-listing.html">Continue shopping</a><a class="btn" href="store-listing.html?deals=1">Today's deals</a>${TX.view === "guest" ? `<a class="btn" href="store-login.html">Sign in</a>` : ""}</div>
+          <div class="row wrap mt-16" style="justify-content:center"><a class="btn btn-primary" href="store-listing.html">Continue shopping</a><a class="btn" href="store-listing.html?deals=1">This week's offers</a>${TX.view === "guest" ? `<a class="btn" href="store-login.html">Sign in</a>` : ""}</div>
           ${view === "empty" && L.length ? `<button class="link-btn small mt-16" id="back-cart">Back to your cart (${L.length} lines)</button>` : !L.length ? `<button class="link-btn small mt-16" id="restore">Restore sample cart (prototype)</button>` : ""}</div></div>
         ${savedHTML()}
       </div>

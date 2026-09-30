@@ -1,0 +1,1198 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Team &amp; activity · Tradex ERP</title>
+  <link rel="stylesheet" href="assets/tradex.css">
+  <style>
+    .tbc { display: inline-flex; align-items: center; gap: 3px; font-size: 10.5px; font-weight: 700; color: #8a5a00; background: #fff5dc; border: 1px dashed #e8c77a; padding: 0 5px; border-radius: 4px; white-space: nowrap; }
+    .k-of { font-size: 15px; font-weight: 600; }
+    .flt-count { display: inline-flex; align-items: center; gap: 8px; }
+    .f-search { width: 220px; }
+
+    /* Live status board */
+    .board { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; padding: 16px 20px 20px; }
+    .pc { position: relative; display: flex; flex-direction: column; gap: 10px; min-width: 0; padding: 14px 14px 12px; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); cursor: pointer; transition: border-color .12s, box-shadow .12s; }
+    .pc:hover { border-color: var(--brand-200); box-shadow: var(--sh-2); }
+    .pc:focus-within { border-color: var(--brand-200); }
+    .pc.off { background: #fbfcfd; }
+    .pc-top { display: flex; align-items: flex-start; gap: 10px; min-width: 0; }
+    .av-ring { flex: none; display: inline-grid; border-radius: 50%; margin: 3px; box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--rc, var(--tx-4)); }
+    .av-ring.dashed { box-shadow: 0 0 0 2px var(--surface); outline: 2px dashed var(--tx-4); outline-offset: 2px; }
+    .pc-who { flex: 1 1 auto; min-width: 0; }
+    .pc-name { display: block; max-width: 100%; padding: 0; border: 0; background: none; font-weight: 650; font-size: 14px; color: var(--tx-1); text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .pc-name:hover { color: var(--brand-700); text-decoration: underline; }
+    .pc-role { font-size: 12px; color: var(--tx-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .pc-st { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; flex: none; text-align: right; }
+    .pc-st .since { font-size: 11.5px; color: var(--tx-3); white-space: nowrap; }
+    .pc-act { display: flex; gap: 8px; align-items: flex-start; padding: 8px 10px; border-radius: var(--r-sm); background: var(--bg); font-size: 12.5px; line-height: 1.4; min-height: 52px; color: var(--tx-2); }
+    .pc-act > .ic { width: 14px; height: 14px; margin-top: 2px; flex: none; color: var(--tx-3); }
+    .pc-act a { font-weight: 600; }
+    .pc-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+    .pc-stats b { display: block; font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    .pc-stats span { display: block; font-size: 11px; color: var(--tx-3); line-height: 1.3; }
+    .pc-load { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 8px; font-size: 12px; color: var(--tx-2); }
+    .pc-load b { font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .pc-note { font-size: 11.5px; color: var(--warn-tx); margin-top: -4px; }
+    .pc-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+    .pc-tags .badge { height: 20px; font-size: 11px; }
+    .pc-foot { display: flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--tx-3); border-top: 1px solid var(--line-2); padding-top: 8px; min-width: 0; }
+    .pc-foot > .ic { width: 13px; height: 13px; flex: none; }
+    .pc-foot > span:first-of-type { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+    .pc-foot .badge { flex: none; margin-left: auto; height: 20px; font-size: 11px; }
+    .st-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px; padding: 12px 20px 0; font-size: 12px; color: var(--tx-3); }
+
+    /* Area handling */
+    .area-tbl td { vertical-align: top; }
+    .area-tbl th { white-space: normal; vertical-align: bottom; line-height: 1.3; }
+    .area-tbl :is(th, td) { padding-left: 10px; padding-right: 10px; }
+    .area-tbl :is(th, td):first-child { padding-left: 18px; }
+    .area-tbl .a-name { white-space: normal; min-width: 150px; }
+    .area-tbl .st-cell .cell-sub { max-width: 170px; }
+    .kpi .k-foot { flex-wrap: wrap; }
+    .area-tbl tr.sel td { background: var(--brand-50); }
+    .area-tbl .a-name { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+    .area-tbl .a-name .ic { width: 15px; height: 15px; color: var(--tx-3); flex: none; }
+    .area-tbl .cell-sub { max-width: 210px; }
+    .area-tbl .av-stack .avatar { width: 24px; height: 24px; font-size: 10px; }
+    .st-cell .cell-sub { margin-top: 4px; max-width: 220px; white-space: normal; }
+
+    /* People x areas heatmap */
+    .hm-scroll { overflow-x: auto; padding: 16px 20px 10px; }
+    .hm { position: relative; display: grid; grid-template-columns: 150px repeat(14, minmax(44px, 1fr)); gap: 2px; min-width: 820px; border-radius: 4px; }
+    .hm:focus { outline: none; }
+    .hm:focus-visible { outline: 2px solid var(--brand); outline-offset: 4px; }
+    .hm-corner { font-size: 11px; font-weight: 600; color: var(--tx-3); align-self: end; padding-bottom: 6px; text-transform: uppercase; letter-spacing: .04em; }
+    .hm-ch { font-size: 11px; font-weight: 600; color: var(--tx-3); text-align: center; padding: 0 1px 6px; align-self: end; line-height: 1.2; overflow-wrap: anywhere; }
+    .hm-rl { display: flex; align-items: center; gap: 8px; min-width: 0; padding-right: 8px; font-size: 12.5px; color: var(--tx-2); white-space: nowrap; cursor: pointer; }
+    .hm-rl span:last-child { overflow: hidden; text-overflow: ellipsis; }
+    .hm-rl .avatar { width: 22px; height: 22px; font-size: 9.5px; }
+    .hm-rl:hover { color: var(--brand-700); }
+    .hm-c { height: 30px; border-radius: 3px; display: grid; place-items: center; font-size: 11.5px; font-weight: 700; font-variant-numeric: tabular-nums; cursor: pointer; }
+    .hm-c.z { background: var(--bg-2); color: var(--tx-4); font-weight: 500; }
+    .hm-c.cur { box-shadow: 0 0 0 2px var(--ink-900); position: relative; z-index: 1; }
+    .hm.col-dim .hm-c:not(.col-on), .hm.col-dim .hm-ch:not(.col-on) { opacity: .28; }
+    .hm-ch.col-on { color: var(--tx-1); }
+    .hm .chart-tip .tt-r .key { width: 10px; height: 10px; border-radius: 2px; }
+    .hm-legend { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 18px; padding: 4px 20px 16px; font-size: 12px; color: var(--tx-2); }
+    .hm-ramp { display: flex; align-items: flex-start; gap: 2px; }
+    .hm-ramp > span { display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 10.5px; color: var(--tx-3); font-variant-numeric: tabular-nums; }
+    .hm-ramp i { display: block; width: 24px; height: 10px; border-radius: 2px; }
+    .hm-zero { display: inline-flex; align-items: center; gap: 6px; }
+    .hm-zero i { display: block; width: 24px; height: 10px; border-radius: 2px; background: var(--bg-2); }
+    #hm-host .chart-table { padding: 0 0 8px; }
+
+    /* Activity feed and alerts */
+    .two { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+    .af { list-style: none; margin: 0; padding: 0; }
+    .af > li { display: grid; grid-template-columns: 42px 26px minmax(0, 1fr); gap: 10px; align-items: start; padding: 10px 20px; border-bottom: 1px solid var(--line-2); font-size: 13px; }
+    .af > li:last-child { border-bottom: 0; }
+    .af .t { font-size: 12px; color: var(--tx-3); font-variant-numeric: tabular-nums; padding-top: 4px; }
+    .who { padding: 0; border: 0; background: none; font-weight: 650; color: var(--tx-1); text-align: left; }
+    .who:hover { color: var(--brand-700); text-decoration: underline; }
+    .af > li.empty-li { display: block; padding: 0; }
+    .chip .cc { margin-left: 2px; font-weight: 700; opacity: .7; font-variant-numeric: tabular-nums; }
+    .af .m { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin-top: 4px; font-size: 12px; color: var(--tx-3); }
+    .af .m .badge { height: 20px; font-size: 11px; }
+    .af .m .mono { color: var(--tx-2); }
+    .flag-key { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+    .flag-key .badge { height: 20px; font-size: 11px; }
+    .al .exc { grid-template-columns: auto minmax(0, 1fr); }
+    .al .exc .e-act { grid-column: 2; flex-wrap: wrap; margin-top: 2px; }
+    .al .exc.ack { opacity: .62; }
+    .al-why { margin-top: 8px; padding: 8px 10px; border-radius: var(--r-sm); background: var(--bg); font-size: 12px; color: var(--tx-2); line-height: 1.45; }
+    .al-why b { color: var(--tx-1); }
+
+    /* Performance */
+    .th-sort { display: inline-flex; align-items: center; gap: 4px; padding: 0; border: 0; background: none; font: inherit; color: inherit; letter-spacing: inherit; text-transform: inherit; cursor: pointer; white-space: nowrap; }
+    .th-sort:hover { color: var(--tx-1); }
+    .th-sort .si { display: inline-flex; width: 12px; }
+    .th-sort .si .ic { width: 12px; height: 12px; }
+    .perf-tbl td { vertical-align: middle; }
+    .perf-tbl .spark-cell { width: 112px; }
+    .perf-tbl tfoot td { font-weight: 650; }
+
+    /* Person drawer */
+    .pd-top { align-items: flex-start; min-width: 0; }
+    .pd-kpis { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
+    .pd-kpis.k3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .pd-kpis > div { border: 1px solid var(--line); border-radius: var(--r); padding: 10px 12px; min-width: 0; }
+    .pd-kpis .v { font-size: 19px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    .pd-kpis .l { font-size: 12px; color: var(--tx-3); }
+    .pd-kpis .c { font-size: 11.5px; color: var(--tx-2); margin-top: 2px; }
+    #d-person .timeline .t-meta a { font-weight: 600; }
+    #d-person .list-row { padding: 12px 0; }
+    #d-person .table-wrap { border: 1px solid var(--line); border-radius: var(--r); }
+
+    /* What is recorded */
+    .rec-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .rec-box { border: 1px solid var(--line); border-radius: var(--r); padding: 14px 16px; }
+    .rec-box h4 { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .rec-box.yes { background: #f6fbf8; border-color: #cfeedd; }
+    .rec-box.no { background: #fafbfc; }
+    .rec-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 9px; font-size: 13px; }
+    .rec-list li { display: grid; grid-template-columns: 18px minmax(0, 1fr); gap: 8px; }
+    .rec-list .ic { width: 16px; height: 16px; margin-top: 2px; }
+    .rec-box.yes .ic { color: var(--ok-tx); }
+    .rec-box.no .ic { color: var(--tx-3); }
+    .rec-sec { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 10px; font-size: 13px; }
+    .rec-sec > .ic { width: 18px; height: 18px; color: var(--tx-3); margin-top: 1px; }
+    .rec-sec h4 { margin-bottom: 4px; }
+
+    /* Alert rules */
+    .rules-tbl td { vertical-align: top; }
+    .rules-tbl .input-sm, .rules-tbl .select { height: 30px; font-size: 12.5px; }
+    .rules-tbl .thr { display: flex; flex-direction: column; gap: 4px; min-width: 150px; }
+
+    /* Tablet and phone (≤ 980 px) — desktop layout above is unchanged */
+    @media (max-width: 980px) {
+      .two { grid-template-columns: minmax(0, 1fr); }
+      .board { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 14px 16px 16px; }
+      .st-legend { padding: 12px 16px 0; }
+      .hm-scroll { padding: 14px 16px 8px; }
+      .hm-legend { padding: 4px 16px 14px; }
+      .af > li { padding: 10px 16px; }
+      .pd-kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .rec-grid { grid-template-columns: minmax(0, 1fr); }
+      .f-search { flex: 1 1 220px; width: auto; }
+      .filterbar > .select { flex: 1 1 160px; }
+      .area-tbl td:first-child { min-width: 190px; }
+      .perf-tbl td:first-child { min-width: 200px; }
+    }
+
+    /* Phone (≤ 760 px) */
+    @media (max-width: 760px) {
+      .board { grid-template-columns: minmax(0, 1fr); padding: 12px; }
+      .st-legend { padding: 10px 12px 0; }
+      .hm-scroll { padding: 12px 12px 8px; }
+      .hm { grid-template-columns: 112px repeat(14, minmax(40px, 1fr)); min-width: 700px; }
+      .hm-rl .avatar { display: none; }
+      .hm-legend { padding: 4px 12px 12px; }
+      .af > li { grid-template-columns: 26px minmax(0, 1fr); padding: 10px 12px; }
+      .af .t { grid-column: 2; grid-row: 1; padding: 0; }
+      .af .avatar { grid-row: 1 / span 2; }
+      .af .body { grid-column: 2; }
+      .pd-kpis, .pd-kpis.k3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      /* each control keeps its ⓘ on the same line */
+      .filterbar > .seg, .filterbar > .select, .f-search { flex: 1 1 calc(100% - 34px); width: auto; min-width: 0; }
+      /* alerts: one column — level, text, then buttons (as the shared exception rows) */
+      .al .exc { grid-template-columns: minmax(0, 1fr); }
+      .al .exc .e-act { grid-column: 1; }
+      .al-why .nowrap { white-space: normal; }
+      .flt-count { flex-wrap: wrap; }
+      .pc-st .since { white-space: normal; }
+    }
+  </style>
+</head>
+<body data-app="erp" data-page="team">
+<main>
+  <div class="page-head">
+    <div>
+      <div class="crumbs"><span>Overview</span></div>
+      <h1 data-help="page">Team &amp; activity</h1>
+      <p class="sub">Who is working, what they are doing and how each part of the workspace is being handled · live · updated 10:42</p>
+    </div>
+    <div class="actions">
+      <span class="badge b-outline" data-help="rec-who" data-help-pos="after"><i data-icon="lock"></i> Visible to the owner only</span>
+      <button class="btn" data-open="m-recorded" data-help="act-recorded"><i data-icon="eye"></i> What is recorded</button>
+      <button class="btn" data-open="m-rules" data-help="act-rules"><i data-icon="bell"></i> Alert rules</button>
+      <button class="btn" data-help="act-export" data-toast="Export queued · team activity for today (CSV) · only what you may see · the export itself is recorded"><i data-icon="download"></i> Export</button>
+    </div>
+  </div>
+
+  <!-- One filter row scopes the board, heatmap rows, activity, alerts and performance -->
+  <div class="filterbar" data-anno="Filters scope the status board, heatmap rows, activity, alerts and performance">
+    <div class="seg" id="f-period" role="group" aria-label="Period" data-help="f-period" data-help-pos="after"><button type="button" data-period="live">Live</button><button type="button" class="active" data-period="today">Today</button><button type="button" data-period="7d">7 days</button><button type="button" data-period="30d">30 days</button></div>
+    <select class="select" id="f-loc" aria-label="Location" data-help="f-location"><option value="">All locations</option></select>
+    <select class="select" id="f-team" aria-label="Team" data-help="f-team">
+      <option value="">All teams</option><option value="wh">Warehouse</option><option value="sales">Sales &amp; branches</option><option value="support">Support</option><option value="catalog">Catalog &amp; pricing</option><option value="finance">Finance</option><option value="mgmt">Management</option>
+    </select>
+    <select class="select" id="f-area" aria-label="Workspace area" data-help="f-area"><option value="">All workspace areas</option></select>
+    <div class="input-icon f-search" data-help="f-search" data-help-pos="after"><i data-icon="search"></i><input class="input" id="f-q" placeholder="Search a person…" aria-label="Search a person" autocomplete="off"></div>
+    <span class="small muted ml-auto flt-count" id="flt-count" aria-live="polite">Showing 14 of 14 staff on today’s roster</span>
+  </div>
+
+  <!-- KPI tiles -->
+  <section class="grid g-6" data-anno="1A · CF1 Employee monitoring · headline figures (D-282)">
+    <div class="kpi"><div class="k-label" data-help="kpi-onshift"><i data-icon="users"></i> <span>On shift now</span></div><div class="k-value"><span id="k-on">11</span><span class="muted k-of" id="k-on-of"> / 13</span></div><div class="k-foot"><span id="k-on-f">scheduled · 1 on leave</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-active"><i data-icon="activity"></i> <span>Active now</span></div><div class="k-value" id="k-act">7</div><div class="k-foot"><span id="k-act-f">worked in Tradex in the last 10 min</span><span id="sp-act"></span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-idle"><i data-icon="clock"></i> <span>Idle now (10+ min)</span></div><div class="k-value" id="k-idle">2</div><div class="k-foot"><span id="k-idle-f">Farah K. 26 min · Sneha P. 18 min</span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-actions"><i data-icon="history"></i> <span>Actions recorded today</span></div><div class="k-value" id="k-actions">625</div><div class="k-foot"><span class="delta" id="k-actions-f"><i data-icon="trending-up"></i> +6% vs Sat 19 Sep</span><span id="sp-actions"></span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-handled"><i data-icon="check-circle"></i> <span>Work items handled today</span></div><div class="k-value" id="k-handled">229</div><div class="k-foot"><span id="k-handled-f">median 10 min each</span><span id="sp-handled"></span></div></div>
+    <div class="kpi"><div class="k-label" data-help="kpi-alerts"><i data-icon="bell"></i> <span>Open alerts</span></div><div class="k-value" id="k-alerts">8</div><div class="k-foot"><span id="k-alerts-f" class="text-bad strong">3 serious or critical</span></div></div>
+  </section>
+
+  <!-- Live status board -->
+  <section class="card mt-16" data-anno="1A · CF1 Employee monitoring · status board (D-282)">
+    <div class="card-head">
+      <div><h3 data-help="board">Live status board</h3><div class="sub" id="board-sub">14 of 14 on today’s roster (3 more on their weekly day off) · presence from Tradex activity only · updated 10:42</div></div>
+      <div class="seg" id="sg" role="group" aria-label="Show staff by status" data-help="board-groups" data-help-pos="after">
+        <button type="button" class="active" data-sg="all">All</button><button type="button" data-sg="active">Active</button><button type="button" data-sg="idle">Idle</button><button type="button" data-sg="paused">Break or away</button><button type="button" data-sg="off">Not working</button>
+      </div>
+    </div>
+    <div class="st-legend"><span class="strong" data-help="board-statuses">Status key</span>
+      <span class="status s-ok">Active</span><span class="status s-warn">Idle (no activity 10+ min)</span><span class="status s-info">On break</span><span class="status s-brand">In a meeting / away</span><span class="status s-muted">Offline</span><span class="status s-muted">On leave</span><span class="status s-warn">Not yet signed in</span>
+    </div>
+    <div class="board" id="board"></div>
+    <div class="card-foot"><span class="small muted row gap-6"><i data-icon="eye" class="ic-sm"></i> Presence is worked out only from activity inside the Tradex workspace; staff can set “On break” or “In a meeting” themselves.</span><button type="button" class="link-btn small" data-open="m-recorded">What is recorded →</button></div>
+  </section>
+
+  <!-- How each ERP area is being handled -->
+  <section class="card mt-16" data-anno="1A · CF1 Employee monitoring · ERP area handling (D-282)">
+    <div class="card-head">
+      <div><h3 data-help="areas">How each area is being handled</h3><div class="sub">Every part of the ERP workspace · today until 10:42 · all locations</div></div>
+      <span class="small muted" id="area-sum"></span>
+    </div>
+    <div class="table-wrap"><table class="table area-tbl">
+      <thead><tr>
+        <th>Workspace area</th>
+        <th class="r" data-help="col-open">Open</th>
+        <th class="r" data-help="col-handled">Handled today</th>
+        <th data-help="col-oldest">Oldest waiting</th>
+        <th class="r" data-help="col-target">Target met</th>
+        <th class="r" data-help="col-median">Median time</th>
+        <th data-help="col-staffnow">Working now</th>
+        <th class="r" data-help="col-overrides">Overrides</th>
+        <th data-help="col-state">State</th>
+      </tr></thead>
+      <tbody id="area-body"></tbody>
+    </table></div>
+    <div class="card-foot"><span class="small muted"><b>On track</b> = within targets · <b>At risk</b> = a target is close to being missed or cover is missing · <b>Behind</b> = targets are being missed now. Targets are samples (<span data-help="g.tbc">TBC</span>).</span><a class="small strong" href="erp-reports.html">Service reports →</a></div>
+  </section>
+
+  <!-- People x areas heatmap -->
+  <section class="card mt-16" data-anno="1A · CF1 Employee monitoring · who works where (D-282)">
+    <div class="card-head">
+      <div><h3 data-help="heatmap">Who is working where</h3><div class="sub">Actions recorded today per person and workspace area · darker blue = more actions</div></div>
+      <button type="button" class="btn btn-sm btn-ghost" id="hm-toggle" aria-pressed="false" data-help="hm-table"><i data-icon="list"></i> Table view</button>
+    </div>
+    <div class="chart-wrap" id="hm-host">
+      <div class="chart hm-scroll"><div class="hm" id="hm" role="img" tabindex="0" aria-label="Heatmap of actions today by person and workspace area"></div></div>
+      <div class="chart-table table-wrap" id="hm-table"></div>
+    </div>
+    <div class="hm-legend"><span class="strong" data-help="hm-scale">Actions today</span><span class="hm-zero"><i></i> none</span><span class="hm-ramp" id="hm-ramp" aria-label="Colour scale from 1 to 55 or more actions"></span><span class="small muted">Point at a square (or focus the chart and use the arrow keys) for details · Enter opens the person</span></div>
+  </section>
+
+  <!-- Activity feed + alerts -->
+  <section class="two mt-16">
+    <div class="card" data-anno="1A · CF1 Employee monitoring · activity feed from the audit log (D-282)">
+      <div class="card-head">
+        <div><h3 data-help="feed">Activity</h3><div class="sub" id="feed-sub">Staff actions today in plain language · newest first</div></div>
+        <a class="small strong" href="erp-admin.html#audit">Audit log →</a>
+      </div>
+      <div class="table-toolbar" id="feed-chips">
+        <span class="small muted" data-help="feed-chips">Show</span>
+        <button type="button" class="chip active" data-chip="all">All</button>
+        <button type="button" class="chip" data-chip="sensitive"><i data-icon="lock"></i> Sensitive only</button>
+        <button type="button" class="chip" data-chip="money"><i data-icon="rupee"></i> Money</button>
+        <button type="button" class="chip" data-chip="stock"><i data-icon="warehouse"></i> Stock</button>
+        <button type="button" class="chip" data-chip="price"><i data-icon="percent"></i> Prices &amp; discounts</button>
+        <button type="button" class="chip" data-chip="access"><i data-icon="key"></i> Access &amp; exports</button>
+      </div>
+      <ul class="af" id="feed"></ul>
+      <div class="card-foot">
+        <div class="flag-key small muted"><span data-help="feed-flags">Flags</span><span class="badge b-warn">Sensitive</span><span class="badge b-brand">Delegated authority</span><span class="badge b-info">After hours</span><span class="badge b-outline">Needed approval</span><span class="badge b-bad">Emergency access</span></div>
+        <button type="button" class="btn btn-sm" id="feed-more"></button>
+      </div>
+    </div>
+
+    <div class="card al" data-anno="1A · CF1 Employee monitoring · rule-based alerts, no AI (D-282)">
+      <div class="card-head">
+        <div><h3 data-help="alerts">Alerts &amp; unusual activity</h3><div class="sub" id="al-sub">Rule-based checks · no AI · newest and most serious first</div></div>
+        <button type="button" class="btn btn-sm" data-open="m-rules"><i data-icon="sliders" class="ic-sm"></i> Rules</button>
+      </div>
+      <div id="alerts"></div>
+      <div class="card-foot"><span class="small muted"><span data-help="al-why">Why flagged</span> names the rule and its sample threshold. <span data-help="al-actions">Acknowledge</span> records that you have seen it; it does not accuse anyone.</span></div>
+    </div>
+  </section>
+
+  <!-- Performance -->
+  <section class="card mt-16" data-anno="1A · CF1 Employee monitoring · performance, compare within the same role (D-282)">
+    <div class="card-head">
+      <div><h3 data-help="perf">Performance</h3><div class="sub" id="perf-sub">Last 7 days (Sat 19 – Fri 25 Sep) · complete days only · today is on the status board</div></div>
+      <a class="small strong" href="erp-reports.html">Reports →</a>
+    </div>
+    <div class="card-body" style="padding-bottom:12px">
+      <div class="callout c-info small"><i data-icon="info"></i><div><b data-help="perf-caution">Roles differ — compare people within the same role.</b> These figures show workload and flow inside Tradex. They do not capture phone calls, walk-in advice, training or help given to colleagues. Use them to start a conversation, not to rank people.</div></div>
+    </div>
+    <div class="table-wrap"><table class="table perf-tbl">
+      <thead id="perf-thead"><tr>
+        <th aria-sort="none"><button type="button" class="th-sort" data-sort="name">Employee <span class="si"></span></button></th>
+        <th class="r" aria-sort="descending" data-help="col-p-handled"><button type="button" class="th-sort" data-sort="handled">Work items <span class="si"></span></button></th>
+        <th class="r" aria-sort="none" data-help="col-p-median"><button type="button" class="th-sort" data-sort="med">Median time <span class="si"></span></button></th>
+        <th class="r" aria-sort="none" data-help="col-p-target"><button type="button" class="th-sort" data-sort="tgt">Target met <span class="si"></span></button></th>
+        <th class="r" aria-sort="none" data-help="col-p-back"><button type="button" class="th-sort" data-sort="back">Sent back / corrected <span class="si"></span></button></th>
+        <th class="r" aria-sort="none" data-help="col-p-overrides"><button type="button" class="th-sort" data-sort="ovr">Overrides <span class="si"></span></button></th>
+        <th data-help="col-p-trend"><span id="perf-trend-l">Per day · 7 days</span></th>
+      </tr></thead>
+      <tbody id="perf-body"></tbody>
+      <tfoot id="perf-foot"></tfoot>
+    </table></div>
+    <div class="pager"><span id="perf-count"></span><span>Click a column heading to sort · click a name for the person’s details</span></div>
+  </section>
+
+  <!-- ========================= Person drawer ========================= -->
+  <div class="drawer" id="d-person"><div class="drawer-card wide" role="dialog" aria-modal="true" aria-labelledby="pd-name">
+    <div class="drawer-head" data-anno="1A · CF1 Employee monitoring · person view (D-282)">
+      <div class="row gap-12 pd-top">
+        <span class="av-ring" id="pd-ring"><span class="avatar lg" id="pd-av">AR</span></span>
+        <div class="grow">
+          <div class="row gap-8"><h2 id="pd-name">Anita Rao</h2><span data-help="d-person" data-help-pos="in" class="hi-host"></span></div>
+          <div class="small muted mt-4" id="pd-sub"></div>
+          <div class="row wrap gap-8 mt-8" id="pd-st"></div>
+        </div>
+      </div>
+      <button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button>
+    </div>
+    <div class="drawer-body" data-tabset>
+      <div class="tabs mb-16">
+        <button type="button" class="tab active" data-tab="pd-today" data-help="pd-today">Today</button>
+        <button type="button" class="tab" data-tab="pd-areas" data-help="pd-areas">Areas</button>
+        <button type="button" class="tab" data-tab="pd-perf" data-help="pd-perf">Performance</button>
+        <button type="button" class="tab" data-tab="pd-sess" data-help="pd-sess">Sessions &amp; access</button>
+        <button type="button" class="tab" data-tab="pd-sens" data-help="pd-sens">Sensitive actions</button>
+        <button type="button" class="tab" data-tab="pd-access" data-help="pd-access">Access</button>
+      </div>
+      <div class="tab-panel active" data-panel="pd-today" id="pd-p-today"></div>
+      <div class="tab-panel" data-panel="pd-areas" id="pd-p-areas"></div>
+      <div class="tab-panel" data-panel="pd-perf" id="pd-p-perf"></div>
+      <div class="tab-panel" data-panel="pd-sess" id="pd-p-sess"></div>
+      <div class="tab-panel" data-panel="pd-sens" id="pd-p-sens"></div>
+      <div class="tab-panel" data-panel="pd-access" id="pd-p-access"></div>
+    </div>
+    <div class="drawer-foot">
+      <button type="button" class="btn" id="pd-msg" data-help="d-message" data-toast="Message window opened · messages stay inside Tradex"><i data-icon="chat"></i> Message</button>
+      <button type="button" class="btn" id="pd-reassign" data-help="d-reassign" data-toast="Open items ready to reassign"><i data-icon="transfer"></i> Reassign open items</button>
+      <a class="btn btn-primary" href="erp-admin.html#audit" data-help="d-auditlink"><i data-icon="history"></i> View in audit log</a>
+    </div>
+  </div></div>
+
+  <!-- ========================= What is recorded ========================= -->
+  <div class="modal" id="m-recorded"><div class="modal-card lg" data-anno="1A · CF1 Employee monitoring · transparency: what is recorded (D-283)">
+    <div class="modal-head"><div><h3 data-help="m-recorded">What Tradex records about staff activity</h3><div class="small muted">The same notice staff see at their first sign-in and in their profile · wording <span class="tbc">TBC</span></div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-body col gap-16">
+      <div class="rec-grid">
+        <div class="rec-box yes">
+          <h4><i data-icon="check-circle"></i> <span data-help="rec-yes">Recorded</span></h4>
+          <ul class="rec-list">
+            <li><i data-icon="check-circle"></i><span><b>Actions taken in Tradex</b> — who did what, to which record, when, and from which device and branch network. These are the same entries as the audit log.</span></li>
+            <li><i data-icon="check-circle"></i><span><b>Sign-ins and sessions</b> — time, device type and browser, the branch or network label, the sign-in method and any failed attempts.</span></li>
+            <li><i data-icon="check-circle"></i><span><b>Workspace presence</b> — active or idle, worked out only from activity inside the Tradex workspace. Staff can set themselves “On break” or “In a meeting / away”.</span></li>
+            <li><i data-icon="check-circle"></i><span><b>Work items</b> — when an item was assigned, picked up and finished, so handling times and targets can be measured.</span></li>
+          </ul>
+        </div>
+        <div class="rec-box no">
+          <h4><i data-icon="x-circle"></i> <span data-help="rec-no">Not recorded</span></h4>
+          <ul class="rec-list">
+            <li><i data-icon="x-circle"></i><span>Screen contents or screenshots</span></li>
+            <li><i data-icon="x-circle"></i><span>Keystrokes, typing or mouse movements</span></li>
+            <li><i data-icon="x-circle"></i><span>Webcam or microphone</span></li>
+            <li><i data-icon="x-circle"></i><span>Personal devices, other apps or websites</span></li>
+            <li><i data-icon="x-circle"></i><span>GPS or physical location — only the branch or network label at sign-in</span></li>
+            <li><i data-icon="x-circle"></i><span>Private messages outside Tradex (personal WhatsApp, calls, e-mail)</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="rec-sec"><i data-icon="mail"></i><div><h4 data-help="rec-notice">How staff are told</h4><p class="subtle">Every staff member sees a short notice at their first sign-in and can reread it any time in <b>My profile → Privacy notice</b>. They can also see their own activity and presence history in <b>My profile → My activity</b>. Notice text <span class="tbc">TBC</span> — to be drafted with the client’s legal adviser.</p></div></div>
+      <div class="rec-sec"><i data-icon="lock"></i><div><h4 data-help="rec-who">Who can see this page</h4><p class="subtle">The owner. Others only if the owner delegates it — for example a branch manager for their own branch only. Opening a person’s details is itself recorded in the audit log. The owner’s own actions are recorded in the audit log in the same way.</p></div></div>
+      <div class="rec-sec"><i data-icon="history"></i><div><h4 data-help="rec-retention">How long it is kept</h4><p class="subtle">Presence and session details 90 days <span class="tbc">TBC</span> · performance summaries 24 months <span class="tbc">TBC</span> · actions stay in the audit log for its retention period (8 years <span class="tbc">TBC</span>).</p></div></div>
+      <div class="rec-sec"><i data-icon="shield"></i><div><h4 data-help="rec-purpose">What it is used for</h4><p class="subtle">Running the business fairly: workload and cover, service targets, security, and reviewing sensitive actions. Alerts come from fixed rules, not AI, and a person always decides what happens next — nothing about pay, warnings or dismissal is decided automatically.</p></div></div>
+      <div class="callout c-warn small"><i data-icon="alert"></i><div><b>Legal review <span class="tbc">TBC</span>:</b> the notice, the purpose and the retention periods are to be checked against India’s <span data-help="g.dpdp">DPDP</span> Act and rules, and employment law, with the client’s legal adviser before go-live.</div></div>
+    </div>
+    <div class="modal-foot"><button class="btn" data-toast="Staff notice preview · the same text staff see at first sign-in (wording TBC)"><i data-icon="eye" class="ic-sm"></i> Preview staff notice</button><button class="btn btn-primary" data-close>Close</button></div>
+  </div></div>
+
+  <!-- ========================= Alert rules ========================= -->
+  <div class="modal" id="m-rules"><div class="modal-card xl" data-anno="1A · CF1 Employee monitoring · alert rules, thresholds TBC (D-282)">
+    <div class="modal-head"><div><h3 data-help="m-rules">Alert rules</h3><div class="small muted">Fixed rules checked by the system — no AI. Every threshold is a sample to be confirmed (<span class="tbc">TBC</span>).</div></div><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Close"><i data-icon="x"></i></button></div>
+    <div class="modal-body col gap-16">
+      <div class="table-wrap" style="border:1px solid var(--line);border-radius:var(--r)"><table class="table compact rules-tbl">
+        <thead><tr><th data-help="rule-on">On</th><th>Rule</th><th data-help="rule-threshold">Threshold</th><th data-help="rule-notify">Who is notified</th><th data-help="rule-level">Level</th></tr></thead>
+        <tbody id="rules-body"></tbody>
+      </table></div>
+      <div class="panel">
+        <div class="label mb-8" data-help="rule-delivery">How alerts reach you</div>
+        <div class="col gap-8">
+          <label class="check small"><input type="checkbox" checked> Critical and serious: at once, in Tradex and on WhatsApp</label>
+          <label class="check small"><input type="checkbox" checked> Warnings: in the owner’s 8:00 daily digest</label>
+          <label class="check small"><input type="checkbox"> Tell the person concerned when an alert about them is raised</label>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot"><button class="btn" data-close>Cancel</button><button class="btn btn-primary" data-close data-toast="Alert rules saved · change recorded in the audit log · thresholds stay marked TBC until confirmed">Save rules</button></div>
+  </div></div>
+</main>
+<script src="assets/tradex.js"></script>
+<script>
+TX.ready(() => {
+  const $ = TX.$, $$ = TX.$$, ic = TX.icon, esc = TX.esc;
+  /* Sample data for Saturday 26 September 2026, about 10:42 IST. Everything is deterministic (no random values,
+     no clock reads) so screenshots are stable. Names, times, limits, targets and counts are sample values. */
+
+  /* ---------------- ERP workspace areas (same order as the ERP menu) ---------------- */
+  const AREAS = [
+    { k: "orders", n: "Orders", s: "Orders", href: "erp-orders.html", icon: "receipt" },
+    { k: "fulfilment", n: "Pick · pack · dispatch", s: "Dispatch", href: "erp-fulfilment.html", icon: "truck" },
+    { k: "returns", n: "Returns & warranty", s: "Returns", href: "erp-returns.html", icon: "undo" },
+    { k: "support", n: "Support inbox", s: "Support", href: "erp-support.html", icon: "headset" },
+    { k: "catalog", n: "Products (catalog)", s: "Products", href: "erp-catalog.html", icon: "tag" },
+    { k: "pricing", n: "Pricing & tiers", s: "Pricing", href: "erp-pricing.html", icon: "percent" },
+    { k: "inventory", n: "Inventory & serials", s: "Inventory", href: "erp-inventory.html", icon: "warehouse" },
+    { k: "purchasing", n: "Purchasing & receiving", s: "Purchasing", href: "erp-purchasing.html", icon: "clipboard" },
+    { k: "customers", n: "Customers & dealers", s: "Customers", href: "erp-customers.html", icon: "users" },
+    { k: "vendors", n: "Vendors", s: "Vendors", href: "erp-vendors.html", icon: "building" },
+    { k: "finance", n: "Payments & reconciliation", s: "Payments", href: "erp-finance.html", icon: "wallet" },
+    { k: "reports", n: "Reports", s: "Reports", href: "erp-reports.html", icon: "chart" },
+    { k: "automation", n: "Automation", s: "Automation", href: "erp-automation.html", icon: "zap" },
+    { k: "admin", n: "Settings & access", s: "Settings", href: "erp-admin.html", icon: "settings" },
+  ];
+  const AK = {}; AREAS.forEach((a, i) => { AK[a.k] = { ...a, i }; });
+
+  /* How each area is being handled today (all locations, until 10:42) */
+  const AREA_TODAY = {
+    orders:     { open: 18, openN: "need action", done: 64, doneN: "order steps", old: "3 h 10 min", oldN: "TXO-10471 · waiting for stock", tgt: 94, med: "6 min", medN: "per order step", ovr: 7, ovrN: "6 discounts above limit · 1 price", st: "ok" },
+    fulfilment: { open: 39, openN: "23 to pick · 16 in progress", done: 58, doneN: "41 dispatched", old: "26 h", oldN: "2 paid orders past 24 h", tgt: 88, med: "14 min", medN: "pick → packed", ovr: 2, ovrN: "short picks", st: "warn", why: "2 overdue dispatches · Naveen K. on break" },
+    returns:    { open: 6, openN: "cases open", done: 3, doneN: "inspections", old: "2 d 4 h", oldN: "RMA-0091 · inspection due 27 Sep", tgt: 83, med: "22 min", medN: "per inspection", ovr: 1, ovrN: "outside return window", st: "warn", why: "Returns desk uncovered — Imran S. is on leave with 4 cases" },
+    support:    { open: 23, openN: "4 past reply target", done: 37, doneN: "conversations closed", old: "48 min", oldN: "SUP-7738 · WhatsApp", tgt: 78, med: "6 min", medN: "to first reply", ovr: 0, ovrN: "", st: "bad", why: "4 customers waiting past target · Farah K. idle 26 min" },
+    catalog:    { open: 12, openN: "drafts & reviews", done: 14, doneN: "6 published", old: "3 d", oldN: "VS-0218 · vendor change", tgt: 92, med: "18 min", medN: "per product", ovr: 0, ovrN: "", st: "ok" },
+    pricing:    { open: 3, openN: "1 list waiting for owner", done: 11, doneN: "price changes", old: "1 h 08 min", oldN: "Dealer Gold Q4 price list", tgt: 100, med: "9 min", medN: "per change", ovr: 0, ovrN: "", st: "ok" },
+    inventory:  { open: 7, openN: "1 variance · 1 write-off · 3 transfers", done: 26, doneN: "moves & counts", old: "1 h 17 min", oldN: "ADJ-0187 · write-off", tgt: 90, med: "11 min", medN: "per task", ovr: 2, ovrN: "adjustment without photo · count variance", st: "ok" },
+    purchasing: { open: 12, openN: "draft POs to approve", done: 5, doneN: "GRN-0441 received", old: "1 d 2 h", oldN: "reorder suggestions", tgt: 100, med: "24 min", medN: "per delivery", ovr: 0, ovrN: "", st: "ok" },
+    customers:  { open: 3, openN: "dealer applications", done: 4, doneN: "account tasks", old: "2 d", oldN: "Byte Point Solutions", tgt: 100, med: "31 min", medN: "per application", ovr: 1, ovrN: "bulk export", st: "ok" },
+    vendors:    { open: 5, openN: "submissions to review", done: 2, doneN: "reviews", old: "2 d 6 h", oldN: "VS-0218 · RenewTech", tgt: 100, med: "40 min", medN: "per review", ovr: 0, ovrN: "", st: "ok" },
+    finance:    { open: 8, openN: "1 exception · 1 failed refund · 6 unmatched", done: 42, doneN: "payments matched", old: "3 h 05 min", oldN: "RMA-0093 · refund failed", tgt: 96, med: "4 min", medN: "per match", ovr: 2, ovrN: "self-approved refund", st: "warn", why: "A refund was created and approved by the same person · post-review due 28 Sep" },
+    reports:    { open: 0, openN: "", done: 3, doneN: "scheduled reports sent", old: "—", oldN: "", tgt: null, med: "—", medN: "", ovr: 0, ovrN: "", st: "ok" },
+    automation: { open: 3, openN: "failing jobs", done: 5, doneN: "exceptions resolved", old: "2 h 20 min", oldN: "Courier tracking sync", tgt: 67, med: "35 min", medN: "per exception", ovr: 1, ovrN: "rule paused itself", st: "warn", why: "Courier tracking sync paused since 08:22" },
+    admin:      { open: 1, openN: "change waiting for 2nd approver", done: 3, doneN: "access changes", old: "1 min", oldN: "discount-limit proposal", tgt: null, med: "—", medN: "", ovr: 2, ovrN: "extra role · emergency access", st: "ok" },
+  };
+  const STATE = { ok: ["good", "check-circle", "On track"], warn: ["warning", "alert", "At risk"], bad: ["critical", "alert-octagon", "Behind"] };
+
+  const TEAMS = { wh: "Warehouse", sales: "Sales & branches", support: "Support", catalog: "Catalog & pricing", finance: "Finance", mgmt: "Management" };
+  const LOCS = {}; TX.locations.forEach((l) => { LOCS[l.code] = l.name; });
+  // status → [.status class, ring colour]
+  const ST = { active: ["s-ok", "var(--ok)"], idle: ["s-warn", "var(--warn)"], break: ["s-info", "var(--info)"], away: ["s-brand", "var(--brand)"], offline: ["s-muted", "var(--tx-4)"], leave: ["s-muted", "var(--tx-4)"], notin: ["s-warn", "var(--warn)"] };
+  const ON_SHIFT = ["active", "idle", "break", "away"];
+  const SG = { all: () => true, active: (p) => p.st === "active", idle: (p) => p.st === "idle", paused: (p) => p.st === "break" || p.st === "away", off: (p) => ["offline", "leave", "notin"].includes(p.st) };
+
+  /* ---------------- Staff (the owner, who views this page, is not on the board) ----------------
+     heat: actions today per area, in AREAS order · time: minutes today [active, idle, break, away]
+     perf.d7: work items handled per day, Sat 19 → Fri 25 Sep
+     day: [time, text, area | null, kind]   kind: in · out · act · flag · st · idle · now
+     sess.today / sess.fail: [start, end | null, device, network, method]   sess.week: [date, times, device, network]
+     sens: [when, type, text, reason, record, href, flags]   acc: [label, value] */
+  const P = [
+    { id: "anita", name: "Anita Rao", short: "Anita R.", init: "AR", color: "#7c3aed", role: "Operations admin", team: "mgmt", rg: "Operations admin", loc: "BR-KRM",
+      st: "active", stT: "Active", since: "since 10:38", now: "inventory", act: "Reviewing write-off ADJ-0187 · 3 × LG 27UL550, ₹42,300",
+      handled: 12, med: 7, open: 6, cap: 15, dev: ["laptop", "MacBook · Safari · Koramangala branch network"], tag: ["b-brand", "users", "Acting for owner until 27 Sep"],
+      home: ["inventory", "automation", "admin", "purchasing"], heat: [6, 4, 3, 0, 0, 2, 14, 5, 2, 3, 0, 4, 9, 3], time: [124, 11, 0, 0],
+      perf: { d7: [22, 4, 24, 21, 26, 23, 25], med: 8, tgt: 97, back: 0.7, ovr: 9 },
+      day: [["06:08", "Signed in from a laptop browser · home network, Bengaluru — outside working hours", null, "flag"],
+        ["06:10", "Granted emergency access EA-0013 to Deepa K. · refund retry, 4 hours", "admin", "act"],
+        ["06:22", "Signed out", null, "out"],
+        ["08:41", "Signed in · MacBook, Koramangala branch network", null, "in"],
+        ["09:12", "Gave Vikram S. the extra role “Warehouse receiver (SP Road)” for leave cover", "admin", "act"],
+        ["09:40", "Approved stock transfer TR-0212 to Mysuru on the owner’s behalf (delegation)", "inventory", "act"],
+        ["10:02", "Checked the paused courier-tracking job and assigned it to the courier contact", "automation", "act"],
+        ["10:36", "Approved stock transfer TR-0214 to Koramangala on the owner’s behalf", "inventory", "act"],
+        ["10:38", "Now: reviewing write-off ADJ-0187 (3 × LG 27UL550, ₹42,300)", "inventory", "now"]],
+      sess: { today: [["06:08", "06:22", "Windows laptop · Chrome", "Home network · Bengaluru", "Authenticator app"], ["08:41", null, "MacBook · Safari", "Koramangala branch network", "Authenticator app"]],
+        week: [["25 Sep", "08:52–20:14", "MacBook · Safari", "Koramangala branch network"], ["24 Sep", "09:05–19:48", "MacBook · Safari", "Koramangala branch network"], ["23 Sep", "08:47–20:02", "MacBook · Safari", "Head office network"]], fail: [], mfa: "Authenticator app" },
+      sens: [["Today 10:36", "approval", "Approved stock transfer TR-0214 · 6 units to Koramangala (₹1.1 L)", "Demo stock for the weekend", "TR-0214", "erp-inventory.html#transfers", ["delegated"]],
+        ["Today 09:40", "approval", "Approved stock transfer TR-0212 · Central Warehouse → Mysuru", "Mysuru SSD stock-out", "TR-0212", "erp-inventory.html#transfers", ["delegated"]],
+        ["Today 09:12", "access", "Added the role “Warehouse receiver (SP Road)” to Vikram S.", "Leave cover 26–30 Sep; separation-of-duties post-review", "User · Vikram Shetty", "erp-admin.html#users", []],
+        ["Today 06:10", "access", "Granted emergency access EA-0013 to Deepa K. (refund retry, 4 h)", "Payment provider incident — refunds failing", "EA-0013", "erp-admin.html#delegation", ["afterhours"]],
+        ["25 Sep 17:20", "override", "Accepted a return outside the return window · RMA-0089", "Dealer goodwill; owner informed", "RMA-0089", "erp-returns.html", []]],
+      acc: [["Role", "Operations admin · privileged"], ["Location scope", "All locations"], ["Two-step sign-in", "Authenticator app"], ["Limits", "Write-offs and adjustments up to ₹25,000 · transfers above ₹2,00,000 (sample limits)"],
+        ["Delegation", "Acting for Rajesh Menon until Sat 27 Sep 21:00 (DEL-0010)"], ["Account", "Individual account since 12 Jan 2024"], ["Access review", "Last 30 Jun 2026 · next due 30 Sep"]] },
+
+    { id: "vikram", name: "Vikram Shetty", short: "Vikram S.", init: "VS", color: "#0e9f8a", role: "Branch manager", team: "sales", rg: "Branch manager", loc: "BR-SPR",
+      st: "active", stT: "Active", since: "since 10:40", now: "orders", act: "Counter sale at POS SPR-02 · TXO-10497",
+      handled: 31, med: 5, open: 9, cap: 15, dev: ["monitor", "POS terminal SPR-02 · SP Road branch network"], tag: ["b-warn", "users", "Extra role · leave cover"],
+      home: ["orders", "customers", "inventory", "purchasing"], heat: [38, 3, 2, 1, 0, 4, 9, 6, 7, 0, 2, 3, 0, 0], time: [70, 12, 0, 0],
+      perf: { d7: [58, 0, 49, 52, 47, 55, 61], med: 5, tgt: 94, back: 2.1, ovr: 17 },
+      day: [["09:20", "Signed in · Windows laptop, SP Road branch network", null, "in"],
+        ["09:30", "Asked for 14% off school tender TXO-10491 · above his 8% limit, sent to the owner", "orders", "act"],
+        ["09:47", "Exported the customer list · 1,860 records (flagged: bulk export)", "customers", "flag"],
+        ["10:05", "Signed in at POS terminal SPR-02", null, "in"],
+        ["10:06–10:29", "Approved 5 of Lakshmi N.’s 6 discount requests, declined 1", "orders", "act"],
+        ["10:40", "Now: counter sale at POS SPR-02 · TXO-10497", "orders", "now"]],
+      sess: { today: [["09:20", null, "Windows laptop · Chrome", "SP Road branch network", "Authenticator app"], ["10:05", null, "POS terminal SPR-02", "SP Road branch network", "Staff PIN + authenticator"]],
+        week: [["25 Sep", "09:12–20:41", "Windows laptop · Chrome", "SP Road branch network"], ["24 Sep", "09:18–20:35", "POS terminal SPR-02", "SP Road branch network"], ["23 Sep", "09:25–20:30", "Windows laptop · Chrome", "SP Road branch network"]],
+        fail: [["24 Sep 14:02", null, "POS terminal SPR-02", "SP Road branch network", "1 wrong PIN"]], mfa: "Authenticator app" },
+      sens: [["Today 10:06–10:29", "discount", "Approved 5 discounts for Lakshmi N. (4–6%) and declined 1 (7%)", "Price matches at the counter", "TXO-10495", "erp-orders.html", []],
+        ["Today 09:47", "export", "Exported the customer list · 1,860 records with phone numbers", "“Diwali SMS list for SP Road”", "EXP-0415", "erp-customers.html", ["flagged"]],
+        ["Today 09:30", "discount", "Asked for 14% off on a school tender (his limit 8%) · TXO-10491", "10 × Dell P2422H for a school · waiting for the owner", "TXO-10491", "erp-orders.html", ["approval"]],
+        ["25 Sep 18:10", "stock", "Added 1 unit found in a shelf count · Logitech M190 at SP Road", "Found behind a display unit", "ADJ-0186", "erp-inventory.html#counts", []]],
+      acc: [["Role", "Branch manager (SP Road) + Warehouse receiver (SP Road, leave cover until 30 Sep)"], ["Location scope", "SP Road Branch (BR-SPR)"], ["Two-step sign-in", "Authenticator app"], ["Limits", "Discounts up to 8% · stock adjustments up to ₹10,000 (sample limits)"],
+        ["Separation of duties", "Branch manager + receiver is an accepted exception · monthly post-review by Anita R."], ["Account", "Individual account since 3 Mar 2023"], ["Access review", "Last 30 Jun 2026 · next due 30 Sep"]] },
+
+    { id: "deepa", name: "Deepa Krishnan", short: "Deepa K.", init: "DK", color: "#c2410c", role: "Finance", team: "finance", rg: "Finance", loc: "BR-SPR",
+      st: "active", stT: "Active", since: "since 10:34", now: "finance", act: "Resolving payment exception TXO-10477 · due 11:30",
+      handled: 38, med: 3, open: 8, cap: 12, dev: ["monitor", "Windows PC · Chrome · Head office network (SP Road)"], tag: null,
+      home: ["finance", "returns", "reports"], heat: [5, 0, 6, 0, 0, 0, 0, 2, 1, 1, 48, 5, 1, 0], time: [118, 10, 0, 0],
+      perf: { d7: [61, 0, 66, 58, 63, 70, 64], med: 3, tgt: 98, back: 0.5, ovr: 4 },
+      day: [["06:14", "Signed in from a home laptop — outside working hours", null, "flag"],
+        ["06:20", "Emergency access EA-0013 started · refund retry, until 10:10", "admin", "act"],
+        ["06:52", "Created refund RF-2291 · ₹12,490 for RMA-0090", "finance", "act"],
+        ["07:02", "Approved refund RF-2291 that she had created (flagged: separation of duties)", "finance", "flag"],
+        ["07:10", "Signed out", null, "out"],
+        ["09:30", "Signed in with a security key · head office", null, "in"],
+        ["09:45", "Matched 38 payments to orders in today’s settlement batch", "finance", "act"],
+        ["10:10", "Emergency access EA-0013 ended automatically", "admin", "act"],
+        ["10:19", "Picked up payment exception TXO-10477 · paid but not confirmed", "finance", "act"],
+        ["10:33", "Retried refund RMA-0093 after checking its status with the provider", "finance", "act"],
+        ["10:34", "Now: resolving TXO-10477 · due 11:30", "finance", "now"]],
+      sess: { today: [["06:14", "07:10", "Home laptop · Chrome", "Home broadband · Bengaluru", "Security key"], ["09:30", null, "Windows PC · Chrome", "Head office network", "Security key"]],
+        week: [["25 Sep", "09:26–19:05", "Windows PC · Chrome", "Head office network"], ["24 Sep", "09:31–18:58", "Windows PC · Chrome", "Head office network"], ["23 Sep", "09:40–19:12", "Windows PC · Chrome", "Head office network"]], fail: [], mfa: "Security key + authenticator app" },
+      sens: [["Today 10:33", "refund", "Retried the refund for RMA-0093 · ₹19,990", "Provider shows no refund; retried with the same reference so it cannot pay twice", "RMA-0093", "erp-finance.html#refunds", []],
+        ["Today 07:02", "refund", "Approved refund RF-2291 that she created · ₹12,490", "Customer waiting 3 days after a provider failure", "RF-2291", "erp-finance.html#refunds", ["emergency", "afterhours", "flagged"]],
+        ["Today 06:52", "refund", "Created refund RF-2291 for RMA-0090 · ₹12,490", "Earlier refund failed at the provider", "RF-2291", "erp-finance.html#refunds", ["emergency", "afterhours"]],
+        ["25 Sep 18:05", "export", "Downloaded audit export EXP-0407 · 1,120 rows", "Monthly permissions review", "EXP-0407", "erp-admin.html#audit", []]],
+      acc: [["Role", "Finance · privileged"], ["Location scope", "All locations · finance records"], ["Two-step sign-in", "Security key + authenticator app"], ["Limits", "Executes refunds up to ₹50,000 · cannot approve her own refunds (sample limits)"],
+        ["Emergency access", "EA-0013 today 06:10–10:10 · expired · post-review due 28 Sep"], ["Account", "Individual account since 8 Aug 2023"], ["Access review", "Last 30 Jun 2026 · next due 30 Sep"]] },
+
+    { id: "irfan", name: "Mohammed Irfan", short: "Mohammed I.", init: "MI", color: "#0b8ec9", role: "Warehouse lead", team: "wh", rg: "Warehouse", loc: "WH-BLR",
+      st: "active", stT: "Active", since: "since 10:33", now: "purchasing", act: "Inspecting 3 units sent to quality check from GRN-0441",
+      handled: 27, med: 10, open: 11, cap: 15, dev: ["scan", "Handheld WH-07 · Central Warehouse network"], tag: ["b-warn", "key", "Signs in with SMS code"],
+      home: ["inventory", "purchasing", "fulfilment"], heat: [0, 22, 4, 0, 0, 0, 31, 27, 0, 2, 0, 0, 0, 0], time: [128, 6, 30, 0],
+      perf: { d7: [52, 18, 55, 49, 57, 54, 60], med: 9, tgt: 92, back: 1.7, ovr: 3 },
+      day: [["07:58", "Signed in with an SMS code · Handheld WH-07", null, "in"],
+        ["08:05", "Released pick wave W-0926-1 (23 orders) to Arjun N. and Naveen K.", "fulfilment", "act"],
+        ["08:58", "Counted bin A-14 · 2 units short, bin locked for picking", "inventory", "act"],
+        ["09:25", "Raised write-off ADJ-0187 · 3 water-damaged monitors, sent to Anita R.", "inventory", "act"],
+        ["09:40", "On break (30 min)", null, "st"],
+        ["10:31", "Received delivery GRN-0441 · 24 units, 3 to quality check", "purchasing", "act"],
+        ["10:33", "Now: inspecting the 3 quality-check units", "purchasing", "now"]],
+      sess: { today: [["07:58", null, "Handheld WH-07", "Central Warehouse network", "SMS code (weaker method)"]],
+        week: [["25 Sep", "07:55–17:10", "Handheld WH-07", "Central Warehouse network"], ["24 Sep", "08:02–17:30", "Handheld WH-07", "Central Warehouse network"], ["23 Sep", "07:49–17:05", "Handheld WH-07", "Central Warehouse network"]], fail: [], mfa: "SMS code — weaker, move to an authenticator app" },
+      sens: [["Today 09:25", "stock", "Raised a write-off · 3 × LG 27UL550 water-damaged, ₹42,300", "Roof leak in zone B; photos attached", "ADJ-0187", "erp-inventory.html#counts", ["approval"]],
+        ["Today 08:58", "stock", "Count variance · bin A-14, −2 × Samsung T7 1 TB", "Recount booked 11:30; bin locked for picking", "CC-0233", "erp-inventory.html#counts", []],
+        ["23 Sep 16:40", "override", "Received 2 units more than purchase order PO-2026-0181", "Supplier sent replacement units early; buyer confirmed", "GRN-0437", "erp-purchasing.html", ["approval"]]],
+      acc: [["Role", "Warehouse lead"], ["Location scope", "Central Warehouse (WH-BLR)"], ["Two-step sign-in", "SMS code — weaker, move to an authenticator app"], ["Limits", "Receives deliveries, runs counts and pick waves · write-offs are requests only (sample)"],
+        ["Account", "Individual account since 14 Feb 2023"], ["Access review", "Last 30 Jun 2026 · next due 30 Sep"]] },
+
+    { id: "arjun", name: "Arjun N.", short: "Arjun N.", init: "AN", color: "#0891b2", role: "Warehouse · seasonal packer", team: "wh", rg: "Warehouse", loc: "WH-BLR",
+      st: "active", stT: "Active", since: "since 10:41", now: "fulfilment", act: "Packing TXO-10483 · pick wave W-0926-1",
+      handled: 24, med: 14, open: 7, cap: 10, dev: ["scan", "Handheld WH-03 · Central Warehouse network"], tag: ["b-info", "clock", "Temporary · until 15 Oct"],
+      home: ["fulfilment"], heat: [0, 58, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0], time: [131, 6, 15, 0],
+      perf: { d7: [44, 20, 41, 46, 43, 48, 51], med: 13, tgt: 86, back: 4.1, ovr: 0, ctx: "Seasonal packer · started 7 Sep" },
+      day: [["08:10", "Signed in · Handheld WH-03", null, "in"],
+        ["08:12", "Started pick wave W-0926-1 · 23 orders", "fulfilment", "act"],
+        ["09:05", "Short pick on TXO-10479 · Kingston 16 GB not in bin B-03, sent to the lead", "fulfilment", "flag"],
+        ["09:15", "On break (15 min)", null, "st"],
+        ["10:10", "Packed 14 orders so far", "fulfilment", "act"],
+        ["10:41", "Packed TXO-10482 · serial numbers scanned", "fulfilment", "act"],
+        ["10:41", "Now: packing TXO-10483", "fulfilment", "now"]],
+      sess: { today: [["08:10", null, "Handheld WH-03", "Central Warehouse network", "Authenticator app"]],
+        week: [["25 Sep", "08:08–17:02", "Handheld WH-03", "Central Warehouse network"], ["24 Sep", "08:15–17:10", "Handheld WH-03", "Central Warehouse network"], ["23 Sep", "08:12–16:58", "Handheld WH-03", "Central Warehouse network"]], fail: [], mfa: "Authenticator app" },
+      sens: [],
+      acc: [["Role", "Warehouse · seasonal packer (temporary account)"], ["Location scope", "Central Warehouse (WH-BLR)"], ["Two-step sign-in", "Authenticator app"], ["Limits", "Pick and pack only · no stock adjustments"],
+        ["Account", "Temporary account 7 Sep → expires 15 Oct 2026"], ["Access review", "Ends automatically on expiry"]] },
+
+    { id: "naveen", name: "Naveen Kumar", short: "Naveen K.", init: "NK", color: "#0f766e", role: "Warehouse associate", team: "wh", rg: "Warehouse", loc: "WH-BLR",
+      st: "break", stT: "On break", since: "since 10:30", now: "fulfilment", act: "Set by Naveen · back about 10:45 · last: packed TXO-10480", actIcon: "pause",
+      handled: 19, med: 11, open: 5, cap: 10, dev: ["scan", "Handheld WH-05 · Central Warehouse network"], tag: null,
+      home: ["fulfilment", "inventory"], heat: [0, 41, 0, 0, 0, 0, 9, 0, 0, 0, 0, 0, 0, 0], time: [132, 13, 12, 0],
+      perf: { d7: [47, 22, 45, 44, 49, 46, 50], med: 11, tgt: 90, back: 2.3, ovr: 1 },
+      day: [["08:05", "Signed in · Handheld WH-05", null, "in"],
+        ["08:12", "Picking in wave W-0926-1", "fulfilment", "act"],
+        ["09:52", "Removed 1 unit from stock without a photo · ADJ-0189 (flagged)", "inventory", "flag"],
+        ["10:28", "Packed TXO-10480", "fulfilment", "act"],
+        ["10:30", "Set his status to “On break”", null, "now"]],
+      sess: { today: [["08:05", null, "Handheld WH-05", "Central Warehouse network", "Authenticator app"]],
+        week: [["25 Sep", "08:02–17:05", "Handheld WH-05", "Central Warehouse network"], ["24 Sep", "08:06–17:00", "Handheld WH-05", "Central Warehouse network"], ["23 Sep", "07:59–16:55", "Handheld WH-05", "Central Warehouse network"]], fail: [], mfa: "Authenticator app" },
+      sens: [["Today 09:52", "stock", "Removed 1 unit from stock · SanDisk Ultra Flair 64 GB (₹549)", "“Damaged in bin” — no photo attached", "ADJ-0189", "erp-inventory.html#counts", ["flagged"]]],
+      acc: [["Role", "Warehouse associate"], ["Location scope", "Central Warehouse (WH-BLR)"], ["Two-step sign-in", "Authenticator app"], ["Limits", "Stock adjustments up to ₹1,000 with a reason photo (sample)"],
+        ["Account", "Individual account since 2 May 2024"], ["Access review", "Last 30 Jun 2026 · next due 30 Sep"]] },
+
+    { id: "sneha", name: "Sneha Pillai", short: "Sneha P.", init: "SP", color: "#be185d", role: "Catalog specialist", team: "catalog", rg: "Catalog specialist", loc: "BR-SPR",
+      st: "idle", stT: "Idle 18 min", idle: 18, since: "last action 10:24", now: "catalog", act: "Last action: saved draft PD-0331 (Canon EOS R50 kit)",
+      handled: 9, med: 19, open: 12, cap: 15, dev: ["monitor", "Windows PC · Chrome · Head office network (SP Road)"], tag: null,
+      home: ["catalog", "vendors", "pricing"], heat: [0, 0, 0, 0, 34, 3, 1, 0, 0, 11, 0, 1, 0, 0], time: [44, 24, 0, 0],
+      perf: { d7: [31, 0, 36, 29, 34, 38, 33], med: 17, tgt: 95, back: 3.0, ovr: 0 },
+      day: [["09:34", "Continued yesterday’s session on the office PC · confirmed with the authenticator app", null, "in"],
+        ["09:40", "Sent vendor submission VS-0220 back to RenewTech · warranty details missing", "vendors", "act"],
+        ["10:12", "Published 6 products after a second review", "catalog", "act"],
+        ["10:24", "Saved product draft PD-0331 and sent it for review", "catalog", "act"],
+        ["10:24", "No activity in Tradex since then (idle 18 min)", null, "idle"]],
+      sess: { today: [["25 Sep 18:20", null, "Windows PC · Chrome", "Head office network", "Authenticator app · re-checked 09:34 today"]],
+        week: [["25 Sep", "09:30 → still signed in", "Windows PC · Chrome", "Head office network"], ["24 Sep", "09:28–18:35", "Windows PC · Chrome", "Head office network"], ["23 Sep", "09:35–18:40", "Windows PC · Chrome", "Head office network"]], fail: [], mfa: "Authenticator app",
+        note: "Stayed signed in overnight on a remembered office PC; Tradex asked her to confirm with the authenticator app at 09:34." },
+      sens: [["Today 10:12", "price", "Published 6 products with their prices (second review by Meera J.)", "Review passed", "PUB-0098", "erp-catalog.html", []],
+        ["24 Sep 15:05", "price", "Lowered the price of 3 refurbished monitors by 4% (within her 5% limit)", "Stock older than 90 days", "PC-0412", "erp-pricing.html", []]],
+      acc: [["Role", "Catalog specialist"], ["Location scope", "All locations · catalog"], ["Two-step sign-in", "Authenticator app"], ["Limits", "Single price changes up to 5% · publishing needs a second reviewer (sample)"],
+        ["Account", "Individual account since 19 Jun 2023"], ["Access review", "Last 30 Jun 2026 · next due 30 Sep"]] },
+
+    { id: "meera", name: "Meera Joshi", short: "Meera J.", init: "MJ", color: "#b45309", role: "Catalog specialist · pricing", team: "catalog", rg: "Catalog specialist", loc: "BR-SPR",
+      st: "away", stT: "In a meeting", since: "since 10:15", now: "pricing", act: "“Supplier call — Prime IT” (status set by Meera)", actIcon: "calendar",
+      handled: 11, med: 12, open: 3, cap: 10, dev: ["laptop", "Laptop · Chrome · Head office network (SP Road)"], tag: null,
+      home: ["pricing", "catalog"], heat: [2, 0, 0, 0, 8, 22, 0, 0, 1, 0, 0, 2, 0, 0], time: [49, 4, 0, 27],
+      perf: { d7: [24, 0, 27, 22, 26, 25, 21], med: 12, tgt: 100, back: 1.4, ovr: 6 },
+      day: [["09:22", "Signed in · laptop, head office", null, "in"],
+        ["09:34", "Sent the Dealer Gold Q4 price list for owner approval", "pricing", "act"],
+        ["10:09", "Changed the price of Samsung T7 1 TB · −2.2%, within her limit", "pricing", "act"],
+        ["10:12", "Second review of 6 products for Sneha P.", "catalog", "act"],
+        ["10:15", "Set her status to “In a meeting” · supplier call", null, "now"]],
+      sess: { today: [["09:22", null, "Laptop · Chrome", "Head office network", "Authenticator app"]],
+        week: [["25 Sep", "09:18–18:50", "Laptop · Chrome", "Head office network"], ["24 Sep", "09:25–18:44", "Laptop · Chrome", "Head office network"], ["22 Sep", "09:21–18:30", "Laptop · Chrome", "Head office network"]], fail: [], mfa: "Authenticator app" },
+      sens: [["Today 10:09", "price", "Changed a price · Samsung T7 1 TB ₹8,999 → ₹8,799 (−2.2%)", "Distributor price drop", "SSD01-N", "erp-pricing.html", []],
+        ["Today 09:34", "price", "Sent the Dealer Gold Q4 price list for owner approval · 38 products, average −1.8%", "Q4 revision", "PL-GOLD-Q4", "erp-pricing.html", ["approval"]],
+        ["22 Sep 11:20", "price", "Set up the promotion “Diwali early bird” (draft, not live)", "October marketing plan", "PR-0031", "erp-pricing.html", ["approval"]]],
+      acc: [["Role", "Catalog specialist (pricing)"], ["Location scope", "All locations · catalog and pricing"], ["Two-step sign-in", "Authenticator app"], ["Limits", "Single price changes up to 5% · price lists need owner approval (sample)"],
+        ["Account", "Individual account since 5 Jan 2025"], ["Access review", "Last 30 Jun 2026 · next due 30 Sep"]] },
+
+    { id: "karthik", name: "Karthik R", short: "Karthik R.", init: "KR", color: "#4d7c0f", role: "Support executive", team: "support", rg: "Support executive", loc: "BR-SPR",
+      st: "active", stT: "Active", since: "since 10:39", now: "support", act: "Replying on WhatsApp · SUP-7744, checkout link sent",
+      handled: 26, med: 6, open: 7, cap: 8, dev: ["monitor", "Windows PC · Chrome · Head office network (SP Road)"], tag: ["b-warn", "key", "Two-step sign-in not set up"],
+      home: ["support", "orders", "returns", "customers"], heat: [12, 0, 5, 44, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0], time: [79, 8, 0, 0],
+      perf: { d7: [63, 12, 58, 61, 66, 59, 64], med: 6, tgt: 88, back: 1.8, ovr: 2 },
+      day: [["09:15", "Signed in with a password only · two-step sign-in not set up yet", null, "flag"],
+        ["09:58", "Turned a WhatsApp chat into order TXO-10486", "orders", "act"],
+        ["10:05", "Verified a customer by OTP and answered an order-status question · SUP-7731", "support", "act"],
+        ["10:21", "Closed 5 conversations", "support", "act"],
+        ["10:39", "Now: replying on WhatsApp · SUP-7744, checkout link sent", "support", "now"]],
+      sess: { today: [["09:15", null, "Windows PC · Chrome", "Head office network", "Password only (two-step sign-in not set up)"]],
+        week: [["25 Sep", "09:12–18:40", "Windows PC · Chrome", "Head office network"], ["24 Sep", "09:20–18:36", "Windows PC · Chrome", "Head office network"], ["23 Sep", "09:14–18:45", "Windows PC · Chrome", "Head office network"]],
+        fail: [["25 Sep 23:44–23:48", null, "Unknown device", "103.21.xx.xx · Hyderabad", "5 wrong passwords · locked 15 min"]], mfa: "Not set up — grace period ends 30 Sep" },
+      sens: [["Today 10:05", "view", "Viewed a customer’s full phone number after an OTP check · SUP-7731", "Order-status enquiry; customer verified", "SUP-7731", "erp-support.html", []],
+        ["Today 09:58", "order", "Created order TXO-10486 from a WhatsApp chat (prices recalculated by the system)", "Customer confirmed price and address", "TXO-10486", "erp-orders.html", []]],
+      acc: [["Role", "Support executive"], ["Location scope", "All locations · support"], ["Two-step sign-in", "Not set up — grace period ends 30 Sep"], ["Limits", "Phone and address stay masked until the customer is verified · refunds: request only"],
+        ["Account", "Individual account since 11 Nov 2024"], ["Access review", "Last 30 Jun 2026 · next due 30 Sep"]] },
+
+    { id: "farah", name: "Farah Khan", short: "Farah K.", init: "FK", color: "#a21caf", role: "Support executive", team: "support", rg: "Support executive", loc: "BR-SPR",
+      st: "idle", stT: "Idle 26 min", idle: 26, since: "last action 10:16", now: "support", act: "Last action: took 3 WhatsApp conversations · 3 customers now past the reply target",
+      handled: 14, med: 11, open: 8, cap: 8, dev: ["monitor", "Windows PC · Edge · Head office network (SP Road)"], tag: null,
+      home: ["support", "orders", "returns"], heat: [4, 0, 3, 29, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0], time: [41, 33, 0, 0],
+      perf: { d7: [55, 10, 49, 51, 38, 44, 40], med: 9, tgt: 74, back: 2.6, ovr: 0, ctx: "Covers the evening WhatsApp peak" },
+      day: [["09:28", "Signed in · head office", null, "in"],
+        ["09:40", "Closed 6 conversations", "support", "act"],
+        ["10:16", "Took 3 WhatsApp conversations (SUP-7746 to SUP-7748)", "support", "act"],
+        ["10:16", "No activity in Tradex since then (idle 26 min) · she may be on a phone call", null, "idle"]],
+      sess: { today: [["09:28", null, "Windows PC · Edge", "Head office network", "Authenticator app"]],
+        week: [["25 Sep", "12:02–20:30", "Windows PC · Edge", "Head office network"], ["24 Sep", "12:05–20:28", "Windows PC · Edge", "Head office network"], ["23 Sep", "09:30–18:30", "Windows PC · Edge", "Head office network"]], fail: [], mfa: "Authenticator app" },
+      sens: [],
+      acc: [["Role", "Support executive"], ["Location scope", "All locations · support"], ["Two-step sign-in", "Authenticator app"], ["Limits", "Phone and address stay masked until the customer is verified · refunds: request only"],
+        ["Account", "Individual account since 1 Apr 2025"], ["Access review", "Last 30 Jun 2026 · next due 30 Sep"]] },
+
+    { id: "imran", name: "Imran Sheikh", short: "Imran S.", init: "IS", color: "#475569", role: "Support executive · returns desk", team: "support", rg: "Support executive", loc: "WH-BLR",
+      st: "leave", stT: "On leave", since: "25–27 Sep", now: "returns", act: "On approved leave · 4 return cases are still assigned to him", actIcon: "calendar",
+      handled: 0, med: null, open: 4, cap: 10, loadNote: "Still assigned while on leave — reassign", dev: ["user", "Last sign-in 24 Sep 19:02 · no open sessions"], tag: null,
+      home: ["returns", "support"], heat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], time: null,
+      perf: { d7: [26, 0, 31, 28, 24, 27, 0], med: 21, tgt: 91, back: 1.2, ovr: 3, ctx: "On leave from 25 Sep" },
+      day: [["—", "On approved leave 25–27 Sep (approved by Anita R. on 18 Sep)", null, "st"],
+        ["09:00", "Hourly check: 4 return cases still assigned to him (flagged)", "returns", "flag"]],
+      sess: { today: [], week: [["24 Sep", "09:10–19:02", "Windows PC · Chrome", "Central Warehouse network"], ["23 Sep", "09:05–18:55", "Windows PC · Chrome", "Central Warehouse network"], ["22 Sep", "09:12–19:00", "Windows PC · Chrome", "Central Warehouse network"]], fail: [], mfa: "Authenticator app" },
+      sens: [["24 Sep 16:12", "override", "Asked to accept a return outside the return window · RMA-0089 (approved by Anita R. on 25 Sep)", "Dealer goodwill", "RMA-0089", "erp-returns.html", ["approval"]]],
+      acc: [["Role", "Support executive · returns desk"], ["Location scope", "Central Warehouse returns desk"], ["Two-step sign-in", "Authenticator app"], ["Limits", "Return decisions within policy · outside policy needs a manager (sample)"],
+        ["Leave", "Approved leave 25–27 Sep · no cover assigned"], ["Account", "Individual account since 20 Sep 2024"]] },
+
+    { id: "ravi", name: "Ravi Kumar", short: "Ravi K.", init: "RK", color: "#4d7c0f", role: "Branch manager", team: "sales", rg: "Branch manager", loc: "BR-MYS",
+      st: "offline", stT: "Offline", since: "shift 11:00–20:00", now: null, act: "Shift starts at 11:00 · Mysuru counter sales stay on the legacy POS until 15 Oct", actIcon: "clock",
+      handled: 0, med: null, open: 2, cap: 10, dev: ["user", "Last sign-in 25 Sep 19:40 · legacy POS bridge, Mysuru"], tag: null,
+      home: ["orders", "inventory"], heat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], time: null,
+      perf: { d7: [9, 0, 11, 8, 10, 12, 9], med: 14, tgt: 83, back: 0, ovr: 2, ctx: "Most Mysuru work is still on the legacy POS" },
+      day: [["—", "Not signed in yet · shift 11:00–20:00", null, "st"],
+        ["—", "Mysuru counter sales are still on the legacy POS until 15 Oct, so they do not appear here yet", null, "st"]],
+      sess: { today: [], week: [["25 Sep", "11:04–19:40", "Legacy POS bridge", "Mysuru branch network"], ["24 Sep", "11:10–19:52", "Legacy POS bridge", "Mysuru branch network"], ["23 Sep", "11:02–19:35", "Legacy POS bridge", "Mysuru branch network"]], fail: [], mfa: "Authenticator app" },
+      sens: [["25 Sep 17:50", "stock", "Asked for stock transfer TR-0212 · SSDs for Mysuru", "Mysuru SSD stock-out", "TR-0212", "erp-inventory.html#transfers", []]],
+      acc: [["Role", "Branch manager (Mysuru)"], ["Location scope", "Mysuru Branch (BR-MYS)"], ["Two-step sign-in", "Authenticator app"], ["Limits", "Discounts up to 8% (sample) · counter still on the legacy POS until 15 Oct"],
+        ["Account", "Individual account since 9 Jan 2025"], ["Access review", "Last 30 Jun 2026 · next due 30 Sep"]] },
+
+    { id: "lakshmi", name: "Lakshmi Narayan", short: "Lakshmi N.", init: "LN", color: "#1e40af", role: "Sales associate", team: "sales", rg: "Sales associate", loc: "BR-SPR",
+      st: "active", stT: "Active", since: "since 10:37", now: "orders", act: "Billing TXO-10498 at POS SPR-01",
+      handled: 18, med: 4, open: 3, cap: 8, dev: ["monitor", "POS terminal SPR-01 · SP Road branch network"], tag: null,
+      home: ["orders", "customers"], heat: [27, 0, 0, 2, 0, 0, 3, 0, 4, 0, 0, 0, 0, 0], time: [46, 4, 0, 0],
+      perf: { d7: [38, 0, 35, 41, 37, 44, 46], med: 4, tgt: 96, back: 1.1, ovr: 8 },
+      day: [["09:52", "Signed in at POS terminal SPR-01", null, "in"],
+        ["10:04", "Asked for 5% off TXO-10487 (her limit 3%) · approved by Vikram S.", "orders", "act"],
+        ["10:13", "Asked for 7% off TXO-10492 · declined by Vikram S.", "orders", "act"],
+        ["10:28", "6th discount request above her limit today · 6% off TXO-10495 (flagged)", "orders", "flag"],
+        ["10:37", "Now: billing TXO-10498 at POS SPR-01", "orders", "now"]],
+      sess: { today: [["09:52", null, "POS terminal SPR-01", "SP Road branch network", "Staff PIN + authenticator"]],
+        week: [["25 Sep", "09:50–19:05", "POS terminal SPR-01", "SP Road branch network"], ["24 Sep", "09:55–19:10", "POS terminal SPR-01", "SP Road branch network"], ["23 Sep", "09:48–19:02", "POS terminal SPR-01", "SP Road branch network"]], fail: [], mfa: "Authenticator app" },
+      sens: [["Today 10:28", "discount", "6% off TXO-10495 · approved by Vikram S.", "Price match", "TXO-10495", "erp-orders.html", ["approval"]],
+        ["Today 10:24", "discount", "4% off TXO-10494 · approved", "Student buying 2 items", "TXO-10494", "erp-orders.html", ["approval"]],
+        ["Today 10:19", "discount", "5% off TXO-10493 · approved", "Price match", "TXO-10493", "erp-orders.html", ["approval"]],
+        ["Today 10:13", "discount", "7% off TXO-10492 · declined by Vikram S.", "Bulk mouse purchase", "TXO-10492", "erp-orders.html", ["approval"]],
+        ["Today 10:08", "discount", "4% off TXO-10488 · approved", "Repeat customer", "TXO-10488", "erp-orders.html", ["approval"]],
+        ["Today 10:04", "discount", "5% off TXO-10487 · approved", "Price match", "TXO-10487", "erp-orders.html", ["approval"]]],
+      acc: [["Role", "Sales associate"], ["Location scope", "SP Road Branch (BR-SPR)"], ["Two-step sign-in", "Authenticator app"], ["Limits", "Discounts up to 3% — above that the branch manager decides (sample)"],
+        ["Account", "Individual account since 15 Jul 2025"], ["Access review", "Last 30 Jun 2026 · next due 30 Sep"]] },
+
+    { id: "pooja", name: "Pooja Hegde", short: "Pooja H.", init: "PH", color: "#9333ea", role: "Sales associate", team: "sales", rg: "Sales associate", loc: "BR-KRM",
+      st: "notin", stT: "Not yet signed in", since: "shift started 10:30", now: null, act: "Invite sent 25 Sep by Vikram S. and not used yet · link expires in 46 h", actIcon: "mail",
+      handled: 0, med: null, open: 0, cap: 8, dev: ["user", "Never signed in · first day"], tag: ["b-info", "user", "New starter"],
+      home: ["orders"], heat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], time: null,
+      perf: null,
+      day: [["10:30", "Shift started at Koramangala · not signed in yet", null, "idle"],
+        ["25 Sep", "Invited by Vikram S. · invite link not used yet (expires in 46 h)", null, "st"]],
+      sess: { today: [], week: [], fail: [], mfa: "Pending — set up at first sign-in" },
+      sens: [],
+      acc: [["Role", "Sales associate (invited)"], ["Location scope", "Koramangala Branch (BR-KRM)"], ["Two-step sign-in", "Pending — set up at first sign-in"], ["Limits", "Discounts up to 3% (sample)"],
+        ["Account", "Invited 25 Sep by Vikram S. · link expires in 46 h"]] },
+  ];
+  const PK = {}; P.forEach((p) => { PK[p.id] = p; });
+
+  /* ---------------- Activity feed (today, newest first) ----------------
+     [time, person, plain-language action, record, href, area | "signin", categories, flags] */
+  const FEED = [
+    ["10:41", "arjun", "Packed an order · 2 items, serial numbers scanned", "TXO-10482", "erp-fulfilment.html", "fulfilment", ["stock"], []],
+    ["10:39", "karthik", "Replied on WhatsApp and sent a secure checkout link", "SUP-7744", "erp-support.html", "support", [], []],
+    ["10:36", "anita", "Approved a stock transfer, Central Warehouse → Koramangala (6 units)", "TR-0214", "erp-inventory.html#transfers", "inventory", ["stock"], ["delegated"]],
+    ["10:33", "deepa", "Retried a failed refund after checking its status with the provider", "RMA-0093", "erp-finance.html#refunds", "finance", ["money"], ["sensitive"]],
+    ["10:31", "irfan", "Received a supplier delivery · 24 units, 3 sent to quality check", "GRN-0441", "erp-purchasing.html", "purchasing", ["stock"], []],
+    ["10:28", "lakshmi", "Gave a 6% discount on a counter sale (her limit is 3%) · approved by Vikram S.", "TXO-10495", "erp-orders.html", "orders", ["price"], ["approval"]],
+    ["10:24", "sneha", "Saved a product draft and sent it for review · Canon EOS R50 kit", "PD-0331", "erp-catalog.html", "catalog", [], []],
+    ["10:19", "deepa", "Picked up a payment exception · paid but the order was not confirmed", "TXO-10477", "erp-finance.html", "finance", ["money"], []],
+    ["10:16", "farah", "Took 3 WhatsApp conversations from the queue", "SUP-7746", "erp-support.html", "support", [], []],
+    ["10:12", "sneha", "Published 6 products after a second review", "PUB-0098", "erp-catalog.html", "catalog", ["price"], []],
+    ["10:09", "meera", "Changed a price · Samsung T7 1 TB ₹8,999 → ₹8,799 (−2.2%, within her limit)", "SSD01-N", "erp-pricing.html", "pricing", ["price"], []],
+    ["10:05", "vikram", "Signed in at POS terminal SPR-02", "Session", "erp-admin.html#audit", "signin", ["access"], []],
+    ["09:58", "karthik", "Turned a WhatsApp chat into an order", "TXO-10486", "erp-orders.html", "orders", ["money"], []],
+    ["09:52", "naveen", "Removed 1 unit from stock · SanDisk 64 GB pen drive, “damaged in bin” (no photo)", "ADJ-0189", "erp-inventory.html#counts", "inventory", ["stock"], ["sensitive"]],
+    ["09:47", "vikram", "Exported the customer list · 1,860 records with phone numbers", "EXP-0415", "erp-customers.html", "customers", ["access"], ["sensitive"]],
+    ["09:40", "anita", "Approved a stock transfer, Central Warehouse → Mysuru", "TR-0212", "erp-inventory.html#transfers", "inventory", ["stock"], ["delegated"]],
+    ["09:34", "meera", "Sent the Dealer Gold Q4 price list for owner approval · 38 products", "PL-GOLD-Q4", "erp-pricing.html", "pricing", ["price"], ["approval"]],
+    ["09:30", "vikram", "Asked for a 14% discount on a school tender (his limit is 8%)", "TXO-10491", "erp-orders.html", "orders", ["price"], ["approval"]],
+    ["09:30", "deepa", "Signed in with a security key · head office", "Session", "erp-admin.html#audit", "signin", ["access"], []],
+    ["09:25", "irfan", "Raised a stock write-off · 3 water-damaged monitors, ₹42,300", "ADJ-0187", "erp-inventory.html#counts", "inventory", ["stock", "money"], ["sensitive", "approval"]],
+    ["09:12", "anita", "Gave Vikram S. an extra role · warehouse receiver at SP Road (leave cover)", "User · Vikram Shetty", "erp-admin.html#users", "admin", ["access"], ["sensitive"]],
+    ["08:58", "irfan", "Counted bin A-14 · 2 units short, bin locked for picking", "CC-0233", "erp-inventory.html#counts", "inventory", ["stock"], []],
+    ["08:12", "arjun", "Started pick wave W-0926-1 · 23 orders", "W-0926-1", "erp-fulfilment.html", "fulfilment", ["stock"], []],
+    ["07:58", "irfan", "Signed in with an SMS code (weaker method) · Handheld WH-07", "Session", "erp-admin.html#audit", "signin", ["access"], []],
+    ["07:02", "deepa", "Approved a refund she had created herself · ₹12,490", "RF-2291", "erp-finance.html#refunds", "finance", ["money"], ["sensitive", "afterhours", "emergency"]],
+    ["06:52", "deepa", "Created a refund for a return whose earlier refund failed · ₹12,490", "RF-2291", "erp-finance.html#refunds", "finance", ["money"], ["sensitive", "afterhours", "emergency"]],
+    ["06:14", "deepa", "Signed in from a home laptop", "Session", "erp-admin.html#audit", "signin", ["access"], ["afterhours"]],
+    ["06:10", "anita", "Granted emergency access to Deepa K. · refund retry, 4 hours", "EA-0013", "erp-admin.html#delegation", "admin", ["access"], ["sensitive", "afterhours"]],
+  ];
+  const FLAG = { sensitive: ["b-warn", "lock", "Sensitive"], delegated: ["b-brand", "users", "Delegated authority"], afterhours: ["b-info", "clock", "After hours"],
+    approval: ["b-outline", "check-circle", "Needed approval"], emergency: ["b-bad", "key", "Emergency access"], flagged: ["b-warn", "flag", "Raised an alert"] };
+
+  /* ---------------- Alerts (rule-based, no AI) ---------------- */
+  const ALERTS = [
+    { id: "AL-3107", sev: "critical", pid: "deepa", area: "finance", time: "07:02", title: "The same person created and approved a refund",
+      what: "RF-2291 · ₹12,490 · created at 06:52 and approved at 07:02 from Deepa K.’s account",
+      rule: "Separation of duties: a refund is approved by someone other than the person who created it. The check was relaxed under emergency access EA-0013 (06:10–10:10), so every such case goes to post-review (due 28 Sep).",
+      thr: "Any occurrence", rec: ["RF-2291", "erp-finance.html#refunds"] },
+    { id: "AL-3111", sev: "serious", pid: "vikram", area: "customers", time: "09:47", title: "Bulk customer export",
+      what: "EXP-0415 · 1,860 customer records with phone numbers · SP Road customers only (his record scope)",
+      rule: "An export holding more customer records than the limit in one file.", thr: "More than 500 records", rec: ["EXP-0415", "erp-customers.html"] },
+    { id: "AL-3098", sev: "serious", pid: "karthik", area: "admin", time: "Yesterday 23:48", title: "5 failed sign-in attempts · account locked for 15 minutes",
+      what: "From 103.21.xx.xx (Hyderabad), a network this account has never used · no successful sign-in from there · two-step sign-in not set up yet (grace ends 30 Sep)",
+      rule: "Repeated wrong passwords in a short time.", thr: "5 failures within 10 minutes", rec: ["Audit log", "erp-admin.html#audit"] },
+    { id: "AL-3116", sev: "warning", pid: "farah", area: "support", time: "10:42 · ongoing", title: "Customers waiting while the assignee is idle",
+      what: "3 WhatsApp conversations past the first-reply target (oldest 48 min) · no activity from Farah K. in Tradex for 26 min",
+      rule: "Work past its target while the person it is assigned to shows no activity. Idle only means no activity inside Tradex — she may be on a phone call.", thr: "Idle more than 20 minutes", rec: ["SUP-7746", "erp-support.html"] },
+    { id: "AL-3114", sev: "warning", pid: "lakshmi", area: "orders", time: "10:28", title: "6 manual discounts above the staff limit today",
+      what: "Counter-sale discounts of 4–7% (her limit 3%) · 5 approved by Vikram S., 1 declined",
+      rule: "Too many discount requests above the person’s own limit in one day.", thr: "More than 3 a day", rec: ["TXO-10495", "erp-orders.html"] },
+    { id: "AL-3110", sev: "warning", pid: "naveen", area: "inventory", time: "09:52", title: "Stock adjustment without a reason photo",
+      what: "ADJ-0189 · −1 × SanDisk Ultra Flair 64 GB (₹549) · reason “damaged in bin”",
+      rule: "Removing stock needs a photo of the damaged or missing item.", thr: "Any removal without a photo", rec: ["ADJ-0189", "erp-inventory.html#counts"] },
+    { id: "AL-3102", sev: "warning", pid: "imran", area: "returns", time: "09:00 check", title: "Open work assigned to someone on leave",
+      what: "4 return cases (oldest RMA-0091, inspection due 27 Sep) are still assigned to Imran S., on approved leave 25–27 Sep",
+      rule: "Open items assigned to a person who is marked on leave.", thr: "Checked every hour", rec: ["RMA-0091", "erp-returns.html"], reassign: "4 return cases moved to the returns queue · Karthik R. notified" },
+    { id: "AL-3095", sev: "warning", pid: "deepa", area: "admin", time: "06:14", title: "Sign-in outside working hours",
+      what: "Home laptop · Bengaluru · working hours Mon–Sat 09:30–20:30 · linked to emergency access EA-0013, granted by Anita R. at 06:10 (Anita R. also signed in at 06:08)",
+      rule: "Sign-in outside the person’s working hours.", thr: "Outside 09:30–20:30", rec: ["EA-0013", "erp-admin.html#delegation"] },
+  ];
+  const SEV = { critical: ["alert-octagon", "Critical"], serious: ["alert", "Serious"], warning: ["info", "Warning"] };
+  const SEV_ORDER = { critical: 0, serious: 1, warning: 2 };
+  const ack = new Set();
+
+  /* ---------------- Alert rules (modal) ---------------- */
+  const RULES = [
+    ["Same person creates and approves", "A refund, discount or write-off approved by the person who raised it", "Any occurrence", "Owner", "critical", 1],
+    ["Bulk customer export", "One export file holds many customer records", "500 records", "Owner + Operations admin", "serious", 1],
+    ["Failed sign-in attempts", "Wrong passwords or codes in a short time; the account locks for 15 min", "5 in 10 min", "Owner + Operations admin", "serious", 1],
+    ["Discounts above the person’s limit", "Many requests above a person’s own discount limit in one day", "3 a day", "Branch manager", "warning", 1],
+    ["Stock removed without a photo", "An adjustment that removes stock has no photo of the item", "Any", "Warehouse lead + Operations admin", "warning", 1],
+    ["Waiting work, idle assignee", "Items past their target while the assignee shows no activity in Tradex", "20 min idle", "Team lead", "warning", 1],
+    ["Sign-in outside working hours", "Sign-in outside the person’s working hours", "09:30–20:30", "Operations admin", "warning", 1],
+    ["Work assigned to someone on leave", "Open items still assigned to a person marked on leave", "Hourly check", "Team lead", "warning", 1],
+    ["Price change above the person’s limit", "A single price change bigger than the person may make alone", "5%", "Owner", "warning", 0],
+  ];
+
+  /* ---------------- Helpers ---------------- */
+  const sum = (a) => a.reduce((x, y) => x + y, 0);
+  const median = (a) => { const s = a.filter((v) => v != null).slice().sort((x, y) => x - y); if (!s.length) return null; const m = Math.floor(s.length / 2); return s.length % 2 ? s[m] : Math.round(((s[m - 1] + s[m]) / 2) * 10) / 10; };
+  const hm = (m) => (m >= 60 ? `${Math.floor(m / 60)} h ${String(m % 60).padStart(2, "0")} min` : `${m} min`);
+  const av = (p, cls = "sm") => `<span class="avatar ${cls}" style="background:${p.color}" aria-hidden="true">${p.init}</span>`;
+  const ring = (p, cls = "") => `<span class="av-ring ${p.st === "leave" ? "dashed" : ""}" style="--rc:${ST[p.st][1]}">${av(p, cls)}</span>`;
+  const stHTML = (p) => `<span class="status ${ST[p.st][0]}">${p.stT}</span>`;
+  const flagHTML = (f) => { const x = FLAG[f]; return x ? `<span class="badge ${x[0]}">${ic(x[1])} ${x[2]}</span>` : ""; };
+  const areaLink = (k) => (AK[k] ? `<a href="${AK[k].href}">${AK[k].n}</a>` : "");
+  const openAlerts = (pid) => ALERTS.filter((a) => a.pid === pid && !ack.has(a.id));
+  const DAYS7 = ["Sat 19", "Sun 20", "Mon 21", "Tue 22", "Wed 23", "Thu 24", "Fri 25"];
+
+  /* ---------------- Filters ---------------- */
+  const F = { period: "today", loc: "", team: "", area: "", q: "", sg: "all", chip: "all" };
+  let sortKey = "handled", sortDir = -1, feedAll = false;
+  const TEAM_ORDER = { wh: 0, sales: 1, support: 2, catalog: 3, finance: 4, mgmt: 5 };
+  const ST_ORDER = { active: 0, idle: 1, break: 2, away: 3, notin: 4, offline: 5, leave: 6 };
+  const byTeam = (a, b) => TEAM_ORDER[a.team] - TEAM_ORDER[b.team] || P.indexOf(a) - P.indexOf(b);
+  const matchP = (p, useArea = true) => (!F.loc || p.loc === F.loc) && (!F.team || p.team === F.team)
+    && (!F.q || (p.name + " " + p.short + " " + p.role).toLowerCase().includes(F.q))
+    && (!useArea || !F.area || p.heat[AK[F.area].i] > 0 || p.home.includes(F.area) || p.now === F.area);
+  const emptyHTML = (icon, h, t, style = "") => `<div class="empty" ${style}>${ic(icon)}<h4>${h}</h4><p>${t}</p></div>`;
+
+  /* ---------------- KPI tiles ---------------- */
+  const renderKpis = (list) => {
+    const n = (f) => list.filter(f).length;
+    $("#k-on").textContent = n((p) => ON_SHIFT.includes(p.st));
+    $("#k-on-of").textContent = ` / ${n((p) => p.st !== "leave")}`;
+    const leave = n((p) => p.st === "leave"), notin = n((p) => p.st === "notin"), later = n((p) => p.st === "offline");
+    $("#k-on-f").textContent = [leave && `${leave} on leave`, notin && `${notin} not signed in`, later && `${later} starts later`].filter(Boolean).join(" · ") || "everyone scheduled is in";
+    $("#k-act").textContent = n((p) => p.st === "active");
+    const idle = list.filter((p) => p.st === "idle" && p.idle >= 10).sort((a, b) => b.idle - a.idle);   // same idle rule as the status key (10 min, sample)
+    $("#k-idle").textContent = idle.length;
+    $("#k-idle-f").textContent = idle.map((p) => `${p.short} ${p.idle} min`).join(" · ") || "nobody idle";
+    $("#k-actions").textContent = TX.num(sum(list.map((p) => sum(p.heat))));
+    $("#k-actions-f").innerHTML = list.length === P.length ? `${ic("trending-up")} +6% vs Sat 19 Sep` : `${list.length} of ${P.length} staff`;
+    $("#k-handled").textContent = TX.num(sum(list.map((p) => p.handled)));
+    const md = median(list.map((p) => p.med));
+    $("#k-handled-f").textContent = md != null ? `median ${md} min each` : "no items handled yet";
+    const al = ALERTS.filter((a) => !ack.has(a.id) && list.includes(PK[a.pid])), hi = al.filter((a) => a.sev !== "warning").length;
+    $("#k-alerts").textContent = al.length;
+    const f = $("#k-alerts-f"); f.textContent = hi ? `${hi} serious or critical` : al.length ? "warnings only" : "nothing open"; f.className = hi ? "text-bad strong" : "";
+  };
+
+  /* ---------------- Live status board ---------------- */
+  const SG_LBL = { all: "All", active: "Active", idle: "Idle", paused: "Break or away", off: "Not working" };
+  const card = (p) => {
+    const a = p.now ? AK[p.now] : null, off = ["offline", "leave", "notin"].includes(p.st), acts = sum(p.heat), al = openAlerts(p.id).length;
+    const load = p.cap ? p.open / p.cap : 0, lc = load >= 0.9 ? "m-bad" : load >= 0.6 ? "m-warn" : "m-ok";
+    return `<article class="pc ${off ? "off" : ""}" data-pid="${p.id}">
+      <div class="pc-top">${ring(p)}<div class="pc-who"><button type="button" class="pc-name" data-person="${p.id}" aria-label="${esc(p.name)}, ${esc(p.stT)} — open details">${p.name}</button><div class="pc-role">${p.role} · ${LOCS[p.loc]}</div></div>
+        <div class="pc-st">${stHTML(p)}<span class="since">${p.since}</span></div></div>
+      <div class="pc-act">${ic(p.actIcon || (a ? a.icon : "clock"))}<div>${p.act}${a ? ` · ${areaLink(p.now)}` : ""}</div></div>
+      ${p.tag ? `<div class="pc-tags"><span class="badge ${p.tag[0]}">${ic(p.tag[1])} ${p.tag[2]}</span></div>` : ""}
+      <div class="pc-stats"><div><b>${off ? "—" : acts}</b><span>actions today</span></div><div><b>${off ? "—" : p.handled}</b><span>items handled</span></div><div><b>${p.med ? p.med + " min" : "—"}</b><span>median time</span></div></div>
+      <div class="pc-load"><span>Open items</span><div class="meter thin ${lc}" role="img" aria-label="${p.open} of ${p.cap} open items assigned"><span style="width:${Math.min(100, Math.round(load * 100))}%"></span></div><b>${p.open}<span class="muted"> / ${p.cap}</span></b></div>
+      ${p.loadNote ? `<div class="pc-note">${ic("alert", "ic-sm")} ${p.loadNote}</div>` : load >= 0.9 && p.open ? `<div class="pc-note">${ic("alert", "ic-sm")} Queue full</div>` : ""}
+      <div class="pc-foot">${ic(p.dev[0])}<span title="${esc(p.dev[1])}">${p.dev[1]}</span>${al ? `<span class="badge b-warn">${ic("bell")} ${al} alert${al > 1 ? "s" : ""}</span>` : ""}</div>
+    </article>`;
+  };
+  const renderBoard = (list) => {
+    $$("#sg button[data-sg]").forEach((b) => { b.textContent = `${SG_LBL[b.dataset.sg]} ${list.filter(SG[b.dataset.sg]).length}`; });
+    const shown = list.filter(SG[F.sg]).sort((a, b) => ST_ORDER[a.st] - ST_ORDER[b.st] || P.indexOf(a) - P.indexOf(b));
+    $("#board").innerHTML = shown.map(card).join("") || emptyHTML("users", "No one matches", "Clear the filters or choose All to see everyone.", 'style="grid-column:1/-1"');
+    $("#board-sub").textContent = `${shown.length} of ${P.length} on today’s roster (3 more on their weekly day off) · presence from Tradex activity only · updated 10:42`;
+  };
+
+  /* ---------------- How each area is being handled ---------------- */
+  const renderAreas = (list) => {
+    const inList = new Set(list.map((p) => p.id));
+    $("#area-body").innerHTML = AREAS.map((a) => {
+      const d = AREA_TODAY[a.k], s = STATE[d.st], here = P.filter((p) => p.now === a.k && inList.has(p.id));
+      const act = here.filter((p) => p.st === "active"), rest = here.filter((p) => ["idle", "break", "away"].includes(p.st));
+      const staff = act.length ? `<div class="av-stack" role="img" aria-label="Working now: ${act.map((p) => p.name).join(", ")}">${act.map((p) => `<span class="avatar sm" style="background:${p.color}" title="${esc(p.name)} · active">${p.init}</span>`).join("")}</div><div class="cell-sub">${act.map((p) => p.short).join(", ")}</div>`
+        : `<span class="muted small">Nobody right now</span>`;
+      const also = rest.length ? `<div class="cell-sub">${rest.map((p) => `${p.short} · ${p.stT.toLowerCase()}`).join("<br>")}</div>` : "";
+      return `<tr data-href="${a.href}" class="${F.area === a.k ? "sel" : ""}">
+        <td><a class="a-name" href="${a.href}">${ic(a.icon)} ${a.n}</a></td>
+        <td class="r"><div class="cell-main">${d.open}</div>${d.openN ? `<div class="cell-sub">${d.openN}</div>` : ""}</td>
+        <td class="r"><div class="cell-main">${d.done}</div>${d.doneN ? `<div class="cell-sub">${d.doneN}</div>` : ""}</td>
+        <td><div class="nowrap">${d.old}</div>${d.oldN ? `<div class="cell-sub">${d.oldN}</div>` : ""}</td>
+        <td class="r">${d.tgt == null ? `<span class="muted">—</span><div class="cell-sub">no target</div>` : `${d.tgt}%`}</td>
+        <td class="r"><div class="nowrap">${d.med}</div>${d.medN ? `<div class="cell-sub">${d.medN}</div>` : ""}</td>
+        <td>${staff}${also}</td>
+        <td class="r"><div class="cell-main">${d.ovr}</div>${d.ovrN ? `<div class="cell-sub">${d.ovrN}</div>` : ""}</td>
+        <td class="st-cell"><span class="sev ${s[0]}">${ic(s[1])} ${s[2]}</span>${d.why ? `<div class="cell-sub">${d.why}</div>` : ""}</td></tr>`;
+    }).join("");
+    const c = { ok: 0, warn: 0, bad: 0 }; AREAS.forEach((a) => { c[AREA_TODAY[a.k].st]++; });
+    $("#area-sum").textContent = `${c.ok} on track · ${c.warn} at risk · ${c.bad} behind`;
+  };
+
+  /* ---------------- People × areas heatmap (single-hue blue sequential ramp) ---------------- */
+  const RAMP = ["#cde2fb", "#b7d3f6", "#9ec5f4", "#86b6ef", "#6da7ec", "#5598e7", "#3987e5", "#2a78d6", "#256abf", "#1c5cab", "#184f95"];
+  const BINS = [1, 3, 6, 9, 13, 17, 23, 29, 36, 45, 55];   // lower bound of each colour step
+  const binOf = (v) => { let b = 0; BINS.forEach((t, i) => { if (v >= t) b = i; }); return b; };
+  let hmList = [], hmCur = [0, 0];
+  const renderHeat = (list) => {
+    hmList = list.slice().sort(byTeam);
+    const col = F.area ? AK[F.area].i : -1, host = $("#hm");
+    let h = `<div class="hm-corner">Person</div>` + AREAS.map((a, i) => `<div class="hm-ch ${i === col ? "col-on" : ""}" title="${esc(a.n)}">${a.s}</div>`).join("");
+    hmList.forEach((p, r) => {
+      h += `<div class="hm-rl" data-person="${p.id}" title="${esc(p.name)} · ${esc(p.role)}">${av(p)}<span>${p.short}</span></div>`;
+      p.heat.forEach((v, c) => { const b = binOf(v); h += `<div class="hm-c ${v ? "" : "z"} ${c === col ? "col-on" : ""}" data-r="${r}" data-c="${c}"${v ? ` style="background:${RAMP[b]};color:${b >= 7 ? "#fff" : "var(--tx-1)"}"` : ""}>${v || "·"}</div>`; });
+    });
+    host.innerHTML = hmList.length ? h + `<div class="chart-tip"></div>` : emptyHTML("grid", "No one matches", "Clear the filters to see everyone.", 'style="grid-column:1/-1"');
+    host.classList.toggle("col-dim", col >= 0);
+    host.setAttribute("aria-label", `Heatmap of actions recorded today by ${hmList.length} people across 14 workspace areas. Darker blue means more actions. Use Table view for the exact numbers.`);
+    hmCur = [Math.min(hmCur[0], Math.max(0, hmList.length - 1)), hmCur[1]];
+    $("#hm-table").innerHTML = `<table class="table compact"><thead><tr><th>Person</th>${AREAS.map((a) => `<th class="r" title="${esc(a.n)}">${a.s}</th>`).join("")}<th class="r">Total</th></tr></thead>
+      <tbody>${hmList.map((p) => `<tr><td class="nowrap">${p.name}</td>${p.heat.map((v) => `<td class="r">${v || "–"}</td>`).join("")}<td class="r strong">${sum(p.heat)}</td></tr>`).join("")}</tbody>
+      <tfoot><tr><td>Total</td>${AREAS.map((a, i) => `<td class="r">${sum(hmList.map((p) => p.heat[i]))}</td>`).join("")}<td class="r">${sum(hmList.map((p) => sum(p.heat)))}</td></tr></tfoot></table>`;
+  };
+  const hmTip = (r, c) => {
+    const host = $("#hm"), tip = $(".chart-tip", host), cell = $(`.hm-c[data-r="${r}"][data-c="${c}"]`, host);
+    if (!tip || !cell) return;
+    $$(".hm-c.cur", host).forEach((x) => x.classList.remove("cur")); cell.classList.add("cur");
+    const p = hmList[r], a = AREAS[c], v = p.heat[c], tot = sum(p.heat);
+    tip.innerHTML = "";
+    const head = document.createElement("div"); head.className = "tt-h"; head.textContent = `${p.name} · ${a.n}`; tip.appendChild(head);
+    const row = (color, val, name) => { const d = document.createElement("div"); d.className = "tt-r"; const k = document.createElement("span"); k.className = "key"; k.style.background = color;
+      const b = document.createElement("b"); b.textContent = val; const s = document.createElement("span"); s.textContent = name; d.append(k, b, s); tip.appendChild(d); };
+    row(v ? RAMP[binOf(v)] : "var(--bg-2)", String(v), v === 1 ? "action today" : "actions today");
+    if (tot) row("transparent", `${Math.round((v / tot) * 100)}%`, `of ${p.short}’s ${tot} actions`);
+    else row("transparent", "—", p.stT.toLowerCase());
+    tip.style.display = "block";
+    const tw = tip.offsetWidth, x = cell.offsetLeft + cell.offsetWidth + 8;
+    tip.style.left = (x + tw > host.clientWidth ? Math.max(0, cell.offsetLeft - tw - 8) : x) + "px";
+    const th = tip.offsetHeight; let top = cell.offsetTop - 6;
+    if (top + th > host.offsetHeight) top = Math.max(0, cell.offsetTop + cell.offsetHeight - th);   // keep it inside the scroll box
+    tip.style.top = top + "px";
+    hmCur = [r, c];
+  };
+  const hmHide = () => { const host = $("#hm"), tip = $(".chart-tip", host); if (tip) tip.style.display = "none"; $$(".hm-c.cur", host).forEach((x) => x.classList.remove("cur")); };
+
+  /* ---------------- Activity feed ---------------- */
+  const CHIP = { all: () => true, sensitive: (e) => e[7].includes("sensitive"), money: (e) => e[6].includes("money"), stock: (e) => e[6].includes("stock"), price: (e) => e[6].includes("price"), access: (e) => e[6].includes("access") };
+  const renderFeed = (list) => {
+    const ids = new Set(list.map((p) => p.id));
+    const base = FEED.filter((e) => ids.has(e[1]) && (!F.area || e[5] === F.area) && (F.period !== "live" || e[0] >= "09:42"));
+    $$("#feed-chips .chip[data-chip]").forEach((b) => {
+      let s = $(".cc", b); if (!s) { s = document.createElement("span"); s.className = "cc"; b.append(s); }
+      s.textContent = base.filter(CHIP[b.dataset.chip]).length;
+    });
+    const rows = base.filter(CHIP[F.chip]), shown = feedAll ? rows : rows.slice(0, 12);
+    $("#feed").innerHTML = shown.map((e) => {
+      const p = PK[e[1]], a = AK[e[5]];
+      return `<li><span class="t">${e[0]}</span>${av(p)}<div class="body"><div><button type="button" class="who" data-person="${p.id}">${p.short}</button> ${esc(e[2])}</div>
+        <div class="m"><a class="mono" href="${e[4]}">${esc(e[3])}</a><span>${a ? `<a href="${a.href}">${a.n}</a>` : "Sign-in"}</span>${e[7].map(flagHTML).join("")}</div></div></li>`;
+    }).join("") || `<li class="empty-li">${emptyHTML("history", "No activity matches", "Change the filters or choose All.")}</li>`;
+    const more = $("#feed-more"); more.hidden = rows.length <= 12; more.textContent = feedAll ? "Show fewer" : `Show all ${rows.length}`;
+    $("#feed-sub").textContent = F.period === "live" ? "Last 60 minutes (since 09:42) · newest first"
+      : F.period === "today" ? "Staff actions today in plain language · newest first"
+      : `Showing today · for the last ${F.period === "7d" ? "7" : "30"} days open the audit log`;
+  };
+
+  /* ---------------- Alerts ---------------- */
+  const renderAlerts = (list) => {
+    const ids = new Set(list.map((p) => p.id));
+    const rows = ALERTS.filter((a) => ids.has(a.pid) && (!F.area || a.area === F.area))
+      .sort((x, y) => (ack.has(x.id) - ack.has(y.id)) || SEV_ORDER[x.sev] - SEV_ORDER[y.sev]);
+    $("#alerts").innerHTML = rows.map((a) => {
+      const p = PK[a.pid], done = ack.has(a.id), s = SEV[a.sev];
+      return `<div class="exc ${done ? "ack" : ""}">
+        <span class="sev ${a.sev}">${ic(s[0])} ${s[1]}</span>
+        <div>
+          <div class="e-title">${a.title}</div>
+          <div class="e-meta"><span>${ic("user")} ${p.name}</span><span>${ic("clock")} ${a.time}</span><span>${ic("file")} <a href="${a.rec[1]}">${a.rec[0]}</a></span>${done ? `<span>${ic("check")} Acknowledged by you · 10:42</span>` : ""}</div>
+          <div class="small subtle mt-4">${a.what}</div>
+          <div class="al-why"><b>Why flagged:</b> ${a.rule} <span class="nowrap">Threshold: <b>${a.thr}</b> <span class="tbc">sample · TBC</span></span></div>
+        </div>
+        <div class="e-act">${done ? "" : `<button type="button" class="btn btn-sm" data-ack="${a.id}">${ic("check", "ic-sm")} Acknowledge</button>`}<button type="button" class="btn btn-sm" data-person="${p.id}">${ic("user", "ic-sm")} Open person</button><a class="btn btn-sm" href="${a.rec[1]}">${ic("external", "ic-sm")} Open record</a>${a.reassign && !done ? `<button type="button" class="btn btn-sm" data-toast="${a.reassign}">${ic("transfer", "ic-sm")} Reassign</button>` : ""}</div>
+      </div>`;
+    }).join("") || emptyHTML("check-circle", "No alerts", "Nothing unusual for the people and areas in your filters.");
+    const open = rows.filter((a) => !ack.has(a.id)).length, done = rows.length - open;
+    $("#al-sub").textContent = `Rule-based checks · no AI · ${open} open${done ? ` · ${done} acknowledged` : ""}`;
+  };
+
+  /* ---------------- Performance ---------------- */
+  const perfVals = (p) => {
+    if (!p.perf) return null;
+    const f = p.perf, n = p.name.length;
+    if (F.period !== "30d") return { series: f.d7, handled: sum(f.d7), med: f.med, tgt: f.tgt, back: f.back, ovr: f.ovr };
+    // 30 days (Thu 27 Aug → Fri 25 Sep), repeating each person's weekly pattern with a small fixed variation
+    const series = Array.from({ length: 30 }, (_, i) => {
+      if ((p.id === "arjun" && i < 11) || (p.id === "imran" && i === 29)) return 0;   // started 7 Sep · on leave 25 Sep
+      const base = p.id === "imran" && (i + 5) % 7 === 6 ? 27 : f.d7[(i + 5) % 7];
+      return base ? Math.max(0, base + ((i * 7 + n) % 5) - 2) : 0;
+    });
+    return { series, handled: sum(series), med: Math.max(1, f.med + ((n % 3) - 1)), tgt: Math.min(100, f.tgt + ((n % 3) - 1)), back: f.back, ovr: f.ovr * 4 + (n % 3) };
+  };
+  const SORT_LBL = { name: "name", handled: "work items", med: "median time", tgt: "target met", back: "sent back / corrected", ovr: "overrides" };
+  const renderPerf = (list) => {
+    const rows = list.slice().sort(byTeam).map((p) => ({ p, v: perfVals(p) }));
+    const key = (r) => (sortKey === "name" ? r.p.name : r.v ? r.v[sortKey] : null);
+    rows.sort((a, b) => { const x = key(a), y = key(b); if (x == null && y == null) return 0; if (x == null) return 1; if (y == null) return -1; return (typeof x === "string" ? x.localeCompare(y) : x - y) * sortDir; });
+    const who = (p, sub) => `<div class="row gap-8">${av(p)}<div><button type="button" class="who" data-person="${p.id}">${p.name}</button><div class="cell-sub">${p.role} · ${TEAMS[p.team]}${sub ? ` · ${sub}` : ""}</div></div></div>`;
+    $("#perf-body").innerHTML = rows.map(({ p, v }) => v ? `<tr>
+        <td>${who(p, p.perf.ctx)}</td><td class="r">${TX.num(v.handled)}</td><td class="r">${v.med} min</td><td class="r">${v.tgt}%</td><td class="r">${v.back.toFixed(1)}%</td><td class="r">${v.ovr}</td>
+        <td class="spark-cell"><span class="pk" data-i="${p.id}"></span><span class="sr-only">Work items per day: ${v.series.join(", ")}</span></td></tr>`
+      : `<tr><td>${who(p, "New starter")}</td><td colspan="6" class="small muted">No complete days yet — first shift today</td></tr>`).join("")
+      || `<tr><td colspan="7">${emptyHTML("chart", "No one matches", "Clear the filters to see everyone.")}</td></tr>`;
+    $$("#perf-body .pk").forEach((el) => TX.charts.spark(el, perfVals(PK[el.dataset.i]).series));
+    const vs = rows.filter((r) => r.v).map((r) => r.v);
+    $("#perf-foot").innerHTML = vs.length > 1 ? `<tr><td><span data-help="perf-median">Team median · ${vs.length} people</span></td><td class="r">${TX.num(median(vs.map((v) => v.handled)))}</td><td class="r">${median(vs.map((v) => v.med))} min</td><td class="r">${median(vs.map((v) => v.tgt))}%</td><td class="r">${median(vs.map((v) => v.back)).toFixed(1)}%</td><td class="r">${median(vs.map((v) => v.ovr))}</td><td></td></tr>` : "";
+    $$("#perf-thead th").forEach((th) => { const b = $(".th-sort", th); if (!b) return; const on = b.dataset.sort === sortKey;
+      th.setAttribute("aria-sort", on ? (sortDir > 0 ? "ascending" : "descending") : "none"); $(".si", b).innerHTML = on ? ic(sortDir > 0 ? "chevron-up" : "chevron-down") : ""; });
+    const d30 = F.period === "30d";
+    $("#perf-sub").textContent = d30 ? "Last 30 days (27 Aug – 25 Sep) · complete days only · today is on the status board" : "Last 7 days (Sat 19 – Fri 25 Sep) · complete days only · today is on the status board";
+    $("#perf-trend-l").textContent = d30 ? "Per day · 30 days" : "Per day · 7 days";
+    $("#perf-count").textContent = `${rows.length} people · sorted by ${SORT_LBL[sortKey]} (${sortDir > 0 ? "low to high" : "high to low"})`;
+  };
+
+  /* ---------------- Person drawer ---------------- */
+  const SENS_IC = { refund: "wallet", discount: "percent", price: "tag", stock: "warehouse", export: "download", access: "key", override: "shield", approval: "check-circle", view: "eye", order: "receipt" };
+  const TL_IC = { in: "user", out: "logout", flag: "alert", st: "clock", idle: "clock", now: "activity" };
+  const TL_CLS = { flag: "warn", idle: "warn", now: "current" };
+  const RG_PL = { "Operations admin": "operations admins", "Branch manager": "branch managers", Finance: "finance staff", Warehouse: "warehouse staff", "Catalog specialist": "catalog specialists", "Support executive": "support executives", "Sales associate": "sales associates" };
+
+  const todayHTML = (p) => {
+    const t = p.time, first = p.sess.today.length ? p.sess.today[0][0] : null;
+    const summary = t ? `First sign-in ${first} · active ${hm(t[0])} · idle ${hm(t[1])}${t[2] ? ` · breaks ${hm(t[2])}` : ""}${t[3] ? ` · in meetings ${hm(t[3])}` : ""}` : `${p.stT} · ${p.since}`;
+    return `<div class="row-between mb-16"><span class="small muted">${summary}</span><a class="small strong" href="erp-admin.html#audit">Full record in the audit log →</a></div>
+      <ul class="timeline">${p.day.map(([tm, txt, ar, k]) => `<li class="${TL_CLS[k] || ""}"><span class="t-dot">${ic(TL_IC[k] || (AK[ar] ? AK[ar].icon : "check"))}</span>
+        <div class="t-title">${esc(txt)}</div><div class="t-meta">${tm}${ar && AK[ar] ? ` · ${areaLink(ar)}` : ""}</div></li>`).join("")}</ul>
+      <p class="small muted">Only actions inside Tradex are listed. Phone calls, walk-in advice and work away from the screen do not appear here.</p>`;
+  };
+  const areasHTML = (p) => {
+    const tot = sum(p.heat);
+    return (p.time ? `<div class="mb-16"><div class="row-between mb-8"><h4>Presence today</h4><span class="small muted">worked out from activity inside Tradex</span></div><div id="pd-stack"></div></div>` : "")
+      + (tot ? `<div class="row-between mb-8"><h4>Actions today by area</h4><button type="button" class="btn btn-xs btn-ghost" data-table-toggle="pd-hbar">${ic("list", "ic-sm")} Table view</button></div>
+          <div id="pd-hbar"></div><p class="small muted mt-8">${tot} actions today · the percentage after each bar is that area’s share of ${p.short}’s actions.</p>`
+        : emptyHTML("layers", "No actions today", `${p.stT} · ${p.since}`))
+      + `<p class="small muted mt-12">Usual areas (last 7 days): ${p.home.map((k) => areaLink(k)).join(" · ")}</p>`;
+  };
+  const perfTab = (p) => {
+    if (!p.perf) return emptyHTML("chart", "No complete days yet", `${p.short} starts today, so there is nothing to compare yet.`);
+    const grp = P.filter((q) => q.rg === p.rg && q.perf), useTeam = grp.length < 2, cmp = useTeam ? P.filter((q) => q.perf) : grp;
+    const lbl = useTeam ? "Team median" : "Role median";
+    const mv = (k) => median(cmp.map((q) => (k === "handled" ? sum(q.perf.d7) : q.perf[k])));
+    const f = p.perf, tiles = [["Work items", TX.num(sum(f.d7)), TX.num(mv("handled"))], ["Median time", `${f.med} min`, `${mv("med")} min`], ["Target met", `${f.tgt}%`, `${mv("tgt")}%`],
+      ["Sent back / corrected", `${f.back.toFixed(1)}%`, `${mv("back").toFixed(1)}%`], ["Overrides", f.ovr, mv("ovr")]];
+    return `<div class="callout c-info small mb-16">${ic("info")}<div>Last 7 days (Sat 19 – Fri 25 Sep), compared with ${useTeam ? `the whole team (${cmp.length} people) — ${p.short} is the only person in this role` : `the ${cmp.length} ${RG_PL[p.rg]}`}. ${f.ctx ? `<b>Context:</b> ${f.ctx}.` : ""} Figures start a conversation; they are not a rating.</div></div>
+      <div class="pd-kpis">${tiles.map(([l, v, m]) => `<div><div class="l">${l}</div><div class="v">${v}</div><div class="c">${lbl} ${m}</div></div>`).join("")}</div>
+      <div class="mt-16"><div class="row-between mb-8"><h4>Work items handled per day</h4><button type="button" class="btn btn-xs btn-ghost" data-table-toggle="pd-line">${ic("list", "ic-sm")} Table view</button></div><div id="pd-line"></div></div>`;
+  };
+  const sessHTML = (p) => {
+    const s = p.sess, open = s.today.filter((x) => !x[1]).length, failN = sum(s.fail.map((x) => parseInt(x[4], 10) || 1));
+    const tbl = (head, rows) => `<div class="table-wrap"><table class="table compact"><thead><tr>${head.map((h) => `<th>${h}</th>`).join("")}</tr></thead><tbody>${rows}</tbody></table></div>`;
+    return `<div class="pd-kpis k3 mb-16"><div><div class="l">Sessions open now</div><div class="v">${open}</div></div><div><div class="l">Failed sign-ins (7 days)</div><div class="v">${failN}</div></div><div><div class="l"><span data-help="g.mfa">Two-step sign-in</span></div><div class="v" style="font-size:13.5px;padding-top:4px">${s.mfa}</div></div></div>
+      <h4 class="mb-8">Today</h4>${s.today.length ? tbl(["Signed in", "Signed out", "Device", "Network or branch", "Sign-in method"], s.today.map((x) => `<tr><td class="nowrap">${x[0]}</td><td class="nowrap">${x[1] || '<span class="status s-ok">Still open</span>'}</td><td>${x[2]}</td><td>${x[3]}</td><td class="small">${x[4]}</td></tr>`).join("")) : `<p class="small muted">No sign-in today.</p>`}
+      ${s.note ? `<div class="callout c-info small mt-12">${ic("info")}<div>${s.note}</div></div>` : ""}
+      ${s.fail.length ? `<h4 class="mb-8 mt-16">Failed attempts</h4>${tbl(["When", "Device", "Network or branch", "What happened"], s.fail.map((x) => `<tr><td class="nowrap">${x[0]}</td><td>${x[2]}</td><td>${x[3]}</td><td class="small">${x[4]}</td></tr>`).join(""))}` : ""}
+      <h4 class="mb-8 mt-16">Earlier this week</h4>${s.week.length ? tbl(["Day", "Signed in", "Device", "Network or branch"], s.week.map((x) => `<tr><td class="nowrap">${x[0]}</td><td class="nowrap">${x[1]}</td><td>${x[2]}</td><td>${x[3]}</td></tr>`).join("")) : `<p class="small muted">Never signed in.</p>`}
+      <div class="row-between mt-16"><span class="small muted">The network or branch label comes from where the device connected at sign-in — no GPS or location tracking.</span>${open ? `<button type="button" class="btn btn-sm" data-toast="${esc(p.short)} signed out of ${open} session${open > 1 ? "s" : ""} · recorded in the audit log">${ic("logout", "ic-sm")} Sign out everywhere</button>` : ""}</div>`;
+  };
+  const sensHTML = (p) => `<p class="small muted mb-8">Overrides, refunds, price and discount changes, stock adjustments, exports and access changes in the last 7 days — each with the reason given.</p>`
+    + (p.sens.length ? p.sens.map(([when, type, text, reason, ref, href, fl]) => `<div class="list-row"><span class="li-icon ${fl.includes("flagged") ? "warn" : ""}">${ic(SENS_IC[type] || "shield")}</span>
+        <div class="grow"><b>${esc(text)}</b><div class="small subtle">Reason: ${esc(reason)}</div><div class="small muted">${when} · <a href="${href}">${esc(ref)}</a></div></div>
+        <div class="row wrap gap-4">${fl.map(flagHTML).join("")}</div></div>`).join("")
+      : emptyHTML("shield", "No sensitive actions", `${p.short} made no overrides, refunds, price changes, adjustments or exports in the last 7 days.`));
+  const accessHTML = (p) => `<dl class="kv">${p.acc.map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join("")}</dl>
+    <div class="callout c-info small mt-16">${ic("info")}<div>Roles, location scope and limits are changed only in <a href="erp-admin.html#users">Settings &amp; access → Users</a>. Privileged changes need a second approver and every change is recorded in the audit log. Limits shown are samples (<span class="tbc">TBC</span>).</div></div>
+    <div class="row gap-8 mt-16"><a class="btn btn-sm" href="erp-admin.html#users">${ic("settings", "ic-sm")} Manage in Settings &amp; access</a></div>`;
+
+  const fillDrawer = (p) => {
+    const r = $("#pd-ring"); r.style.setProperty("--rc", ST[p.st][1]); r.classList.toggle("dashed", p.st === "leave");
+    const a = $("#pd-av"); a.textContent = p.init; a.style.background = p.color;
+    $("#pd-name").textContent = p.name;
+    $("#pd-sub").textContent = `${p.role} · ${TEAMS[p.team]} · ${LOCS[p.loc]}`;
+    const al = openAlerts(p.id).length;
+    $("#pd-st").innerHTML = `${stHTML(p)}<span class="small muted">${p.since}</span>${p.now && ON_SHIFT.includes(p.st) ? `<span class="small">${ic(AK[p.now].icon, "ic-sm")} ${areaLink(p.now)}</span>` : ""}${p.tag ? `<span class="badge ${p.tag[0]}">${ic(p.tag[1])} ${p.tag[2]}</span>` : ""}${al ? `<span class="badge b-warn">${ic("bell")} ${al} open alert${al > 1 ? "s" : ""}</span>` : ""}`;
+    $("#pd-msg").dataset.toast = `Message to ${p.short} opened · sent inside Tradex`;
+    $("#pd-reassign").dataset.toast = p.open ? `${p.open} open item${p.open > 1 ? "s" : ""} of ${p.short} ready to reassign · choose a colleague with the same role` : `${p.short} has no open items to reassign`;
+    $("#pd-p-today").innerHTML = todayHTML(p);
+    $("#pd-p-areas").innerHTML = areasHTML(p);
+    $("#pd-p-perf").innerHTML = perfTab(p);
+    $("#pd-p-sess").innerHTML = sessHTML(p);
+    $("#pd-p-sens").innerHTML = sensHTML(p);
+    $("#pd-p-access").innerHTML = accessHTML(p);
+    const t = p.time, tot = sum(p.heat);
+    if (t) TX.charts.stack($("#pd-stack"), { format: hm, parts: [{ name: "Active", value: t[0], color: "var(--series-1)" }, { name: "Idle", value: t[1], color: "#c3c2b7" },
+      { name: "On break", value: t[2], color: "var(--series-3)" }, { name: "In a meeting / away", value: t[3], color: "var(--series-2)" }] });
+    if (tot) TX.charts.hbar($("#pd-hbar"), { title: `Actions today by area for ${p.name}`, seriesName: "Actions today", labelHeader: "Area", labelWidth: 170,
+      items: AREAS.map((x, i) => ({ label: x.n, value: p.heat[i] })).filter((x) => x.value).sort((x, y) => y.value - x.value), format: (v) => `${v} · ${Math.round((v / tot) * 100)}%` });
+    if (p.perf) {
+      const grp = P.filter((q) => q.rg === p.rg && q.perf), cmp = grp.length < 2 ? P.filter((q) => q.perf) : grp;
+      TX.charts.line($("#pd-line"), { title: `Work items handled per day by ${p.name} compared with the ${grp.length < 2 ? "team" : "role"} median`, labels: DAYS7, height: 200, format: (v) => TX.num(v),
+        series: [{ name: p.short, color: "var(--series-1)", values: p.perf.d7 }, { name: grp.length < 2 ? "Team median" : "Role median", color: "#898781", values: DAYS7.map((_, i) => median(cmp.map((q) => q.perf.d7[i]))) }] });
+    }
+  };
+  const openPerson = (id) => {
+    const p = PK[id]; if (!p) return;
+    fillDrawer(p); TX.activateTab("pd-today"); TX.open("d-person");
+    setTimeout(() => { const c = $("#d-person [data-close]"); if (c) c.focus({ preventScroll: true }); }, 40);
+  };
+
+  /* ---------------- Render everything ---------------- */
+  const renderAll = () => {
+    const list = P.filter((p) => matchP(p)), people = P.filter((p) => matchP(p, false));
+    renderKpis(list); renderBoard(list); renderAreas(people); renderHeat(people); renderFeed(people); renderAlerts(people); renderPerf(list);
+    const any = F.loc || F.team || F.area || F.q;
+    $("#flt-count").innerHTML = `Showing ${list.length} of ${P.length} staff on today’s roster${any ? ` <button type="button" class="link-btn" id="flt-clear">Clear filters</button>` : ""}`;
+  };
+
+  /* ---------------- Wiring ---------------- */
+  const locSel = $("#f-loc"), areaSel = $("#f-area"), teamSel = $("#f-team"), qIn = $("#f-q");
+  TX.locations.forEach((l) => locSel.insertAdjacentHTML("beforeend", `<option value="${l.code}">${esc(l.name)}</option>`));
+  AREAS.forEach((a) => areaSel.insertAdjacentHTML("beforeend", `<option value="${a.k}">${esc(a.n)}</option>`));
+  $("#f-period").addEventListener("click", (e) => { const b = e.target.closest("button[data-period]"); if (!b) return; F.period = b.dataset.period; renderAll(); });
+  locSel.addEventListener("change", () => { F.loc = locSel.value; renderAll(); });
+  teamSel.addEventListener("change", () => { F.team = teamSel.value; renderAll(); });
+  areaSel.addEventListener("change", () => { F.area = areaSel.value; renderAll(); });
+  qIn.addEventListener("input", () => { F.q = qIn.value.trim().toLowerCase(); renderAll(); });
+  $("#sg").addEventListener("click", (e) => { const b = e.target.closest("button[data-sg]"); if (!b) return; F.sg = b.dataset.sg; renderAll(); });
+  $$("#feed-chips .chip[data-chip]").forEach((c) => c.setAttribute("aria-pressed", String(c.classList.contains("active"))));
+  $("#feed-chips").addEventListener("click", (e) => {
+    const b = e.target.closest(".chip[data-chip]"); if (!b) return;
+    F.chip = b.dataset.chip; feedAll = false;
+    $$("#feed-chips .chip[data-chip]").forEach((c) => { c.classList.toggle("active", c === b); c.setAttribute("aria-pressed", String(c === b)); });
+    renderAll();
+  });
+  $("#feed-more").addEventListener("click", () => { feedAll = !feedAll; renderAll(); });
+  $("#hm-toggle").addEventListener("click", (e) => {
+    const b = e.currentTarget, on = $("#hm-host").classList.toggle("show-table");
+    b.setAttribute("aria-pressed", String(on)); b.innerHTML = on ? `${ic("grid")} Chart view` : `${ic("list")} Table view`;
+  });
+  $("#perf-thead").addEventListener("click", (e) => {
+    const b = e.target.closest(".th-sort"); if (!b) return;
+    const k = b.dataset.sort;
+    if (sortKey === k) sortDir = -sortDir; else { sortKey = k; sortDir = ["name", "med", "back"].includes(k) ? 1 : -1; }
+    renderAll();
+  });
+  const hmEl = $("#hm");
+  hmEl.addEventListener("pointerover", (e) => { const c = e.target.closest(".hm-c"); if (c) hmTip(+c.dataset.r, +c.dataset.c); });
+  hmEl.addEventListener("pointerleave", hmHide);
+  hmEl.addEventListener("click", (e) => { const c = e.target.closest(".hm-c"); if (c && hmList[+c.dataset.r]) openPerson(hmList[+c.dataset.r].id); });
+  hmEl.addEventListener("focus", () => { if (hmList.length) hmTip(hmCur[0], hmCur[1]); });
+  hmEl.addEventListener("blur", hmHide);
+  hmEl.addEventListener("keydown", (e) => {
+    if (!hmList.length) return;
+    let [r, c] = hmCur; const k = e.key;
+    if (k === "ArrowRight") c++; else if (k === "ArrowLeft") c--; else if (k === "ArrowDown") r++; else if (k === "ArrowUp") r--;
+    else if (k === "Home") c = 0; else if (k === "End") c = AREAS.length - 1;
+    else if (k === "Enter" || k === " ") { e.preventDefault(); openPerson(hmList[r].id); return; }
+    else return;
+    e.preventDefault();
+    r = Math.max(0, Math.min(hmList.length - 1, r)); c = Math.max(0, Math.min(AREAS.length - 1, c));
+    hmTip(r, c);
+    const cell = $(`.hm-c[data-r="${r}"][data-c="${c}"]`, hmEl); if (cell) cell.scrollIntoView({ block: "nearest", inline: "nearest" });
+  });
+  document.addEventListener("click", (e) => {
+    const t = e.target; let el;
+    if ((el = t.closest("[data-ack]"))) { ack.add(el.dataset.ack); TX.toast("Alert acknowledged · recorded in the audit log"); renderAll(); return; }
+    if ((el = t.closest("[data-person]"))) { e.preventDefault(); openPerson(el.dataset.person); return; }
+    if ((el = t.closest(".pc[data-pid]")) && !t.closest("a,button")) { openPerson(el.dataset.pid); return; }
+    if (t.closest("#flt-clear")) { F.loc = F.team = F.area = F.q = ""; locSel.value = teamSel.value = areaSel.value = qIn.value = ""; renderAll(); return; }
+    if ((el = t.closest("[data-table-toggle]"))) { const h = document.getElementById(el.dataset.tableToggle); if (h) TX.charts.toggleTable(h); }
+  });
+
+  /* Alert rules modal */
+  const NOTIFY = ["Owner", "Owner + Operations admin", "Operations admin", "Branch manager", "Warehouse lead + Operations admin", "Team lead"];
+  $("#rules-body").innerHTML = RULES.map(([n, d, thr, who, lvl, on]) => `<tr>
+    <td><label class="switch"><input type="checkbox" ${on ? "checked" : ""} aria-label="${esc(n)}: rule on"></label></td>
+    <td><div class="cell-main">${n}</div><div class="cell-sub">${d}</div></td>
+    <td><div class="thr"><input class="input input-sm" value="${esc(thr)}" aria-label="Threshold for ${esc(n)}"><span class="tbc">sample · TBC</span></div></td>
+    <td><select class="select input-sm" aria-label="Who is notified: ${esc(n)}">${NOTIFY.map((o) => `<option ${o === who ? "selected" : ""}>${o}</option>`).join("")}</select></td>
+    <td><span class="sev ${lvl}">${ic(SEV[lvl][0])} ${SEV[lvl][1]}</span></td></tr>`).join("");
+
+  /* Heatmap colour scale legend */
+  $("#hm-ramp").innerHTML = RAMP.map((c, i) => `<span><i style="background:${c}"></i>${i === 10 ? "55+" : [0, 3, 6].includes(i) ? BINS[i] : "&nbsp;"}</span>`).join("");
+
+  /* KPI sparklines: half-hourly, 06:00 → 10:30 */
+  TX.charts.spark($("#sp-act"), [2, 1, 0, 3, 5, 7, 9, 10, 8, 7]);
+  TX.charts.spark($("#sp-actions"), [9, 6, 2, 18, 41, 66, 88, 112, 131, 152]);
+  TX.charts.spark($("#sp-handled"), [2, 1, 0, 5, 14, 22, 31, 42, 52, 60]);
+
+  renderAll();
+  fillDrawer(PK.anita);   // so a deep link to #d-person opens with content
+});
+</script>
+</body>
+</html>

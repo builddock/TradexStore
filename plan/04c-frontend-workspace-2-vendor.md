@@ -1,4 +1,4 @@
-# 04c — Frontend plan: ERP workspace part 2 (P-E09–P-E15) and vendor portal (P-V01–P-V04)
+# 04c — Frontend plan: ERP workspace part 2 (P-E09–P-E15, P-E17–P-E18) and vendor portal (P-V01–P-V04)
 
 **Purpose.** Screen-level implementation plan for the ERP staff workspace screens P-E09 Purchasing & receiving,
 P-E10 Customers & dealers, P-E11 Vendors & submissions, P-E12 Payments & reconciliation, P-E13 Reports, P-E14
@@ -36,6 +36,11 @@ per screen and not repeated per tab.
 ---
 
 ## 0. How to read this file
+
+§22 (P-E17 Team & activity, `erp-team.html`) and §23 (P-E18 Analytics, `erp-analytics.html`) were added on
+2026-09-30 for the client feedback `CF1 §2` and `CF1 §3` (`docs/CLIENT_FEEDBACK_2026-09-30.md`; decisions
+`D-282`–`D-286`). They use the structure of §0.1; each also names the capability that governs every section
+(`21-feature-map.md` §4).
 
 ### 0.1 Per-screen structure
 Each screen section has: **(a) summary card** — purpose, evidence, route, module/folder, phase & requirement IDs,
@@ -79,7 +84,11 @@ below as evidence of the intended phase/requirement for the block they label (ci
 
 ---
 
-## 1. Cross-cutting rules for P-E09–P-E15 and P-V01–P-V04
+## 1. Cross-cutting rules for P-E09–P-E15, P-E17–P-E18 and P-V01–P-V04
+
+Rules X1–X20 apply unchanged to P-E17 Team & activity (§22) and P-E18 Analytics (§23), added 2026-09-30. On P-E17
+a staff member without the screen's permission gets 404 rather than a "forbidden" state (§22.13); on P-E18 X19
+(cost and margin columns) is applied through `analytics.margin.read` (§23.9).
 
 | # | Rule | Source | Label |
 |---|---|---|---|
@@ -2376,7 +2385,11 @@ this file additionally uses on P-E09 `API-M02-31`, `API-M03-02`, `API-M04-15`/`A
 behind recommended exception actions and `API-M24-08`; on P-E15 `API-M17-03` (second approver of a threshold change);
 on P-V01 `API-M02-01`, `API-M14-18`, `API-M14-33`; on P-V03 `API-M02-02`, `API-M02-03`, `API-M22-02`; on P-V04
 `API-M14-02`. `06-api.md` §7.3 maps `API-M14-23` and `API-M14-35` to P-V01 — in this plan the P-V01 PO KPI comes from
-`API-M14-03` and document uploads happen on P-V04 (the P-V01 announcement "Upload" navigates there).
+`API-M14-03` and document uploads happen on P-V04 (the P-V01 announcement "Upload" navigates there). P-E17 and
+P-E18 (added 2026-09-30) match `06-api.md` §7.3 plus, on P-E17, `API-M02-01` (badge wording), `API-M02-27`
+(delegating the screen, done on P-E15), `API-M02-43` (shell heartbeat and status control, §22.12), `API-M18-15`
+(sidebar badge) and `API-M24-01` (`#m-recorded` content from configuration), and on P-E18 `API-M18-07` ("Schedule
+email" opens P-E13).
 
 | Screen | Tab / element | APIs |
 |---|---|---|
@@ -2442,6 +2455,25 @@ on P-V01 `API-M02-01`, `API-M14-18`, `API-M14-33`; on P-V03 `API-M02-02`, `API-M
 | P-E15 | Tab `#audit` — Audit log (and drawer `#d-audit`) | API-M02-30, API-M18-03 |
 | P-E15 | Tab `#system` — System | API-M24-08, API-M24-09 |
 | P-E15 | Items not drawn in the mockup but required by this screen's APIs | API-M02-19, API-M02-29 |
+| P-E17 | Page header and filter row | API-M02-01, API-M03-02, API-M18-03, API-M24-15, API-M24-17, API-M24-18 |
+| P-E17 | KPI tiles | API-M18-15, API-M24-15 |
+| P-E17 | Section "Live status board" (`#board`) | API-M24-15 |
+| P-E17 | Section "How each area is being handled" (`#area-body`) | API-M24-15 |
+| P-E17 | Section "Who is working where" (`#hm`) | API-M24-15 |
+| P-E17 | Section "Activity" (`#feed`) | API-M02-30, API-M24-17 |
+| P-E17 | Section "Alerts & unusual activity" (`#alerts`) | API-M02-34, API-M24-15, API-M24-18, API-M24-20 |
+| P-E17 | Section "Performance" (`#perf-body`) | API-M24-15 |
+| P-E17 | Drawer `#d-person` — person detail | API-M02-23, API-M02-30, API-M02-34, API-M24-16 |
+| P-E17 | Modal `#m-recorded` — What Tradex records about staff activity | API-M24-01 |
+| P-E17 | Modal `#m-rules` — Alert rules | API-M17-26, API-M20-09, API-M24-18, API-M24-19 |
+| P-E17 | Items not drawn in the mockup (staff status control, heartbeat, delegation) | API-M02-27, API-M02-43, API-M24-01 |
+| P-E18 | Page header and filter row | API-M03-02, API-M04-01, API-M18-03, API-M18-07 (via P-E13), API-M18-13, API-M18-14, API-M18-20 |
+| P-E18 | Tab `overview` — Overview | API-M18-20 |
+| P-E18 | Tab `sales` — Sales | API-M18-20 |
+| P-E18 | Tab `products` — Products | API-M18-20 |
+| P-E18 | Tab `customers` — Customers | API-M18-20 |
+| P-E18 | Tab `store` — Store & operations (view `operations`) | API-M18-20 |
+| shell(S) | Visit beacon (no visible UI; CONDITIONAL, D-285) | API-M09-03 |
 | shell(V) / app | Vendor app — session, sign-in & files (pages outside MK) | API-M02-01, API-M02-04, API-M02-05, API-M02-06, API-M02-07, API-M02-08, API-M02-16, API-M02-17, API-M14-02, API-M22-01, API-M22-02 |
 | shell(V) / app | Vendor shell (`assets/tradex.js` `buildWorkspaceShell` with `app = "vendor"`) | API-M02-01, API-M02-06, API-M02-09, API-M02-10, API-M02-11, API-M02-12, API-M02-13, API-M02-14, API-M14-02, API-M14-03, API-M20-01, API-M20-02, API-M21-03 |
 | P-V01 | Header and account-state card | API-M02-01, API-M14-02, API-M14-03, API-M14-33 |
@@ -2483,13 +2515,17 @@ qualifiers as in `06-api.md` §1.3. Server-side enforcement is authoritative (X2
 | P-E13 Reports | R per report permission | R per report permission | R per report permission | S own branch | A restricted finance reports, schedules | F | F (digest) | — | — | — |
 | P-E14 Automation & exceptions | S own-team exceptions; propose rules | S own-team exceptions | S own-team exceptions | S branch exceptions; approvals within threshold; rule owner if named | A finance exceptions/approvals; R rules | F (rules, pause, all queues) | F (owner-level, high-value approvals) | — | — | — |
 | P-E15 Settings, roles & audit | — (emergency-access request only) | S bin labels (loc); emergency-access request | — (emergency-access request) | S own team if delegated; bins (loc); own-branch audit; access-review reviewer | A thresholds; finance-object audit | F (privileged changes need second approver) | F | — | — | — |
+| P-E17 Team & activity | — (403) | — (403) | — (403) | S own branch, only if the owner delegates (D-283 b): read, acknowledge, export | — (403) | A only if the owner delegates (D-283 b): read, acknowledge, rules, export | F (rules with MFA) | — | — | — |
+| P-E18 Analytics | — | — | — | S own branch per D-286 (f); margin per D-286 (b) | R per D-286; margin per D-286 (b) | R per D-286; margin per D-286 (b) | F (incl. margin) | — | — | — |
 | Vendor shell | — | — | — | — | — | — | — | S (state notice, profile) | F (sub-role gated) | — |
 | P-V01 Vendor dashboard | — | — | — | — | — | — | — | S account-state card only | F own organisation | — |
 | P-V02 Products & submissions | — | — | — | — | — | — | — | — (disabled, V7) | A Catalog / Admin sub-roles | A submissions API (key scope) |
 | P-V03 Availability, POs, tasks, returns | — | — | — | — | — | — | — | — (disabled, V7) | A Operations / Admin; returns view Catalog / Accounts | A availability API (key scope) |
 | P-V04 Business profile & statements | — | — | — | — | — | — | — | S profile, documents, terms | A Admin (users, terms, change requests, bank checker); Accounts (statements, bank maker); others read | — |
 
-R-guest, R-consumer, R-dealer and R-seller (LATER) have no access to any screen in this file.
+R-guest, R-consumer, R-dealer and R-seller (LATER) have no access to any screen in this file. Every staff role
+sends its own presence from the workspace shell (`presence.self`, API-M02-43, when `CAP-STAFF_PRESENCE` is on) —
+that is not access to P-E17.
 
 ## 16. API gaps found
 
@@ -2627,3 +2663,474 @@ Architecture: `19-saas-platform.md` §6.5, §9, §11.
 | VND-6 | Vendor terminology, help content (X20) and responsive behaviour (X16) apply to whatever screen set the configuration produces | `T-1B.1-M14-16`, `T-1B.1-M14-17` |
 
 Read §1–§20 as the specification of the vendor portal **for a store configured with `VP-electronics`**.
+
+---
+
+## 22. P-E17 — Team & activity (`erp-team.html`)
+
+Added 2026-09-30 for the client feedback `CF1 §2` (`D-282` DECIDED; policy `D-283` OPEN). Cross-cutting rules §1
+apply. Every name, time, count, limit, target, threshold and retention period on this screen is a sample (§0.2).
+
+### 22.0 Summary card
+
+| Property | Value |
+|---|---|
+| Purpose | The owner's view of the team: who is working now and on what, what each person did today, how every workspace area is being handled, rule-based alerts on unusual activity, and performance over complete days compared within the same role (CF1 §2: "monitor each employee", "check the activities performed by each employee", "check the current status of each employee", "monitor how employees are handling the REP section" — read as the ERP section, D-282) |
+| Evidence | DOCUMENTED (CF1 §2) · MOCKUP (MK:erp-team.html; anno "1A · CF1 Employee monitoring …") · scope and the recorded / never-recorded lists DECIDED (D-282) · policy REQUIRES_DECISION (D-283) |
+| Route | NOT SPECIFIED — MK `erp-team.html` (no tabs; sections: KPI tiles, "Live status board", "How each area is being handled", "Who is working where", "Activity", "Alerts & unusual activity", "Performance"); drawer `#d-person` (tabs `pd-today`, `pd-areas`, `pd-perf`, `pd-sess`, `pd-sens`, `pd-access`); modals `#m-recorded`, `#m-rules`. Sidebar group Overview → "Team monitor" with a badge (open serious and critical alerts) |
+| Module / folder | M24 (screen), M02 (presence, work-item events, audit tags), M17 (staff alerts) · `MOD-administration` · `frontend/workspace/` if D-004 = custom |
+| Phase · reqs | 1A · CF1 §2 · BP §18.2 (individually attributable accounts), §19.1 (audit), §12.5 (owner exception view) · T-1A.2-M02-11 (activity capture), T-1A.14-M17-13 (alert rules), T-1A.16-M24-12 (screen), T-1A.16-M24-13 (help), T-0-M09-07 (client review) |
+| D-004 native-vs-custom considerations | (1) The core candidates have native user lists and audit trails (as for P-E15) but no presence board, per-area handling view or people × areas view. (2) The data the screen needs — area and work-item tags on audit events, presence intervals, work-item events, staff alerts — are extension records whichever UI is chosen (T-1A.2-M02-11, T-1A.14-M17-13). (3) Owner-only and read-mostly; BP §30.1 "build custom staff UI only where it materially improves a frequent task" applies. **Not decided — D-004.** |
+| Roles | R-owner; R-ops_admin and R-branch_manager (own branch only) only if the owner delegates (D-283 b); every other staff role has no navigation entry and gets 403 for the route and its endpoints — detail §22.13 |
+| Capability | Screen and navigation entry `CAP-TEAM_MONITOR`; presence `CAP-STAFF_PRESENCE`; alerts, alert tile, sidebar badge and rules `CAP-STAFF_ACTIVITY_ALERTS`; audit-log links `CAP-AUDIT_VIEWER` (`21` §4) |
+| Status | REQUIRES_DECISION (D-004, D-101, D-283) |
+
+### 22.1 Page header and filter row
+
+| Element | Content | API | Label · status |
+|---|---|---|---|
+| Crumbs / title / subtitle | Overview; "Team & activity"; "Who is working, what they are doing and how each part of the workspace is being handled · live · updated <time>" (freshness, X11) | API-M24-15 `as_of` | MOCKUP |
+| Badge "Visible to the owner only" | Lock badge; the wording follows the actual delegation (a delegated branch manager sees their branch named) | API-M02-01 | MOCKUP · REQUIRES_DECISION (D-283 b) |
+| "What is recorded" | Opens `#m-recorded` | — | DECIDED (D-282) |
+| "Alert rules" | Opens `#m-rules` | API-M24-18 | MOCKUP |
+| "Export" | CSV of today's team activity for the current filters, only what the caller may see; the export itself is audited (toast "Export queued …") | API-M18-03 (dataset `team_activity`) | MOCKUP · REQUIRES_DECISION (D-152) |
+| Period `#f-period` | Segmented Live · Today (default) · 7 days · 30 days. Live limits the activity list to the last 60 minutes; 7 / 30 days change only the performance table; KPI tiles, board, area table and heatmap are always live / today (help `f-period`) | API-M24-15 `period`, API-M24-17 `period` | MOCKUP |
+| Location `#f-loc` | "All locations" + each location | API-M03-02 | MOCKUP |
+| Team `#f-team` | All teams · Warehouse · Sales & branches · Support · Catalog & pricing · Finance · Management — no entity holds a team; grouping from roles / job titles | API-M24-15 `team` | MOCKUP · REQUIRES_DECISION (D-222) |
+| Workspace area `#f-area` | "All workspace areas" + the 14 areas in menu order | API-M24-15 `area_key`, API-M24-17 `area_key` | MOCKUP |
+| Person search `#f-q` | "Search a person…" — name or job title | `q` | MOCKUP |
+| Count `#flt-count` | "Showing n of N staff on today's roster" + "Clear filters" when any filter is set | — | MOCKUP |
+
+Filter scope (MK anno "Filters scope the status board, heatmap rows, activity, alerts and performance"): the area
+table always covers all locations and highlights the selected area; the location filter narrows only who is shown
+as working there (help `f-location`, `f-area`). T-1A.16-M24-12 AC 1: filters change the board, feed and
+performance table consistently.
+
+### 22.2 KPI tiles
+
+| Tile (MK label) | Value · foot | Response field (API-M24-15 `kpis`) | Label · status |
+|---|---|---|---|
+| "On shift now" | n / scheduled; foot explains the gap ("1 on leave", "n not signed in", "n starts later") | on_shift, scheduled, on_leave, not_signed_in, starts_later | MOCKUP · REQUIRES_DECISION (D-283 — needs a roster/leave source, §22.12 #1) |
+| "Active now" | n; "worked in Tradex in the last 10 min"; half-hourly sparkline | active_now | MOCKUP · window sample (D-283 c) |
+| "Idle now (10+ min)" | n; names with minutes, longest first | idle_over_threshold[] | MOCKUP · threshold sample (D-283 c) |
+| "Actions recorded today" | n; delta vs the same weekday; sparkline | actions_today, actions_comparison | MOCKUP · comparison basis D-173 |
+| "Work items handled today" | n; "median n min each"; sparkline | items_handled_today, median_handling_minutes | MOCKUP |
+| "Open alerts" | n; "n serious or critical" — the same count as the sidebar badge | open_alerts, open_alerts_serious; badge via API-M18-15 | MOCKUP · `CAP-STAFF_ACTIVITY_ALERTS` |
+
+Tile definitions follow X18 (D-173). The status key and the tile use one idle rule (MK sample: 10+ min,
+D-283 c); the alert rule "20 min idle while work is waiting" is a separate alert threshold (D-283 f).
+
+### 22.3 Section "Live status board" (`#board`)
+
+| Property | Value |
+|---|---|
+| Purpose | One card per person on today's roster: status, current activity, today's counts and open-item load (CF1 §2 "current status of each employee") |
+| Evidence | DOCUMENTED (CF1 §2) · MOCKUP (anno "1A · CF1 Employee monitoring · status board (D-282)") |
+| Route | MK `#board`; status groups `#sg` |
+| Sections / components | Header sub "n of N on today's roster (n more on their weekly day off) · presence from Tradex activity only · updated <time>"; segmented `#sg` All · Active · Idle · Break or away · Not working, each with its count; "Status key" legend: Active · Idle (no activity 10+ min) · On break · In a meeting / away · Offline · On leave · Not yet signed in; card grid; foot "Presence is worked out only from activity inside the Tradex workspace; staff can set 'On break' or 'In a meeting' themselves." + "What is recorded →" (`#m-recorded`) |
+| Card | Avatar with a status-coloured ring (dashed when on leave); name (button → `#d-person`); job title · location; status pill with text + "since" / "last action" time; current or last activity with icon and a link to its area; optional tag (e.g. "Acting for owner until …", "Extra role · leave cover", "Temporary · until …", "Two-step sign-in not set up", "Signs in with SMS code", "New starter"); counters actions today · items handled · median time ("—" when not working); "Open items" meter n / capacity (amber, then red as it fills; notes "Queue full", "Still assigned while on leave — reassign"); foot: device and sign-in network/branch label, open-alert badge. A click anywhere on the card opens the drawer |
+| Ordering | Active, idle, on break, in a meeting, not signed in, offline, on leave (help `board`) |
+| States | **Empty** "No one matches — Clear the filters or choose All to see everyone." **Stale presence**: when presence is older than the heartbeat window the "updated" time says so and statuses read "last seen <time>" (X11; T-1A.16-M24-12). **Presence off** (`CAP-STAFF_PRESENCE`): ring, idle / break / away statuses, "since", the Idle tile and the status key are absent; cards keep role, last activity from the audit log and counters. Status is never colour-only (X13) |
+| Permissions | `team.monitor.read`; R-branch_manager own branch (D-283 b); the owner is not on the board (MK) |
+| APIs | API-M24-15 (`sections` kpis, board) |
+| Backend / data | E-staff_presence_interval, E-work_item_event, E-audit_event, E-user_account, E-user_role_assignment, E-staff_alert (`03` §13) |
+| Related | `#d-person`; P-E15 `#users` |
+| Phase · reqs | 1A · CF1 §2 |
+| Status | REQUIRES_DECISION (D-283 — idle threshold, self-set statuses, roster/leave, open-item capacity) |
+
+### 22.4 Section "How each area is being handled" (`#area-body`)
+
+| Property | Value |
+|---|---|
+| Purpose | One row per ERP workspace area showing whether the work is keeping up — the plan's reading of "how employees are handling the REP section" (CF1 §2; D-282) |
+| Evidence | DOCUMENTED (CF1 §2 as read by D-282) · MOCKUP (anno "1A · CF1 Employee monitoring · ERP area handling (D-282)") |
+| Sections / components | Header sub "Every part of the ERP workspace · today until <time> · all locations"; summary "n on track · n at risk · n behind"; table; foot legend "On track = within targets · At risk = a target is close to being missed or cover is missing · Behind = targets are being missed now. Targets are samples (TBC)" + "Service reports →" (P-E13) |
+| Table | Workspace area (icon + name, link to the area's screen) · Open (count + note, e.g. "4 past reply target") · Handled today (count + note) · Oldest waiting (age + record / note) · Target met (% or "—" + "no target") · Median time (+ what it measures, e.g. "pick → packed") · Working now (avatars of active people; others listed with their status; "Nobody right now") · Overrides (count + note, e.g. "6 discounts above limit · 1 price") · State (On track / At risk / Behind, icon + text, with the reason underneath) |
+| Rows | The 14 areas in menu order: Orders, Pick · pack · dispatch, Returns & warranty, Support inbox, Products (catalog), Pricing & tiers, Inventory & serials, Purchasing & receiving, Customers & dealers, Vendors, Payments & reconciliation, Reports, Automation, Settings & access — only areas whose module the store has (`21` §4). P-E01, P-E17 and P-E18 are not rows |
+| Filters | `#f-area` highlights the row (`sel`); location narrows "Working now" only |
+| States | Area without a target → "—" and "no target"; the state is always written, never colour-only |
+| Permissions | `team.monitor.read`; R-branch_manager own-branch figures (D-283 b) |
+| APIs | API-M24-15 (`sections` areas) |
+| Backend / data | E-work_item_event (open, handled, waiting, target met, median), E-audit_event (overrides), E-staff_presence_interval (working now). Each row must match the open-item count of the area's own screen (T-1A.16-M24-12 AC 2) — same sources as API-M18-15 / API-M18-16 |
+| Related | P-E02…P-E15 (row links), P-E13 |
+| Status | REQUIRES_DECISION (D-283 — per-area service targets and the at-risk / behind rules; definitions D-173) |
+
+### 22.5 Section "Who is working where" (`#hm`)
+
+| Property | Value |
+|---|---|
+| Purpose | People × areas heatmap of the actions recorded today |
+| Evidence | MOCKUP (anno "1A · CF1 Employee monitoring · who works where (D-282)") |
+| Sections / components | Header sub "Actions recorded today per person and workspace area · darker blue = more actions"; grid: rows = people (avatar + short name, grouped by team), columns = the 14 areas (short labels), cell = actions today ("·" for none); single-hue sequential blue ramp (11 steps, 1 … 55+) with a "none" swatch; tooltip "<person> · <area>: n actions today, x % of <person>'s n actions"; keyboard: focus the grid, arrow keys, Home / End, Enter opens the person; the area filter fades the other columns; "Table view" `#hm-toggle` → `#hm-table` (Person · 14 areas · Total, totals row) (04b §2.19 #3, X13) |
+| States | Empty "No one matches — Clear the filters to see everyone." |
+| Permissions | `team.monitor.read` |
+| APIs | API-M24-15 (`sections` heatmap) |
+| Backend / data | E-audit_event (actor × area, today) |
+| Status | REQUIRES_DECISION (D-283) |
+
+### 22.6 Section "Activity" (`#feed`)
+
+| Property | Value |
+|---|---|
+| Purpose | Staff actions in plain language, newest first (CF1 §2 "check the activities performed by each employee") |
+| Evidence | DOCUMENTED (CF1 §2) · MOCKUP (anno "1A · CF1 Employee monitoring · activity feed from the audit log (D-282)") |
+| Sections / components | Header sub by period ("Last 60 minutes (since …)", "Staff actions today in plain language · newest first", "Showing today · for the last 7 days open the audit log"); "Audit log →" (P-E15 `#audit`); chip bar `#feed-chips` "Show": All · Sensitive only · Money · Stock · Prices & discounts · Access & exports, each with a count; rows: time, avatar, person (button → drawer) + action text, record link, area link or "Sign-in", flag badges; "Show all n" / "Show fewer" (first 12); foot flag key: Sensitive · Delegated authority · After hours · Needed approval · Emergency access ("Raised an alert" also appears in the drawer) |
+| Filters · search | period, location, team, area, person search, chip → API-M24-17 (`period`, `location_id`, `team`, `area_key`, `user_id`, `q`, `chip`) |
+| States | Empty "No activity matches — Change the filters or choose All." |
+| Permissions | `team.monitor.read`; before/after values are not shown here (audit-log rules, D-153) |
+| APIs | API-M24-17; API-M02-30 through the "Audit log →" link |
+| Backend / data | E-audit_event (`area`, `work_item_ref`), E-delegation, E-approval_request, E-staff_alert |
+| Status | REQUIRES_DECISION (D-283 — the working hours behind "After hours") |
+
+### 22.7 Section "Alerts & unusual activity" (`#alerts`)
+
+| Property | Value |
+|---|---|
+| Purpose | Rule-based alerts on unusual staff activity (no AI), newest and most serious first |
+| Evidence | MOCKUP (anno "1A · CF1 Employee monitoring · rule-based alerts, no AI (D-282)") · D-282 |
+| Sections / components | Header sub "Rule-based checks · no AI · n open · n acknowledged"; "Rules" → `#m-rules`; alert rows: severity pill (Critical / Serious / Warning, icon + text), title, person, time, record link, what happened, "Why flagged:" rule text + "Threshold: <value>" with a "sample · TBC" tag; actions Acknowledge · Open person · Open record · Reassign (only on "Open work assigned to someone on leave"); acknowledged rows dimmed with "Acknowledged by you · <time>"; foot "Why flagged names the rule and its sample threshold. Acknowledge records that you have seen it; it does not accuse anyone." |
+| Ordering | Open before acknowledged; then critical, serious, warning |
+| States | Empty "No alerts — Nothing unusual for the people and areas in your filters."; the whole section is absent when `CAP-STAFF_ACTIVITY_ALERTS` is off |
+| Permissions | See: `team.monitor.read`; acknowledge: `team.alert.ack` |
+| APIs | API-M24-15 (`sections` alerts), API-M24-18 (rule text), API-M24-20 |
+| Backend / data | E-staff_alert, E-staff_alert_rule, E-audit_event |
+| Related | Serious and critical alerts also reach the owner's exception view (P-E01) and digest (T-1A.14-M17-13; D-063) |
+| Status | REQUIRES_DECISION (D-283 f) |
+
+| Control | API | Result / guard | Evidence |
+|---|---|---|---|
+| "Acknowledge" | API-M24-20 (Idem) | Toast "Alert acknowledged · recorded in the audit log"; row dimmed; tile and sidebar badge decrease | MOCKUP |
+| "Open person" | — | Opens `#d-person` | MOCKUP |
+| "Open record" | — | Navigates to the record's own screen; the server re-checks access | MOCKUP |
+| "Reassign" (leave alert) | none — no bulk reassign endpoint (§22.12 #4) | MK toast "4 return cases moved to the returns queue" is not backed by an endpoint; reassign on P-E04 ("Assign…", API-M02-34) | MOCKUP |
+
+### 22.8 Section "Performance" (`#perf-body`)
+
+| Property | Value |
+|---|---|
+| Purpose | Work over complete days (7, or 30 with period = 30 days) per person, compared within the same role |
+| Evidence | MOCKUP (anno "1A · CF1 Employee monitoring · performance, compare within the same role (D-282)") |
+| Sections / components | Header sub "Last 7 days (<dates>) · complete days only · today is on the status board"; "Reports →" (P-E13); info callout **"Roles differ — compare people within the same role.** These figures show workload and flow inside Tradex. They do not capture phone calls, walk-in advice, training or help given to colleagues. Use them to start a conversation, not to rank people." (part of the specification); sortable table; footer "Team median · n people"; pager "n people · sorted by …" + "Click a column heading to sort · click a name for the person's details" |
+| Table | Employee (avatar, name → drawer, job title · team · context note) · Work items · Median time · Target met · Sent back / corrected · Overrides · Per day (sparkline + screen-reader list of values); header sort buttons with `aria-sort` |
+| States | New starter "No complete days yet — first shift today"; empty "No one matches" |
+| Permissions | `team.monitor.read` |
+| APIs | API-M24-15 (`sections` performance, `period`) |
+| Backend / data | E-work_item_event, E-audit_event (overrides) |
+| Status | REQUIRES_DECISION (D-283; definitions D-173) |
+
+### 22.9 Drawer `#d-person` — person detail
+
+| Property | Value |
+|---|---|
+| Purpose | One person in full: their day, areas, performance against the same-role median, sessions and access, sensitive actions and access summary (CF1 §2 "monitor each employee") |
+| Evidence | DOCUMENTED (CF1 §2) · MOCKUP (anno "1A · CF1 Employee monitoring · person view (D-282)") |
+| Header | Avatar with status ring; name; "job title · team · location"; status pill, since, current area link (when on shift), tag, open-alert badge; close |
+| Opened from | Board card or name, feed name, heatmap row or cell (click or Enter), performance row, alert "Open person". Opening is itself audited (`team.person.view`; MK `#m-recorded` "Opening a person's details is itself recorded in the audit log") |
+| Permissions | `team.monitor.read`; target within the caller's scope (R-branch_manager own branch) else 404; only that person's data (T-1A.16-M24-12 AC 3) |
+| APIs | API-M24-16 |
+| Status | REQUIRES_DECISION (D-004, D-283) |
+
+| Tab (`data-tab`) | Content (MK) | API / data | Label |
+|---|---|---|---|
+| `pd-today` "Today" | Summary "First sign-in · active · idle · breaks · in meetings"; "Full record in the audit log →"; timeline (sign-in, sign-out, actions, flagged items, status changes, idle, "Now"), each with time and area link; note "Only actions inside Tradex are listed. Phone calls, walk-in advice and work away from the screen do not appear here." | API-M24-16 `today` | MOCKUP |
+| `pd-areas` "Areas" | "Presence today" 100 % stacked bar Active · Idle · On break · In a meeting / away ("worked out from activity inside Tradex"); "Actions today by area" horizontal bars with share % and Table view; empty "No actions today"; "Usual areas (last 7 days)" links | API-M24-16 `areas` | MOCKUP; presence part `CAP-STAFF_PRESENCE` |
+| `pd-perf` "Performance" | Callout "Last 7 days …, compared with the n <role> (or the whole team when the person is alone in the role) … Figures start a conversation; they are not a rating."; five tiles — Work items, Median time, Target met, Sent back / corrected, Overrides — each with "Role median" or "Team median"; line chart of work items per day against the median with Table view; empty "No complete days yet" | API-M24-16 `performance` | MOCKUP |
+| `pd-sess` "Sessions & access" | Tiles Sessions open now · Failed sign-ins (7 days) · Two-step sign-in; "Today" table (Signed in · Signed out / "Still open" · Device · Network or branch · Sign-in method); optional note; "Failed attempts" (When · Device · Network or branch · What happened); "Earlier this week" (Day · Signed in · Device · Network or branch); note "The network or branch label comes from where the device connected at sign-in — no GPS or location tracking."; "Sign out everywhere" when sessions are open | API-M24-16 `sessions`; "Sign out everywhere" API-M02-23 (`admin.users.security_actions`, reason, audited) | MOCKUP · sessions D-083 |
+| `pd-sens` "Sensitive actions" | "Overrides, refunds, price and discount changes, stock adjustments, exports and access changes in the last 7 days — each with the reason given"; rows: icon, action, "Reason: …", time · record link, flag badges; empty "No sensitive actions …" | API-M24-16 `sensitive` | MOCKUP |
+| `pd-access` "Access" | Key–value list: Role · Location scope · Two-step sign-in · Limits (samples) · Delegation / Emergency access / Separation of duties / Leave when present · Account · Access review; callout "Roles, location scope and limits are changed only in Settings & access → Users. Privileged changes need a second approver and every change is recorded in the audit log."; "Manage in Settings & access" → P-E15 `#users` | API-M24-16 `access` | MOCKUP · limits D-024 |
+
+| Control (drawer foot) | API | Result / guard | Evidence |
+|---|---|---|---|
+| "Message" | none | MK toast "Message window opened · messages stay inside Tradex" — no staff-messaging feature exists in any source or plan file (§22.12 #5) | MOCKUP-ONLY |
+| "Reassign open items" | none (bulk) — per item on the owning screen with API-M02-34 | MK toast "n open items ready to reassign · choose a colleague with the same role" (§22.12 #4) | MOCKUP |
+| "View in audit log" | API-M02-30 (P-E15 `#audit` filtered by actor) | Link; `CAP-AUDIT_VIEWER` | MOCKUP |
+
+### 22.10 Modal `#m-recorded` — What Tradex records about staff activity
+
+| Property | Value |
+|---|---|
+| Purpose | Transparency notice: what is and is not recorded, how staff are told, who can see the page, how long records are kept and what they are used for |
+| Evidence | DECIDED (D-282 recorded and never-recorded lists) · MOCKUP (anno "1A · CF1 Employee monitoring · transparency: what is recorded (D-283)") · wording, retention and legal review REQUIRES_DECISION (D-283 d, e, g) |
+| Sections / components | Sub "The same notice staff see at their first sign-in and in their profile · wording TBC". **Recorded**: actions taken in Tradex (who did what, to which record, when, from which device and branch network — the audit-log entries) · sign-ins and sessions (time, device type and browser, branch or network label, sign-in method, failed attempts) · workspace presence (active or idle from workspace activity only; staff set "On break" or "In a meeting / away" themselves) · work items (assigned, picked up, finished — for handling times and targets). **Not recorded**: screen contents or screenshots · keystrokes, typing or mouse movements · webcam or microphone · personal devices, other apps or websites · GPS or physical location (only the branch or network label at sign-in) · private messages outside Tradex. "How staff are told" (notice at first sign-in; My profile → Privacy notice; My profile → My activity; notice text TBC with the client's legal adviser). "Who can see this page" (the owner; others only if the owner delegates, e.g. a branch manager for their own branch; opening a person is recorded; the owner's own actions are recorded the same way). "How long it is kept" (presence and sessions, performance summaries, audit log — sample periods TBC). "What it is used for" (workload and cover, service targets, security, review of sensitive actions; fixed rules, no AI; nothing about pay, warnings or dismissal is decided automatically). Warning callout "Legal review TBC — notice, purpose and retention checked against India's DPDP Act and rules and employment law before go-live". Footer "Preview staff notice", "Close" |
+| Rules | The two lists are rendered from D-282 and must match it word for word in meaning (T-1A.16-M24-12 AC 4; T-1A.16-M24-13 AC 3); retention periods, notice text and who-can-see come from configuration set under D-283, never typed into the page |
+| APIs | API-M24-01 (configuration keys set under D-283) |
+| Status | REQUIRES_DECISION (D-283 d, e, g) |
+
+### 22.11 Modal `#m-rules` — Alert rules
+
+| Property | Value |
+|---|---|
+| Purpose | See and change which rules raise staff alerts, their thresholds, who is notified and the level |
+| Evidence | MOCKUP (anno "1A · CF1 Employee monitoring · alert rules, thresholds TBC (D-282)") |
+| Sections / components | Sub "Fixed rules checked by the system — no AI. Every threshold is a sample to be confirmed (TBC)."; table On · Rule (name + description) · Threshold (input + "sample · TBC") · Who is notified (select) · Level (pill); panel "How alerts reach you" with three checkboxes; footer Cancel · "Save rules" (toast "Alert rules saved · change recorded in the audit log · thresholds stay marked TBC until confirmed") |
+| MK rows (all thresholds samples) | Same person creates and approves — any occurrence · Owner · Critical · on; Bulk customer export — 500 records · Owner + Operations admin · Serious · on; Failed sign-in attempts — 5 in 10 min · Owner + Operations admin · Serious · on; Discounts above the person's limit — 3 a day · Branch manager · Warning · on; Stock removed without a photo — any · Warehouse lead + Operations admin · Warning · on; Waiting work, idle assignee — 20 min idle · Team lead · Warning · on; Sign-in outside working hours — 09:30–20:30 · Operations admin · Warning · on; Work assigned to someone on leave — hourly check · Team lead · Warning · on; Price change above the person's limit — 5% · Owner · Warning · off |
+| Permissions | Open: `team.monitor.read` (read-only rows); change: `team.alert.manage` (R-owner with MFA; R-ops_admin if delegated) |
+| APIs | API-M24-18, API-M24-19; delivery block API-M17-26, API-M20-09 |
+| Backend / data | E-staff_alert_rule (seed S-17 addendum, all off) |
+| Status | REQUIRES_DECISION (D-283 f) |
+
+| Field | Type | Req | Validation / source |
+|---|---|---|---|
+| On | toggle per rule | Y | `enabled`; seeded off until D-283 (f) sets the threshold |
+| Threshold | text / number per rule (unit per rule) | C (when on) | `threshold`; schema per rule; marked "sample · TBC" until `threshold_confirmed` |
+| Who is notified | select | Y | `notify[]` — roles holding `team.monitor.read`; MK options "Team lead" and "Warehouse lead + Operations admin" are job titles (D-222) |
+| Level | pill (read-only in MK) | Y | `level`; MK draws no editor although API-M24-19 accepts it |
+| "Critical and serious: at once, in Tradex and on WhatsApp" | checkbox | N | Recipient's channel preferences (API-M20-09); WhatsApp to staff needs a channel — D-063, D-014 |
+| "Warnings: in the owner's 8:00 daily digest" | checkbox | N | Owner digest content (API-M17-26); time and channel D-063 |
+| "Tell the person concerned when an alert about them is raised" | checkbox | N | `notify_subject` on each rule (API-M24-19) — D-283 (e) |
+
+"Save rules" → API-M24-19 once per changed rule (reason, `expected_version`, MFA) and API-M17-26 / API-M20-09 for
+the delivery block. MK has nine rules while T-1A.14-M17-13's title lists seven kinds; the nine rule keys are in
+`03` §13.3.
+
+### 22.12 States, items not drawn in the mockup, and gaps (P-E17)
+
+States (deltas from 04b §2.11; T-1A.16-M24-12): **live** (default); **stale presence** (§22.3); **empty filter
+result** (every section's empty text above); **no alerts** (§22.7); **presence off** and **alerts off** (sections
+absent, §22.14); **not delegated** → no navigation entry; the route and its endpoints answer 403.
+
+| Item not drawn in MK | Where | API | Source | Status |
+|---|---|---|---|---|
+| Staff-side "On break / In a meeting" control and "Back" | shell(E) user menu (04b §3.3) | API-M02-43 | MK:erp-team.html board foot; D-282 | REQUIRES_DECISION (D-283 c) |
+| Presence heartbeat client | shell(E) | API-M02-43 | T-1A.2-M02-11 | REQUIRES_DECISION (D-283) |
+| Staff notice at first sign-in; My profile → Privacy notice; My profile → My activity (own activity and presence history) | P-E16, shell(E) "My profile" | notice: configuration (API-M24-01); own-activity read: none yet | MK `#m-recorded` | REQUIRES_DECISION (D-283 e, D-174) |
+| Delegating P-E17 to R-ops_admin / R-branch_manager | P-E15 `#roles` | API-M02-27 | D-282, D-283 b | REQUIRES_DECISION (D-283 b) |
+
+| # | Gap (no source, entity or endpoint) | MK | Handling |
+|---|---|---|---|
+| 1 | Roster, shifts, weekly day off, approved leave ("On shift now … scheduled", "Not yet signed in · shift started 10:30", "Offline · shift 11:00–20:00", "On leave") | KPI tile, board, alerts | REQUIRES_DECISION — not among the D-283 questions; reported for addition |
+| 2 | Comfortable open-item load per person ("Open items n / capacity", "Queue full") | board | REQUIRES_DECISION (D-283) |
+| 3 | Team grouping (Warehouse, Sales & branches, Support, Catalog & pricing, Finance, Management) | `#f-team`, heatmap grouping | D-222 |
+| 4 | "Reassign open items" (drawer) and "Reassign" (leave alert) — no bulk cross-area reassign endpoint | drawer, `#alerts` | Per item on the owning screen (API-M02-34 + that screen's assign endpoint) until an endpoint is decided |
+| 5 | "Message" to a staff member inside Tradex — no internal messaging in any source | drawer foot | MOCKUP-ONLY; not built without a decision |
+| 6 | Service targets per area ("Target met", "past reply target", at-risk / behind rules) | area table, performance | REQUIRES_DECISION (D-283; definitions D-173) |
+
+### 22.13 Screen permissions (P-E17)
+
+| Capability | R-owner | R-ops_admin | R-branch_manager | R-finance | Other staff | Source |
+|---|---|---|---|---|---|---|
+| Open the screen (tiles, board, areas, heatmap, feed, alerts, performance, person drawer) | Yes | if delegated (D-283 b) | own branch, if delegated | — (403) | — (403) | D-282; `team.monitor.read` |
+| Acknowledge an alert | Yes | if delegated | own branch, if delegated | — | — | `team.alert.ack` |
+| Change alert rules | Yes (MFA) | if delegated | — | — | — | `team.alert.manage` |
+| Export team activity | Yes | if delegated | own branch, if delegated | — | — | API-M18-03 `team_activity`; D-152 |
+| "Sign out everywhere" in the drawer | Yes | Yes when also delegated P-E17 (holds `admin.users.security_actions`) | — | — | — | API-M02-23 |
+| Send own presence, set own break / away | Yes | Yes | Yes | Yes | Yes | `presence.self` (not access to this screen) |
+
+The owner's own actions are not on the board or in the feed; they stay in the audit log (MK). Denied callers get
+**404**, not 403 (`06-api.md` §11 rule 1; `07` §17 #9).
+
+### 22.14 CONDITIONAL / MOCKUP-ONLY / LATER items and capability gating (P-E17)
+
+| Item | Label | Decision / capability |
+|---|---|---|
+| Whole screen and navigation entry | 1A | `CAP-TEAM_MONITOR` — off: entry absent, route 404, no heartbeat |
+| Presence: status ring, idle / break / away statuses, "since", Idle tile, presence split in the drawer | 1A | `CAP-STAFF_PRESENCE`; idle rule, self-set status, retention D-283 (c, d) |
+| Alerts section, Open alerts tile, sidebar badge, "Alert rules" button and `#m-rules` | 1A | `CAP-STAFF_ACTIVITY_ALERTS`; each rule its own switch; thresholds D-283 (f) |
+| "Audit log →", "Full record in the audit log →", "View in audit log" | 1A | `CAP-AUDIT_VIEWER` — links absent when off |
+| "Export" | 1A | `CAP-DATA_EXPORTS`; D-152 |
+| Alert delivery on WhatsApp | REQUIRES_DECISION | D-063, D-014 |
+| "Message" | MOCKUP-ONLY | no decision (§22.12 #5) |
+| POS-terminal and legacy-POS-bridge sessions in samples | CONDITIONAL | D-009 (`CAP-POS_INTEGRATION`) |
+| Reading of "REP section" as the ERP workspace | DECIDED, to be confirmed | D-282, D-283 (a) |
+| Every threshold, target, limit, retention period, working hours, person, time | samples | D-283, D-024, 00-conventions §1.1 |
+
+Help content (ⓘ, page guide, glossary terms presence, idle, work item, handling time) is T-1A.16-M24-13 from MK
+`assets/help/erp-team.js` (X20); tablet and phone layouts follow X16 (D-226).
+
+---
+
+## 23. P-E18 — Analytics (`erp-analytics.html`)
+
+Added 2026-09-30 for the client feedback `CF1 §3` (`D-284` DECIDED; `D-285`, `D-286` OPEN). Cross-cutting rules §1
+apply. Every amount, target, threshold, date, band and name on this screen is a sample (§0.2).
+
+### 23.0 Summary card
+
+| Property | Value |
+|---|---|
+| Purpose | Store and customer analytics on one screen: one filter row and five views — Overview, Sales, Products, Customers, Store & operations — with every figure compared against an earlier period (CF1 §3 "sales analytics, product analytics, different store metrics, customer analytics, similar/relevant business metrics") |
+| Evidence | DOCUMENTED (CF1 §3; BP §4 success measures, §14.1, §14.3, §14.4) · MOCKUP (MK:erp-analytics.html; anno "1A · CF1 Analytics dashboard (D-284)") · scope DECIDED (D-284) · definitions, targets, refresh and visibility REQUIRES_DECISION (D-286) · visit metrics CONDITIONAL (D-285) |
+| Route | NOT SPECIFIED — MK `erp-analytics.html`; tabs `overview`, `sales`, `products`, `customers`, `store` (API view `operations`); no drawers or modals. Sidebar group Overview → "Analytics" |
+| Module / folder | M18 · `MOD-reporting` · `frontend/workspace/` if D-004 = custom; charts via `frontend/design-system/` (D-103) |
+| Phase · reqs | 1A · CF1 §3 · R14 · BP §4 ("Better shopping", "Better discovery", "Faster dispatch", "Accurate stock", "Trust in refurbished sales") · T-1A.15-M18-09 (read models), T-1A.15-M18-10 (screen), T-1A.9-M09-14 (visit tracking, CONDITIONAL), T-1A.16-M24-13 (help), T-0-M09-07 (client review) |
+| D-004 native-vs-custom considerations | (1) The core candidates have native report and query tooling, but BP §14.1 keeps "data warehouse and advanced BI" out of minimum scope; P-E18 stays on pre-aggregated, store-scoped read models (D-284; T-1A.15-M18-09). (2) BP §14.4 rules — event dates, gross vs net, tax basis, freshness, restricted margin — hold whichever UI is used. (3) P-E13 keeps report tables, exports and schedules; P-E01 keeps exceptions; P-E18 adds the charted views (D-284). **Not decided — D-004.** |
+| Roles | R-owner; R-ops_admin, R-finance and R-branch_manager (own branch) per D-286; margin figures only with `analytics.margin.read` (D-286 b) — detail §23.9 |
+| Capability | Screen and the Overview, Sales, Products views `CAP-ANALYTICS_DASHBOARD`; Customers view `CAP-CUSTOMER_ANALYTICS`; every card marked "Needs visit tracking" `CAP-STOREFRONT_VISIT_ANALYTICS` (CANDIDATE, D-285); "Save view" `CAP-SAVED_VIEWS`; "Export" `CAP-DATA_EXPORTS`; "Schedule email" `CAP-SCHEDULED_REPORTS` (`21` §4) |
+| Status | REQUIRES_DECISION (D-004, D-101, D-286; visit cards D-285) |
+
+### 23.1 Page header and filter row
+
+| Element | Content | API | Label · status |
+|---|---|---|---|
+| Crumbs / title | Overview › Analytics; "Analytics" | — | MOCKUP |
+| Subtitle | "<date> · data as of <time> · figures exclude GST unless stated" (X11 freshness; X3 tax basis) | API-M18-20 `as_of`, `freshness[]`, `tax_basis` | DOCUMENTED BP §14.4 |
+| "Save view" | Keeps period, comparison and filters under the user's name (toast "View saved · Analytics · <range> · <filters>") | API-M18-14 (screen_key `analytics`); list API-M18-13 | MOCKUP |
+| "Schedule email" | Opens P-E13 `#schedules` to send a saved view by email; each recipient gets only their own scope | API-M18-07 (on P-E13) | DOCUMENTED PR1 §10 |
+| "Export" (primary) | Figures behind the cards with the current filters, one CSV per card; private expiring link (MK sample 24 h); audited; never customers' personal details | API-M18-03 (dataset `analytics.<view>`) | DOCUMENTED BP §14.4 · REQUIRES_DECISION (D-152) |
+| Date range `#f-range` | Segmented 7 days · 30 days (default) · 90 days · 12 months | `period` | MOCKUP |
+| Compare to `#f-cmp` | Previous period (default) · Same period last year | `compare` | MOCKUP |
+| Location `#f-loc` | "All locations" + each site; location = the site that fulfilled the order | `location_id`; options API-M03-02 | MOCKUP |
+| Channel `#f-ch` | All channels · Website · Branch POS · WhatsApp · Assisted (staff) | `channel` | MOCKUP |
+| Buyer type `#f-buyer` | All buyers · Consumers · Approved dealers | `buyer_type` | MOCKUP |
+| Category `#f-cat` | "All categories" + categories | `category_id`; options API-M04-01 | MOCKUP |
+| Reset `#f-reset` | Back to 30 days, previous period, whole store (toast) | — | MOCKUP |
+| Note `#f-note` | "<period dates> vs <comparison dates> · ₹ excl. GST" | — | MOCKUP |
+
+Rules: one filter row scopes every tile, chart and table on all five tabs (MK anno; T-1A.15-M18-10 AC 1); the
+comparison period is labelled on every delta; store-wide cards (highlights, targets, cohort retention, segments)
+are not narrowed by location, channel, buyer or category and say so; a tab renders when first shown and again after
+a filter change. Channel options list only the channels the store sells through (Branch POS `CAP-POS_INTEGRATION`,
+WhatsApp `CAP-WHATSAPP_ASSISTED_ORDERS`, Assisted `CAP-ASSISTED_ORDERS`); Buyer type only with
+`CAP-BUSINESS_ACCOUNTS`.
+
+Backend / data for every tab: API-M18-20 reads only the rebuildable read models of T-1A.15-M18-09 —
+E-analytics_daily_fact (all views), E-customer_cohort_snapshot (Customers) and, only under D-285 (b) or (c),
+E-storefront_visit_counter / E-storefront_visit_event aggregated into the facts (`03` §13.5–§13.7); the storefront
+beacon posts to API-M09-03 (`public.visit`). P-E18 never scans transactional tables on request (D-268).
+
+### 23.2 Tab `overview` — Overview
+
+| Property | Value |
+|---|---|
+| Purpose | Headline measures with change against the comparison period, the sales trend, rule-based highlights, channel mix, top categories and this month's targets |
+| Evidence | DOCUMENTED (CF1 §3; D-284 "headline measures, trend vs comparison, channel mix, top categories, rule-based highlights, targets") · MOCKUP |
+| APIs | API-M18-20 `view = overview` |
+| Status | REQUIRES_DECISION (D-286) |
+
+| Card (MK id) | Content | Gating / notes | Label |
+|---|---|---|---|
+| KPI tiles `#ov-kpis` (8) | Net sales · Orders · Average order value · Gross margin · Units sold · Store conversion rate · Returning-customer share · Return rate — each with value, comparison value ("Previous: …" / "Last year: …"), delta (% or "pt" for rates; colour says good or bad, lower is better for return rate) and sparkline | Gross margin needs `analytics.margin.read`; Store conversion rate carries "Needs visit tracking" (`CAP-STOREFRONT_VISIT_ANALYTICS`) and shows "—" with "Website only — choose All channels or Website" when another channel is chosen | DOCUMENTED BP §4 · definitions D-286 (a, b) |
+| Net sales trend `#ch-trend` | Line chart, this period vs comparison, one axis; subtitle "<Daily / Monthly> · <dates> vs <dates> · ₹ excl. GST"; Table view | — | MOCKUP |
+| Highlights `#hl-rows` | Up to six rule-based notes: icon, text, detail, "Rule: …", status Good / Watch, button to the tab with the detail; foot "n of m checks fired · m rules run nightly and at <time> · store-wide (not narrowed by location, channel, buyer or category) · thresholds are samples" | Store-wide; the conversion-rate rule only with `CAP-STOREFRONT_VISIT_ANALYTICS`; rule set and thresholds samples | MOCKUP · REQUIRES_DECISION (D-286) |
+| Top categories by net sales `#ch-topcat` | Horizontal bars, top six + "Other (n categories)"; Table view | — | MOCKUP |
+| Sales by channel `#ch-chmix`, `#chmix-list` | 100 % stacked bar of net sales share + list with amount and delta per channel; Table view | Only channels the store has | MOCKUP |
+| "September targets" `#tgt-rows` | Badge "Sample targets · TBC"; five meters — Net sales, Orders, Gross margin (level target, not cumulative), New customers, Dealer sales — with value "of" target, status On track / Behind pace / Above target, pace marker (share of the month gone), "% of target" | Absent until D-286 (c) decides who sets targets and whether they are shown; store-wide; Gross margin meter needs `analytics.margin.read`; Dealer sales `CAP-BUSINESS_ACCOUNTS` | MOCKUP · REQUIRES_DECISION (D-286 c) |
+
+### 23.3 Tab `sales` — Sales
+
+| Card (MK id) | Content | Gating / notes | Label |
+|---|---|---|---|
+| Net sales and orders over time `#ch-sales-t`, `#ch-orders-t` | Two line charts side by side, one axis each (04b §2.19 #4); grouping `#gran` Daily · Weekly · Monthly (default by range; daily shows at most 90 days); one Table view toggle for both | — | MOCKUP |
+| Sales by channel `#chtab-body` | Channel · Net sales · Orders · AOV · Share of net sales (bar + %) · Growth vs previous / vs last year; footer "All channels" | — | MOCKUP |
+| Sales by location `#ch-loc` | Horizontal bars, "Site that fulfilled the order · ₹ excl. GST"; Table view | `CAP-MULTI_LOCATION` | MOCKUP |
+| Orders by weekday and hour `#ch-heat` | 7 × 24 heat grid, sequential 7-step blue ramp with scale legend, tooltip (orders, share of the period), keyboard navigation, Table view; note "Busiest slot …" | — | MOCKUP |
+| Payment methods `#ch-pay` | 100 % stacked bar by share of paid value (UPI · Cards · Net banking & bank transfer · EMI · Cash on delivery) for website, WhatsApp and assisted orders; note that branch counter payments are reconciled on P-E12; empty "Branch counter payments are not in this chart" when channel = Branch POS | Methods follow `CAP-ONLINE_PAYMENTS`, `CAP-EMI`, `CAP-COD`, `CAP-BANK_TRANSFER` | MOCKUP |
+| Consumers and dealers `#ch-buyer`, `#buyer-stats` | Stacked bar + per group net sales, orders, AOV, delta | `CAP-BUSINESS_ACCOUNTS` | MOCKUP |
+| Discounts and promotions `#promo-body` | Promotion · Type · Window (dates or "since … · running") · Orders · Net sales · Discount given ("₹0 · bank pays") · Extra margin (est.) · Result (Adds margin / Loses margin); footer totals; sub "n promotions · discount given ₹ = x % of net sales"; "Pricing & promotions →" (P-E07); empty "No promotions ran in this period." | `CAP-PROMOTIONS`; "Extra margin (est.)" and "Result" need `analytics.margin.read`; estimate method D-286 | MOCKUP · REQUIRES_DECISION (D-286) |
+
+### 23.4 Tab `products` — Products
+
+| Card (MK id) | Content | Gating / notes | Label |
+|---|---|---|---|
+| Top products `#tp-table` | Sortable: Product (image, name, SKU) · Condition · Units · Net sales · Gross margin · Return rate (flag "high" above a sample) · Stock cover (flag "low" below a sample) · Sell-through; row → P-E06; "Catalog →"; foot "stock cover uses the last 30 days' sales rate"; empty "No top-10 products in this category" | Gross margin column needs `analytics.margin.read` (omitted, X19); Condition `CAP-CONDITION_GRADES` | MOCKUP |
+| Category performance `#ch-cat` | Horizontal bars; measure `#cat-measure` Net sales · Gross margin; Table view | "Gross margin" measure needs `analytics.margin.read` | MOCKUP |
+| Sales by price band `#ch-bands` | Column chart by selling price incl. GST; measure `#band-measure` Units · Net sales; Table view | Band boundaries samples (D-286) | MOCKUP |
+| Slow movers and ageing stock `#slow-body` | Product · Location · Oldest unit (days) · Last sale (days ago) · Units · Stock value (landed cost) · Suggested action (rule-based); "Stock ageing report →" (P-E13); foot total of stock older than the ageing threshold | Stock value needs `analytics.margin.read`; ageing threshold and suggestion rules samples (D-286); one MK suggestion names the "Deals page" — the storefront says "Offers" since D-281 | MOCKUP |
+| Condition mix and margin `#ch-cond`, `#cond-body` | Stacked bar of net sales by condition + table Condition · Net sales · Share · Margin · Returns (flag above a sample) | `CAP-CONDITION_GRADES`; Margin column needs `analytics.margin.read` | MOCKUP · BP §4 "Trust in refurbished sales" |
+| Viewed often, bought rarely `#vnb-body` | Badge "Needs visit tracking"; Product · Views · Added to cart · Bought (% + orders) · Rule-based check; website only ("Visit tracking covers the website only") | `CAP-STOREFRONT_VISIT_ANALYTICS` — absent when off | CONDITIONAL (D-285) |
+| Searches with no results `#nr-body` | Badge "Needs visit tracking"; Search term · Searches · Suggested fix | `CAP-STOREFRONT_VISIT_ANALYTICS` | CONDITIONAL (D-285); BP §4 "Better discovery" |
+
+### 23.5 Tab `customers` — Customers
+
+The whole tab is `CAP-CUSTOMER_ANALYTICS`; when off the tab and its view (`view = customers` → 404) are absent.
+
+| Card (MK id) | Content | Gating / notes | Label |
+|---|---|---|---|
+| KPI tiles `#cu-kpis` (5) | Active customers · New customers · Repeat-purchase rate (2+ orders in 12 months) · Average lifetime value · Dealer accounts active ("n of N"); comparison, delta, sparkline; buyer-filter conflicts show "—" with the reason | Dealer tile `CAP-BUSINESS_ACCOUNTS` | MOCKUP · definitions D-286 |
+| New and returning customers `#ch-newret` | Two lines (Returning, New); Table view | — | MOCKUP |
+| Monthly cohort retention `#ch-cohort` | Heat grid: rows = first-purchase month with customer count, plus "All · weighted"; columns Month 0…5; later months blank; 6-step ramp and legend; note "Store-wide · not affected by the date range"; Table view | Store-wide | MOCKUP |
+| Customer segments `#seg-body` | Segment · Rule · Customers · Share of customers · Share of sales (24 months) · AOV · Suggested action; foot total + "Messages go only to customers who agreed to receive them"; "Customers & dealers →" | Segment names and rules samples (D-286 e), nightly (D-286 d); using a segment for a campaign is `CAP-CAMPAIGN_SEGMENTS`, not on this screen | MOCKUP · REQUIRES_DECISION (D-286 e) |
+| Top cities and regions `#ch-cities` | Horizontal bars by delivery city, or the branch city for counter sales; Table view | — | MOCKUP |
+| Why customers return items `#ch-reasons` | Horizontal bars, share of returns value; note on refurbished share of returns | `CAP-RETURNS` | MOCKUP |
+| Top dealer accounts `#dl-body` | Dealer (name, city) · Price list · Orders · Net sales · AOV · Last order · Growth; row → P-E10 `#business`; "Business accounts →"; empty when buyer = Consumers | `CAP-BUSINESS_ACCOUNTS` | MOCKUP |
+| Support satisfaction `#sup-stats` | First response time (median) · Resolution time (median) · Satisfaction score (/ 5, n ratings), deltas and sparklines; "Support inbox →" | Times from support conversations and tickets (`CAP-SUPPORT_TICKETS`); the score needs customer ratings that no source, entity or endpoint captures (§23.8 #1) | MOCKUP · score REQUIRES_DECISION (D-286) |
+
+### 23.6 Tab `store` — Store & operations (API view `operations`)
+
+| Card (MK id) | Content | Gating / notes | Label |
+|---|---|---|---|
+| Visit-tracking callout | "Some store figures need visit tracking … show sample values until it is approved and running, with visitor consent" | MK review note for the open D-285 — not built: with the capability off the cards are absent, with it on they carry real figures | not a product feature |
+| Store conversion funnel `#ch-funnel` | Bars Sessions → Product views → Added to cart → Reached checkout → Paid, with % of sessions, step conversion and drop-off; note on overall conversion and the biggest loss; Table view | `CAP-STOREFRONT_VISIT_ANALYTICS`; website only | CONDITIONAL (D-285); BP §4 "Better shopping", §14.3 "Customer funnel" |
+| Cart abandonment and recovery `#cart-stats`, `#cart-where` | Abandonment rate · Carts left without paying · Recovered carts · Recovered value ("by WhatsApp or email reminder"); "Where shoppers leave a filled cart" (before checkout, delivery details step, payment) | `CAP-STOREFRONT_VISIT_ANALYTICS`; recovered carts and value also need `CAP-ABANDONED_CART_RECOVERY` (CANDIDATE, D-275) | CONDITIONAL (D-285, D-275) |
+| Traffic sources `#ch-traffic` | Bars by source (search engines, direct, WhatsApp links, social, referral & partners, email); Table view | `CAP-STOREFRONT_VISIT_ANALYTICS` | CONDITIONAL (D-285) |
+| Devices `#ch-devices`, `#dev-body` | Stacked bar mobile / desktop / tablet + table Device · Sessions · Conversion | `CAP-STOREFRONT_VISIT_ANALYTICS` | CONDITIONAL (D-285) |
+| Top landing pages `#lp-body` | Landing page (name, path) · Sessions · Left after one page · Conversion | `CAP-STOREFRONT_VISIT_ANALYTICS`; MK row "Deals /deals" predates D-281 ("Offers") | CONDITIONAL (D-285) |
+| Site search `#ss-stats` | Searches (per session) · Sessions using search · Search → purchase · Searches with no results; "No-result searches →" (Products tab) | `CAP-STOREFRONT_VISIT_ANALYTICS` | CONDITIONAL (D-285); BP §4 "Better discovery" |
+| Fulfilment `#ful-stats` | Paid → dispatched (median, h) · On-time delivery · Delivery exceptions · Returned to origin (RTO); deltas and sparklines; sub "n shipments · branch counter sales are not shipped"; "Pick · pack · dispatch →" | `CAP-COURIER_SHIPPING` | DOCUMENTED BP §4 "Faster dispatch" · MOCKUP |
+| Stock accuracy and stock-outs `#stk-stats`, `#stk-list` | Stock accuracy (counted units that matched) · SKUs out of stock now · Stock-out days (SKU × days) · Lost sales estimate (average daily sales × days out); "Longest stock-outs · last 30 days"; "Inventory →" | Accuracy `CAP-CYCLE_COUNTS`; lost-sales method D-286 | DOCUMENTED BP §4 "Accurate stock" · MOCKUP |
+| Branch comparison `#br-body` | Location · Net sales · Orders · AOV · Footfall → sale · Return rate · Paid → dispatched (flag "slowest") · Growth; footer "All locations" | `CAP-MULTI_LOCATION`; "Footfall → sale" needs a door counter per branch — no source or decision (§23.8 #2) | MOCKUP; footfall MOCKUP-ONLY |
+| Return rate by category `#ch-retcat` | Bars, returns value as % of gross sales; Table view | `CAP-RETURNS` | MOCKUP |
+
+### 23.7 States (P-E18)
+
+Deltas from 04b §2.11; the four states of T-1A.15-M18-10 first.
+
+| State | Behaviour |
+|---|---|
+| Normal | As §23.1–§23.6 |
+| Stale data | A read model older than its freshness window (D-286 d): the subtitle names it with its time and the affected cards show "as of <time>" (X11; BP §14.4 "failed-feed indicators") |
+| Empty period | Card empty states ("No promotions ran in this period.", "No slow movers match these filters.", "No top-10 products in this category", "No dealer orders in this view."); tiles show 0 or "—" with the reason |
+| Restricted margin | Without `analytics.margin.read` margin, cost and stock-value fields are omitted (not blanked), the "Gross margin" measure switch is hidden and a note says margin is limited to authorised roles (D-286 b; X19) |
+| Channel other than website on a visit card | "Visit tracking covers the website only — Choose All channels or Website" |
+| Buyer filter conflicts | Dealer tiles and lists show "—" or "The buyer filter is set to Consumers" |
+| Branch-scoped viewer | Own branch only; location filter fixed (D-286 f) |
+| Capability off | Cards and the Customers tab are absent — not empty (T-1A.15-M18-10 AC 3; `21` §1 rule 1) |
+
+### 23.8 Metric definitions, and items with no source
+
+Definitions shown in the MK help (`assets/help/erp-analytics.js`), to be confirmed under D-286 before they are
+built (T-1A.16-M24-13 AC 2):
+
+| Metric | MK definition | Decision |
+|---|---|---|
+| Net sales | Sales after returns and refunds (credit notes), excl. GST | D-286 (a) — basis and date (order vs invoice) |
+| Average order value | Net sales ÷ orders | D-286 |
+| Gross margin | (Net sales − landed cost of goods sold) ÷ net sales | D-286 (b), D-197 |
+| Store conversion rate | Paid website orders ÷ website sessions | D-285, D-286 |
+| Returning-customer share | Buyers in the period who had bought before ÷ buyers in the period | D-286 |
+| Return rate | Returns value ÷ gross sales (tiles, branch table); returned units ÷ units sold (product rows) | D-286 — one definition to be chosen |
+| Stock cover | Units available ÷ average daily units sold over the last 30 days | D-286 |
+| Sell-through | Units sold ÷ (units sold + units available) | D-286 |
+| Repeat-purchase rate | Buyers with 2+ orders in 12 months ÷ buyers in 12 months | D-286 |
+| Average lifetime value | Net sales per buyer since the first purchase, averaged | D-286 |
+| Cohort retention | Share of a first-purchase-month group that bought again in each later month | D-286 |
+| Extra margin (promotion) | Margin on promotion orders − margin normally earned without it − discount given | D-286 |
+
+| # | Item | MK | Handling |
+|---|---|---|---|
+| 1 | Satisfaction score (ratings out of 5) | Customers `#sup-stats` | No rating capture exists (no source, entity or endpoint). First-response and resolution times are derivable. Absent until a decision adds rating capture (reported against D-286) |
+| 2 | "Footfall → sale" (branch door counter) | Store `#br-body` | MOCKUP-ONLY — no source, device or decision; column absent until decided |
+| 3 | Highlight rules; "suggested action" rules (slow movers, viewed-not-bought, no-result searches, segments); price bands | several | Rule sets and thresholds are samples → D-286 (its question list does not name them yet) |
+| 4 | Recovered carts and value | Store `#cart-stats` | Also needs `CAP-ABANDONED_CART_RECOVERY` (D-275) |
+| 5 | Targets | Overview `#tgt-rows` | D-286 (c); no MK control sets targets — configuration (API-M24-02) if D-286 decides they are shown |
+
+### 23.9 Screen permissions (P-E18)
+
+| Capability | R-owner | R-ops_admin | R-finance | R-branch_manager | Other staff | Source |
+|---|---|---|---|---|---|---|
+| Open the screen and the views the store has | Yes | per D-286 | per D-286 | own branch per D-286 (f) | — | `analytics.read` |
+| Margin, landed cost, stock value, promotion extra margin | Yes | per D-286 | per D-286 | per D-286 | — | `analytics.margin.read`; D-197 |
+| Save view | Yes | as open | as open | as open | — | `saved_view.self` |
+| Export | Yes | per dataset | per dataset | own branch | — | `export.create`; D-152 |
+| Schedule email (on P-E13) | Yes | Yes | Yes | — | — | `report.schedule` |
+
+### 23.10 CONDITIONAL / MOCKUP-ONLY / LATER items and capability gating (P-E18)
+
+| Item | Label | Decision / capability |
+|---|---|---|
+| Screen, navigation entry, Overview, Sales, Products | 1A | `CAP-ANALYTICS_DASHBOARD` |
+| Customers view | 1A | `CAP-CUSTOMER_ANALYTICS` |
+| Every card marked "Needs visit tracking": Store conversion rate tile, conversion highlight, "Viewed often, bought rarely", "Searches with no results", funnel, cart abandonment, traffic sources, devices, landing pages, site search | CONDITIONAL | `CAP-STOREFRONT_VISIT_ANALYTICS` (CANDIDATE) — D-285; absent under option (a) |
+| Visit-tracking callout on `store` | review note, not built | D-285 |
+| Recovered carts and value | CONDITIONAL | D-275 (`CAP-ABANDONED_CART_RECOVERY`) |
+| Targets card | REQUIRES_DECISION | D-286 (c) |
+| "Footfall → sale" | MOCKUP-ONLY | no decision (§23.8 #2) |
+| Satisfaction score | REQUIRES_DECISION | D-286 (§23.8 #1) |
+| "Save view" · "Export" · "Schedule email" | 1A | `CAP-SAVED_VIEWS` · `CAP-DATA_EXPORTS` · `CAP-SCHEDULED_REPORTS` |
+| Data warehouse, advanced BI, predictions | LATER / not in scope | BP §14.1; D-284 "no AI" |
+| Every amount, target, threshold, date, band and name | samples | 00-conventions §1.1 |
+
+Every chart follows 04b §2.19 — one axis, fixed categorical order, sequential single-hue ramps for heat grids,
+tooltip on hover and keyboard focus, and a Table view with the same numbers (X13; T-1A.15-M18-10 AC 2; TS-A11Y-02).
+Help content is T-1A.16-M24-13 from MK `assets/help/erp-analytics.js` (X20); tablet and phone layouts follow X16
+(D-226).

@@ -258,8 +258,10 @@ Append-only.
 | job_attempt_id | ref(E-job_attempt) | N | — | For automated actions | BP §12.3 |
 | source_channel | enum (see `[CH]`) | Y | — | — | BP §17.3 |
 | client_context | struct | N | — | IP/device | MK:erp-admin.html ("IP · device") · MOCKUP |
+| area | code | N | — | Workspace area of the action — the key of the ERP sidebar module it was taken in (orders, fulfilment, returns, support, catalog, pricing, inventory, purchasing, customers, vendors, finance, reports, automation, admin; the set follows the store's workspace modules); null for system, integration and sign-in events. Added 2026-09-30 (DB-G1 addendum, T-1A.2-M02-11) | CF1 §2; MK:erp-team.html (area table, heatmap, feed) · D-282 |
+| work_item_ref | polyref | N | — | The work item the action touched (order, fulfilment, RMA, conversation, ticket, product draft, price change, count, adjustment, transfer, PO, GRN, dealer application, vendor submission, payment exception, refund, exception case) where one exists. Added 2026-09-30 (DB-G1 addendum) | CF1 §2; MK:erp-team.html · D-282 |
 
-- **Keys:** PK. **Indexes:** (object_type, object_id, occurred_at) — "all events for this object" and reconstruction (BP §20.1 "Sample transaction reconstruction"); (actor_user_id, occurred_at) and (action, occurred_at) — audit export filters (BP §14.3).
+- **Keys:** PK. **Indexes:** (object_type, object_id, occurred_at) — "all events for this object" and reconstruction (BP §20.1 "Sample transaction reconstruction"); (actor_user_id, occurred_at) and (action, occurred_at) — audit export filters (BP §14.3); since 2026-09-30 (store_id, area, occurred_at) and (store_id, actor_user_id, area, occurred_at) — P-E17 area table, heatmap and activity feed (API-M24-15, API-M24-17).
 - **Integrity:** append-only; tamper-resistance mechanism per D-001 / D-114 (mockup hash chain is MOCKUP). Access to audit records is restricted (BP §17.3).
 - **PD:** before/after may contain PD1/PD2 values → access restricted; client_context PD1. Retention `RC-log` (audit) — D-036.
 - **Physical:** D-001 (native version/activity log vs extension record).
@@ -3362,16 +3364,16 @@ listed deferred references, which are added as nullable references in the later 
 | Group | Name (stage alignment) | Entities | Depends on | Phase | Deferred references added later |
 |---|---|---|---|---|---|
 | DB-G0 | Foundation & control infrastructure | E-company, E-user_account, E-role, E-permission, E-role_permission, E-audit_event, E-attachment, E-configuration_version, E-integration_setting, E-idempotency_record, E-outbox_operation, E-job_attempt, E-integration_event, E-exception_case, E-automation_rule (records only), E-approval_threshold, E-approval_request | — | 1A | `approval_request.delegation_id`, `audit_event.delegation_id` (G1); `job_attempt.import_job_id` (G2) |
-| DB-G1 | Organisation & identity | E-location, E-location_bin, E-user_role_assignment, E-delegation, E-terms_version, E-terms_acceptance, E-invitation, E-access_review, E-verification_challenge (C, D-040/D-021), E-user_session (C, D-083), E-api_credential (C, D-083), E-notification_preference, E-device_station (C, D-147) | G0 | 1A | — (party/subject references are polyrefs) |
+| DB-G1 | Organisation & identity | E-location, E-location_bin, E-user_role_assignment, E-delegation, E-terms_version, E-terms_acceptance, E-invitation, E-access_review, E-verification_challenge (C, D-040/D-021), E-user_session (C, D-083), E-api_credential (C, D-083), E-notification_preference, E-device_station (C, D-147); **CF1 addendum (2026-09-30, T-1A.2-M02-11):** E-staff_presence_interval, E-work_item_event, and E-audit_event `area` / `work_item_ref` (§13) | G0 | 1A | — (party/subject references are polyrefs) |
 | DB-G2 | Catalog | E-category, E-attribute_definition, E-category_attribute, E-brand, E-tax_classification, E-condition_grade, E-warranty_policy, E-return_policy, E-product, E-sku, E-sku_attribute_value, E-supplier *(party master, needed by mappings/offers/imports)*, E-offer, E-media_asset, E-catalog_change_version, E-supplier_code_mapping, E-import_mapping_profile, E-import_job, E-import_row, E-compatibility_link (C), E-bundle_component (D-072), E-search_synonym, E-seo_redirect (D-076), E-migration_rehearsal (after E-import_job) | G0, G1 | 1A (catalog import 1B) | `supplier.current_vendor_approval_id` (G9); `catalog_change_version.source_ref` → vendor submission (G9, polyref) |
 | DB-G3 | Pricing | E-price_list, E-price_rule_version, E-price_list_item, E-quantity_tier, E-promotion (D-043), E-promotion_code (C, D-043), E-margin_floor, E-discount_authority, E-shipping_charge_rule (C, D-162) | G2 | 1A | `promotion_code.redeemed_order_id` (G7) |
 | DB-G4 | Inventory & serials | E-lot (C, D-126; before positions/movements), E-stock_position, E-stock_movement, E-serial_unit, E-serial_event, E-inspection, E-transfer, E-transfer_line, E-stock_count, E-stock_count_line, E-stock_adjustment, E-supplier_availability, E-reorder_rule | G2, G1 | 1A (supplier availability 1B) | `serial_unit.goods_receipt_line_id`, `inspection.goods_receipt_line_id` (G5); `serial_unit.last_sale_order_line_id`, `stock_movement.reservation_id` (G7); `inspection.return_line_id` (G8); `lot.first_goods_receipt_line_id` (G5) |
-| DB-G5 | Purchasing & receiving | E-purchase_order, E-purchase_order_line, E-goods_receipt, E-goods_receipt_line, E-supplier_bill, E-supplier_bill_line, E-replenishment_suggestion, E-landed_cost_charge (C, D-056), E-cost_signal | G2, G3, G4 | 1A | — |
+| DB-G5 | Purchasing & receiving | E-purchase_order, E-purchase_order_line, E-goods_receipt, E-goods_receipt_line, E-supplier_bill, E-supplier_bill_line, E-replenishment_suggestion, E-landed_cost_charge (C, D-056), E-cost_signal; **CF1 addendum (2026-09-30, T-1A.9-M09-14):** E-storefront_visit_counter (option b) or E-storefront_visit_event (option c) — CONDITIONAL, D-285 (§13) | G2, G3, G4 | 1A | — |
 | DB-G6 | Customers & business accounts | E-customer_segment, E-customer, E-business_account, E-business_account_member, E-dealer_application, E-address, E-consent_record, E-data_request, E-customer_tag (D-145), E-customer_merge (D-133), E-wishlist_item (C, D-042), E-alert_subscription (D-141), E-verification_document | G0, G1, G3 | 1A | `verification_document.linked_change` (G9) |
 | DB-G7 | Quotes, orders & payments | E-quote, E-quote_line, E-sales_order, E-order_line, E-reservation *(inventory entity; needs order lines)*, E-order_cancellation, E-payment_attempt, E-payment_event, E-refund, E-settlement_record, E-message_template, E-notification, E-invoice_reference, E-cart, E-cart_line (D-129), E-internal_note (D-134), E-finance_day_close, E-supplier_confirmation (C, D-073/D-181) | G3, G4, G5, G6 | 1A | `invoice_reference.return_request_id` (G8); `supplier_confirmation.supplier_fulfilment_task_id` (G9) |
-| DB-G8 | Fulfilment, returns & finance export | E-pick_wave, E-handover_manifest (D-132; before fulfilments), E-fulfilment, E-fulfilment_parcel, E-fulfilment_scan, E-fulfilment_line, E-shipment_event, E-return_request, E-return_line, E-warranty_case, E-supplier_rma, E-accounting_export, E-registered_device (D-133), E-product_review (C, D-041) | G7 | 1A | `fulfilment.return_request_id` (added after E-return_request within G8) |
+| DB-G8 | Fulfilment, returns & finance export | E-pick_wave, E-handover_manifest (D-132; before fulfilments), E-fulfilment, E-fulfilment_parcel, E-fulfilment_scan, E-fulfilment_line, E-shipment_event, E-return_request, E-return_line, E-warranty_case, E-supplier_rma, E-accounting_export, E-registered_device (D-133), E-product_review (C, D-041); **CF1 addendum (2026-09-30, T-1A.14-M17-13):** E-staff_alert_rule, E-staff_alert (§13) | G7 | 1A | `fulfilment.return_request_id` (added after E-return_request within G8) |
 | DB-G9 | Vendor portal | E-vendor_application, E-vendor_approval, E-vendor_user, E-vendor_submission, E-supplier_fulfilment_task (CONDITIONAL), E-advance_shipping_notice (D-131), E-payout_account_change, E-vendor_announcement (C, D-142) | G2, G7, G8 | 1B (admin-created vendor accounts: 1A-C) | — |
-| DB-G10 | Support, storefront content, reporting & automation activation | E-support_conversation, E-support_message, E-support_ticket, E-approved_answer, E-merch_collection (D-142), E-product_question (D-065), E-saved_view, E-export_job, E-report_schedule (after E-saved_view), E-change_request, E-restore_rehearsal; activation of seeded `E-automation_rule` records (D-078) | G2, G6, G7 | 1A (L1/assisted) / 1B (L2) | — |
+| DB-G10 | Support, storefront content, reporting & automation activation | E-support_conversation, E-support_message, E-support_ticket, E-approved_answer, E-merch_collection (D-142), E-product_question (D-065), E-saved_view, E-export_job, E-report_schedule (after E-saved_view), E-change_request, E-restore_rehearsal; activation of seeded `E-automation_rule` records (D-078); **CF1 addendum (2026-09-30, T-1A.15-M18-09):** E-analytics_daily_fact, E-customer_cohort_snapshot — rebuildable read models (§13) | G2, G6, G7 | 1A (L1/assisted) / 1B (L2) | — |
 | DB-G11 | Marketplace | E-seller_agreement, E-commission_rule, E-seller_settlement, E-payout | G7, G9 | 2 (`LATER`, D-046) | — |
 
 Rules:
@@ -3482,7 +3484,7 @@ Every value is client data or a decision — **no value is invented in seeds**. 
 | S-14 | Reason-code lists | E-configuration_version (reference_list) | Holds, cancellations, adjustments, returns, transfers | Code lists | D-139 |
 | S-15 | Terms & notices | E-terms_version | Registration, applications, consent | Customer terms, privacy notice, dealer terms, supplier terms | D-037, D-067, D-068 |
 | S-16 | Templates & approved answers | E-message_template, E-approved_answer | Notifications, support | Approved templates per channel/language; FAQ answers | D-014, D-015, D-050, D-058, D-074 |
-| S-17 | Automation rules | E-automation_rule | Automation go-live | Launch set with full BP §12.3 template | D-078 |
+| S-17 | Automation rules | E-automation_rule; **addendum 2026-09-30:** E-staff_alert_rule — the nine P-E17 staff alert rules, all `enabled = false` and `threshold_confirmed = false` until D-283 (f) sets thresholds (MK samples are never seeded) | Automation go-live; P-E17 alerts | Launch set with full BP §12.3 template; staff alert rule keys (§13.3) | D-078, D-283 |
 | S-18 | Integrations | E-integration_setting | Payments, shipping, accounting, messaging | One record per provider × environment with contract | D-009, D-011, D-012, D-013, D-014, D-015 |
 | S-19 | Report schedules | E-report_schedule | Reporting | Launch report set, recipients, owner digest | D-063, D-075 |
 | S-20 | Opening master & transactional data | via M25 (§7.4) | Launch | Products, suppliers, customers, stock, serials, open POs/orders | D-038, D-039 |
@@ -3631,9 +3633,9 @@ exceptions. Periods are **REQUIRES_DECISION (D-036)**; mockup periods (e.g. "8 y
 | RC-warranty | E-serial_unit, E-serial_event, E-inspection, E-warranty_case, E-return_request, E-return_line, E-media_asset (unit photos), E-registered_device | Delete customer evidence photos after dispute window; keep serial history | Open warranty/RMA | D-036 |
 | RC-chat | E-support_conversation, E-support_message, E-support_ticket, E-integration_event (WhatsApp), E-product_question, E-product_review (public content; period D-036) | Delete transcripts after period; keep ticket summary (MK sample) | Complaints, disputes | D-036, D-074 |
 | RC-identity | E-verification_document, E-payout_account_change, PAN/bank fields, E-attachment (PD2) | Secure delete after relationship end + period | Legal claims | D-036, D-067, D-068 |
-| RC-log | E-audit_event, E-job_attempt, E-notification, E-export_job, E-idempotency_record, E-verification_challenge, E-user_session, E-access_review, E-restore_rehearsal, E-migration_rehearsal | Rolling expiry (audit longer than application logs) | Incident investigation | D-036 |
+| RC-log | E-audit_event, E-job_attempt, E-notification, E-export_job, E-idempotency_record, E-verification_challenge, E-user_session, E-access_review, E-restore_rehearsal, E-migration_rehearsal; staff-activity records E-staff_presence_interval, E-work_item_event, E-staff_alert (own, shorter period — D-283 d; MK samples 90 days presence, 24 months performance); E-storefront_visit_event (option c, period D-285) | Rolling expiry (audit longer than application logs; staff activity and visit events on their own periods) | Incident investigation; open alert under review | D-036, D-283, D-285 |
 | RC-backup | Backups | Expire automatically; re-apply deletions after restore | — | D-034, D-036 |
-| RC-operational | Catalog, pricing, stock ledger, purchasing, configuration (incl. E-lot, E-promotion_code, E-import_mapping_profile, E-advance_shipping_notice, E-pick_wave, E-saved_view, E-search_synonym, E-seo_redirect, E-merch_collection, E-change_request, E-cost_signal, E-landed_cost_charge, E-shipping_charge_rule, E-device_station, E-vendor_announcement) | Retained while needed; ledgers append-only | — | D-036 |
+| RC-operational | Catalog, pricing, stock ledger, purchasing, configuration (incl. E-lot, E-promotion_code, E-import_mapping_profile, E-advance_shipping_notice, E-pick_wave, E-saved_view, E-search_synonym, E-seo_redirect, E-merch_collection, E-change_request, E-cost_signal, E-landed_cost_charge, E-shipping_charge_rule, E-device_station, E-vendor_announcement, E-staff_alert_rule); rebuildable read models E-analytics_daily_fact, E-customer_cohort_snapshot, E-storefront_visit_counter | Retained while needed; ledgers append-only; read models are rebuilt from source and never outlive it — a customer anonymised through E-data_request leaves E-customer_cohort_snapshot at the next rebuild | — | D-036, D-286 |
 
 Dispute/statutory exceptions must be checked by every deletion job (open `E-return_request`, `E-support_ticket`
 category `payment_dispute`, `E-settlement_record` line_type `chargeback`); mechanism REQUIRES_DECISION (D-036).
@@ -3671,6 +3673,9 @@ category `payment_dispute`, `E-settlement_record` line_type `chargeback`); mecha
 | E-notification_preference | preferences | — | — | — |
 | E-data_request | nominee | — | — | — |
 | E-address (business fields) | business_name, gstin | — | — | — |
+| E-staff_presence_interval, E-work_item_event, E-staff_alert | employee presence, work times and alerts about a named staff user (employee personal data; DPDP Act 2023 notice and retention — D-283) | — | — | — |
+| E-customer_cohort_snapshot | customer_ref, region (aggregate use only) | — | — | — |
+| E-storefront_visit_event (option c only) | session_ref (pseudonymous online identifier), search_term | — | — | — |
 
 Masking in staff UI and audited reveal apply to PD1/PD2/PD-R fields (MK:erp-customers.html, MK:erp-inventory.html);
 field-level protection at rest: D-130. Non-production copies: D-136.
@@ -4009,3 +4014,233 @@ concerns while still giving the control model its table from the start.
 | 4 | `E-message_dispatch` is unique on `(store_id, message_key)`, which is what makes "one event, one message" true under retry |
 | 5 | `E-store_feature_state` may only hold items whose control state is `delegated`; enforced by the service and by a check against the compiled control set at write time |
 | 6 | `E-automation_run` and `E-message_dispatch` carry no personal data beyond a subject reference and no message body after the retention window |
+
+---
+
+## 13. Client feedback CF1 data model (2026-09-30, `D-282`–`D-286`)
+
+Source: `docs/CLIENT_FEEDBACK_2026-09-30.md` — `CF1 §2` (employee monitoring → P-E17 Team & activity) and `CF1 §3`
+(analytics dashboard → P-E18 Analytics). Entities follow the §1.8 template. Every one is store-scoped: `store_id`
+is non-null, the leading column of every key and index, and part of every unique constraint (§11.1). Registry rows
+in `00-conventions.md` §7 are still to be added for these entities (requested in the session report).
+
+**Scope rule for §13.1–§13.4 (`D-282`).** Recorded: actions taken in the store system, sign-ins and sessions,
+presence worked out only from activity inside the workspace, work-item assignment and handling times. **Never
+recorded** — no column, no payload key, no log line: screen contents, keystrokes, camera or microphone, personal
+devices or other apps, location beyond the sign-in network or branch label, private messages. A schema review
+against this list is an acceptance criterion of T-1A.2-M02-11 (`16-testing.md` §19, TS-SEC-13).
+
+```mermaid
+erDiagram
+    USER_ACCOUNT ||--o{ STAFF_PRESENCE_INTERVAL : "is_present_as"
+    USER_ACCOUNT ||--o{ WORK_ITEM_EVENT : "handles"
+    AUDIT_EVENT |o--o{ WORK_ITEM_EVENT : "records"
+    STAFF_ALERT_RULE ||--o{ STAFF_ALERT : "raises"
+    USER_ACCOUNT ||--o{ STAFF_ALERT : "is_subject_of"
+    LOCATION ||--o{ ANALYTICS_DAILY_FACT : "fulfils"
+    CATEGORY ||--o{ ANALYTICS_DAILY_FACT : "groups"
+    PRODUCT ||--o{ ANALYTICS_DAILY_FACT : "measures"
+    CUSTOMER |o--o{ CUSTOMER_COHORT_SNAPSHOT : "summarised_as"
+    BUSINESS_ACCOUNT |o--o{ CUSTOMER_COHORT_SNAPSHOT : "summarised_as"
+    PRODUCT |o--o{ STOREFRONT_VISIT_COUNTER : "viewed_as"
+```
+
+### 13.1 E-staff_presence_interval
+**M02 · DOCUMENTED (CF1 §2) · 1A · REQUIRES_DECISION (D-283)** — Sources: CF1 §2 ("check the current status of each employee"); D-282 (presence worked out only from activity inside the workspace; staff may set "On break" / "Away" themselves); MK:erp-team.html (status key, board "since …", person drawer "Presence today", m-recorded "Workspace presence"). Capability `CAP-STAFF_PRESENCE` (with `CAP-TEAM_MONITOR`); when off, no heartbeat is sent and no row is written. Written by T-1A.2-M02-11 through API-M02-43. Append-only (an open interval is closed, never edited back).
+
+One row per continuous period in which a signed-in staff user had one presence status.
+
+| Column | Type | Req | Default | Constraints | Source |
+|---|---|---|---|---|---|
+| staff_presence_interval_id | id | Y | — | PK | — |
+| store_id | ref(E-store) | Y | — | Leading column of every key and index | SAAS S01; BR-M30-01 |
+| user_id | ref(E-user_account) | Y | — | Staff users only | CF1 §2 |
+| session_id | ref(E-user_session) | C | — | When D-083 stores sessions | D-083 |
+| status | enum{active, idle, on_break, away, offline} | Y | — | `active`, `idle`, `offline` derived by the server from heartbeats (idle threshold D-283 c); `on_break`, `away` only self-set and only if D-283 (c) allows | MK:erp-team.html status key · D-282 |
+| source | enum{derived, self_set, sign_out, session_end} | Y | — | — | D-282 |
+| started_at / ended_at | ts / ts | Y / N | — | `ended_at` null = current interval | MK ("since 10:38") |
+| area_key | code | N | — | Workspace area of the last activity in the interval (codes as E-audit_event.area) | MK board "current activity" |
+| note | text | N | — | Short self-set note for `away` (MK "Supplier call") — only if D-283 allows notes | MK · D-283 |
+| network_label | text | N | — | Sign-in network or branch label only — never GPS or device inventory | D-282; MK m-recorded |
+
+- **Keys:** PK; FK user_id, session_id. **Unique:** (store_id, user_id) among rows with `ended_at` null — one open interval per user. **Indexes:** (store_id, user_id, started_at); (store_id, status, started_at) — status board.
+- **State:** an open interval closes when the status changes, on sign-out, or when no heartbeat arrives within the offline window (D-283 c). "On leave", "not yet signed in" and "offline — shift starts later" on P-E17 are **not** presence rows: they need a staff roster/leave source that no source or entity provides (REQUIRES_DECISION, D-283 — gap reported 2026-09-30).
+- **Audit:** self-set status changes write E-audit_event (API-M02-43); derived changes do not (volume).
+- **PD:** PD1 — employee personal data (DPDP Act 2023): notice text and retention per D-283 (d, e, g); class RC-log (staff activity, own period — MK sample 90 days). Never used to decide pay, warnings or dismissal automatically (MK m-recorded).
+- **Physical:** D-001; append-heavy — partition candidate by store_id and time (§12.4 pattern).
+
+### 13.2 E-work_item_event
+**M02 · DOCUMENTED (CF1 §2) · 1A · REQUIRES_DECISION (D-283)** — Sources: CF1 §2 ("monitor how employees are handling the REP section" — read as the ERP section, D-282); D-282 (recorded: work-item assignment and handling times); MK:erp-team.html (area table: open, handled today, oldest waiting, target met, median time; performance: work items, median time, target met, sent back / corrected; m-recorded "Work items — when an item was assigned, picked up and finished"). Capability `CAP-TEAM_MONITOR`. Written by T-1A.2-M02-11 in the same transaction as the business action. Append-only.
+
+One row per lifecycle step of a work item in a workspace area, so handling time, waiting time and target met can be computed without reading every module's tables on request.
+
+| Column | Type | Req | Default | Constraints | Source |
+|---|---|---|---|---|---|
+| work_item_event_id | id | Y | — | PK | — |
+| store_id | ref(E-store) | Y | — | Leading column of every key and index | SAAS S01 |
+| work_item | polyref | Y | — | Order step, fulfilment, return request, support conversation or ticket, product draft or review, price change, stock count/adjustment/transfer, purchase order, goods receipt, dealer application, vendor submission, payment exception, refund, exception case, approval request | MK:erp-team.html area rows |
+| area_key | code | Y | — | Workspace area that owns the item | MK |
+| event_type | enum{assigned, started, completed, sent_back, reassigned, cancelled} | Y | — | "assigned, started, completed, sent back" (T-1A.2-M02-11) | D-282 |
+| user_id | ref(E-user_account) | C | — | Assignee or actor; null when assigned to a queue/role | MK |
+| assigned_role_id | ref(E-role) | N | — | Queue-level assignment | BP §12.5 ("assigned role/person") |
+| location_id | ref(E-location) | N | — | For branch scope (D-283 b) | MK |
+| occurred_at | ts | Y | — | — | MK |
+| due_at | ts | N | — | The item's service target at this step, copied from the owning module (targets: D-283, definitions D-173); never computed here | MK "Target met" (samples, TBC) |
+| audit_event_id | ref(E-audit_event) | N | — | The audit event of the same action | T-1A.2-M02-11 |
+
+- **Keys:** PK. **Unique:** (store_id, work_item_type, work_item_id, event_type, occurred_at, user_id) — idempotent writer. **Indexes:** (store_id, area_key, occurred_at); (store_id, user_id, occurred_at); (store_id, work_item_type, work_item_id).
+- **Derived (not stored):** handling time = completed − started; waiting = started − assigned (or now − assigned while open); target met = completed ≤ due_at; sent-back share = sent_back ÷ completed; overrides come from E-audit_event (approval/override actions), not from this entity.
+- **Audit:** none separately — the originating action is audited.
+- **PD:** PD1 linkage (the employee). Retention per D-283 (d) (MK sample: performance summaries 24 months). **Physical:** D-001.
+
+### 13.3 E-staff_alert_rule
+**M17 · MOCKUP · 1A · REQUIRES_DECISION (D-283)** — Sources: MK:erp-team.html m-rules ("Fixed rules checked by the system — no AI. Every threshold is a sample to be confirmed"); D-282 (rule-based alerts); T-1A.14-M17-13. Capability `CAP-STAFF_ACTIVITY_ALERTS`; each rule is its own switch. Seeded by S-17 addendum (all off).
+
+| Column | Type | Req | Default | Constraints | Source |
+|---|---|---|---|---|---|
+| staff_alert_rule_id | id | Y | — | PK | — |
+| store_id | ref(E-store) | Y | — | — | SAAS S01 |
+| rule_key | code | Y | — | `same_person_create_approve`, `bulk_customer_export`, `failed_sign_ins`, `discounts_above_limit`, `stock_removed_without_photo`, `waiting_work_idle_assignee`, `sign_in_outside_hours`, `work_assigned_on_leave`, `price_change_above_limit` — the nine MK rows | MK m-rules |
+| enabled | bool | Y | false | Off until D-283 (f) sets thresholds | T-1A.14-M17-13 |
+| threshold | struct{value, unit} | C | — | Required when enabled; MK samples ("500 records", "5 in 10 min", "20 min idle", "09:30–20:30", "3 a day", "5%") are never seeded (§6) | MK "sample · TBC" · D-283 (f) |
+| threshold_confirmed | bool | Y | false | True only once D-283 records the value | MK "TBC" |
+| notify | refset(E-role) | Y | — | Roles holding `team.monitor.read`; MK values "Team lead", "Warehouse lead" are job titles (D-222) | MK · D-222 |
+| level | enum{critical, serious, warning} | Y | — | — | MK |
+| notify_subject | bool | Y | false | "Tell the person concerned when an alert about them is raised" | MK m-rules · D-283 (e) |
+| version | int | Y | 1 | `[VER]` | — |
+
+- **Common:** `[AUD]`, `[VER]`. **Unique:** (store_id, rule_key). **Audit:** every change with reason (API-M24-19). **PD:** none.
+- **Physical:** D-001. Kept separate from E-automation_rule: staff alerts only inform, they never act on a record, and they are governed by D-283 rather than D-078.
+
+### 13.4 E-staff_alert
+**M17 · MOCKUP · 1A · REQUIRES_DECISION (D-283)** — Sources: MK:erp-team.html `#alerts` ("Rule-based checks · no AI"; rows with severity, title, person, time, record, what happened, "Why flagged" with rule and threshold, Acknowledge); D-282; T-1A.14-M17-13 (alerts on P-E17 and, for serious ones, in the owner's exception view and digest; alerts never block the staff member's work).
+
+| Column | Type | Req | Default | Constraints | Source |
+|---|---|---|---|---|---|
+| staff_alert_id | id | Y | — | PK | — |
+| store_id | ref(E-store) | Y | — | — | SAAS S01 |
+| alert_number | code | Y | — | Unique per store (MK "AL-3107") | MK · D-123 |
+| staff_alert_rule_id | ref(E-staff_alert_rule) | Y | — | — | MK |
+| rule_version / threshold_snapshot | int / struct | Y | — | The rule and threshold that fired (T-1A.14-M17-13 AC 1) | MK "Why flagged" |
+| severity | enum{critical, serious, warning} | Y | — | Rule level at firing time | MK |
+| subject_user_id | ref(E-user_account) | Y | — | The person the alert is about | MK |
+| area_key | code | N | — | — | MK |
+| object_ref | polyref | N | — | The record (refund, export, order, adjustment, session, return case) | MK "Open record" |
+| evidence | struct | Y | — | Structured facts (counts, amounts, times, network label) with references to the audit events; no copy of customer personal data | MK "what" |
+| audit_event_ids | struct list | N | — | Events that fired the rule | T-1A.14-M17-13 |
+| raised_at | ts | Y | — | — | MK |
+| state | enum{open, acknowledged} | Y | open | Acknowledging records that it was seen; it changes nothing about the person's work or access (MK) | MK |
+| acknowledged_by / acknowledged_at / note | ref(E-user_account) / ts / text | C | — | Required when acknowledged (API-M24-20) | MK |
+| dedupe_key | text | Y | — | One open alert per rule + subject + object (A38 "no alert storms" pattern) | A38 |
+| owner_escalated | bool | Y | false | Serious and critical alerts are copied to the owner's exception view and digest (D-063) | T-1A.14-M17-13 |
+
+- **Common:** `[AUD]`. **Unique:** (store_id, alert_number); dedupe_key among open alerts. **Indexes:** (store_id, state, severity, raised_at); (store_id, subject_user_id, raised_at).
+- **Audit:** acknowledgement. **PD:** PD1 (about an employee); retention per D-283 (d). **Physical:** D-001.
+
+### 13.5 E-analytics_daily_fact (read model)
+**M18 · DOCUMENTED (CF1 §3) · 1A · REQUIRES_DECISION (D-286)** — Sources: CF1 §3; D-284 ("built on read models from the store's own orders, stock, returns and support data; no AI"); BP §14.1 (no data warehouse in minimum scope), §14.4 (event dates, gross vs net, tax basis, freshness, restricted columns), §4 (success measures); MK:erp-analytics.html; T-1A.15-M18-09. **Rebuildable read model, never a source of truth** — a full rebuild from the source ledgers must give identical rows (T-1A.15-M18-09 AC 2).
+
+Grain: one row per store × fact kind × date × location × channel × buyer type × category × product × condition (sparse — only non-empty rows).
+
+| Column | Type | Req | Default | Constraints | Source |
+|---|---|---|---|---|---|
+| analytics_daily_fact_id | id | Y | — | PK | — |
+| store_id | ref(E-store) | Y | — | No row or query ever spans stores (D-261) | SAAS S01; D-261 |
+| fact_kind | enum{sales, fulfilment, returns, support, stock, visits} | Y | — | `visits` only when `CAP-STOREFRONT_VISIT_ANALYTICS` is on (D-285) | D-284 |
+| fact_date | date | Y | — | — | BP §14.4 |
+| date_basis | code | Y | — | Order date or invoice date per D-286 (a); event dates kept distinct (BP §14.4) | BP §14.4 · D-286 |
+| location_id | ref(E-location) | N | — | Site that fulfilled the order (MK) | MK |
+| channel | code | N | — | web, pos, whatsapp, assisted (MK) | MK |
+| buyer_type | code | N | — | consumer, dealer | MK |
+| category_id / product_id | ref(E-category) / ref(E-product) | N | — | — | MK |
+| condition_grade_id | ref(E-condition_grade) | N | — | `CAP-CONDITION_GRADES` | MK |
+| orders / units | int / qty | Y | 0 | Units after returns | MK |
+| gross_sales / discounts / returns_value / refunds_value / net_sales | money | Y | 0 | Excl. GST; net-sales basis per D-286 (a) | BP §14.4 · D-286 |
+| tax | money | Y | 0 | Kept separate, never inside net | BP §14.4 |
+| cost_of_goods | money | N | — | Margin source per D-286 (b) (landed, average or unit cost); read only with `analytics.margin.read` | BP §14.4 · D-286, D-197 |
+| promotion_breakdown | struct list{promotion_id, orders, net_sales, discount} | N | — | Promotions table (Sales view) | MK |
+| payment_method_mix | struct | N | — | Paid value by method (Sales view) | MK |
+| hourly_orders | struct | N | — | Orders per hour of day (weekday × hour card) | MK |
+| measures | struct | N | — | Non-sales kinds: paid → dispatched minutes, on-time deliveries, delivery exceptions, returned to origin (fulfilment); return reasons (returns); first-response and resolution times, ratings if D-286 adds them (support); counted vs matched units, stock-out days (stock); visit counts (visits) | D-284; MK |
+| currency | code | Y | — | Money in minor units with its currency | BP §8.1 |
+| source_watermark | struct | Y | — | Last source event included — freshness and incremental refresh | BP §14.4 |
+| refreshed_at | ts | Y | — | Freshness label shown by P-E18; cadence D-286 (d) | BP §14.4 · D-286 |
+
+- **Unique:** (store_id, fact_kind, fact_date, date_basis, location_id, channel, buyer_type, category_id, product_id, condition_grade_id). **Indexes:** (store_id, fact_kind, fact_date) and the filter columns of API-M18-20.
+- **Rules:** totals reconcile to orders, returns and refunds for a seeded month (T-1A.15-M18-09 AC 1); test and verification transactions excluded (BP §4; D-209). **PD:** none (no customer identifier). **Retention:** RC-operational (rebuildable). **Physical:** D-001; partition by store_id and month.
+
+### 13.6 E-customer_cohort_snapshot (read model)
+**M18 · DOCUMENTED (CF1 §3) · 1A · REQUIRES_DECISION (D-286)** — Sources: CF1 §3 ("customer analytics"); D-284 (Customers view: new vs returning, cohort retention, segments, lifetime value, regions, dealer accounts); MK:erp-analytics.html (`#cu-kpis`, `#ch-newret`, `#ch-cohort`, `#seg-body`, `#ch-cities`, `#dl-body`); T-1A.15-M18-09. Capability `CAP-CUSTOMER_ANALYTICS`. Rebuildable. Not to be confused with E-customer_segment (M08 — the pricing segment consumer/dealer).
+
+Grain: one row per store × buyer (consumer or business account) × snapshot date.
+
+| Column | Type | Req | Default | Constraints | Source |
+|---|---|---|---|---|---|
+| customer_cohort_snapshot_id | id | Y | — | PK | — |
+| store_id | ref(E-store) | Y | — | — | SAAS S01 |
+| snapshot_date | date | Y | — | Nightly per D-286 (d) (MK "rules run nightly") | MK |
+| buyer_ref | polyref(E-customer, E-business_account) | Y | — | Used only to compute aggregates; API-M18-20 never returns it | D-284 |
+| buyer_type | code | Y | — | consumer, dealer | MK |
+| first_purchase_month | date | Y | — | Cohort key | MK |
+| last_order_at | ts | Y | — | — | MK |
+| orders_12m / orders_24m | int | Y | 0 | — | MK |
+| net_sales_24m / net_sales_lifetime | money | Y | 0 | Excl. GST | MK |
+| purchase_months | struct | N | — | Months with a purchase since the first (cohort retention) | MK |
+| segment_code / segment_rules_version | code / int | Y | — | Rule-based segment; first matching rule wins (MK); names and rules per D-286 (e) — MK names (Champions … Hibernating) are samples | MK · D-286 |
+| region | text | N | — | City/region of the delivery address, or the branch city for counter sales (MK) | MK |
+| refreshed_at | ts | Y | — | — | BP §14.4 |
+
+- **Unique:** (store_id, snapshot_date, buyer_ref). **Retention:** latest snapshot plus month-end snapshots (D-286 d, D-036); a customer anonymised through E-data_request is removed at the next rebuild.
+- **PD:** PD1 linkage (buyer_ref, region) — aggregate use only. **Physical:** D-001.
+
+### 13.7 E-storefront_visit_counter / E-storefront_visit_event (CONDITIONAL, D-285)
+**M09 · CONDITIONAL (D-285) · 1A · REQUIRES_DECISION (D-285)** — Sources: BP §4 ("Better shopping — funnel analytics segmented by device/customer type"; "Better discovery — zero-result searches … anonymous search metrics"), §14.3 ("Customer funnel"); MK:erp-analytics.html (cards marked "Needs visit tracking"); D-285 options; T-1A.9-M09-14. Capability `CAP-STOREFRONT_VISIT_ANALYTICS` (CANDIDATE). **Exactly one** of the two is built — the counter under D-285 (b), the event under (c) — and **neither** under (a) or (d). Written by API-M09-03; aggregated into E-analytics_daily_fact (`fact_kind = visits`).
+
+**E-storefront_visit_counter** (option b — cookieless aggregate):
+
+| Column | Type | Req | Default | Constraints | Source |
+|---|---|---|---|---|---|
+| storefront_visit_counter_id | id | Y | — | PK | — |
+| store_id | ref(E-store) | Y | — | — | SAAS S01 |
+| bucket_start | ts | Y | — | Hourly bucket | D-285 |
+| metric | code | Y | — | page_view, landing, product_view, search, search_no_result, add_to_cart, checkout_start, payment_reached | MK funnel, site search |
+| page_template | code | N | — | — | MK landing pages |
+| product_id / category_id | ref | N | — | — | MK "Viewed often, bought rarely" |
+| search_term_normalised | text | N | — | Search metrics only; normalised and length-capped | MK "Searches with no results" |
+| referrer_class | code | N | — | search_engine, direct, whatsapp, social, referral, email | MK traffic sources |
+| device_class | code | N | — | mobile, desktop, tablet | MK devices |
+| count | int | Y | 0 | — | — |
+
+- **Unique:** all dimension columns with store_id and bucket_start. No identifier, cookie or IP address of any kind. Without an identifier a session cannot be counted exactly: under option (b) "sessions" means landing page views — the P-E18 conversion definition must say so (D-286 a). **PD:** none. **Retention:** RC-operational.
+
+**E-storefront_visit_event** (option c — consent-gated):
+
+| Column | Type | Req | Default | Constraints | Source |
+|---|---|---|---|---|---|
+| storefront_visit_event_id | id | Y | — | PK | — |
+| store_id | ref(E-store) | Y | — | — | SAAS S01 |
+| session_ref | text | Y | — | Pseudonymous, rotating; not linked to E-customer unless D-285 allows | D-285 (c) |
+| consent_record_id | ref(E-consent_record) | Y | — | No event without consent | D-285 (c); DPDP Act 2023 |
+| event_type | code | Y | — | As `metric` above | MK |
+| occurred_at | ts | Y | — | — | — |
+| page_template / product_id / category_id / search_term | code / ref / ref / text | N | — | — | MK |
+| referrer_class / device_class | code | N | — | — | MK |
+
+- **Indexes:** (store_id, occurred_at); (store_id, session_ref, occurred_at). **PD:** PD1 (pseudonymous online identifier, search terms). **Retention:** per D-285 (c), class RC-log. **Physical:** D-001; partition by store_id and day.
+
+### 13.8 Placement summary
+
+| Entity | Module | Label | Migration group | Seed | Retention class | Built by |
+|---|---|---|---|---|---|---|
+| E-audit_event + `area`, `work_item_ref` | M02 | DOCUMENTED (CF1 §2) | DB-G1 addendum (columns on a DB-G0 table) | — | RC-log | T-1A.2-M02-11 |
+| E-staff_presence_interval | M02 | DOCUMENTED (CF1 §2) | DB-G1 addendum | — | RC-log (D-283 d) | T-1A.2-M02-11 |
+| E-work_item_event | M02 | DOCUMENTED (CF1 §2) | DB-G1 addendum | — | RC-log (D-283 d) | T-1A.2-M02-11 |
+| E-staff_alert_rule | M17 | MOCKUP | DB-G8 addendum | S-17 addendum (all off) | RC-operational | T-1A.14-M17-13 |
+| E-staff_alert | M17 | MOCKUP | DB-G8 addendum | — | RC-log (D-283 d) | T-1A.14-M17-13 |
+| E-analytics_daily_fact | M18 | DOCUMENTED (CF1 §3) | DB-G10 addendum | — | RC-operational (rebuildable) | T-1A.15-M18-09 |
+| E-customer_cohort_snapshot | M18 | DOCUMENTED (CF1 §3) | DB-G10 addendum | — | RC-operational (rebuildable) | T-1A.15-M18-09 |
+| E-storefront_visit_counter (b) / E-storefront_visit_event (c) | M09 | CONDITIONAL (D-285) | DB-G5 addendum | — | RC-operational (b) / RC-log (c) | T-1A.9-M09-14 |
+
+Dependency check: every addendum references only earlier groups (DB-G1 → G0; DB-G5 → G2 product/category; DB-G8 →
+G0/G1; DB-G10 → G1, G2, G6, G7). The DB-G5 and DB-G8 placements follow the task blocks; neither entity has a
+purchasing or fulfilment dependency, so the placement is a scheduling choice, not a data one.

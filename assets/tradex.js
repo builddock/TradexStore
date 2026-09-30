@@ -360,19 +360,20 @@
     const fav = store.get("fav", []).includes(p.id);
     const cmp = store.get("compare", []).includes(p.id);
     return `<article class="pcard" data-id="${p.id}">
-      <div class="p-flags">${TX.condBadge(p.cond)}${p.badge ? `<span class="badge b-accent sq">${p.badge}</span>` : ""}</div>
-      <button class="p-fav ${fav ? "on" : ""}" data-fav="${p.id}" aria-label="Save to wishlist">${ic("heart")}</button>
-      ${TX.ph(p.img, "", TX.esc(p.title))}
+      <div class="p-media">
+        <div class="p-flags">${TX.condBadge(p.cond)}${p.badge ? `<span class="badge b-accent sq">${p.badge}</span>` : ""}</div>
+        <button class="p-fav ${fav ? "on" : ""}" data-fav="${p.id}" aria-label="Save to wishlist">${ic("heart")}</button>
+        ${TX.ph(p.img, "", TX.esc(p.title))}
+      </div>
       <div class="p-body">
-        <div class="p-brand">${p.brand}</div>
+        <div class="p-top"><span class="p-brand">${p.brand}</span><span class="p-rating" title="${p.rating} out of 5 · ${TX.num(p.reviews)} reviews"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true">${I.star}</svg> ${p.rating} <span>(${TX.num(p.reviews)})</span></span></div>
         <a class="p-link" href="store-product.html?id=${p.id}"><div class="p-title clamp-2">${TX.esc(p.title)}</div></a>
         <div class="p-specs truncate">${p.specs}</div>
-        <div class="p-rating"><span class="rating-pill">${p.rating} <svg class="ic" viewBox="0 0 24 24">${I.star}</svg></span> ${TX.num(p.reviews)} ratings</div>
         <div data-price="${p.id}">${TX.priceHTML(p)}</div>
         <div class="p-meta">${TX.stockHTML(p)}<span>${ic("truck")} <span><span class="m-hide">Delivery </span>by ${p.delivery}</span></span><span>${ic("shield")} ${p.warranty}</span></div>
         <div class="p-foot">
           <label class="p-compare"><input type="checkbox" data-compare="${p.id}" ${cmp ? "checked" : ""}> Compare</label>
-          <button class="btn btn-primary btn-sm" data-add="${p.id}">${ic("cart", "ic-sm")} Add</button>
+          <button class="btn btn-primary btn-sm" data-add="${p.id}">${ic("plus", "ic-sm")} Add<span class="p-add-x">&nbsp;to cart</span></button>
         </div>
       </div>
     </article>`;
@@ -421,7 +422,7 @@
       ["store-help.html", "Help centre & policies"],
     ],
     "ERP workspace": [
-      ["erp-dashboard.html", "Owner control centre"], ["erp-orders.html", "Orders"], ["erp-fulfilment.html", "Pick · pack · dispatch"],
+      ["erp-dashboard.html", "Owner control centre"], ["erp-analytics.html", "Analytics dashboard"], ["erp-team.html", "Team & activity monitor"], ["erp-orders.html", "Orders"], ["erp-fulfilment.html", "Pick · pack · dispatch"],
       ["erp-returns.html", "Returns, RMA & warranty"], ["erp-support.html", "Support & WhatsApp inbox"], ["erp-catalog.html", "Catalog & imports"],
       ["erp-pricing.html", "Pricing & dealer tiers"], ["erp-inventory.html", "Inventory & serials"], ["erp-purchasing.html", "Purchasing & receiving"],
       ["erp-customers.html", "Customers & dealers"], ["erp-vendors.html", "Vendors & submissions"], ["erp-finance.html", "Payments & reconciliation"],
@@ -433,7 +434,11 @@
     ],
   };
   const ERP_NAV = [
-    ["Overview", [["dashboard", "erp-dashboard.html", "Control centre", "dashboard"]]],
+    ["Overview", [
+      ["dashboard", "erp-dashboard.html", "Control centre", "dashboard"],
+      ["analytics", "erp-analytics.html", "Analytics", "trending-up"],
+      ["team", "erp-team.html", "Team monitor", "activity", "3", true],
+    ]],
     ["Sell & serve", [
       ["orders", "erp-orders.html", "Orders", "receipt", "18"],
       ["fulfilment", "erp-fulfilment.html", "Pick · pack · dispatch", "truck", "9"],
@@ -480,7 +485,7 @@
     bar.className = "protobar";
     // Narrow screens: everything after the brand collapses into a panel opened by "Prototype menu"
     bar.innerHTML = `<div class="pb-inner">
-      <span class="pb-tag"><a href="index.html" style="color:#fff;display:inline-flex;gap:8px;align-items:center">${TX.logoMark().replace("logo-mark", "logo-mark").replace('class="logo-mark"', 'class="logo-mark" style="width:22px;height:22px;border-radius:6px"')} Tradex prototype</a><span class="badge">v0.1 · for review</span></span>
+      <span class="pb-tag"><a href="index.html" style="color:#fff;display:inline-flex;gap:8px;align-items:center">${TX.logoMark().replace("logo-mark", "logo-mark").replace('class="logo-mark"', 'class="logo-mark" style="width:22px;height:22px;border-radius:6px"')} Tradex prototype</a><span class="badge">v0.2 · for review</span></span>
       <button class="pb-btn pb-more" type="button" aria-expanded="false" aria-controls="pb-rest">${ic("sliders", "ic-sm")} Prototype menu</button>
       <div class="pb-rest" id="pb-rest">
       <span class="pb-sep"></span>
@@ -523,19 +528,21 @@
   /* ------------------------------------------------------------------------ */
   function updateAccountLabel() {
     const el = $("#s-account"); if (!el) return;
-    const v = TX.view;
-    const line1 = v === "guest" ? "Hello, sign in" : v === "dealer" ? `Hello, ${TX.people.dealer.first}` : `Hello, ${TX.people.consumer.first}`;
-    const line2 = v === "dealer" ? "Business account" : "Account & lists";
-    el.innerHTML = `${ic("user")}<span><small>${line1}</small><b>${line2}</b></span>`;
+    const v = TX.view, dealer = TX.people.dealer, me = TX.people.consumer;
+    const init = v === "dealer" ? "MC" : "PN";
+    const title = v === "guest" ? "Sign in" : v === "dealer" ? dealer.name : me.name;
+    const sub = v === "guest" ? "Or create an account" : v === "dealer" ? `${dealer.org} · Dealer Gold` : "Orders, returns & settings";
+    el.innerHTML = v === "guest" ? `${ic("user")}<span class="s-act-t">Sign in</span>`
+      : `<span class="s-av">${init}</span><span class="s-act-t">${v === "dealer" ? dealer.org : me.first}<small>${v === "dealer" ? "Dealer account" : "My account"}</small></span>`;
     el.href = v === "guest" ? "store-login.html" : v === "dealer" ? "store-dealer.html" : "store-account.html";
-    el.setAttribute("aria-label", `${line1} · ${line2}`);
+    el.setAttribute("aria-label", v === "guest" ? "Sign in or create an account" : `${title} · ${sub}`);
+    // Delivery location: compact PIN chip in the header, fuller line in the department rail (tablet/phone) and the menu drawer
     const d = $("#s-deliver-to");
-    if (d) d.innerHTML = v === "dealer" ? "Deliver to Metro Computers<b>Mysuru 570001</b>" : v === "guest" ? "Deliver to<b>Enter PIN code</b>" : "Deliver to Priya<b>Bengaluru 560034</b>";
-    // Mobile: slim delivery row, drawer greeting and bottom-bar account tab
+    if (d) d.innerHTML = v === "dealer" ? `<span class="pin-city">Mysuru</span> <b>570001</b>` : v === "guest" ? `<span class="pin-city">Deliver to</span> <b>Set PIN</b>` : `<span class="pin-city">Bengaluru</span> <b>560034</b>`;
     const md = $("#s-mdeliver-to");
-    if (md) md.innerHTML = v === "dealer" ? "Deliver to Metro Computers · <b>Mysuru 570001</b>" : v === "guest" ? "Deliver to · <b>Enter PIN code</b>" : "Deliver to Priya · <b>Bengaluru 560034</b>";
+    if (md) md.innerHTML = v === "dealer" ? "Deliver to Metro Computers · <b>570001</b>" : v === "guest" ? "Deliver to · <b>Set PIN code</b>" : "Deliver to Priya · <b>560034</b>";
     const du = $("#sd-user");
-    if (du) { du.href = el.href; du.innerHTML = `<span class="sd-av">${ic("user")}</span><span><b>${line1}</b><small>${v === "guest" ? "Sign in or create an account" : line2}</small></span>`; }
+    if (du) { du.href = el.href; du.innerHTML = `<span class="sd-av">${v === "guest" ? ic("user") : init}</span><span><b>${title}</b><small>${sub}</small></span>`; }
     const ta = $("#s-tab-account");
     if (ta) { ta.href = el.href; $("span:last-child", ta).textContent = v === "guest" ? "Sign in" : "Account"; }
   }
@@ -552,24 +559,26 @@
       ["cameras", "Cameras"], ["accessories", "Accessories"], ["audio", "Audio"], ["networking", "Networking"], ["printers", "Printers"],
     ];
     const header = document.createElement("div");
+    header.className = "s-shell";
     header.innerHTML = `
-    <div class="s-topstrip"><div class="container">
-      <div class="row">${ic("truck")} Free delivery on orders above ₹999 · Same-day dispatch before 2 PM</div>
-      <div class="row">
-        <a href="store-dealer.html" class="hide-dealer">${ic("briefcase")} Dealer / business pricing</a>
-        <a href="store-login.html#vendor">Sell with Tradex</a>
-        <a href="store-order.html">${ic("package")} Track order</a>
-        <a href="store-help.html">${ic("help")} Help</a>
+    <div class="s-util"><div class="container">
+      <span class="u-msg">${ic("truck")}<span><b>Same-day dispatch</b> on orders placed before 2 PM · free delivery above ₹999</span></span>
+      <nav class="u-links" aria-label="Store services">
+        <a href="store-order.html">${ic("package")} Track an order</a>
+        <a href="store-help.html#stores">${ic("pin")} Our stores</a>
+        <a href="store-help.html">${ic("help")} Help centre</a>
+        <a href="store-dealer.html" class="hide-dealer">${ic("briefcase")} Business pricing</a>
+        <a href="store-login.html#vendor">Sell on Tradex</a>
         <a href="#" data-wa>${ic("whatsapp")} +91 80 4000 1234</a>
-      </div></div></div>
+      </nav></div></div>
     <header class="s-header"><div class="container">
       <button class="s-burger" type="button" data-sdrawer aria-controls="s-drawer" aria-expanded="false" aria-label="Open menu">${ic("menu", "ic-lg")}</button>
       ${TX.logo()}
-      <div class="s-deliver" data-open="m-pin">${ic("pin")}<span id="s-deliver-to">Deliver to Priya<b>Bengaluru 560034</b></span></div>
-      <form class="s-search" onsubmit="event.preventDefault();location.href='store-listing.html?q='+encodeURIComponent(this.q.value)" data-anno="1A · R01 Search-first · exact model/SKU + synonyms">
-        <select aria-label="Search in"><option>All</option>${TX.categories.map((c) => `<option>${c.name}</option>`).join("")}</select>
-        <input name="q" placeholder="Search laptops, SSDs, model numbers, e.g. “T14 Gen 2” or “1TB NVMe”" autocomplete="off">
-        <button aria-label="Search">${ic("search", "ic-lg")}</button>
+      <form class="s-search" role="search" onsubmit="event.preventDefault();location.href='store-listing.html?q='+encodeURIComponent(this.q.value)" data-anno="1A · R01 Search-first · exact model/SKU + synonyms">
+        ${ic("search")}
+        <input name="q" placeholder="Search by product, model or part number — try “T14 Gen 2” or “1TB NVMe”" autocomplete="off" aria-label="Search the store">
+        <select class="s-scope" aria-label="Search in"><option>All departments</option>${TX.categories.map((c) => `<option>${c.name}</option>`).join("")}</select>
+        <button class="s-go" aria-label="Search">${ic("arrow-right")}</button>
         <div class="s-suggest">
           <div class="upper muted" style="padding:6px 10px">Suggestions</div>
           <a href="store-listing.html?q=thinkpad">${ic("search")} <span><span class="hl">thinkpad</span> t14 gen 2 refurbished</span></a>
@@ -580,40 +589,47 @@
         </div>
       </form>
       <div class="s-actions">
+        <button type="button" class="s-pin" data-open="m-pin" aria-label="Change delivery location">${ic("pin")}<span id="s-deliver-to"></span></button>
         <a class="s-act s-act-account" id="s-account" href="store-account.html"></a>
-        <a class="s-act s-act-orders only-signed" href="store-account.html#orders">${ic("package")}<span><small>Returns</small><b>& Orders</b></span></a>
-        <a class="s-act s-act-wish" href="store-account.html#wishlist" data-tip="Wishlist" aria-label="Wishlist">${ic("heart")}</a>
-        <a class="s-act s-act-cart" href="store-cart.html" aria-label="Cart">${ic("cart")}<span class="count" data-cart-count>0</span><span><small>&nbsp;</small><b>Cart</b></span></a>
+        <a class="s-act s-act-icon s-act-orders only-signed" href="store-account.html#orders" data-tip="Orders & returns" aria-label="Orders and returns">${ic("package")}</a>
+        <a class="s-act s-act-icon s-act-wish" href="store-account.html#wishlist" data-tip="Wishlist" aria-label="Wishlist">${ic("heart")}</a>
+        <a class="s-act s-act-cart" href="store-cart.html" aria-label="Cart">${ic("cart")}<span class="s-act-t">Cart</span><span class="count" data-cart-count>0</span></a>
       </div>
     </div></header>
-    <div class="s-mdeliver"><div class="container"><button type="button" data-open="m-pin">${ic("pin", "ic-sm")}<span id="s-mdeliver-to">Deliver to Priya · <b>Bengaluru 560034</b></span>${ic("chevron-down", "ic-sm")}</button></div></div>
-    <nav class="s-catbar" aria-label="Shop by category"><div class="container">
-      <button type="button" class="all" data-mega aria-expanded="false" aria-controls="s-mega">${ic("menu")} All categories</button>
+    <nav class="s-catbar" aria-label="Shop by department"><div class="container">
+      <button type="button" class="all" data-mega aria-expanded="false" aria-controls="s-mega">${ic("grid")} All departments</button>
+      <button type="button" class="s-rail-pin" data-open="m-pin">${ic("pin", "ic-sm")}<span id="s-mdeliver-to"></span></button>
       ${cats.map(([id, n], i) => `<a href="store-listing.html?cat=${id}" data-p="${i}" class="${(TX.param("cat") || (page === "listing" && !TX.param("q") && !TX.param("brand") && !TX.param("deals") ? "laptops" : "")) === id ? "active" : ""}">${n}</a>`).join("")}
-      <a href="store-refurbished.html" class="refurb ${page === "refurbished" ? "active" : ""}">${ic("award")} Refurbished</a>
-      <a href="store-listing.html?deals=1" class="deal">${ic("flame")} Deals</a>
-      <a href="store-dealer.html" class="dz ml-auto ${page === "dealer" ? "active" : ""}" style="color:#07695b">${ic("briefcase")} Dealer zone</a>
+      <span class="s-rail-gap" aria-hidden="true"></span>
+      <a href="store-refurbished.html" class="rchip refurb ${page === "refurbished" ? "active" : ""}"><span class="dot"></span> Certified refurbished</a>
+      <a href="store-listing.html?deals=1" class="rchip deal ${page === "listing" && TX.param("deals") ? "active" : ""}">${ic("tag", "ic-sm")} Offers</a>
+      <a href="store-dealer.html" class="rchip dz ${page === "dealer" ? "active" : ""}">${ic("briefcase", "ic-sm")} Dealer zone</a>
     </div>
     <div class="s-mega" id="s-mega"><div class="container">
-      <div class="m-cats col gap-4">${TX.categories.map((c) => `<a href="store-listing.html?cat=${c.id}">${ic(c.icon, "ic-sm")} ${c.name} ${ic("chevron-right", "ic-sm")}</a>`).join("")}</div>
-      <div class="m-cols">${SUBS.map(([, title, links]) => `<div><h5>${title}</h5>${links.map(([href, n]) => `<a href="${href}">${n}</a>`).join("")}</div>`).join("")}</div>
-      <a class="promo photo" href="store-listing.html?cat=desktops" style="min-height:220px;text-decoration:none"><div class="p-bg">${TX.ph("pc-case", "round-0")}</div><div><span class="badge b-accent">Build your PC</span><h3 class="mt-8" style="color:#fff">Custom builds, tested & warrantied</h3><p>Pick parts or start from a Tradex build.</p></div><span class="btn btn-sm btn-accent" style="align-self:flex-start">Explore builds</span></a>
+      <div class="m-cats"><h5>Departments</h5>${TX.categories.map((c) => `<a href="store-listing.html?cat=${c.id}">${ic(c.icon, "ic-sm")} <span>${c.name}</span> <small>${c.count}</small></a>`).join("")}</div>
+      <div class="m-cols">${SUBS.map(([, title, links]) => `<div><h5>${title}</h5>${links.map(([href, n]) => `<a href="${href}">${n}</a>`).join("")}</div>`).join("")}
+        <div class="m-note"><b>Not sure what fits?</b><span>Our build team checks compatibility before you pay — ask on WhatsApp with the model number.</span></div></div>
+      <a class="promo photo" href="store-listing.html?cat=desktops" style="min-height:240px;text-decoration:none"><div class="p-bg">${TX.ph("pc-case", "round-0")}</div><div><span class="badge b-accent">Build your PC</span><h3 class="mt-8" style="color:#fff">Custom builds, tested & warrantied</h3><p>Pick parts or start from a Tradex build.</p></div><span class="btn btn-sm btn-accent" style="align-self:flex-start">Explore builds</span></a>
     </div></div></nav>`;
     document.body.insertBefore(header, main);
 
     const footer = document.createElement("footer");
     footer.className = "s-footer";
     footer.innerHTML = `<div class="container">
+      <div class="f-hero">
+        <div><span class="f-kicker">The Tradex standard</span><h2>Tested. Graded.<br><em>Guaranteed.</em></h2></div>
+        <div class="f-news"><p>New refurbished arrivals, restocks and price drops — one short email a week.</p>
+          <form class="news" onsubmit="event.preventDefault()"><input class="input" type="email" placeholder="Your email address" aria-label="Email address"><button class="btn btn-accent" data-toast="Subscribed · please confirm from the email we just sent">Subscribe</button></form></div>
+      </div>
       <div class="f-top">
-        <div>${TX.logo()}<p class="mt-12" style="max-width:300px">Computers, parts, cameras and electronics — new, open-box and certified refurbished — with honest condition grading and real warranty support.</p>
-          <div class="news"><input class="input" placeholder="Email for deals & restocks"><button class="btn btn-accent">Subscribe</button></div>
-          <div class="row mt-12 gap-8 small">${ic("whatsapp")} WhatsApp +91 80 4000 1234 · ${ic("mail")} care@tradex.example</div></div>
-        <div><h5>Shop</h5><a href="store-listing.html?cat=laptops">Laptops</a><a href="store-listing.html?cat=desktops">Desktops & builds</a><a href="store-listing.html?cat=components">Components</a><a href="store-listing.html?cat=cameras">Cameras & lenses</a><a href="store-refurbished.html">Certified refurbished</a><a href="store-listing.html?deals=1">Deals</a></div>
-        <div><h5>Business</h5><a href="store-dealer.html">Dealer pricing</a><a href="store-dealer.html#bulk">Bulk / quick order</a><a href="store-login.html#dealer">Apply as dealer</a><a href="store-login.html#vendor">Sell with Tradex</a><a href="vendor-dashboard.html">Vendor portal login</a></div>
+        <div class="f-brand">${TX.logo()}<p>Computers, parts, cameras and electronics — new, open-box and certified refurbished — with honest condition grading and real warranty support.</p>
+          <div class="f-contact"><span>${ic("whatsapp")} WhatsApp +91 80 4000 1234</span><span>${ic("mail")} care@tradex.example</span></div></div>
+        <div><h5>Shop</h5><a href="store-listing.html?cat=laptops">Laptops</a><a href="store-listing.html?cat=desktops">Desktops & builds</a><a href="store-listing.html?cat=components">Components</a><a href="store-listing.html?cat=cameras">Cameras & lenses</a><a href="store-refurbished.html">Certified refurbished</a><a href="store-listing.html?deals=1">Offers</a></div>
+        <div><h5>Business</h5><a href="store-dealer.html">Dealer pricing</a><a href="store-dealer.html#bulk">Bulk / quick order</a><a href="store-login.html#dealer">Apply as dealer</a><a href="store-login.html#vendor">Sell on Tradex</a><a href="vendor-dashboard.html">Vendor portal login</a></div>
         <div><h5>Help</h5><a href="store-order.html">Track your order</a><a href="store-returns.html">Returns & replacements</a><a href="store-help.html#warranty">Warranty & RMA</a><a href="store-help.html#grades">Condition grades</a><a href="store-help.html#shipping">Shipping & delivery</a><a href="store-help.html">Contact us</a></div>
         <div><h5>Visit a store</h5><a href="store-help.html#stores">SP Road, Bengaluru</a><a href="store-help.html#stores">Koramangala, Bengaluru</a><a href="store-help.html#stores">Mysuru</a><a href="store-help.html#stores">Store hours & directions</a></div>
       </div>
-      <div class="f-bottom"><span>© 2026 Tradex. Prototype for review — sample data and product photos (Unsplash licence, see <a href="credits.html" style="display:inline;color:#c9d2e3">credits</a>).</span>
+      <div class="f-bottom"><span>© 2026 Tradex. Prototype for review — sample data and product photos (Unsplash licence, see <a href="credits.html" style="display:inline;color:#d6d8dc">credits</a>).</span>
         <div class="row"><a href="store-help.html#terms" style="display:inline">Terms</a> · <a href="store-help.html#privacy" style="display:inline">Privacy</a> · <a href="store-help.html#grievance" style="display:inline">Grievance officer</a>
         <div class="pay-row"><span>UPI</span><span>VISA</span><span>MASTERCARD</span><span>RUPAY</span><span>NETBANKING</span><span>EMI</span></div></div></div>
     </div>`;
@@ -624,7 +640,7 @@
     fab.className = "helpfab";
     fab.innerHTML = `
       <div class="chatbox" data-anno="1A/1B · R11 Guided help · human & WhatsApp handoff (no LLM)">
-        <div class="cb-head"><div class="avatar" style="background:#fff;color:var(--brand)">${ic("headset", "ic-sm")}</div><div class="grow"><b>Tradex Help</b><div class="small" style="opacity:.8">Typically replies in 5 min · 9 AM–9 PM</div></div><button class="btn btn-ghost btn-icon btn-sm" style="color:#fff" data-chat-close aria-label="Close help">${ic("x")}</button></div>
+        <div class="cb-head"><div class="avatar" style="background:var(--st-volt);color:var(--st-ink)">${ic("headset", "ic-sm")}</div><div class="grow"><b>Tradex Help</b><div class="small" style="opacity:.8">Typically replies in 5 min · 9 AM–9 PM</div></div><button class="btn btn-ghost btn-icon btn-sm" style="color:#fff" data-chat-close aria-label="Close help">${ic("x")}</button></div>
         <div class="cb-body" id="cb-body"></div>
         <div class="cb-foot"><input class="input input-sm" placeholder="Type your question…" id="cb-input" aria-label="Type your question"><button class="btn btn-primary btn-sm btn-icon" id="cb-send" aria-label="Send">${ic("send", "ic-sm")}</button></div>
       </div>
@@ -635,7 +651,7 @@
     // Compare tray
     const tray = document.createElement("div");
     tray.className = "compare-tray"; tray.id = "compare-tray";
-    tray.innerHTML = `<div><b>Compare</b><div class="small" style="color:#9aa6bf"><span class="count">0</span> of 4 selected</div></div><div class="slots"></div><button class="btn btn-ghost btn-sm" style="color:#c9d2e3" data-compare-clear>Clear</button><a class="btn btn-accent btn-sm" href="store-compare.html">Compare now ${ic("arrow-right", "ic-sm")}</a>`;
+    tray.innerHTML = `<div><b>Compare</b><div class="small" style="color:#a9adb5"><span class="count">0</span> of 4 selected</div></div><div class="slots"></div><button class="btn btn-ghost btn-sm" style="color:#d6d8dc" data-compare-clear>Clear</button><a class="btn btn-accent btn-sm" href="store-compare.html">Compare now ${ic("arrow-right", "ic-sm")}</a>`;
     document.body.appendChild(tray);
 
     // PIN modal
@@ -675,14 +691,14 @@
               : `<a class="sd-link" href="store-listing.html?cat=${c.id}">${ic(c.icon)}<span>${c.name}</span>${ic("chevron-right", "ic-sm")}</a>`).join("")}
             <h3 class="sd-sec">Featured</h3>
             <a class="sd-link" href="store-refurbished.html">${ic("award")}<span>Certified refurbished</span>${ic("chevron-right", "ic-sm")}</a>
-            <a class="sd-link" href="store-listing.html?deals=1">${ic("flame")}<span>Deals</span>${ic("chevron-right", "ic-sm")}</a>
+            <a class="sd-link" href="store-listing.html?deals=1">${ic("tag")}<span>Offers</span>${ic("chevron-right", "ic-sm")}</a>
             <a class="sd-link" href="store-compare.html">${ic("compare")}<span>Compare products</span>${ic("chevron-right", "ic-sm")}</a>
           </nav>
           <nav aria-label="Business">
             <h3 class="sd-sec">For business</h3>
             <a class="sd-link" href="store-dealer.html">${ic("briefcase")}<span>Dealer zone</span>${ic("chevron-right", "ic-sm")}</a>
             <a class="sd-link hide-dealer" href="store-login.html#dealer">${ic("building")}<span>Apply for dealer pricing</span>${ic("chevron-right", "ic-sm")}</a>
-            <a class="sd-link" href="store-login.html#vendor">${ic("store")}<span>Sell with Tradex</span>${ic("chevron-right", "ic-sm")}</a>
+            <a class="sd-link" href="store-login.html#vendor">${ic("store")}<span>Sell on Tradex</span>${ic("chevron-right", "ic-sm")}</a>
           </nav>
           <nav aria-label="Help and services">
             <h3 class="sd-sec">Help & services</h3>
@@ -705,7 +721,7 @@
     tabs.innerHTML = `
       <a href="store-home.html" ${cur(page === "home")}>${ic("home")}<span>Home</span></a>
       <button type="button" data-sdrawer aria-controls="s-drawer" aria-expanded="false">${ic("grid")}<span>Categories</span></button>
-      <a href="store-listing.html?deals=1" class="hide-dealer ${page === "listing" && TX.param("deals") ? "on" : ""}">${ic("flame")}<span>Deals</span></a>
+      <a href="store-listing.html?deals=1" class="hide-dealer ${page === "listing" && TX.param("deals") ? "on" : ""}">${ic("tag")}<span>Offers</span></a>
       <a href="store-dealer.html" class="only-dealer ${page === "dealer" ? "on" : ""}">${ic("briefcase")}<span>Dealer</span></a>
       <a href="store-account.html" id="s-tab-account" ${cur(page === "account" || page === "login")}>${ic("user")}<span>Account</span></a>
       <a href="store-cart.html" class="s-tab-cart" ${cur(page === "cart")}>${ic("cart")}<span class="count" data-cart-count>0</span><span>Cart</span></a>`;
@@ -1344,7 +1360,7 @@
     const x = (i) => m.l + (i / (n - 1)) * iw, y = (v) => m.t + ih - (v / max) * ih;
     const svg = svgEl("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": cfg.title || "Line chart" }, box);
     for (let i = 0; i <= ticks; i++) { const v = step * i; svgEl("line", { x1: m.l, x2: m.l + iw, y1: y(v), y2: y(v), class: i ? "gridline" : "baseline" }, svg); const tx = svgEl("text", { x: m.l - 8, y: y(v) + 4, "text-anchor": "end", class: "ax-label" }, svg); tx.textContent = cfg.axisFormat ? cfg.axisFormat(v) : fmt(v); }
-    const every = Math.ceil(n / 8);
+    const every = Math.ceil(n / Math.min(8, Math.max(2, Math.floor(iw / 64))));   // ≈ one date label per 64 px, never overlapping
     cfg.labels.forEach((l, i) => { if ((i % every === 0 && n - 1 - i >= every * 0.7) || i === n - 1) { const tx = svgEl("text", { x: x(i), y: H - 6, "text-anchor": i === 0 ? "start" : i === n - 1 ? "end" : "middle", class: "ax-label" }, svg); tx.textContent = l; } });
     if (cfg.series.length === 1) { const s = cfg.series[0]; svgEl("path", { d: `M${x(0)},${y(0)} ` + s.values.map((v, i) => `L${x(i)},${y(v)}`).join(" ") + ` L${x(n - 1)},${y(0)} Z`, fill: s.color, opacity: 0.1 }, svg); }
     cfg.series.forEach((s) => svgEl("path", { d: s.values.map((v, i) => `${i ? "L" : "M"}${x(i)},${y(v)}`).join(" "), fill: "none", stroke: s.color, "stroke-width": 2, "stroke-linejoin": "round", "stroke-linecap": "round" }, svg));
